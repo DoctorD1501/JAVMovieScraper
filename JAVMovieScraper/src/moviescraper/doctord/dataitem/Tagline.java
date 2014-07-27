@@ -1,0 +1,31 @@
+package moviescraper.doctord.dataitem;
+
+public class Tagline extends MovieDataItem {
+
+	private String tagline;
+
+	public String getTagline() {
+		return tagline;
+	}
+
+	public void setTagline(String tagline) {
+		this.tagline = sanitizeString(tagline);
+	}
+
+	public Tagline(String tagline) {
+		super();
+		setTagline(tagline);
+	}
+
+	@Override
+	public String toString() {
+		return "Tagline [tagline=" + tagline + "]";
+	}
+
+	@Override
+	public String toXML() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}
