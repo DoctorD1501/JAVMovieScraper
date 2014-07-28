@@ -13,6 +13,8 @@ public class MoviescraperPreferences {
 	Properties programPreferences;
 	private static final String fileNameOfPreferences = "settings.xml";
 	private static final String lastUsedDirectoryPropertyName = "lastUsedDirectory";
+	private static final String writeFanartAndPostersPropertyName = "writeFanartAndPosters";
+	private static final String overwriteFanartAndPostersPropertyName = "overWriteFanartAndPosters";
 	
 	public MoviescraperPreferences()
 	{
@@ -59,5 +61,46 @@ public class MoviescraperPreferences {
 		programPreferences.setProperty(lastUsedDirectoryPropertyName, lastUsedDirectory.getPath());
 		savePreferences();
 	}
+	
+	public void setOverWriteFanartAndPostersPreference(boolean preferenceValue){
+		if(preferenceValue)
+			programPreferences.setProperty(overwriteFanartAndPostersPropertyName, "true");
+		else
+			programPreferences.setProperty(overwriteFanartAndPostersPropertyName, "false");
+		savePreferences();
+	}
+	
+	public boolean getOverWriteFanartAndPostersPreference()
+	{
+		String overwriteFanartAndPostersPref = programPreferences.getProperty(overwriteFanartAndPostersPropertyName);
+		if(overwriteFanartAndPostersPref != null)
+		{
+		if(overwriteFanartAndPostersPref.equals("true"))
+			return true;
+		else return false;
+		}
+		else return true; //default value if no preference has been set yet
+	}
+	
+	public void setWriteFanartAndPostersPreference(boolean preferenceValue){
+		if(preferenceValue)
+			programPreferences.setProperty(writeFanartAndPostersPropertyName, "true");
+		else
+			programPreferences.setProperty(writeFanartAndPostersPropertyName, "false");
+		savePreferences();
+	}
+	
+	public boolean getWriteFanartAndPostersPreference()
+	{
+		String writeFanartAndPostersPref = programPreferences.getProperty(writeFanartAndPostersPropertyName);
+		if(writeFanartAndPostersPref != null)
+		{
+		if(writeFanartAndPostersPref.equals("true"))
+			return true;
+		else return false;
+		}
+		else return true; //default value if no preference has been set yet
+	}
+	
 
 }

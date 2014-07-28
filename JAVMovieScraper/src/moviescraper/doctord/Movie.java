@@ -284,7 +284,7 @@ public class Movie {
 		return title.toXML();
 	}
 
-	public void writeToFile(File nfofile, File posterFile, File fanartFile) throws IOException {
+	public void writeToFile(File nfofile, File posterFile, File fanartFile, boolean writePoster, boolean writeFanart, boolean writePosterIfAlreadyExists, boolean writeFanartIfAlreadyExists) throws IOException {
 		// Output the movie to XML using XStream and a proxy class to
 		// translate things to a format that xbmc expects
 
@@ -293,9 +293,7 @@ public class Movie {
 		xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>"
 				+ "\n" + xml;
 		System.out.println("Xml I am writing to file: \n" + xml);
-		//double check we're really overwriting an nfo file before trashing it!
-		//if(FileUtils.)
-		FileUtils.deleteQuietly(nfofile);
+
 		FileUtils.writeStringToFile(nfofile, xml,
 				org.apache.commons.lang3.CharEncoding.UTF_8);
 		
@@ -305,7 +303,9 @@ public class Movie {
 		
 		// save the first poster out
 		// maybe we did some clipping, so we're going to have to reencode it
-		if (this.getPosters().length > 0)
+		System.err.println(!posterFile.exists());
+		System.err.println(writePoster);
+		if (this.getPosters().length > 0 && writePoster && ((posterFile.exists() == writePosterIfAlreadyExists) || (!posterFile.exists())))
 		{
 			//System.out.println("writing poster to " + posterFile);
 			if(posterToSaveToDisk.isModified())
@@ -319,7 +319,7 @@ public class Movie {
 				iwp.setCompressionQuality(1);   // an float between 0 and 1
 				// 1 specifies minimum compression and maximum quality
 				
-				FileUtils.deleteQuietly(posterFile);
+				//FileUtils.deleteQuietly(posterFile);
 				FileImageOutputStream output = new FileImageOutputStream(posterFile);
 				writer.setOutput(output);
 				IIOImage image = new IIOImage((RenderedImage) posterToSaveToDisk.getThumbImage(), null, null);
@@ -336,7 +336,7 @@ public class Movie {
 		
 		// save the first fanart out
 		// we didn't modify it so we can write it directly from the URL
-		if (this.getFanart().length > 0)
+		if (this.getFanart().length > 0 && writeFanart && ((fanartFile.exists() == writeFanartIfAlreadyExists) || !fanartFile.exists()))
 		{
 			FileUtils.copyURLToFile(fanartToSaveToDisk.getThumbURL(), fanartFile, connectionTimeout, readTimeout);
 		}

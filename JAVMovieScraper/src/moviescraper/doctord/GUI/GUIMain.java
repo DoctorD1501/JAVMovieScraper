@@ -8,9 +8,13 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
@@ -82,6 +86,8 @@ import java.util.Comparator;
 import javax.swing.AbstractAction;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -140,6 +146,10 @@ public class GUIMain {
 	private JTextField moviePlotTextField;
 	private JTextField txtFieldMovieSet;
 	private MoviescraperPreferences preferences;
+	
+	//Menus
+	JMenuBar menuBar;
+	JMenu preferenceMenu;
 
 	/**
 	 * Launch the application.
@@ -170,7 +180,7 @@ public class GUIMain {
 	}
 	
 
-
+	
 	/**
 	 * Initialize the contents of the frame.
 	 */
@@ -475,8 +485,58 @@ public class GUIMain {
 				"Open Currently Selected File");
 		openCurrentlySelectedFileButton.addActionListener(new OpenFileAction());
 		buttonsPanel.add(openCurrentlySelectedFileButton);
+		initializeMenus();
 	}
 
+	private void initializeMenus(){
+		menuBar = new JMenuBar();
+		
+		//Set up the preferences menu
+		preferenceMenu = new JMenu("Preferences");
+		preferenceMenu.setMnemonic(KeyEvent.VK_P);
+		preferenceMenu.getAccessibleContext().setAccessibleDescription(
+                "Preferences for JAVMovieScraper");
+		
+		//Checkbox for writing fanart and poster
+		
+		//Checkbox for overwriting fanart and poster
+		JCheckBoxMenuItem writeFanartAndPosters = new JCheckBoxMenuItem("Write fanart and poster files");
+		writeFanartAndPosters.setState(preferences.getWriteFanartAndPostersPreference());
+		writeFanartAndPosters.addItemListener(new ItemListener() {
+			
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				//save the menu choice off to the preference object (and the disk based settings file)
+				if(e.getStateChange() == ItemEvent.SELECTED)
+					preferences.setWriteFanartAndPostersPreference(true);
+				else if(e.getStateChange() == ItemEvent.DESELECTED)
+					preferences.setWriteFanartAndPostersPreference(false);
+				
+			}
+		});
+		preferenceMenu.add(writeFanartAndPosters);
+		
+		//Checkbox for overwriting fanart and poster
+		JCheckBoxMenuItem overwriteFanartAndPosters = new JCheckBoxMenuItem("Overwrite fanart and poster files");
+		overwriteFanartAndPosters.setState(preferences.getOverWriteFanartAndPostersPreference());
+		overwriteFanartAndPosters.addItemListener(new ItemListener() {
+			
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				//save the menu choice off to the preference object (and the disk based settings file)
+				if(e.getStateChange() == ItemEvent.SELECTED)
+					preferences.setOverWriteFanartAndPostersPreference(true);
+				else if(e.getStateChange() == ItemEvent.DESELECTED)
+					preferences.setOverWriteFanartAndPostersPreference(false);
+				
+			}
+		});
+		preferenceMenu.add(overwriteFanartAndPosters);
+		
+		//add the various menus together
+		menuBar.add(preferenceMenu);
+		frmMoviescraper.setJMenuBar(menuBar);
+	}
 	protected void removeOldScrapedMovieReferences() {
 		currentlySelectedMovieDMM = null;
 		currentlySelectedMovieActionJav = null;
@@ -916,7 +976,7 @@ public class GUIMain {
 					movieToWriteToDisk.writeToFile(
 							currentlySelectedNfoFile,
 							currentlySelectedPosterFile,
-							currentlySelectedFanartFile);
+							currentlySelectedFanartFile, preferences.getWriteFanartAndPostersPreference(), preferences.getWriteFanartAndPostersPreference(), preferences.getOverWriteFanartAndPostersPreference(), preferences.getOverWriteFanartAndPostersPreference());
 					//we're outputting new files to the current visible directory, so we'll want to update GUI with the fact that they are there
 					if(!currentlySelectedMovieFile.isDirectory())
 					{
