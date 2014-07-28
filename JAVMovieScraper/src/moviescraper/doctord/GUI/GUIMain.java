@@ -897,7 +897,6 @@ public class GUIMain {
 	private class WriteFileDataAction implements ActionListener {
 		public void actionPerformed(ActionEvent arg0) {
 			try {
-
 				// Write the user or automatic selection using amalgamation
 				// of different scraping sites
 				if(movieToWriteToDisk == null)
@@ -918,16 +917,20 @@ public class GUIMain {
 							currentlySelectedNfoFile,
 							currentlySelectedPosterFile,
 							currentlySelectedFanartFile);
-					int selectedIndex = fileList.getSelectedIndex();
-					if(!listModelFiles.contains(currentlySelectedNfoFile))
-						listModelFiles.add(selectedIndex + 1,
-							currentlySelectedNfoFile);
-					if(!listModelFiles.contains(currentlySelectedFanartFile))
-						listModelFiles.add(selectedIndex + 2,
-							currentlySelectedFanartFile);
-					if(!listModelFiles.contains(currentlySelectedPosterFile))
-						listModelFiles.add(selectedIndex + 3,
-							currentlySelectedPosterFile);
+					//we're outputting new files to the current visible directory, so we'll want to update GUI with the fact that they are there
+					if(!currentlySelectedMovieFile.isDirectory())
+					{
+						int selectedIndex = fileList.getSelectedIndex();
+						if(!listModelFiles.contains(currentlySelectedNfoFile))
+							listModelFiles.add(selectedIndex + 1,
+								currentlySelectedNfoFile);
+						if(!listModelFiles.contains(currentlySelectedFanartFile))
+							listModelFiles.add(selectedIndex + 2,
+								currentlySelectedFanartFile);
+						if(!listModelFiles.contains(currentlySelectedPosterFile))
+							listModelFiles.add(selectedIndex + 3,
+								currentlySelectedPosterFile);
+					}
 				}
 
 			} catch (IOException e) {
@@ -979,7 +982,7 @@ public class GUIMain {
 					currentlySelectedFanartFile = new File(Movie
 							.getFileNameOfFanart(selectedValue));
 					currentlySelectedMovieFile = selectedValue;
-
+					
 					// clean up old scraped movie results from previous
 					// selection
 					removeOldScrapedMovieReferences();
@@ -1009,7 +1012,7 @@ public class GUIMain {
 			String pathSeperator = System.getProperty("file.separator");
 			try {
 				if (currentlySelectedMovieFile != null
-						&& currentlySelectedMovieFile.exists()) {
+						&& currentlySelectedMovieFile.exists() && currentlySelectedMovieFile.isFile()) {
 					// we can append the movie title to resulting folder name if
 					// the movie is scraped, has an ID and generally matches the
 					// ID in the filename (assuming the file is only named the

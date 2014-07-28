@@ -2,6 +2,7 @@ package moviescraper.doctord;
 
 import java.awt.image.RenderedImage;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,6 +13,7 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.FileImageOutputStream;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -336,8 +338,6 @@ public class Movie {
 		// we didn't modify it so we can write it directly from the URL
 		if (this.getFanart().length > 0)
 		{
-			//System.out.println("writing fanart to " + fanartFile);
-			FileUtils.deleteQuietly(fanartFile);
 			FileUtils.copyURLToFile(fanartToSaveToDisk.getThumbURL(), fanartFile, connectionTimeout, readTimeout);
 		}
 	}
@@ -372,18 +372,53 @@ public class Movie {
 	
 	public static String getFileNameOfNfo(File file)
 	{
-        String nfoName = getUnstackedMovieName(file) + ".nfo";
-        return nfoName;
+		return getTargetFilePath(file, ".nfo");
 	}
 
 	public static String getFileNameOfPoster(File file) {
-		String posterName = getUnstackedMovieName(file) + "-poster.jpg";
-		return posterName;
+		return getTargetFilePath(file, "-poster.jpg");
 	}
 	
 	public static String getFileNameOfFanart(File file) {
-		String fanartName = getUnstackedMovieName(file) + "-fanart.jpg";
-		return fanartName;
+		return getTargetFilePath(file, "-fanart.jpg");
+	}
+	
+	private static String getLastWordOfFile(File file)
+	{
+		String [] fileNameParts = file.getName().split("\\s+");
+		String lastWord = fileNameParts[fileNameParts .length-1];
+		return lastWord;
+		
+	}
+	
+	private static String getTargetFilePath(File file, String extension)
+	{
+		if(!file.isDirectory())
+		{
+			String nfoName = getUnstackedMovieName(file) + extension;
+			return nfoName;
+		}
+		//look in the directory for an nfo file, otherwise we will make one based on the last word (JAVID of the folder name)
+		else
+		{
+			final String extensionFromParameter = extension;
+			//getting the nfo files in this directory, if any
+			File [] directoryContents = file.listFiles(new FilenameFilter() {
+			    public boolean accept(File directory, String fileName) {
+			        return fileName.endsWith(extensionFromParameter);
+			    }
+			});
+			//if there are 1 or more files, it's not really in spec, so just return the first one
+			if (directoryContents.length > 0)
+				return directoryContents[0].getPath();
+			else
+			{
+				//no file found in directory, so we will be setting the target to create one in that directory
+				System.out.println("Last Word of File" + getLastWordOfFile(file));
+				//file.getAbsolutePath()
+				return new File(file.getAbsolutePath() + "\\" + getLastWordOfFile(file) + extension).getPath();
+			}
+		}
 	}
 	
 	/*private String [] searchResultsHelperForScrapeMovie(File movieFile, SiteParsingProfile siteToParseFrom)
