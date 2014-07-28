@@ -14,7 +14,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
@@ -1451,7 +1450,8 @@ public class GUIMain {
 			}
 			return label;
 		}
-
+		
+		//TODO: I should probably re-implement this to use Maps instead of arrays
 		private ImageIcon getImageIconForLabelName() {
 			if (movieToWriteToDisk != null) {
 				for (Actor currentActor : movieToWriteToDisk.getActors()) {

@@ -26,8 +26,8 @@ public class Thumb {
 	//Did the image change from the original image from url (this matters when knowing whether we need to reencode when saving it back to disk)
 	private boolean isImageModified;
 	private boolean needToReloadThumbImage = false;
-	
-	
+
+
 	public void setThumbURL(URL thumbURL) {
 		this.thumbURL = thumbURL;
 		needToReloadThumbImage = true;
@@ -42,19 +42,18 @@ public class Thumb {
 	public Thumb (URL thumbURL) throws IOException
 	{
 		//Delay the call to actually reading in the thumbImage until it is needed
-		//thumbImage = ImageIO.read(thumbURL);
 		this.thumbURL = thumbURL;
 		isImageModified = false;
 		needToReloadThumbImage = true;
 	}
-	
+
 	//call this with whole numbers for percents; must be smaller than 100 and greater than 0
 	public Thumb (String url, double horizontalPercentLeft, double horizontalPercentRight, double verticalPercentTop, double verticalPercentBottom) throws IOException
 	{
-		
+
 		thumbURL = new URL(url);
-		System.out.println("Reading in Image from " + thumbURL);
-		BufferedImage tempImage = ImageIO.read(thumbURL);
+		//get our image from the cachce, if it exists. otherwise, download it from the URL and put in the cache
+		BufferedImage tempImage = (BufferedImage)ImageCache.getImageFromCache(thumbURL);
 		int newXLeft = (int) (0 + (tempImage.getWidth()*(horizontalPercentLeft/100))); //left x bound of rectangle
 		int newXRight = (int) (tempImage.getWidth() - (tempImage.getWidth()*(horizontalPercentRight/100)));// right x bound of rectangle
 		int newYTop = (int) (0 + (tempImage.getHeight()*(verticalPercentTop/100))); //top y bound of rectangle
@@ -65,7 +64,7 @@ public class Thumb {
 		isImageModified = true;
 		needToReloadThumbImage = false;
 	}
-	
+
 	public Thumb (String url) throws IOException
 	{
 		if(url.length() > 1)
@@ -73,7 +72,6 @@ public class Thumb {
 		else
 			thumbURL = null;
 		//Delay the call to actually reading in the thumbImage until it is needed
-		//thumbImage = ImageIO.read(thumbURL);
 		isImageModified = false;
 		needToReloadThumbImage = true;
 	}
@@ -82,14 +80,13 @@ public class Thumb {
 	public URL getThumbURL() {
 		return thumbURL;
 	}
-	
+
 	//change the thumb's image and URL at the same time
 	public void setImage(URL thumbURL) throws IOException {
-		//thumbImage = ImageIO.read(thumbURL);
 		this.thumbURL = thumbURL;
 		needToReloadThumbImage = false;
 	}
-	
+
 	public void setImage(Image thumbImage){
 		this.thumbImage = thumbImage;
 		this.imageIconThumbImage = new ImageIcon(thumbImage);
@@ -105,16 +102,16 @@ public class Thumb {
 		}
 		if((needToReloadThumbImage) || (thumbImage == null))
 		{
-				System.out.println("Reading Image from website in getThumbImage(): " + thumbURL);
+			//rather than downloading the image every time, we can instead see if it's already in the cache
+			//if it's not in the cache, then we will actually download the image
+			thumbImage = ImageCache.getImageFromCache(thumbURL);
+			imageIconThumbImage = new ImageIcon(thumbImage);
 
-					thumbImage = ImageIO.read(thumbURL);
-					imageIconThumbImage = new ImageIcon(thumbImage);
-
-				needToReloadThumbImage = false;
+			needToReloadThumbImage = false;
 		}
 		return thumbImage;
 	}
-	
+
 	public String toXML()
 	{
 		return "<thumb>"+thumbURL.getPath()+"</thumb>";
@@ -124,25 +121,25 @@ public class Thumb {
 	public String toString() {
 		return "Thumb [thumbURL=" + thumbURL + "]";
 	}
-	
+
 	public boolean isModified(){
 		return isImageModified;
 	}
-	
+
 	public static boolean fileExistsAtUrl(String URLName){
-	    try {
-	      HttpURLConnection.setFollowRedirects(false);
-	      // note : you may also need
-	      //        HttpURLConnection.setInstanceFollowRedirects(false)
-	      HttpURLConnection con =
-	         (HttpURLConnection) new URL(URLName).openConnection();
-	      con.setRequestMethod("HEAD");
-	      return (con.getResponseCode() == HttpURLConnection.HTTP_OK);
-	    }
-	    catch (Exception e) {
-	       e.printStackTrace();
-	       return false;
-	    }
-	  }
-	
+		try {
+			HttpURLConnection.setFollowRedirects(false);
+			// note : you may also need
+			//        HttpURLConnection.setInstanceFollowRedirects(false)
+			HttpURLConnection con =
+					(HttpURLConnection) new URL(URLName).openConnection();
+			con.setRequestMethod("HEAD");
+			return (con.getResponseCode() == HttpURLConnection.HTTP_OK);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
 }
