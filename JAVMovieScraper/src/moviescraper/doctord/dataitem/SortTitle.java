@@ -12,7 +12,9 @@ public class SortTitle extends MovieDataItem {
 	}
 
 	public void setSortTitle(String sortTitle) {
-		this.sortTitle = sanitizeString(sortTitle);
+		if(sortTitle != null)
+			this.sortTitle = sanitizeString(sortTitle);
+		else sortTitle = "";
 	}
 
 	private String sortTitle;

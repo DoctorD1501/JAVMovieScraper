@@ -303,8 +303,6 @@ public class Movie {
 		
 		// save the first poster out
 		// maybe we did some clipping, so we're going to have to reencode it
-		System.err.println(!posterFile.exists());
-		System.err.println(writePoster);
 		if (this.getPosters().length > 0 && writePoster && ((posterFile.exists() == writePosterIfAlreadyExists) || (!posterFile.exists())))
 		{
 			//System.out.println("writing poster to " + posterFile);

@@ -36,6 +36,7 @@ public class XbmcXmlMovieBean {
 
 	public static XbmcXmlMovieBean makeFromXML(String xml) {
 		XStream xstream = XbmcXmlMovieBean.getXMLSerializer();
+		xstream.ignoreUnknownElements();
 		return (XbmcXmlMovieBean) xstream.fromXML(xml);
 	}
 
@@ -61,7 +62,6 @@ public class XbmcXmlMovieBean {
 		}
 		
 		fanart = new XbmcXmlFanartBean(movie.getFanart());
-		System.out.println("fanart in XbmlXmlMovieBeanCons: " + fanart);
 		
 		mpaa = movie.getMpaa().getMPAARating();
 		id = movie.getId().getId();
@@ -104,16 +104,27 @@ public class XbmcXmlMovieBean {
 				actors.add(currentActor.toActor());
 			}
 		}
-		
 
-		Thumb[] posterThumbs = new Thumb[thumb.length];
-		for (int i = 0; i < posterThumbs.length; i++) {
-			posterThumbs[i] = new Thumb(thumb[i]);
+		Thumb[] posterThumbs;
+		if (thumb != null) {
+			posterThumbs = new Thumb[thumb.length];
+			for (int i = 0; i < posterThumbs.length; i++) {
+				posterThumbs[i] = new Thumb(thumb[i]);
+			}
+		} else {
+			posterThumbs = new Thumb[0];
 		}
 		
-		Thumb[] fanartThumbs = new Thumb[fanart.getThumb().length];
-		for (int i = 0; i < fanartThumbs.length; i++){
-			fanartThumbs[i] = new Thumb(fanart.getThumb()[i]);
+		Thumb[] fanartThumbs;
+		if (fanart != null) {
+			fanartThumbs = new Thumb[fanart.getThumb().length];
+			for (int i = 0; i < fanartThumbs.length; i++) {
+				fanartThumbs[i] = new Thumb(fanart.getThumb()[i]);
+			}
+		}
+		else
+		{
+			fanartThumbs = new Thumb[0];
 		}
 		
 		ArrayList<Genre> genres = new ArrayList<Genre>(genre.length);

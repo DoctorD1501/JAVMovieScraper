@@ -830,6 +830,20 @@ public class GUIMain {
 		try {
 			fisTargetFile = new FileInputStream(nfoFile);
 			String targetFileStr = IOUtils.toString(fisTargetFile, "UTF-8");
+			//Sometimes there's some junk before the prolog tag. Do a workaround to remove that junk.
+			//This really isn't the cleanest way to do this, but it'll work for now
+			//check first to make sure the string even contains <?xml so we don't loop through an invalid file needlessly
+			if(targetFileStr.contains("<?xml"))
+			{
+				while(targetFileStr.length() > 0 && !targetFileStr.startsWith("<?xml"))
+				{
+					if(targetFileStr.length() > 1)
+					{
+					targetFileStr = targetFileStr.substring(1,targetFileStr.length());
+					}
+					else break;
+				}
+			}
 			movieToWriteToDisk = XbmcXmlMovieBean.makeFromXML(targetFileStr)
 					.toMovie();
 			fisTargetFile.close();
@@ -1012,8 +1026,19 @@ public class GUIMain {
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 
 				currentlySelectedDirectory = chooser.getSelectedFile();
-				updateFileListModel(currentlySelectedDirectory);
-				preferences.setLastUsedDirectory(currentlySelectedDirectory);
+				
+				//display a wait cursor while repopulating the list
+				//as this can sometimes be slow
+				try{
+					frmMoviescraper.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+					updateFileListModel(currentlySelectedDirectory);
+				}
+				finally
+				{
+					preferences.setLastUsedDirectory(currentlySelectedDirectory);
+					frmMoviescraper.setCursor(Cursor.getDefaultCursor());
+				}
+				
 
 			}
 		}
