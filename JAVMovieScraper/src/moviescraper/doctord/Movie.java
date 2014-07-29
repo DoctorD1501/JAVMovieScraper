@@ -494,4 +494,15 @@ public class Movie {
 		else return null; //TODO return some kind of default movie
 	}
 
+	public boolean hasAtLeastOneActorThumbnail() {
+		for(Actor currentActor : actors)
+		{
+			if(currentActor.getThumb().getThumbURL() != null && !currentActor.getThumb().getThumbURL().equals(""))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
 }

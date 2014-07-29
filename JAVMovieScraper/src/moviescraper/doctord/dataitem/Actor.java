@@ -1,5 +1,10 @@
 package moviescraper.doctord.dataitem;
 
+import java.io.File;
+import java.io.IOException;
+
+import org.apache.commons.io.FileUtils;
+
 import moviescraper.doctord.Thumb;
 
 public class Actor extends Person {
@@ -28,6 +33,11 @@ public class Actor extends Person {
 	@Override
 	public String toString() {
 		return "Actor [role=" + role + ", toString()=" + super.toString() + "]";
+	}
+
+	public void writeImageToFile(File fileNameToWrite) throws IOException {
+		FileUtils.copyURLToFile(getThumb().getThumbURL(), fileNameToWrite, connectionTimeout, readTimeout);
+		
 	}
 
 

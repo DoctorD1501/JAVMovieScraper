@@ -78,6 +78,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -119,6 +122,7 @@ public class GUIMain {
 	private File currentlySelectedFanartFile;
 	private File currentlySelectedDirectory;
 	private File currentlySelectedMovieFile;
+	private File actorsFolder;
 	private File[] filesToList;
 	private Movie currentlySelectedMovieDMM;
 	private Movie currentlySelectedMovieActionJav;
@@ -190,6 +194,7 @@ public class GUIMain {
 				"");
 		currentlySelectedFanartFile = new File(
 				"");
+		actorsFolder = new File("");
 		frmMoviescraper = new JFrame();
 		frmMoviescraper.setBackground(SystemColor.window);
 		frmMoviescraper.setPreferredSize(new Dimension(1024, 768));
@@ -496,9 +501,8 @@ public class GUIMain {
 		preferenceMenu.getAccessibleContext().setAccessibleDescription(
                 "Preferences for JAVMovieScraper");
 		
-		//Checkbox for writing fanart and poster
 		
-		//Checkbox for overwriting fanart and poster
+		//Checkbox for writing fanart and poster
 		JCheckBoxMenuItem writeFanartAndPosters = new JCheckBoxMenuItem("Write fanart and poster files");
 		writeFanartAndPosters.setState(preferences.getWriteFanartAndPostersPreference());
 		writeFanartAndPosters.addItemListener(new ItemListener() {
@@ -531,6 +535,23 @@ public class GUIMain {
 			}
 		});
 		preferenceMenu.add(overwriteFanartAndPosters);
+		
+		//Checkbox for overwriting writing actors to .actor folder
+				JCheckBoxMenuItem writeActorImages = new JCheckBoxMenuItem("Write Actor Images");
+				writeActorImages.setState(preferences.getDownloadActorImagesToActorFolderPreference());
+				writeActorImages.addItemListener(new ItemListener() {
+					
+					@Override
+					public void itemStateChanged(ItemEvent e) {
+						//save the menu choice off to the preference object (and the disk based settings file)
+						if(e.getStateChange() == ItemEvent.SELECTED)
+							preferences.setDownloadActorImagesToActorFolderPreference(true);
+						else if(e.getStateChange() == ItemEvent.DESELECTED)
+							preferences.setDownloadActorImagesToActorFolderPreference(false);
+						
+					}
+				});
+				preferenceMenu.add(writeActorImages);
 		
 		//add the various menus together
 		menuBar.add(preferenceMenu);
@@ -1005,6 +1026,41 @@ public class GUIMain {
 								currentlySelectedPosterFile);
 					}
 				}
+				//now write out the actor images if the user preference is set
+				if(preferences.getDownloadActorImagesToActorFolderPreference() && currentlySelectedMovieFile != null && currentlySelectedDirectory != null)
+				{
+					updateActorsFolder();
+/*					actorsFolder = null;
+					if(currentlySelectedMovieFile.isDirectory())
+					{
+						actorsFolder = new File(currentlySelectedMovieFile.getPath() + "\\.actors");
+					}
+					else if(currentlySelectedMovieFile.isFile())
+					{
+						actorsFolder = new File(currentlySelectedDirectory.getPath() + "\\.actors");
+					}*/
+					//Don't create an empty .actors folder with no actors underneath it
+					if(movieToWriteToDisk.hasAtLeastOneActorThumbnail() && actorsFolder != null)
+					{
+						//File actorsFolder = new File(currentlySelectedMovieFile.getPath() + "\\.actors");
+						FileUtils.forceMkdir(actorsFolder);
+						//on windows this new folder should have the hidden attribute; on unix it is already "hidden" by having a . in front of the name
+						Path path = actorsFolder.toPath();
+						Boolean hidden = (Boolean) Files.getAttribute(path, "dos:hidden", LinkOption.NOFOLLOW_LINKS);
+						if (hidden != null && !hidden) {
+							Files.setAttribute(path, "dos:hidden", Boolean.TRUE, LinkOption.NOFOLLOW_LINKS);
+						}
+						
+						for(Actor currentActor : movieToWriteToDisk.getActors())
+						{
+							String currentActorToFileName = currentActor.getName().replace(' ', '_');
+							File fileNameToWrite = new File(actorsFolder.getPath() + "\\" + currentActorToFileName + ".jpg");
+							currentActor.writeImageToFile(fileNameToWrite);
+						}
+						
+					}
+					
+				}
 
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -1054,6 +1110,7 @@ public class GUIMain {
 					currentlySelectedPosterFile = null;
 					currentlySelectedFanartFile = null;
 					currentlySelectedMovieFile = null;
+					actorsFolder = null;
 					// System.out.println("Selection nothing");
 
 				} else {
@@ -1066,6 +1123,7 @@ public class GUIMain {
 					currentlySelectedFanartFile = new File(Movie
 							.getFileNameOfFanart(selectedValue));
 					currentlySelectedMovieFile = selectedValue;
+					updateActorsFolder();
 					
 					// clean up old scraped movie results from previous
 					// selection
@@ -1452,19 +1510,49 @@ public class GUIMain {
 		}
 		
 		//TODO: I should probably re-implement this to use Maps instead of arrays
+		//TODO: Store the files from .actor in a cache somewhere
 		private ImageIcon getImageIconForLabelName() {
 			if (movieToWriteToDisk != null) {
 				for (Actor currentActor : movieToWriteToDisk.getActors()) {
 					if (this.getText().equals(currentActor.getName())) {
 						if (currentActor.getThumb() != null)
-							return currentActor.getThumb()
-									.getImageIconThumbImage();
+						{
+							//see if we can find a local copy in the .actors folder before trying to download
+							if(actorsFolder != null && actorsFolder.isDirectory())
+							{
+								String currentActorNameAsPotentialFileName = currentActor.getName().replace(' ', '_');
+								File [] listFiles = actorsFolder.listFiles();
+								for(File currentFile : listFiles)
+								{
+									if(currentFile.isFile() && FilenameUtils.removeExtension(currentFile.getName()).equals(currentActorNameAsPotentialFileName)){										
+										return new ImageIcon(currentFile.getPath());
+									}
+								}
+							}
+
+							else 
+							{
+								return currentActor.getThumb().getImageIconThumbImage();
+							}
+						}
 						else
 							return new ImageIcon();
 					}
 				}
 			}
 			return new ImageIcon();
+		}
+	}
+
+	public void updateActorsFolder() {
+		actorsFolder = null;
+		if(currentlySelectedMovieFile.isDirectory())
+		{
+			actorsFolder = new File(currentlySelectedMovieFile.getPath() + "\\.actors");
+		}
+		else if(currentlySelectedMovieFile.isFile())
+		{
+			actorsFolder = new File(currentlySelectedDirectory.getPath() + "\\.actors");
 		}
 	}
 

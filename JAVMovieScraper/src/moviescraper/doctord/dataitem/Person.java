@@ -5,6 +5,8 @@ import moviescraper.doctord.Thumb;
 public abstract class Person extends MovieDataItem {
 	private String name;
 	private Thumb thumb;
+	protected final static int connectionTimeout = 10000; //10 seconds
+	protected final static int  readTimeout = 10000; //10 seconds
 
 	public String getName() {
 		return name;

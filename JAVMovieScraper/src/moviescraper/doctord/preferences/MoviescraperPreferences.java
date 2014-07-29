@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.InvalidPropertiesFormatException;
 import java.util.Properties;
 
@@ -12,9 +13,13 @@ public class MoviescraperPreferences {
 	
 	Properties programPreferences;
 	private static final String fileNameOfPreferences = "settings.xml";
-	private static final String lastUsedDirectoryPropertyName = "lastUsedDirectory";
-	private static final String writeFanartAndPostersPropertyName = "writeFanartAndPosters";
-	private static final String overwriteFanartAndPostersPropertyName = "overWriteFanartAndPosters";
+	//for the property names, it's important (because of reflection) that the values be kept the same as the variable names
+	//this lets me be lazy and reuse code for each property setter/getter using a common method :)
+	//so don't go renaming these variables without being aware of the consequences!
+	private static final String lastUsedDirectory = "lastUsedDirectory";
+	private static final String writeFanartAndPosters = "writeFanartAndPosters";
+	private static final String overwriteFanartAndPosters = "overwriteFanartAndPosters";
+	private static final String downloadActorImagesToActorFolder = "downloadActorImagesToActorFolder";
 	
 	public MoviescraperPreferences()
 	{
@@ -25,8 +30,7 @@ public class MoviescraperPreferences {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			savePreferences(); //file doesn't exist. this will create the file
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -46,7 +50,7 @@ public class MoviescraperPreferences {
 	}
 	
 	public File getLastUsedDirectory(){
-		String lastUsedDir = programPreferences.getProperty(lastUsedDirectoryPropertyName);
+		String lastUsedDir = programPreferences.getProperty(lastUsedDirectory);
 		if(lastUsedDir != null)
 		{
 			File lastUsedDirFile = new File(lastUsedDir);
@@ -57,50 +61,105 @@ public class MoviescraperPreferences {
 		else return new File(System.getProperty("user.home"));
 	}
 	
-	public void setLastUsedDirectory(File lastUsedDirectory){
-		programPreferences.setProperty(lastUsedDirectoryPropertyName, lastUsedDirectory.getPath());
+	public void setLastUsedDirectory(File lastUsedDirectoryFile){
+		programPreferences.setProperty(lastUsedDirectory, lastUsedDirectoryFile.getPath());
 		savePreferences();
 	}
 	
 	public void setOverWriteFanartAndPostersPreference(boolean preferenceValue){
-		if(preferenceValue)
-			programPreferences.setProperty(overwriteFanartAndPostersPropertyName, "true");
+		/*if(preferenceValue)
+			programPreferences.setProperty(overwriteFanartAndPosters, "true");
 		else
-			programPreferences.setProperty(overwriteFanartAndPostersPropertyName, "false");
-		savePreferences();
+			programPreferences.setProperty(overwriteFanartAndPosters, "false");
+		savePreferences();*/
+		setBooleanValue(overwriteFanartAndPosters, preferenceValue);
 	}
 	
 	public boolean getOverWriteFanartAndPostersPreference()
 	{
-		String overwriteFanartAndPostersPref = programPreferences.getProperty(overwriteFanartAndPostersPropertyName);
+		/*String overwriteFanartAndPostersPref = programPreferences.getProperty(overwriteFanartAndPosters);
 		if(overwriteFanartAndPostersPref != null)
 		{
 		if(overwriteFanartAndPostersPref.equals("true"))
 			return true;
 		else return false;
 		}
-		else return true; //default value if no preference has been set yet
+		else return true; //default value if no preference has been set yet*/
+		return getBooleanValue(overwriteFanartAndPosters, true);
 	}
 	
 	public void setWriteFanartAndPostersPreference(boolean preferenceValue){
-		if(preferenceValue)
-			programPreferences.setProperty(writeFanartAndPostersPropertyName, "true");
+		/*if(preferenceValue)
+			programPreferences.setProperty(writeFanartAndPosters, "true");
 		else
-			programPreferences.setProperty(writeFanartAndPostersPropertyName, "false");
-		savePreferences();
+			programPreferences.setProperty(writeFanartAndPosters, "false");
+		savePreferences();*/
+		setBooleanValue(writeFanartAndPosters, preferenceValue);
 	}
 	
-	public boolean getWriteFanartAndPostersPreference()
+
+	
+	private void setBooleanValue(String preferenceName, boolean preferenceValue) {
+		Field fieldToUse;
+		try {
+			fieldToUse = this.getClass().getDeclaredField(preferenceName);
+			if(preferenceValue)
+				programPreferences.setProperty((String)fieldToUse.get(new String()), "true");
+			else
+				programPreferences.setProperty((String)fieldToUse.get(new String()), "false");
+			savePreferences();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+	
+	private boolean getBooleanValue(String preferenceName, boolean defaultValue)
 	{
-		String writeFanartAndPostersPref = programPreferences.getProperty(writeFanartAndPostersPropertyName);
+		Field fieldToUse;
+		try {
+			fieldToUse = this.getClass().getDeclaredField(preferenceName);
+			String fieldValue = (String)fieldToUse.get(new String());
+			String preferenceValue = programPreferences.getProperty(fieldValue);
+			if(preferenceValue == null)
+				return defaultValue;
+			if(preferenceValue.equals("true"))
+				return true;
+			else if(preferenceValue.equals("false"))
+				return false;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return defaultValue;
+	}
+	
+	
+	public void setDownloadActorImagesToActorFolderPreference(boolean preferenceValue)
+	{
+		setBooleanValue(downloadActorImagesToActorFolder, preferenceValue);
+	}
+	
+	public boolean getDownloadActorImagesToActorFolderPreference()
+	{
+		return getBooleanValue(downloadActorImagesToActorFolder, true);
+	}
+
+	public boolean getWriteFanartAndPostersPreference() {
+		/*String writeFanartAndPostersPref = programPreferences.getProperty(writeFanartAndPosters);
 		if(writeFanartAndPostersPref != null)
 		{
 		if(writeFanartAndPostersPref.equals("true"))
 			return true;
 		else return false;
 		}
-		else return true; //default value if no preference has been set yet
+		else return true; //default value if no preference has been set yet*/
+		return getBooleanValue(writeFanartAndPosters, true);
 	}
+	
+
+	
 	
 
 }

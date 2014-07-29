@@ -31,9 +31,7 @@ public class Rating extends MovieDataItem {
 				return "";
 			try{
 			double ratingValue = Double.valueOf(rating).doubleValue();
-			System.out.println("ratingValue=" + ratingValue);
 			double ratingOutOfTenValue = 10 * (ratingValue/((double)maxRating));
-			System.out.println("ratingOutOfTenValue=" + ratingOutOfTenValue);
 			DecimalFormat oneDigit = new DecimalFormat("#,##0.0");//format to 1 decimal place
 			return Double.valueOf(oneDigit.format(ratingOutOfTenValue)).toString();
 			}
