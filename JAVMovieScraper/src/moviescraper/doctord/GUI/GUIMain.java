@@ -1190,6 +1190,16 @@ public class GUIMain {
 											.getBaseName(currentlySelectedMovieFile
 													.getName())));
 					clearAllFieldsOfSite1Movie();
+					//copy over the .actor folder items to the destination folder, but only if the preference is set and the usual sanity checking is done
+					if (currentlySelectedMovieFile.isFile() && actorsFolder != null && preferences.getDownloadActorImagesToActorFolderPreference())
+					{
+						File [] actorFilesToCopy = actorFolderFiles();
+						File actorsFolderDestDir = new File(destDir.getPath() + "\\.actors");
+						for(File currentFile : actorFilesToCopy)
+						{
+							FileUtils.copyFileToDirectory(currentFile, actorsFolderDestDir);
+						}
+					}
 					if (currentlySelectedMovieFile.exists())
 					{
 						//In case of stacked movie files (Movies which are split into multiple files such AS CD1, CD2, etc) get the list of all files
@@ -1221,6 +1231,8 @@ public class GUIMain {
 					if (currentlySelectedFanartFile.exists()) {
 						FileUtils.moveFileToDirectory(currentlySelectedFanartFile, destDir, true);
 					}
+					
+
 					// remove all the old references so we aren't tempted to
 					// reuse them
 					currentlySelectedNfoFile = null;
@@ -1228,6 +1240,7 @@ public class GUIMain {
 					currentlySelectedFanartFile = null;
 					currentlySelectedMovieFile = null;
 					movieToWriteToDisk = null;
+					actorsFolder = null;
 					updateFileListModel(currentlySelectedDirectory);
 				}
 			} catch (IOException e) {
@@ -1557,6 +1570,28 @@ public class GUIMain {
 		{
 			actorsFolder = new File(currentlySelectedDirectory.getPath() + "\\.actors");
 		}
+	}
+
+	public File[] actorFolderFiles() {
+		ArrayList<File> actorFiles = new ArrayList<File>();
+		if(movieToWriteToDisk != null && movieToWriteToDisk.getActors() != null)
+		{
+			if(actorsFolder != null && actorsFolder.isDirectory())
+			{
+				for (Actor currentActor : movieToWriteToDisk.getActors())
+				{
+					String currentActorNameAsPotentialFileName = currentActor.getName().replace(' ', '_');
+					File [] listFiles = actorsFolder.listFiles();
+					for(File currentFile : listFiles)
+					{
+						if(currentFile.isFile() && FilenameUtils.removeExtension(currentFile.getName()).equals(currentActorNameAsPotentialFileName)){										
+							actorFiles.add(currentFile);
+						}
+					}
+				}
+			}
+		}
+		return (File[]) actorFiles.toArray(new File[actorFiles.size()]);
 	}
 
 }
