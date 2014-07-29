@@ -497,7 +497,7 @@ public class Movie {
 	public boolean hasAtLeastOneActorThumbnail() {
 		for(Actor currentActor : actors)
 		{
-			if(currentActor.getThumb().getThumbURL() != null && !currentActor.getThumb().getThumbURL().equals(""))
+			if(currentActor.getThumb() != null && currentActor.getThumb().getThumbURL() != null && !currentActor.getThumb().getThumbURL().equals(""))
 			{
 				return true;
 			}

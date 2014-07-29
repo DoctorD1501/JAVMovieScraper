@@ -144,11 +144,12 @@ public class ActionJavParsingProfile extends SiteParsingProfile {
 		// but we can do some filtering later on to fix things by using a
 		// HashTable to take care of the duplicate format problems
 		Elements movieDownloadParts = document
-				.select("html body table tbody tr td table tbody tr td div table tbody tr td table tbody tr td table tbody tr td table tbody tr td p:has(font:containsOwn(min))");
+				.select("html body table tbody tr td table tbody tr td div table tbody tr td table tbody tr td table tbody tr td table tbody tr td p:has(font:containsOwn(min, ))");
 		ArrayList<String> movieFileName = new ArrayList<String>(
 				movieDownloadParts.size());
 		Hashtable<String, Integer> runtimesByPart = new Hashtable<String, Integer>(
 				movieDownloadParts.size());
+		System.out.println("movieDownloadParts: " + movieDownloadParts);
 		// we got to do some processing to get the unique runtime per part,
 		// ignoring file extension
 		for (Element movieElement : movieDownloadParts) {
@@ -168,7 +169,9 @@ public class ActionJavParsingProfile extends SiteParsingProfile {
 			movieFileName.add(filePath);
 
 			// get the runtime
-			String runtimeText = movieElement.select("font").last().text(); 
+			System.out.println("MovieElement " + movieElement);
+			String runtimeText = movieElement.select("font").last().text();
+			System.out.println("runtimeText: " + runtimeText);
 																			
 			//get whole text element
 			Integer runtimeAmt = new Integer(runtimeText.substring(1, runtimeText.indexOf('m')-1)); 

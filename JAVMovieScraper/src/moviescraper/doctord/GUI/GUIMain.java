@@ -1392,6 +1392,9 @@ public class GUIMain {
 						currentlySelectedMovieActionJav,
 						currentlySelectedMovieSquarePlus,
 						currentlySelectedMovieJavLibrary);
+				
+				//Let's clear out the actorsFolder so we can get new images from the scraped results instead of relying on whatever is there locally
+				actorsFolder = null;
 				updateAllFieldsOfSite1Movie();
 
 			} catch (InterruptedException e1) {
