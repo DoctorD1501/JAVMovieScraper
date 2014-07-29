@@ -149,7 +149,6 @@ public class ActionJavParsingProfile extends SiteParsingProfile {
 				movieDownloadParts.size());
 		Hashtable<String, Integer> runtimesByPart = new Hashtable<String, Integer>(
 				movieDownloadParts.size());
-		System.out.println("movieDownloadParts: " + movieDownloadParts);
 		// we got to do some processing to get the unique runtime per part,
 		// ignoring file extension
 		for (Element movieElement : movieDownloadParts) {
@@ -169,9 +168,7 @@ public class ActionJavParsingProfile extends SiteParsingProfile {
 			movieFileName.add(filePath);
 
 			// get the runtime
-			System.out.println("MovieElement " + movieElement);
 			String runtimeText = movieElement.select("font").last().text();
-			System.out.println("runtimeText: " + runtimeText);
 																			
 			//get whole text element
 			Integer runtimeAmt = new Integer(runtimeText.substring(1, runtimeText.indexOf('m')-1)); 
