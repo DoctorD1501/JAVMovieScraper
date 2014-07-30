@@ -183,7 +183,7 @@ public class JavLibraryParsingProfile extends SiteParsingProfile {
 
 	@Override
 	public Thumb[] scrapeFanart() {
-		return scrapePostersAndFanart(true);
+		return scrapePostersAndFanart(false);
 	}
 
 	private Thumb[] scrapePostersAndFanart(boolean doCrop) {

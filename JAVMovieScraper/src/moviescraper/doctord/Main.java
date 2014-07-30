@@ -10,6 +10,7 @@ import org.apache.commons.io.FileUtils;
 
 import moviescraper.doctord.SiteParsingProfile.ActionJavParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.DmmParsingProfile;
+import moviescraper.doctord.SiteParsingProfile.JavZooParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.SquarePlusParsingProfile;
 
 import org.jsoup.Jsoup;
@@ -24,9 +25,9 @@ public class Main {
 		boolean runParser = true;
 		if (runParser) {
 			System.out.println("Starting Parser");
-			String URLStringToUse = "http://www.dmm.co.jp/mono/dvd/-/detail/=/cid=oned922/";
-			String fileName = "JUC-696.nfo";
-			String posterFileName = "JUC-696.jpg";
+			String URLStringToUse = "http://www.javzoo.com/en/movie/4cm6";
+			String fileName = "CETD-185.nfo";
+			String posterFileName = "CETD-185.jpg";
 			// String URLStringToUse =
 			// "http://www.dmm.co.jp/mono/dvd/-/detail/=/cid=mird112/";
 			// String URLStringToUse =
@@ -37,9 +38,10 @@ public class Main {
 				/*Begin testing search string*/
 				System.out.println("Testing URL to use");
 
-				SquarePlusParsingProfile searchResultCreator = new SquarePlusParsingProfile();
+				JavZooParsingProfile searchResultCreator = new JavZooParsingProfile();
 				String searchString = searchResultCreator
 						.createSearchString(new File(fileName));
+				System.out.println("searchString was " + searchString);
 				String[] searchResults = searchResultCreator
 						.getSearchResults(searchString);
 				if (searchResults.length > 0) {
@@ -52,7 +54,7 @@ public class Main {
 					// TODO find out something to do with the timeout 0
 					//Document doc = Jsoup.connect(URLStringToUse).timeout(0).get();
 					System.out.println("Opened URL: " + URLStringToUse);
-					Movie scrapedMovie = initializeMovieSquarePlus(searchMatch);
+					Movie scrapedMovie = initializeMovieJavZoo(searchMatch);
 					System.out.println("scrapedMovie: " + scrapedMovie);
 					String xml = new XbmcXmlMovieBean(scrapedMovie).toXML();
 					// add the xml header since xstream doesn't do this
@@ -60,14 +62,14 @@ public class Main {
 					// "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>"
 					// + "\n" + xml;
 
-					FileUtils.writeStringToFile(new File(fileName), xml,
-							org.apache.commons.lang3.CharEncoding.UTF_8);
+					/*FileUtils.writeStringToFile(new File(fileName), xml,
+							org.apache.commons.lang3.CharEncoding.UTF_8);*/
 
 					// save the first poster out
-					if (scrapedMovie.getPosters().length > 0)
+					/*if (scrapedMovie.getPosters().length > 0)
 						ImageIO.write(
 								(RenderedImage) scrapedMovie.getPosters()[0].thumbImage,
-								"jpg", new File(posterFileName));
+								"jpg", new File(posterFileName));*/
 
 					System.out.println(xml);
 				}
@@ -160,6 +162,16 @@ public class Main {
 				// TODO find out something to do with the timeout 0
 				Movie scrapedMovie = new Movie(new SquarePlusParsingProfile(doc));
 				return scrapedMovie;
+		}
+		return null;
+	}
+	
+	public static Movie initializeMovieJavZoo(Document doc){
+		boolean runParser = true;
+		if(runParser)
+		{
+			Movie scrapedMovie = new Movie(new JavZooParsingProfile(doc));
+			return scrapedMovie;
 		}
 		return null;
 	}

@@ -29,6 +29,7 @@ import moviescraper.doctord.Thumb;
 import moviescraper.doctord.XbmcXmlMovieBean;
 import moviescraper.doctord.SiteParsingProfile.ActionJavParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.DmmParsingProfile;
+import moviescraper.doctord.SiteParsingProfile.JavZooParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.SquarePlusParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.JavLibraryParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
@@ -128,6 +129,7 @@ public class GUIMain {
 	private Movie currentlySelectedMovieActionJav;
 	private Movie currentlySelectedMovieSquarePlus;
 	private Movie currentlySelectedMovieJavLibrary;
+	private Movie currentlySelectedMovieJavZoo;
 	private Movie movieToWriteToDisk;
 
 	private JComboBox<String> comboBoxMovieTitleText;
@@ -562,6 +564,7 @@ public class GUIMain {
 		currentlySelectedMovieActionJav = null;
 		currentlySelectedMovieSquarePlus = null;
 		currentlySelectedMovieJavLibrary = null;
+		currentlySelectedMovieJavZoo = null;
 
 	}
 
@@ -607,7 +610,8 @@ public class GUIMain {
 	protected Movie amalgamateMovie(Movie currentlySelectedMovieDMM,
 			Movie currentlySelectedMovieActionJav,
 			Movie currentlySelectedMovieSquarePlus,
-			Movie currentlySelectedMovieJavLibrary) {
+			Movie currentlySelectedMovieJavLibrary,
+			Movie currentlySelectedMovieJavZoo) {
 
 		if (currentlySelectedMovieDMM == null
 				&& currentlySelectedMovieActionJav == null
@@ -623,7 +627,7 @@ public class GUIMain {
 			return movieToWriteToDisk;
 		} else if (currentlySelectedMovieJavLibrary != null
 				&& currentlySelectedMovieDMM != null
-				&& (currentlySelectedMovieActionJav != null || currentlySelectedMovieSquarePlus != null)) {
+				&& (currentlySelectedMovieActionJav != null || currentlySelectedMovieSquarePlus != null || currentlySelectedMovieJavZoo != null)) {
 			currentlySelectedMovieJavLibrary.setPlot(currentlySelectedMovieDMM
 					.getPlot());
 			currentlySelectedMovieJavLibrary
@@ -657,6 +661,8 @@ public class GUIMain {
 						.setActors(currentlySelectedMovieActionJav.getActors());
 			currentlySelectedMovieJavLibrary.setFanart(currentlySelectedMovieDMM.getFanart());
 			currentlySelectedMovieJavLibrary.setPosters(currentlySelectedMovieDMM.getPosters());
+			if(currentlySelectedMovieJavZoo != null && currentlySelectedMovieJavZoo.getSet() != null && currentlySelectedMovieJavZoo.getSet().getSet().length() > 0)
+				currentlySelectedMovieJavLibrary.setSet(currentlySelectedMovieJavZoo.getSet());
 			return currentlySelectedMovieJavLibrary;
 		}
 
@@ -681,6 +687,8 @@ public class GUIMain {
 							.length() > 1)
 				currentlySelectedMovieJavLibrary
 						.setTitle(currentlySelectedMovieActionJav.getTitle());
+			if(currentlySelectedMovieJavZoo != null && currentlySelectedMovieJavZoo.getSet() != null && currentlySelectedMovieJavZoo.getSet().getSet().length() > 0)
+				currentlySelectedMovieJavLibrary.setSet(currentlySelectedMovieJavZoo.getSet());
 			return currentlySelectedMovieJavLibrary;
 		}
 
@@ -692,12 +700,16 @@ public class GUIMain {
 			currentlySelectedMovieJavLibrary
 					.setOriginalTitle(currentlySelectedMovieDMM
 							.getOriginalTitle());
+			if(currentlySelectedMovieJavZoo != null && currentlySelectedMovieJavZoo.getSet() != null && currentlySelectedMovieJavZoo.getSet().getSet().length() > 0)
+				currentlySelectedMovieJavLibrary.setSet(currentlySelectedMovieJavZoo.getSet());
 			return currentlySelectedMovieJavLibrary;
 		}
 		// DMM was not found but JavLibrary was? This shouldn't really happen
 		// too often...
 		else if (currentlySelectedMovieJavLibrary != null) {
 			//System.out.println("Return Jav Lib movie");
+			if(currentlySelectedMovieJavZoo != null && currentlySelectedMovieJavZoo.getSet() != null && currentlySelectedMovieJavZoo.getSet().getSet().length() > 0)
+				currentlySelectedMovieJavLibrary.setSet(currentlySelectedMovieJavZoo.getSet());
 			return currentlySelectedMovieJavLibrary;
 		}
 
@@ -710,6 +722,8 @@ public class GUIMain {
 			// currentlySelectedMovieDMM.setTitle(new
 			// Title(currentlySelectedMovieDMM.getTitle().getTitle() + " (" +
 			// currentlySelectedMovieDMM.getId() + ")"));
+			if(currentlySelectedMovieJavZoo != null && currentlySelectedMovieJavZoo.getSet() != null && currentlySelectedMovieJavZoo.getSet().getSet().length() > 0)
+				currentlySelectedMovieDMM.setSet(currentlySelectedMovieJavZoo.getSet());
 			return currentlySelectedMovieDMM;
 		}
 		// ActionJav found and SquarePlus not
@@ -921,6 +935,8 @@ public class GUIMain {
 				comboBoxMovieTitleText.addItem(currentlySelectedMovieSquarePlus.getTitle().getTitle());
 			if(currentlySelectedMovieActionJav != null)
 				comboBoxMovieTitleText.addItem(currentlySelectedMovieActionJav.getTitle().getTitle());
+			if(currentlySelectedMovieJavZoo != null)
+				comboBoxMovieTitleText.addItem(currentlySelectedMovieJavZoo.getTitle().getTitle());
 			if(comboBoxMovieTitleText.getItemCount() > 0)
 				comboBoxMovieTitleText.setEditable(true);
 			lblOriginalTitleTextSite1.setText(movieToWriteToDisk
@@ -999,7 +1015,8 @@ public class GUIMain {
 							currentlySelectedMovieDMM,
 							currentlySelectedMovieActionJav,
 							currentlySelectedMovieSquarePlus,
-							currentlySelectedMovieJavLibrary);
+							currentlySelectedMovieJavLibrary,
+							currentlySelectedMovieJavZoo);
 					
 					movieToWriteToDisk = amalgamationAutoPickMovie;
 				}
@@ -1291,12 +1308,7 @@ public class GUIMain {
 			// scrape, so make new threads for each scraping query
 			
 			// clear out all old values of the scraped movie
-			
-			
-			currentlySelectedMovieDMM = null;
-			currentlySelectedMovieJavLibrary = null;
-			currentlySelectedMovieSquarePlus = null;
-			currentlySelectedMovieActionJav = null;
+			removeOldScrapedMovieReferences();
 
 			DmmParsingProfile dmmPP = new DmmParsingProfile();
 			String searchString = dmmPP.createSearchString(currentlySelectedMovieFile);
@@ -1385,6 +1397,26 @@ public class GUIMain {
 					}
 				}
 			};
+			
+			Thread scrapeQueryJavZooThread = new Thread() {
+				public void run() {
+					try {
+						currentlySelectedMovieJavZoo = Movie.scrapeMovie(
+								currentlySelectedMovieFile,
+								new JavZooParsingProfile(), overrideURL, false);
+
+						System.out.println("JavZoo scrape results: "
+								+ currentlySelectedMovieJavLibrary);
+
+					} catch (IOException e1) {
+
+						e1.printStackTrace();
+						JOptionPane.showMessageDialog(null, ExceptionUtils.getStackTrace(e1),"Unhandled Exception",JOptionPane.ERROR_MESSAGE);
+					}
+				}
+			};
+			
+			
 			try
 			{
 			// Run all the threads in parallel, put busy cursor on as this could take a while
@@ -1393,6 +1425,7 @@ public class GUIMain {
 			scrapeQueryActionJavThread.start();
 			scrapeQuerySquarePlusThread.start();
 			scrapeQueryJavLibraryThread.start();
+			scrapeQueryJavZooThread.start();
 
 
 			// wait for them to finish before updating gui
@@ -1401,10 +1434,12 @@ public class GUIMain {
 				scrapeQueryDMMThread.join();
 				scrapeQueryActionJavThread.join();
 				scrapeQuerySquarePlusThread.join();
+				scrapeQueryJavZooThread.join();
 				movieToWriteToDisk = amalgamateMovie(currentlySelectedMovieDMM,
 						currentlySelectedMovieActionJav,
 						currentlySelectedMovieSquarePlus,
-						currentlySelectedMovieJavLibrary);
+						currentlySelectedMovieJavLibrary,
+						currentlySelectedMovieJavZoo);
 				
 				//Let's clear out the actorsFolder so we can get new images from the scraped results instead of relying on whatever is there locally
 				actorsFolder = null;
