@@ -293,14 +293,30 @@ public class JavZooParsingProfile extends SiteParsingProfile {
 		try{
 			Document doc = Jsoup.connect(searchString).userAgent("Mozilla").ignoreHttpErrors(true).timeout(0).get();
 			{
-				Elements videoLinksElements = doc.select("a[href*=/movie/]");
-				for(Element videoLink : videoLinksElements)
+				Elements divVideoLinksElements = doc.select("div.item:has(a[href*=/movie/])");
+				String favoredSearchResultString = null;
+				for(Element currentDivVideoLink : divVideoLinksElements)
 				{
-					String currentLink = videoLink.attr("href");
+					Element videoLinksElements = currentDivVideoLink.select("a[href*=/movie/]").first();
+					String idFromSearchResult = currentDivVideoLink.select("span").first().text();
+					String currentLink = videoLinksElements.attr("href");
 					if(currentLink.length() > 1)
 					{
+						//maybe we can improve search accuracy by putting our suspected best match at the front of the array
+						//we do this by examining the ID from the search result and seeing if it was in our initial search string
+						if(searchString.contains(idFromSearchResult) || searchString.contains(idFromSearchResult.replaceAll(Pattern.quote("-"),"")))
+						{
+							favoredSearchResultString = currentLink;
+						}
 						linksList.add(currentLink);
+
 					}
+				}
+				//if we had a favoredSearchResult, remove it from the list and add it back to the front of the list
+				if(favoredSearchResultString != null)
+				{
+					linksList.remove(favoredSearchResultString);
+					linksList.add(0, favoredSearchResultString);
 				}
 				return linksList.toArray(new String[linksList.size()]);
 			}

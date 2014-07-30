@@ -1406,7 +1406,7 @@ public class GUIMain {
 								new JavZooParsingProfile(), overrideURL, false);
 
 						System.out.println("JavZoo scrape results: "
-								+ currentlySelectedMovieJavLibrary);
+								+ currentlySelectedMovieJavZoo);
 
 					} catch (IOException e1) {
 

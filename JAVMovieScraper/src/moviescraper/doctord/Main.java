@@ -25,9 +25,9 @@ public class Main {
 		boolean runParser = true;
 		if (runParser) {
 			System.out.println("Starting Parser");
-			String URLStringToUse = "http://www.javzoo.com/en/movie/4cm6";
-			String fileName = "CETD-185.nfo";
-			String posterFileName = "CETD-185.jpg";
+			String URLStringToUse = "http://www.javzoo.com/en/movie/1iab";
+			String fileName = "SVDVD021.nfo";
+			String posterFileName = "SVDVD021.jpg";
 			// String URLStringToUse =
 			// "http://www.dmm.co.jp/mono/dvd/-/detail/=/cid=mird112/";
 			// String URLStringToUse =
