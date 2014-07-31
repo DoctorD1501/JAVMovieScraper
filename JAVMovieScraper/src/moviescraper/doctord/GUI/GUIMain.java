@@ -1549,7 +1549,11 @@ public class GUIMain {
 						currentlySelectedMovieSquarePlus,
 						currentlySelectedMovieJavLibrary,
 						currentlySelectedMovieJavZoo);
-				
+				if(movieToWriteToDisk == null)
+				{
+					System.out.println("No movie result found");
+					JOptionPane.showMessageDialog(frmMoviescraper, "Could not find any movies that match the selected file while scraping.", "No Movies Found", JOptionPane.ERROR_MESSAGE, null);
+				}
 				//Let's clear out the actorsFolder so we can get new images from the scraped results instead of relying on whatever is there locally
 				actorsFolder = null;
 				updateAllFieldsOfSite1Movie();
