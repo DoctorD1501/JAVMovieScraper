@@ -13,6 +13,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.Thumb;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Director;
@@ -314,7 +315,7 @@ public class ActionJavParsingProfile extends SiteParsingProfile {
 	}
 
 	@Override
-	public String[] getSearchResults(String searchString) throws IOException {
+	public SearchResult[] getSearchResults(String searchString) throws IOException {
 		return getLinksFromGoogle(searchString, "actionjav.com/title.cfm?iid=");
 	}
 

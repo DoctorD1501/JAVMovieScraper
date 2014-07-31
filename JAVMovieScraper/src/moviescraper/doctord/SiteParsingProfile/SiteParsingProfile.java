@@ -13,6 +13,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.Thumb;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Director;
@@ -38,19 +39,19 @@ public abstract class SiteParsingProfile {
 
 	public Document document; // the base page to start parsing from
 	
-	public String overrideURL;
-
-	public String getOverrideURL() {
-		return overrideURL;
+	public String overrideURLDMM;
+	
+	public String getOverrideURLDMM() {
+		return overrideURLDMM;
 	}
 
-	public void setOverrideURL(String overrideURL) {
-		this.overrideURL = overrideURL;
+	public void setOverrideURLDMM(String overrideURL) {
+		this.overrideURLDMM = overrideURL;
 	}
 
 	public SiteParsingProfile(Document document) {
 		this.document = document;
-		overrideURL = null;
+		overrideURLDMM = null;
 	}
 	
 	public SiteParsingProfile(){}
@@ -135,12 +136,12 @@ public abstract class SiteParsingProfile {
 	
 	public  abstract String createSearchString(File file);
 	
-	public abstract String[] getSearchResults(String searchString) throws IOException;
+	public abstract SearchResult[] getSearchResults(String searchString) throws IOException;
 	
-	public String [] getLinksFromGoogle(String searchQuery, String site)
+	public SearchResult [] getLinksFromGoogle(String searchQuery, String site)
 	{
 		Document doc;
-		ArrayList<String> linksToReturn = new ArrayList<String>();
+		ArrayList<SearchResult> linksToReturn = new ArrayList<SearchResult>();
 	    try{
 	    	String encodingScheme = "UTF-8";
 	    	String queryToEncode = "site:" + site + " " + searchQuery;
@@ -156,13 +157,13 @@ public abstract class SiteParsingProfile {
 	            int startIndexToRemove = href.indexOf("&sa=");
 	            if (startIndexToRemove > -1)
 	            	href = href.substring(0, startIndexToRemove);
-	            linksToReturn.add(href);
+	            linksToReturn.add(new SearchResult(href));
 	        }
-	        return linksToReturn.toArray(new String[linksToReturn.size()]);
+	        return linksToReturn.toArray(new SearchResult[linksToReturn.size()]);
 	    }
 	    catch (IOException e) {
 	        e.printStackTrace();
-	        return linksToReturn.toArray(new String[linksToReturn.size()]);
+	        return linksToReturn.toArray(new SearchResult[linksToReturn.size()]);
 	    }
 	}
 }

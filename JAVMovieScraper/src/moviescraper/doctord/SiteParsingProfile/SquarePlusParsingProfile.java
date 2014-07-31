@@ -3,10 +3,13 @@ package moviescraper.doctord.SiteParsingProfile;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+
+import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.Thumb;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Director;
@@ -192,7 +195,7 @@ public class SquarePlusParsingProfile extends SiteParsingProfile {
 	}
 
 	@Override
-	public String[] getSearchResults(String searchString) throws IOException {
+	public SearchResult[] getSearchResults(String searchString) throws IOException {
 		/*//System.out.println("searchString = " + searchString);
 		Document searchResultsPage = Jsoup.connect(searchString).referrer("http://google.com").userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:5.0) Gecko/20100101 Firefox/5.0").get();
 		Elements dvdLinks = searchResultsPage

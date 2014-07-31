@@ -4,6 +4,7 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.swing.ImageIcon;
@@ -12,6 +13,16 @@ public class Thumb {
 	private URL thumbURL;
 	Image thumbImage;
 	ImageIcon imageIconThumbImage;
+	private String thumbLabel;
+	
+	public String getThumbLabel() {
+		return thumbLabel;
+	}
+
+	public void setThumbLabel(String thumbLabel) {
+		this.thumbLabel = thumbLabel;
+	}
+
 	public ImageIcon getImageIconThumbImage() {
 		try {
 			getThumbImage();
@@ -64,7 +75,7 @@ public class Thumb {
 		needToReloadThumbImage = false;
 	}
 
-	public Thumb (String url) throws IOException
+	public Thumb (String url) throws MalformedURLException 
 	{
 		if(url.length() > 1)
 			thumbURL = new URL(url);
@@ -75,6 +86,10 @@ public class Thumb {
 		needToReloadThumbImage = true;
 	}
 
+
+	//TODO: Generate an empty thumbnail that points to nowhere
+	public Thumb() {
+	}
 
 	public URL getThumbURL() {
 		return thumbURL;

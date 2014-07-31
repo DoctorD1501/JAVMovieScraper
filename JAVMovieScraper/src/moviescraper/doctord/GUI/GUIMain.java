@@ -10,6 +10,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -25,6 +26,7 @@ import java.awt.BorderLayout;
 import javax.swing.JList;
 
 import moviescraper.doctord.Movie;
+import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.Thumb;
 import moviescraper.doctord.XbmcXmlMovieBean;
 import moviescraper.doctord.SiteParsingProfile.ActionJavParsingProfile;
@@ -93,6 +95,8 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
 
 import javax.swing.Action;
 import javax.swing.border.Border;
@@ -603,7 +607,39 @@ public class GUIMain {
 		Arrays.sort(sortedList, comp);
 		return sortedList;
 	}
-
+	
+	//try to fill in any holes in thumbnails from the sourceMovie by looking through movieToGetExtraInfoFrom and see if has them
+	//TODO: debug this
+	private ArrayList<Actor> amalgamateActor(Movie sourceMovie, Movie movieToGetExtraInfoFrom)
+	{
+		ArrayList<Actor> amalgamatedActorList = new ArrayList<Actor>();
+		boolean changeMade = false;
+		if(sourceMovie.getActors() != null && movieToGetExtraInfoFrom.getActors() != null)
+		{
+			for(Actor currentActor : sourceMovie.getActors())
+			{
+				if(currentActor.getThumb() == null || currentActor.getThumb().getThumbURL().getPath().length() < 1)
+				{
+					//Found an actor with no thumbnail in sourceMovie
+					for(Actor extraMovieActor: movieToGetExtraInfoFrom.getActors())
+					{
+						//scan through other movie and find actor with same name as the one we are currently on
+						if(currentActor.getName().equals(extraMovieActor.getName()) && (extraMovieActor.getThumb() != null) && extraMovieActor.getThumb().getThumbURL().getPath().length() > 1)
+						{
+							currentActor = extraMovieActor;
+							changeMade = true;
+						}
+					}
+				}
+				amalgamatedActorList.add(currentActor);
+			}
+		}
+		if(changeMade)
+		{
+			return amalgamatedActorList;
+		}
+		else return sourceMovie.getActors(); // we didn't find any changes needed so just return the source movie's actor list
+	}
 	// Look through the fields in the various scraped movies and try to
 	// automatically guess what the best data is and construct a Movie based on
 	// that
@@ -1132,7 +1168,7 @@ public class GUIMain {
 
 				} else {
 					// Item is selected
-					File selectedValue = (File) fileList.getSelectedValue();
+					File selectedValue = fileList.getSelectedValue();
 					currentlySelectedNfoFile = new File(Movie
 							.getFileNameOfNfo(selectedValue));
 					currentlySelectedPosterFile = new File(Movie
@@ -1272,15 +1308,68 @@ public class GUIMain {
 		/**
 		 * 
 		 */
-		String overrideURL;
+		String overrideURLDMM;
+		String overrideURLJavLibrary;
 		private static final long serialVersionUID = 1L;
 		boolean promptUserForURLWhenScraping; //do we stop to ask the user to pick a URL when scraping
 		
-		public String showOptionPane(String [] searchResults)
+		public SearchResult showOptionPane(SearchResult [] searchResults, String siteName)
 		{
 			if(searchResults.length > 0)
 			{
-				String optionPicked = (String)JOptionPane.showInputDialog(null,
+				JLabel [] options = new JLabel[searchResults.length];
+				for(int i = 0; i < searchResults.length; i++)
+				{
+					JLabel currentLabel = new JLabel();
+					currentLabel.setText(searchResults[i].getUrlPath());
+					Thumb currentThumb = searchResults[i].getPreviewImage();
+					if(currentThumb.getThumbURL() != null)
+					{
+						currentLabel.setIcon(currentThumb.getImageIconThumbImage());
+					}
+					options[i] = currentLabel;
+				}
+				JPanel panel = new JPanel();
+				panel.setLayout(new BorderLayout());
+				JList<SearchResult> labelList = new JList<SearchResult>(searchResults);
+				labelList.setCellRenderer(new SearchResultsRenderer());
+				labelList.setVisible(true);
+				JScrollPane pane = new JScrollPane(labelList);
+				panel.add(pane, BorderLayout.CENTER);
+				//JButton okButton = new JButton("OK");
+				//panel.add(okButton,BorderLayout.SOUTH);
+				panel.setPreferredSize(new Dimension(500,400));
+				
+				final JDialog bwin = new JDialog();
+		         bwin.addWindowFocusListener(new WindowFocusListener()
+		         {
+		             @Override
+		             public void windowLostFocus(WindowEvent e)
+		             {
+		               bwin.setVisible(false);
+		               bwin.dispose();
+		             }
+
+		             @Override
+		             public void windowGainedFocus(WindowEvent e)
+		             {
+		             }
+		         }); 
+		         
+		         //bwin.setUndecorated(true);
+		         bwin.add(panel);
+		         bwin.pack();
+				
+				int result = JOptionPane.showOptionDialog(null, panel, "Select Movie to Scrape From " + siteName,
+		                JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,
+		                null, null, null);
+				if(result == JOptionPane.OK_OPTION)
+				{
+					SearchResult optionPickedFromPanel = labelList.getSelectedValue();
+					return optionPickedFromPanel;
+				}
+				else return null;
+				/*SearchResult optionPicked = (SearchResult)JOptionPane.showInputDialog(null,
 					    "Pick URL From List Below:",
 					    "Scraping With Manual URL",
 					    JOptionPane.PLAIN_MESSAGE,
@@ -1288,7 +1377,7 @@ public class GUIMain {
 					    searchResults,  //the titles of buttons
 					    searchResults[0]); //default button title
 					    
-				return optionPicked;
+				return optionPicked;*/
 			}
 			else return null;
 		}
@@ -1297,7 +1386,8 @@ public class GUIMain {
 		public ScrapeMovieAction() {
 			putValue(NAME, "Scrape");
 			putValue(SHORT_DESCRIPTION, "Scrape Selected Movie");
-			overrideURL = "";
+			overrideURLDMM = "";
+			overrideURLJavLibrary = "";
 			promptUserForURLWhenScraping = true;
 		}
 
@@ -1310,15 +1400,32 @@ public class GUIMain {
 			// clear out all old values of the scraped movie
 			removeOldScrapedMovieReferences();
 
-			DmmParsingProfile dmmPP = new DmmParsingProfile();
-			String searchString = dmmPP.createSearchString(currentlySelectedMovieFile);
+
 			if(promptUserForURLWhenScraping)
 			{
+				//bring up some dialog boxes so the user can choose what URL to use for each site
 				try {
-					String [] searchResults = dmmPP.getSearchResults(searchString);
-					overrideURL = this.showOptionPane(searchResults);
-					if(overrideURL == null)
-						return;
+					DmmParsingProfile dmmPP = new DmmParsingProfile();
+					JavLibraryParsingProfile jlPP = new JavLibraryParsingProfile();
+					String searchStringDMM = dmmPP.createSearchString(currentlySelectedMovieFile);
+					SearchResult [] searchResultsDMM = dmmPP.getSearchResults(searchStringDMM);
+					String searchStringJL = jlPP.createSearchString(currentlySelectedMovieFile);
+					if(searchResultsDMM != null && searchResultsDMM.length > 0)
+					{
+						SearchResult searchResultFromUser = this.showOptionPane(searchResultsDMM, "dmm.co.jp");
+						if(searchResultFromUser == null)
+							return;
+						overrideURLDMM = searchResultFromUser.getUrlPath();
+
+					}
+					SearchResult [] searchResultsJavLibStrings = jlPP.getSearchResults(searchStringJL);
+					if(searchResultsJavLibStrings != null && searchResultsJavLibStrings.length > 0)
+					{
+						SearchResult searchResultFromUser = this.showOptionPane(searchResultsJavLibStrings, "javlibrary.com");
+						if(searchResultFromUser == null)
+							return;
+						overrideURLJavLibrary = searchResultFromUser.getUrlPath();				
+					}
 				} catch (IOException e2) {
 					// TODO Auto-generated catch block
 					e2.printStackTrace();
@@ -1330,7 +1437,7 @@ public class GUIMain {
 					try {
 						currentlySelectedMovieDMM = Movie.scrapeMovie(
 								currentlySelectedMovieFile,
-								new DmmParsingProfile(), overrideURL, promptUserForURLWhenScraping);
+								new DmmParsingProfile(), overrideURLDMM, promptUserForURLWhenScraping);
 
 						System.out.println("DMM scrape results: "
 								+ currentlySelectedMovieDMM);
@@ -1347,7 +1454,7 @@ public class GUIMain {
 					try {
 						currentlySelectedMovieActionJav = Movie.scrapeMovie(
 								currentlySelectedMovieFile,
-								new ActionJavParsingProfile(), overrideURL, false);
+								new ActionJavParsingProfile(), overrideURLDMM, false);
 
 						System.out.println("Action jav scrape results: "
 								+ currentlySelectedMovieActionJav);
@@ -1366,7 +1473,7 @@ public class GUIMain {
 					try {
 						currentlySelectedMovieSquarePlus = Movie.scrapeMovie(
 								currentlySelectedMovieFile,
-								new SquarePlusParsingProfile(), overrideURL, false);
+								new SquarePlusParsingProfile(), overrideURLDMM, false);
 
 						System.out.println("SquarePlus scrape results: "
 								+ currentlySelectedMovieSquarePlus);
@@ -1383,9 +1490,11 @@ public class GUIMain {
 			Thread scrapeQueryJavLibraryThread = new Thread() {
 				public void run() {
 					try {
+						JavLibraryParsingProfile jlParsingProfile = new JavLibraryParsingProfile();
+						jlParsingProfile.setOverrideURLJavLibrary(overrideURLJavLibrary);
 						currentlySelectedMovieJavLibrary = Movie.scrapeMovie(
 								currentlySelectedMovieFile,
-								new JavLibraryParsingProfile(), overrideURL, false);
+								jlParsingProfile, overrideURLDMM, promptUserForURLWhenScraping);
 
 						System.out.println("JavLibrary scrape results: "
 								+ currentlySelectedMovieJavLibrary);
@@ -1403,7 +1512,7 @@ public class GUIMain {
 					try {
 						currentlySelectedMovieJavZoo = Movie.scrapeMovie(
 								currentlySelectedMovieFile,
-								new JavZooParsingProfile(), overrideURL, false);
+								new JavZooParsingProfile(), overrideURLDMM, false);
 
 						System.out.println("JavZoo scrape results: "
 								+ currentlySelectedMovieJavZoo);
@@ -1626,7 +1735,7 @@ public class GUIMain {
 				}
 			}
 		}
-		return (File[]) actorFiles.toArray(new File[actorFiles.size()]);
+		return actorFiles.toArray(new File[actorFiles.size()]);
 	}
 
 }

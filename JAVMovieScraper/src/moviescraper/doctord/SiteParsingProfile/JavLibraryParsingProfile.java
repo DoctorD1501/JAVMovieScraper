@@ -15,6 +15,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import moviescraper.doctord.Movie;
+import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.Thumb;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Director;
@@ -44,6 +45,15 @@ public class JavLibraryParsingProfile extends SiteParsingProfile {
 	public static final String taiwaneseLanguageCode = "tw";
 	public static final String chineseLanguageCode = "cn";
 	private static final boolean reverseAsianNameInEnglish = true;
+	private String overrideURLJavLibrary;
+
+	public String getOverrideURLJavLibrary() {
+		return overrideURLJavLibrary;
+	}
+
+	public void setOverrideURLJavLibrary(String overrideURLJavLibrary) {
+		this.overrideURLJavLibrary = overrideURLJavLibrary;
+	}
 
 	public JavLibraryParsingProfile(Document document) {
 		super(document);
@@ -112,11 +122,14 @@ public class JavLibraryParsingProfile extends SiteParsingProfile {
 		Element ratingElement = document
 				.select("span.score")
 				.first();
-		String ratingText = ratingElement.text();
-		//Found a match, get rid of surrounding parenthesis and use this as the rating
-		if(ratingText.contains("("))
+		if(ratingElement != null)
 		{
-			ratingText = ratingText.substring(1,ratingText.length()-1).trim();
+			String ratingText = ratingElement.text();
+			//Found a match, get rid of surrounding parenthesis and use this as the rating
+			if(ratingText.contains("("))
+			{
+				ratingText = ratingText.substring(1,ratingText.length()-1).trim();
+			}
 			return new Rating(10,ratingText);
 		}
 		else return new Rating(0,""); //No rating found on the page
@@ -318,13 +331,13 @@ public class JavLibraryParsingProfile extends SiteParsingProfile {
 					//Scrape the Movie from dmm.co.jp without translation
 					Movie dmmMovie;
 					//This condition is used for when user picks URL to scrape from
-					if(getOverrideURL() != null && getOverrideURL().length() > 0)
+					if(getOverrideURLDMM() != null && getOverrideURLDMM().length() > 0)
 					{
-						dmmMovie = Movie.scrapeMovie(new File(movieID.getId()), new DmmParsingProfile(false), getOverrideURL(), true);
+						dmmMovie = Movie.scrapeMovie(new File(movieID.getId()), new DmmParsingProfile(false), getOverrideURLDMM(), true);
 					}
 					else //when using automatic scraping mode
 					{
-						dmmMovie = Movie.scrapeMovie(new File(movieID.getId()), new DmmParsingProfile(false), getOverrideURL(), false);
+						dmmMovie = Movie.scrapeMovie(new File(movieID.getId()), new DmmParsingProfile(false), getOverrideURLDMM(), false);
 					}
 					if(dmmMovie != null)
 					{
@@ -429,35 +442,51 @@ public class JavLibraryParsingProfile extends SiteParsingProfile {
 	}
 
 	@Override
-	public String[] getSearchResults(String searchString) throws IOException {
-
-		ArrayList<String> linksList = new ArrayList<String>();
+	public SearchResult[] getSearchResults(String searchString) throws IOException {
+		
+		ArrayList<SearchResult> linksList = new ArrayList<SearchResult>();
 		String websiteURLBegin = "http://www.javlibrary.com/" + siteLanguageToScrape;
 		try{
 		Document doc = Jsoup.connect(searchString).userAgent("Mozilla").ignoreHttpErrors(true).timeout(0).get();
 		//The search found the page directly
 		if(doc.baseUri().contains("/?v="))
 		{
-			linksList.add(doc.baseUri());
+			String linkTitle = doc.title().replaceAll(Pattern.quote(" - JAVLibrary"), "");
+			Element posterElement = doc
+					.select("img#video_jacket_img")
+					.first();
+			//the page does not have the small version on it, but by replacing the last character of the string with an t, we will get the tiny preview
+			if(posterElement != null)
+			{
+				String posterURLSmall = posterElement.attr("src");
+				posterURLSmall = posterURLSmall.substring(0, posterURLSmall.lastIndexOf('l')) + "t.jpg";
+				linksList.add(new SearchResult(doc.baseUri(), linkTitle, new Thumb(posterURLSmall)));
+			}
+			else 
+			{
+				linksList.add(new SearchResult(doc.baseUri(), linkTitle));
+			}
 			//System.out.println("Added " + doc.baseUri());
 			
-			return linksList.toArray(new String[linksList.size()]);
+			return linksList.toArray(new SearchResult[linksList.size()]);
 		}
 		else
 		{
 			//The search didn't find an exact match and took us to the search results page
-			Elements videoLinksElements = doc.select("div.video a");
+			Elements videoLinksElements = doc.select("div.video");
 			for(Element videoLink : videoLinksElements)
 			{
-				String currentLink = videoLink.attr("href");
+				String currentLink = videoLink.select("a").attr("href");
+				String currentLinkLabel = videoLink.select("a").attr("title").trim();
+				String currentLinkImage = videoLink.select("img").attr("src");
 				if(currentLink.length() > 1)
 				{
 					String fullLink = websiteURLBegin + currentLink.substring(1);
-					linksList.add(fullLink);
+					linksList.add(new SearchResult(fullLink,currentLinkLabel,new Thumb(currentLinkImage)));
 					//System.out.println("Added " + fullLink);
 				}
 			}
-			return linksList.toArray(new String[linksList.size()]);
+			return linksList.toArray(new SearchResult[linksList.size()]);
 		}
 		}
 	 catch (IOException e) {

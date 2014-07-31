@@ -20,6 +20,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import moviescraper.doctord.SiteParsingProfile.DmmParsingProfile;
+import moviescraper.doctord.SiteParsingProfile.JavLibraryParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
 import moviescraper.doctord.dataitem.*;
 import moviescraper.doctord.dataitem.Runtime;
@@ -446,9 +448,9 @@ public class Movie {
 		return searchResults;
 	}*/
 	
-	public static Movie scrapeMovie(File movieFile, SiteParsingProfile siteToParseFrom, String URLtoScrapeFrom, boolean useURLtoScrapeFrom) throws IOException{
+	public static Movie scrapeMovie(File movieFile, SiteParsingProfile siteToParseFrom, String urlToScrapeFromDMM, boolean useURLtoScrapeFrom) throws IOException{
 		String searchString = siteToParseFrom.createSearchString(movieFile);
-		String [] searchResults = null;
+		SearchResult [] searchResults = null;
 		int searchResultNumberToUse = 0;
 		//no URL was passed in so we gotta figure it ourselves
 		if(!useURLtoScrapeFrom)
@@ -460,7 +462,7 @@ public class Movie {
 		//loop through search results and see if URL happens to contain ID number in the URL. This will improve accuracy!
 		for (int i = 0; i < searchResults.length; i++)
 		{
-			String urltoMatch = searchResults[i].toLowerCase();
+			String urltoMatch = searchResults[i].getUrlPath().toLowerCase();
 			String idFromMovieFileToMatch = idFromMovieFile.toLowerCase().replaceAll("-", "");
 			//System.out.println("Comparing " + searchResults[i].toLowerCase() + " to " + idFromMovieFile.toLowerCase().replaceAll("-", ""));
 			if (urltoMatch.contains(idFromMovieFileToMatch))
@@ -479,16 +481,19 @@ public class Movie {
 		//just use the URL to parse from the parameter
 		else if(useURLtoScrapeFrom)
 		{
-			searchResults = new String[1];
-			searchResults[0] = URLtoScrapeFrom;
+			searchResults = new SearchResult[1];
+			if(siteToParseFrom instanceof DmmParsingProfile)
+				searchResults[0] = new SearchResult(urlToScrapeFromDMM);
+			else if(siteToParseFrom instanceof JavLibraryParsingProfile)
+				searchResults[0] = new SearchResult(((JavLibraryParsingProfile) siteToParseFrom).getOverrideURLJavLibrary());
 		}
 		if (searchResults != null && searchResults.length > 0)
 		{
 			//System.out.println("Scraping this webpage for movie: " + searchResults[searchResultNumberToUse]);
 			//for now just set the movie to the first thing found unless we found a link which had something close to the ID
-			Document searchMatch = Jsoup.connect(searchResults[searchResultNumberToUse]).timeout(0).userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:5.0) Gecko/20100101 Firefox/5.0").get();
+			Document searchMatch = Jsoup.connect(searchResults[searchResultNumberToUse].getUrlPath()).timeout(0).userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:5.0) Gecko/20100101 Firefox/5.0").get();
 			siteToParseFrom.setDocument(searchMatch);
-			siteToParseFrom.setOverrideURL(URLtoScrapeFrom);
+			siteToParseFrom.setOverrideURLDMM(urlToScrapeFromDMM);
 			return new Movie(siteToParseFrom);
 		}
 		else return null; //TODO return some kind of default movie

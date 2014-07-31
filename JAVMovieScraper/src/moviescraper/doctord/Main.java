@@ -42,13 +42,13 @@ public class Main {
 				String searchString = searchResultCreator
 						.createSearchString(new File(fileName));
 				System.out.println("searchString was " + searchString);
-				String[] searchResults = searchResultCreator
+				SearchResult[] searchResults = searchResultCreator
 						.getSearchResults(searchString);
 				if (searchResults.length > 0) {
 					System.out.println("Scraping this webpage for movie: "
 							+ searchResults[0]);
 					// for now just set the movie to the first thing found
-					searchMatch = Jsoup.connect(searchResults[0])
+					searchMatch = Jsoup.connect(searchResults[0].getUrlPath())
 							.timeout(0).get();
 					
 					// TODO find out something to do with the timeout 0

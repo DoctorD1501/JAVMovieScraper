@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.Thumb;
 import moviescraper.doctord.TranslateString;
 import moviescraper.doctord.dataitem.Actor;
@@ -569,11 +570,11 @@ public class DmmParsingProfile extends SiteParsingProfile {
 	 * @throws IOException
 	 */
 	@Override
-	public String[] getSearchResults(String searchString) throws IOException {
+	public SearchResult[] getSearchResults(String searchString) throws IOException {
 		boolean firstPageScraping = true;
 		Document searchResultsPage = Jsoup.connect(searchString).get();
 		Element nextPageLink = searchResultsPage.select("div.list-capt div.list-boxcaptside.list-boxpagenation ul li:not(.terminal) a").last();
-		ArrayList<String> searchResults = new ArrayList<String>();
+		ArrayList<SearchResult> searchResults = new ArrayList<SearchResult>();
 		ArrayList<String> pagesVisited = new ArrayList<String>();
 		while(firstPageScraping || nextPageLink != null)
 		{
@@ -595,17 +596,44 @@ public class DmmParsingProfile extends SiteParsingProfile {
 		//get /mono/dvd links
 		for (int i = 0; i < dvdLinks.size(); i++) {
 			String currentLink = dvdLinks.get(i).attr("href");
-			searchResults.add(currentLink);
+			Element imageLinkElement = dvdLinks.get(i).select("img").first();
+			if(imageLinkElement != null)
+			{
+				Thumb currentPosterThumbnail = new Thumb(imageLinkElement.attr("src"));
+				searchResults.add(new SearchResult(currentLink, "", currentPosterThumbnail));
+			}
+			else
+			{
+				searchResults.add(new SearchResult(currentLink));
+			}
 		}
 		//get /rental/ppr links
 		for (int i = 0; i < rentalElements.size(); i++) {
 			String currentLink = rentalElements.get(i).attr("href");
-			searchResults.add(currentLink);
+			Element imageLinkElement = rentalElements.get(i).select("img").first();
+			if(imageLinkElement != null)
+			{
+				Thumb currentPosterThumbnail = new Thumb(imageLinkElement.attr("src"));
+				searchResults.add(new SearchResult(currentLink, "", currentPosterThumbnail));
+			}
+			else
+			{
+				searchResults.add(new SearchResult(currentLink));
+			}
 		}
 		//get /digital/videoa links
 		for (int i = 0; i < digitalElements.size(); i++) {
 			String currentLink = digitalElements.get(i).attr("href");
-			searchResults.add(currentLink);
+			Element imageLinkElement = digitalElements.get(i).select("img").first();
+			if(imageLinkElement != null)
+			{
+				Thumb currentPosterThumbnail = new Thumb(imageLinkElement.attr("src"));
+				searchResults.add(new SearchResult(currentLink, "", currentPosterThumbnail));
+			}
+			else
+			{
+				searchResults.add(new SearchResult(currentLink));
+			}
 		}
 		firstPageScraping = false;
 		//get the next page of search results (if it exists) using the "next page" link, but only if we haven't visited that page before
@@ -618,7 +646,7 @@ public class DmmParsingProfile extends SiteParsingProfile {
 		
 		}
 
-		return searchResults.toArray(new String[searchResults.size()]);
+		return searchResults.toArray(new SearchResult[searchResults.size()]);
 	}
 
 }

@@ -13,6 +13,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.Thumb;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Director;
@@ -229,7 +230,15 @@ public class JavZooParsingProfile extends SiteParsingProfile {
 				//we want the full resolution thumbnail, so replace the "medium" from the URL to get it
 				actorThumbURL = actorThumbURL.replaceFirst(Pattern.quote("/medium/"), "/");
 				try {
-					actorList.add(new Actor(actorName,"",new Thumb(actorThumbURL)));
+					//we can add the actor with their thumbnail so long as we aren't using a placeholder image
+					if(!actorThumbURL.contains("nowprinting.gif"))
+					{
+						actorList.add(new Actor(actorName,"",new Thumb(actorThumbURL)));
+					}
+					else //otherwise add the actor without an image
+					{
+						actorList.add(new Actor(actorName,"",null));
+					}
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -288,8 +297,8 @@ public class JavZooParsingProfile extends SiteParsingProfile {
 	}
 
 	@Override
-	public String[] getSearchResults(String searchString) throws IOException {
-		ArrayList<String> linksList = new ArrayList<String>();
+	public SearchResult[] getSearchResults(String searchString) throws IOException {
+		ArrayList<SearchResult> linksList = new ArrayList<SearchResult>();
 		try{
 			Document doc = Jsoup.connect(searchString).userAgent("Mozilla").ignoreHttpErrors(true).timeout(0).get();
 			{
@@ -308,7 +317,7 @@ public class JavZooParsingProfile extends SiteParsingProfile {
 						{
 							favoredSearchResultString = currentLink;
 						}
-						linksList.add(currentLink);
+						linksList.add(new SearchResult(currentLink));
 
 					}
 				}
@@ -316,9 +325,9 @@ public class JavZooParsingProfile extends SiteParsingProfile {
 				if(favoredSearchResultString != null)
 				{
 					linksList.remove(favoredSearchResultString);
-					linksList.add(0, favoredSearchResultString);
+					linksList.add(0, new SearchResult(favoredSearchResultString));
 				}
-				return linksList.toArray(new String[linksList.size()]);
+				return linksList.toArray(new SearchResult[linksList.size()]);
 			}
 		}
 		 catch (IOException e) {
