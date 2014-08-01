@@ -36,7 +36,8 @@ public class Actor extends Person {
 	}
 
 	public void writeImageToFile(File fileNameToWrite) throws IOException {
-		FileUtils.copyURLToFile(getThumb().getThumbURL(), fileNameToWrite, connectionTimeout, readTimeout);
+		if(getThumb() != null && getThumb().getThumbURL() != null && getThumb().getThumbURL().getPath().length() > 0)
+			FileUtils.copyURLToFile(getThumb().getThumbURL(), fileNameToWrite, connectionTimeout, readTimeout);
 		
 	}
 
