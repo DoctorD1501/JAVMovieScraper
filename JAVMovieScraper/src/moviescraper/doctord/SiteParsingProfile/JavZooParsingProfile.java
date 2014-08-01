@@ -99,7 +99,14 @@ public class JavZooParsingProfile extends SiteParsingProfile {
 		if(yearElement != null)
 		{
 			String yearText = yearElement.text().trim();
-			yearText = yearText.substring(14,18);
+			try{
+				yearText = yearText.substring(14,18);
+			}
+			catch(StringIndexOutOfBoundsException e)
+			{
+				//the site didn't have a release date, even though it had a row where it should be, so return an empty year
+				return new Year("");
+			}
 			return new Year(yearText);
 		}
 		else return new Year("");
