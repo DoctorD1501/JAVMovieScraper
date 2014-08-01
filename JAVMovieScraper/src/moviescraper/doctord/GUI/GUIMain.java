@@ -720,6 +720,9 @@ public class GUIMain {
 			if(currentlySelectedMovieJavZoo != null && currentlySelectedMovieJavZoo.getSet() != null && currentlySelectedMovieJavZoo.getSet().getSet().length() > 0)
 				currentlySelectedMovieJavLibrary.setSet(currentlySelectedMovieJavZoo.getSet());
 			currentlySelectedMovieJavLibrary.setExtraFanart(currentlySelectedMovieDMM.getExtraFanart());
+			if(currentlySelectedMovieActionJav != null && currentlySelectedMovieActionJav.getPlot() != null && currentlySelectedMovieActionJav.getPlot().getPlot().length() > 1 )
+				currentlySelectedMovieJavLibrary.setPlot(currentlySelectedMovieActionJav.getPlot());
+			
 			return currentlySelectedMovieJavLibrary;
 		}
 
@@ -747,6 +750,8 @@ public class GUIMain {
 			if(currentlySelectedMovieJavZoo != null && currentlySelectedMovieJavZoo.getSet() != null && currentlySelectedMovieJavZoo.getSet().getSet().length() > 0)
 				currentlySelectedMovieJavLibrary.setSet(currentlySelectedMovieJavZoo.getSet());
 			currentlySelectedMovieJavLibrary.setExtraFanart(currentlySelectedMovieDMM.getExtraFanart());
+			if(currentlySelectedMovieActionJav != null && currentlySelectedMovieActionJav.getPlot() != null && currentlySelectedMovieActionJav.getPlot().getPlot().length() > 1 )
+				currentlySelectedMovieJavLibrary.setPlot(currentlySelectedMovieActionJav.getPlot());
 			return currentlySelectedMovieJavLibrary;
 		}
 
@@ -761,6 +766,8 @@ public class GUIMain {
 			if(currentlySelectedMovieJavZoo != null && currentlySelectedMovieJavZoo.getSet() != null && currentlySelectedMovieJavZoo.getSet().getSet().length() > 0)
 				currentlySelectedMovieJavLibrary.setSet(currentlySelectedMovieJavZoo.getSet());
 			currentlySelectedMovieJavLibrary.setExtraFanart(currentlySelectedMovieDMM.getExtraFanart());
+			if(currentlySelectedMovieActionJav != null && currentlySelectedMovieActionJav.getPlot() != null && currentlySelectedMovieActionJav.getPlot().getPlot().length() > 1 )
+				currentlySelectedMovieJavLibrary.setPlot(currentlySelectedMovieActionJav.getPlot());
 			return currentlySelectedMovieJavLibrary;
 		}
 		// DMM was not found but JavLibrary was? This shouldn't really happen
@@ -769,6 +776,8 @@ public class GUIMain {
 			//System.out.println("Return Jav Lib movie");
 			if(currentlySelectedMovieJavZoo != null && currentlySelectedMovieJavZoo.getSet() != null && currentlySelectedMovieJavZoo.getSet().getSet().length() > 0)
 				currentlySelectedMovieJavLibrary.setSet(currentlySelectedMovieJavZoo.getSet());
+			if(currentlySelectedMovieActionJav != null && currentlySelectedMovieActionJav.getPlot() != null && currentlySelectedMovieActionJav.getPlot().getPlot().length() > 1 )
+				currentlySelectedMovieJavLibrary.setPlot(currentlySelectedMovieActionJav.getPlot());
 			return currentlySelectedMovieJavLibrary;
 		}
 
@@ -783,6 +792,7 @@ public class GUIMain {
 			// currentlySelectedMovieDMM.getId() + ")"));
 			if(currentlySelectedMovieJavZoo != null && currentlySelectedMovieJavZoo.getSet() != null && currentlySelectedMovieJavZoo.getSet().getSet().length() > 0)
 				currentlySelectedMovieDMM.setSet(currentlySelectedMovieJavZoo.getSet());
+			
 			return currentlySelectedMovieDMM;
 		}
 		// ActionJav found and SquarePlus not

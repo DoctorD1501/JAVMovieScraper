@@ -284,9 +284,7 @@ public class JavZooParsingProfile extends SiteParsingProfile {
 
 	@Override
 	public String createSearchString(File file) {
-		String fileNameNoExtension = FilenameUtils.removeExtension(file
-				.getName());
-		fileNameNoExtension = findIDTagFromFile(file);
+		String fileNameNoExtension = findIDTagFromFile(file);
 		
 		//return fileNameNoExtension;
 		URLCodec codec = new URLCodec();

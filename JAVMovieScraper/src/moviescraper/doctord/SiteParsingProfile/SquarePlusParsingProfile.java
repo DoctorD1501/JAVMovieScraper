@@ -3,6 +3,7 @@ package moviescraper.doctord.SiteParsingProfile;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -177,9 +178,7 @@ public class SquarePlusParsingProfile extends SiteParsingProfile {
 
 	@Override
 	public String createSearchString(File file) {
-		String fileNameNoExtension = FilenameUtils.removeExtension(file
-				.getName());
-		fileNameNoExtension = findIDTagFromFile(file);
+		String fileNameNoExtension = findIDTagFromFile(file);
 		return fileNameNoExtension;
 		/*URLCodec codec = new URLCodec();
 		try {

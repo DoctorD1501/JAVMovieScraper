@@ -548,9 +548,7 @@ public class DmmParsingProfile extends SiteParsingProfile {
 
 	@Override
 	public String createSearchString(File file) {
-		String fileNameNoExtension = FilenameUtils.removeExtension(file
-				.getName());
-		fileNameNoExtension = findIDTagFromFile(file);
+		String fileNameNoExtension = findIDTagFromFile(file);
 		//System.out.println("fileNameNoExtension in DMM: " + fileNameNoExtension);
 		URLCodec codec = new URLCodec();
 		try {

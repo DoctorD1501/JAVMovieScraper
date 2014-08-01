@@ -269,6 +269,8 @@ public class ActionJavParsingProfile extends SiteParsingProfile {
 	public ArrayList<Actor> scrapeActors() {
 		Elements actorElements = document
 				.select("body table tbody tr td table tbody tr td div table tbody tr td table tbody tr td table tbody tr:contains(Starring) td ~ td p");
+		if(actorElements != null)
+		{
 		ArrayList<Actor> actorList = new ArrayList<Actor>(actorElements.size());
 		try {
 
@@ -285,11 +287,13 @@ public class ActionJavParsingProfile extends SiteParsingProfile {
 						currentActorDetailFileNameURL));
 				actorList.add(currentActor);
 			}
+			return actorList;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return actorList;
+		}
+		return new ArrayList<Actor>();
 	}
 
 	@Override
@@ -308,9 +312,7 @@ public class ActionJavParsingProfile extends SiteParsingProfile {
 
 	@Override
 	public String createSearchString(File file) {
-		String fileNameNoExtension = FilenameUtils.removeExtension(file
-				.getName());
-		fileNameNoExtension = findIDTagFromFile(file);
+		String fileNameNoExtension = findIDTagFromFile(file);
 		return fileNameNoExtension;
 	}
 

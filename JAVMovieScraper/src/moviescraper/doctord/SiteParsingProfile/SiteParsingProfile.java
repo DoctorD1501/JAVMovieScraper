@@ -82,7 +82,10 @@ public abstract class SiteParsingProfile {
 	//This filename "My Movie ABC-123" would return the id as ABC-123
 	public static String findIDTagFromFile(File file)
 	{
-		String fileNameNoExtension = FilenameUtils.removeExtension(file.getName());
+		String fileNameNoExtension;
+		if(file.isFile())
+			fileNameNoExtension = FilenameUtils.removeExtension(file.getName());
+		else fileNameNoExtension = file.getName();
 		String fileNameNoExtensionNoDiscNumber = stripDiscNumber(fileNameNoExtension);
 		String[] splitFileName = fileNameNoExtensionNoDiscNumber.split(" ");
 		String lastWord = splitFileName[splitFileName.length-1];
