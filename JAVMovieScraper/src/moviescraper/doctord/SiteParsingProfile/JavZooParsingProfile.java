@@ -337,4 +337,10 @@ public class JavZooParsingProfile extends SiteParsingProfile {
 			}
 	}
 
+	@Override
+	public Thumb[] scrapeExtraFanart() {
+		//no extra fanart is supported on this site, for now
+		return new Thumb[0];
+	}
+
 }

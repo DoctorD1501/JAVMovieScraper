@@ -319,4 +319,10 @@ public class ActionJavParsingProfile extends SiteParsingProfile {
 		return getLinksFromGoogle(searchString, "actionjav.com/title.cfm?iid=");
 	}
 
+	@Override
+	public Thumb[] scrapeExtraFanart() {
+		//No extrafanart from ActionJav, for now
+		return new Thumb[0];
+	}
+
 }

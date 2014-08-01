@@ -128,6 +128,7 @@ public class GUIMain {
 	private File currentlySelectedDirectory;
 	private File currentlySelectedMovieFile;
 	private File actorsFolder;
+	private File extraFanartFolder;
 	private File[] filesToList;
 	private Movie currentlySelectedMovieDMM;
 	private Movie currentlySelectedMovieActionJav;
@@ -201,6 +202,7 @@ public class GUIMain {
 		currentlySelectedFanartFile = new File(
 				"");
 		actorsFolder = new File("");
+		extraFanartFolder = new File("");
 		frmMoviescraper = new JFrame();
 		frmMoviescraper.setBackground(SystemColor.window);
 		frmMoviescraper.setPreferredSize(new Dimension(1024, 768));
@@ -505,14 +507,14 @@ public class GUIMain {
 		preferenceMenu = new JMenu("Preferences");
 		preferenceMenu.setMnemonic(KeyEvent.VK_P);
 		preferenceMenu.getAccessibleContext().setAccessibleDescription(
-                "Preferences for JAVMovieScraper");
-		
-		
+				"Preferences for JAVMovieScraper");
+
+
 		//Checkbox for writing fanart and poster
 		JCheckBoxMenuItem writeFanartAndPosters = new JCheckBoxMenuItem("Write fanart and poster files");
 		writeFanartAndPosters.setState(preferences.getWriteFanartAndPostersPreference());
 		writeFanartAndPosters.addItemListener(new ItemListener() {
-			
+
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				//save the menu choice off to the preference object (and the disk based settings file)
@@ -520,16 +522,16 @@ public class GUIMain {
 					preferences.setWriteFanartAndPostersPreference(true);
 				else if(e.getStateChange() == ItemEvent.DESELECTED)
 					preferences.setWriteFanartAndPostersPreference(false);
-				
+
 			}
 		});
 		preferenceMenu.add(writeFanartAndPosters);
-		
+
 		//Checkbox for overwriting fanart and poster
 		JCheckBoxMenuItem overwriteFanartAndPosters = new JCheckBoxMenuItem("Overwrite fanart and poster files");
 		overwriteFanartAndPosters.setState(preferences.getOverWriteFanartAndPostersPreference());
 		overwriteFanartAndPosters.addItemListener(new ItemListener() {
-			
+
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				//save the menu choice off to the preference object (and the disk based settings file)
@@ -537,28 +539,46 @@ public class GUIMain {
 					preferences.setOverWriteFanartAndPostersPreference(true);
 				else if(e.getStateChange() == ItemEvent.DESELECTED)
 					preferences.setOverWriteFanartAndPostersPreference(false);
-				
+
 			}
 		});
 		preferenceMenu.add(overwriteFanartAndPosters);
-		
+
 		//Checkbox for overwriting writing actors to .actor folder
-				JCheckBoxMenuItem writeActorImages = new JCheckBoxMenuItem("Write Actor Images");
-				writeActorImages.setState(preferences.getDownloadActorImagesToActorFolderPreference());
-				writeActorImages.addItemListener(new ItemListener() {
-					
-					@Override
-					public void itemStateChanged(ItemEvent e) {
-						//save the menu choice off to the preference object (and the disk based settings file)
-						if(e.getStateChange() == ItemEvent.SELECTED)
-							preferences.setDownloadActorImagesToActorFolderPreference(true);
-						else if(e.getStateChange() == ItemEvent.DESELECTED)
-							preferences.setDownloadActorImagesToActorFolderPreference(false);
-						
-					}
-				});
-				preferenceMenu.add(writeActorImages);
-		
+		JCheckBoxMenuItem writeActorImages = new JCheckBoxMenuItem("Write Actor Images");
+		writeActorImages.setState(preferences.getDownloadActorImagesToActorFolderPreference());
+		writeActorImages.addItemListener(new ItemListener() {
+
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				//save the menu choice off to the preference object (and the disk based settings file)
+				if(e.getStateChange() == ItemEvent.SELECTED)
+					preferences.setDownloadActorImagesToActorFolderPreference(true);
+				else if(e.getStateChange() == ItemEvent.DESELECTED)
+					preferences.setDownloadActorImagesToActorFolderPreference(false);
+
+			}
+		});
+		preferenceMenu.add(writeActorImages);
+
+		//Checkbox for scraping extrafanart		
+		JCheckBoxMenuItem scrapeExtraFanart = new JCheckBoxMenuItem("Scrape and Download Extrafanart (Only Works if Directory Selected When Scraping)");
+		scrapeExtraFanart.setState(preferences.getExtraFanartScrapingEnabledPreference());
+		scrapeExtraFanart.addItemListener(new ItemListener() {
+
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				//save the menu choice off to the preference object (and the disk based settings file)
+				if(e.getStateChange() == ItemEvent.SELECTED)
+					preferences.setExtraFanartScrapingEnabledPreference(true);
+				else if(e.getStateChange() == ItemEvent.DESELECTED)
+					preferences.setExtraFanartScrapingEnabledPreference(false);
+
+			}
+		});
+		preferenceMenu.add(scrapeExtraFanart);
+
+
 		//add the various menus together
 		menuBar.add(preferenceMenu);
 		frmMoviescraper.setJMenuBar(menuBar);
@@ -699,6 +719,7 @@ public class GUIMain {
 			currentlySelectedMovieJavLibrary.setPosters(currentlySelectedMovieDMM.getPosters());
 			if(currentlySelectedMovieJavZoo != null && currentlySelectedMovieJavZoo.getSet() != null && currentlySelectedMovieJavZoo.getSet().getSet().length() > 0)
 				currentlySelectedMovieJavLibrary.setSet(currentlySelectedMovieJavZoo.getSet());
+			currentlySelectedMovieJavLibrary.setExtraFanart(currentlySelectedMovieDMM.getExtraFanart());
 			return currentlySelectedMovieJavLibrary;
 		}
 
@@ -725,6 +746,7 @@ public class GUIMain {
 						.setTitle(currentlySelectedMovieActionJav.getTitle());
 			if(currentlySelectedMovieJavZoo != null && currentlySelectedMovieJavZoo.getSet() != null && currentlySelectedMovieJavZoo.getSet().getSet().length() > 0)
 				currentlySelectedMovieJavLibrary.setSet(currentlySelectedMovieJavZoo.getSet());
+			currentlySelectedMovieJavLibrary.setExtraFanart(currentlySelectedMovieDMM.getExtraFanart());
 			return currentlySelectedMovieJavLibrary;
 		}
 
@@ -738,6 +760,7 @@ public class GUIMain {
 							.getOriginalTitle());
 			if(currentlySelectedMovieJavZoo != null && currentlySelectedMovieJavZoo.getSet() != null && currentlySelectedMovieJavZoo.getSet().getSet().length() > 0)
 				currentlySelectedMovieJavLibrary.setSet(currentlySelectedMovieJavZoo.getSet());
+			currentlySelectedMovieJavLibrary.setExtraFanart(currentlySelectedMovieDMM.getExtraFanart());
 			return currentlySelectedMovieJavLibrary;
 		}
 		// DMM was not found but JavLibrary was? This shouldn't really happen
@@ -775,6 +798,7 @@ public class GUIMain {
 					.getDirectors().size() > 0) ? currentlySelectedMovieActionJav
 					.getDirectors() : currentlySelectedMovieDMM.getDirectors();
 			Thumb[] fanartToUse = currentlySelectedMovieDMM.getFanart();
+			Thumb[] extraFanartToUse = currentlySelectedMovieDMM.getExtraFanart();
 			ArrayList<Genre> genresToUse = (currentlySelectedMovieActionJav
 					.getGenres().size() > 1) ? currentlySelectedMovieActionJav
 					.getGenres() : currentlySelectedMovieDMM.getGenres();
@@ -804,7 +828,7 @@ public class GUIMain {
 					.getStudio().length() > 1) ? currentlySelectedMovieActionJav
 					.getStudio() : currentlySelectedMovieDMM.getStudio();
 			Movie amalgamatedMovie = new Movie(actorsToUse, directorsToUse,
-					fanartToUse, genresToUse, idsToUse, mpaaToUse,
+					fanartToUse, extraFanartToUse, genresToUse, idsToUse, mpaaToUse,
 					originalTitleToUse, outlineToUse, plotToUse, postersToUse,
 					ratingToUse, runtimeToUse, setToUse, sortTitleToUse,
 					studioToUse, taglineToUse, titleToUse, top250ToUse,
@@ -820,6 +844,7 @@ public class GUIMain {
 			ArrayList<Director> directorsToUse = currentlySelectedMovieDMM
 					.getDirectors();
 			Thumb[] fanartToUse = currentlySelectedMovieDMM.getFanart();
+			Thumb[] extraFanartToUse = currentlySelectedMovieDMM.getExtraFanart();
 			ArrayList<Genre> genresToUse = currentlySelectedMovieDMM
 					.getGenres();
 			ID idsToUse = currentlySelectedMovieDMM.getId();
@@ -840,7 +865,7 @@ public class GUIMain {
 			SortTitle sortTitleToUse = currentlySelectedMovieDMM.getSortTitle();
 			Studio studioToUse = currentlySelectedMovieDMM.getStudio();
 			Movie amalgamatedMovie = new Movie(actorsToUse, directorsToUse,
-					fanartToUse, genresToUse, idsToUse, mpaaToUse,
+					fanartToUse, extraFanartToUse, genresToUse, idsToUse, mpaaToUse,
 					originalTitleToUse, outlineToUse, plotToUse, postersToUse,
 					ratingToUse, runtimeToUse, setToUse, sortTitleToUse,
 					studioToUse, taglineToUse, titleToUse, top250ToUse,
@@ -858,6 +883,7 @@ public class GUIMain {
 					.getDirectors().size() > 0) ? currentlySelectedMovieActionJav
 					.getDirectors() : currentlySelectedMovieDMM.getDirectors();
 			Thumb[] fanartToUse = currentlySelectedMovieDMM.getFanart();
+			Thumb[] extraFanartToUse = currentlySelectedMovieDMM.getExtraFanart();
 			ArrayList<Genre> genresToUse = (currentlySelectedMovieActionJav
 					.getGenres().size() > 1) ? currentlySelectedMovieActionJav
 					.getGenres() : currentlySelectedMovieDMM.getGenres();
@@ -885,7 +911,7 @@ public class GUIMain {
 					.getStudio().length() > 1) ? currentlySelectedMovieActionJav
 					.getStudio() : currentlySelectedMovieDMM.getStudio();
 			Movie amalgamatedMovie = new Movie(actorsToUse, directorsToUse,
-					fanartToUse, genresToUse, idsToUse, mpaaToUse,
+					fanartToUse, extraFanartToUse, genresToUse, idsToUse, mpaaToUse,
 					originalTitleToUse, outlineToUse, plotToUse, postersToUse,
 					ratingToUse, runtimeToUse, setToUse, sortTitleToUse,
 					studioToUse, taglineToUse, titleToUse, top250ToUse,
@@ -1078,6 +1104,23 @@ public class GUIMain {
 							listModelFiles.add(selectedIndex + 3,
 								currentlySelectedPosterFile);
 					}
+					
+					//we can only output extra fanart if we're scraping a folder, because otherwise the extra fanart will get mixed in with other files
+					if(preferences.getExtraFanartScrapingEnabledPreference() && currentlySelectedMovieFile.isDirectory() && extraFanartFolder != null)
+					{
+						updateExtraFanartFolder();
+						if(movieToWriteToDisk.getExtraFanart() != null && movieToWriteToDisk.getExtraFanart().length > 0)
+						{
+							FileUtils.forceMkdir(extraFanartFolder);
+							int currentExtraFanartNumber = 1;
+							for(Thumb currentExtraFanart : movieToWriteToDisk.getExtraFanart())
+							{
+								File fileNameToWrite = new File(extraFanartFolder.getPath() + "\\" + "extrafanart" + currentExtraFanartNumber + ".jpg");
+								currentExtraFanart.writeImageToFile(fileNameToWrite);
+								currentExtraFanartNumber++;
+							}
+						}
+					}
 				}
 				//now write out the actor images if the user preference is set
 				if(preferences.getDownloadActorImagesToActorFolderPreference() && currentlySelectedMovieFile != null && currentlySelectedDirectory != null)
@@ -1164,6 +1207,7 @@ public class GUIMain {
 					currentlySelectedFanartFile = null;
 					currentlySelectedMovieFile = null;
 					actorsFolder = null;
+					extraFanartFolder = null;
 					// System.out.println("Selection nothing");
 
 				} else {
@@ -1177,6 +1221,7 @@ public class GUIMain {
 							.getFileNameOfFanart(selectedValue));
 					currentlySelectedMovieFile = selectedValue;
 					updateActorsFolder();
+					updateExtraFanartFolder();
 					
 					// clean up old scraped movie results from previous
 					// selection
@@ -1435,9 +1480,11 @@ public class GUIMain {
 			Thread scrapeQueryDMMThread = new Thread() {
 				public void run() {
 					try {
+						DmmParsingProfile dmmPP = new DmmParsingProfile();
+						dmmPP.setExtraFanartScrapingEnabled(preferences.getExtraFanartScrapingEnabledPreference());
 						currentlySelectedMovieDMM = Movie.scrapeMovie(
 								currentlySelectedMovieFile,
-								new DmmParsingProfile(), overrideURLDMM, promptUserForURLWhenScraping);
+								dmmPP, overrideURLDMM, promptUserForURLWhenScraping);
 
 						System.out.println("DMM scrape results: "
 								+ currentlySelectedMovieDMM);
@@ -1717,6 +1764,19 @@ public class GUIMain {
 		else if(currentlySelectedMovieFile.isFile())
 		{
 			actorsFolder = new File(currentlySelectedDirectory.getPath() + "\\.actors");
+		}
+	}
+	
+	public void updateExtraFanartFolder(){
+		extraFanartFolder = null;
+		if(currentlySelectedMovieFile.isDirectory())
+		{
+			
+			extraFanartFolder = new File(currentlySelectedMovieFile.getPath() + "\\extrafanart");
+		}
+		else
+		{
+			extraFanartFolder = null;
 		}
 	}
 

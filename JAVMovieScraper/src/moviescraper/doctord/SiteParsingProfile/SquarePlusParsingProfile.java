@@ -220,4 +220,10 @@ public class SquarePlusParsingProfile extends SiteParsingProfile {
 		return getLinksFromGoogle(searchString, "squareplus.co.jp");
 	}
 
+	@Override
+	public Thumb[] scrapeExtraFanart() {
+		//No extra fanart is supported on this site
+		return new Thumb[0];
+	}
+
 }

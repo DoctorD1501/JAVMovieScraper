@@ -2,6 +2,7 @@ package moviescraper.doctord;
 
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -9,11 +10,15 @@ import java.net.URL;
 
 import javax.swing.ImageIcon;
 
+import org.apache.commons.io.FileUtils;
+
 public class Thumb {
 	private URL thumbURL;
 	Image thumbImage;
 	ImageIcon imageIconThumbImage;
 	private String thumbLabel;
+	protected final static int connectionTimeout = 10000; //10 seconds
+	protected final static int  readTimeout = 10000; //10 seconds
 	
 	public String getThumbLabel() {
 		return thumbLabel;
@@ -154,6 +159,10 @@ public class Thumb {
 			e.printStackTrace();
 			return false;
 		}
+	}
+
+	public void writeImageToFile(File fileNameToWrite) throws IOException {
+			FileUtils.copyURLToFile(thumbURL, fileNameToWrite, connectionTimeout, readTimeout);
 	}
 
 }

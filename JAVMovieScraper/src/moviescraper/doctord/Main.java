@@ -1,12 +1,7 @@
 package moviescraper.doctord;
 
-import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
-
-import javax.imageio.ImageIO;
-
-import org.apache.commons.io.FileUtils;
 
 import moviescraper.doctord.SiteParsingProfile.ActionJavParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.DmmParsingProfile;

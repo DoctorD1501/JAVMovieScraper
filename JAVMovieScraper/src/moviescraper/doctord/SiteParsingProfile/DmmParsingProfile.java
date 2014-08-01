@@ -190,7 +190,7 @@ public class DmmParsingProfile extends SiteParsingProfile {
 	@Override
 	public Thumb[] scrapePosters() {
 
-		return scrapePostersAndFanart(true);
+		return scrapePostersAndFanart(true, false);
 	}
 
 	/**
@@ -203,7 +203,7 @@ public class DmmParsingProfile extends SiteParsingProfile {
 	 * @return Thumb[] containing all the scraped poster and extraart (if doCrop
 	 *         is true) or the cover and back in extraart (if doCrop is false)
 	 */
-	private Thumb[] scrapePostersAndFanart(boolean doCrop) {
+	private Thumb[] scrapePostersAndFanart(boolean doCrop, boolean scrapingExtraFanart) {
 
 		// the movie poster, on this site it usually has both front and back
 		// cover joined in one image
@@ -221,32 +221,34 @@ public class DmmParsingProfile extends SiteParsingProfile {
 		try {
 			// for the poster, do a crop of 52.7% of the left side of the dvd case image (which includes both cover art and back art)
 			// so we only get the cover
-			if (doCrop)
+			if (doCrop && !scrapingExtraFanart)
 				posters.add(new Thumb(posterLink, 52.7, 0, 0, 0));
-			else
+			else if (!scrapingExtraFanart)
 				posters.add(new Thumb(posterLink));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		if(scrapingExtraFanart)
+		{
+			// maybe you're someone who doesn't want the movie poster as the cover.
+			// Include the extra art in case
+			// you want to use one of those
+			for (Element item : extraArtElementsSmallSize) {
 
-		// maybe you're someone who doesn't want the movie poster as the cover.
-		// Include the extra art in case
-		// you want to use one of those
-		for (Element item : extraArtElementsSmallSize) {
-
-			// We need to do some string manipulation and put a "jp" before the
-			// last dash in the URL to get the full size picture
-			String extraArtLinkSmall = item.attr("src");
-			int indexOfLastDash = extraArtLinkSmall.lastIndexOf('-');
-			String URLpath = extraArtLinkSmall.substring(0, indexOfLastDash)
-					+ "jp" + extraArtLinkSmall.substring(indexOfLastDash);
-			try {
-				if (Thumb.fileExistsAtUrl(URLpath))
-					posters.add(new Thumb(URLpath));
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				// We need to do some string manipulation and put a "jp" before the
+				// last dash in the URL to get the full size picture
+				String extraArtLinkSmall = item.attr("src");
+				int indexOfLastDash = extraArtLinkSmall.lastIndexOf('-');
+				String URLpath = extraArtLinkSmall.substring(0, indexOfLastDash)
+						+ "jp" + extraArtLinkSmall.substring(indexOfLastDash);
+				try {
+					if (Thumb.fileExistsAtUrl(URLpath))
+						posters.add(new Thumb(URLpath));
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 		return posters.toArray(new Thumb[0]);
@@ -254,7 +256,7 @@ public class DmmParsingProfile extends SiteParsingProfile {
 
 	@Override
 	public Thumb[] scrapeFanart() {
-		return scrapePostersAndFanart(false);
+		return scrapePostersAndFanart(false, false);
 	}
 
 	@Override
@@ -647,6 +649,13 @@ public class DmmParsingProfile extends SiteParsingProfile {
 		}
 
 		return searchResults.toArray(new SearchResult[searchResults.size()]);
+	}
+
+	@Override
+	public Thumb[] scrapeExtraFanart() {
+		if(super.isExtraFanartScrapingEnabled())
+			return scrapePostersAndFanart(false, true);
+		else return new Thumb[0];
 	}
 
 }

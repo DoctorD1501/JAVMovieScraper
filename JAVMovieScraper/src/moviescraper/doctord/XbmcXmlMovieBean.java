@@ -41,7 +41,6 @@ public class XbmcXmlMovieBean {
 	}
 
 	public XbmcXmlMovieBean(Movie movie) {
-		// TODO do this
 		title = movie.getTitle().getTitle();
 		originaltitle = movie.getOriginalTitle().getOriginalTitle();
 		sorttitle = movie.getSortTitle().getSortTitle();
@@ -142,9 +141,9 @@ public class XbmcXmlMovieBean {
 				directors.add(new Director(director[i],null));
 			}
 		}
-
+		Thumb [] emptyExtraFanrt = new Thumb[0];
 		//TODO finish this constructor by filling in the null values
-		Movie movie = new Movie(actors, directors, fanartThumbs, genres, new ID(id),
+		Movie movie = new Movie(actors, directors, fanartThumbs, emptyExtraFanrt, genres, new ID(id),
 				new MPAARating(mpaa), new OriginalTitle(originaltitle),
 				new Outline(outline), new Plot(plot), posterThumbs, new Rating(10,rating),
 				new Runtime(runtime), new Set(set), new SortTitle(sorttitle),

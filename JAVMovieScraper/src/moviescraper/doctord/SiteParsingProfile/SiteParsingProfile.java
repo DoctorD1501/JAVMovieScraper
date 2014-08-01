@@ -41,6 +41,16 @@ public abstract class SiteParsingProfile {
 	
 	public String overrideURLDMM;
 	
+	private boolean extraFanartScrapingEnabled = false;
+	
+	public boolean isExtraFanartScrapingEnabled() {
+		return extraFanartScrapingEnabled;
+	}
+
+	public void setExtraFanartScrapingEnabled(boolean extraFanartScrapingEnabled) {
+		this.extraFanartScrapingEnabled = extraFanartScrapingEnabled;
+	}
+
 	public String getOverrideURLDMM() {
 		return overrideURLDMM;
 	}
@@ -121,6 +131,8 @@ public abstract class SiteParsingProfile {
 	public abstract Thumb[] scrapePosters();
 
 	public abstract Thumb[] scrapeFanart();
+	
+	public abstract Thumb[] scrapeExtraFanart();
 
 	public abstract MPAARating scrapeMPAA();
 
@@ -166,4 +178,6 @@ public abstract class SiteParsingProfile {
 	        return linksToReturn.toArray(new SearchResult[linksToReturn.size()]);
 	    }
 	}
+
+	
 }

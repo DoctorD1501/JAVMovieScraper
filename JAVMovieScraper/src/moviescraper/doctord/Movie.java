@@ -31,6 +31,7 @@ public class Movie {
 	private ArrayList<Actor> actors;
 	private ArrayList<Director> directors;
 	private Thumb[] fanart;
+	private Thumb[] extraFanart;
 	private ArrayList<Genre> genres;
 	private ID id;
 	private MPAARating mpaa;
@@ -58,7 +59,7 @@ public class Movie {
 	private final static int  readTimeout = 10000; //10 seconds
 	
 	public Movie(ArrayList<Actor> actors, ArrayList<Director> directors,
-			Thumb[] fanart, ArrayList<Genre> genres, ID id, MPAARating mpaa,
+			Thumb[] fanart, Thumb[] extraFanart, ArrayList<Genre> genres, ID id, MPAARating mpaa,
 			OriginalTitle originalTitle, Outline outline, Plot plot,
 			Thumb[] posters, Rating rating, Runtime runtime, Set set,
 			SortTitle sortTitle, Studio studio, Tagline tagline, Title title,
@@ -67,6 +68,7 @@ public class Movie {
 		this.actors = actors;
 		this.directors = directors;
 		this.fanart = fanart;
+		this.extraFanart = extraFanart;
 		this.genres = genres;
 		this.id = id;
 		this.mpaa = mpaa;
@@ -102,6 +104,7 @@ public class Movie {
 		runtime = siteToScrapeFrom.scrapeRuntime();
 		posters = siteToScrapeFrom.scrapePosters();
 		fanart = siteToScrapeFrom.scrapeFanart();
+		extraFanart = siteToScrapeFrom.scrapeExtraFanart();
 		mpaa = siteToScrapeFrom.scrapeMPAA();
 		id = siteToScrapeFrom.scrapeID();
 		actors = siteToScrapeFrom.scrapeActors();
@@ -277,7 +280,8 @@ public class Movie {
 				+ votes + ", outline=" + outline + ", plot=" + plot
 				+ ", tagline=" + tagline + ", studio=" + studio + ", runtime="
 				+ runtime + ", posters=" + Arrays.toString(posters)
-				+ ", fanart=" + Arrays.toString(fanart) + ", mpaa=" + mpaa
+				+ ", fanart=" + Arrays.toString(fanart) + ", extrafanart = " 
+				+ Arrays.toString(extraFanart) + ", mpaa=" + mpaa
 				+ ", id=" + id + ", genres=" + genres + ", actors=" + actors
 				+ ", directors=" + directors + "]";
 	}
@@ -508,6 +512,14 @@ public class Movie {
 			}
 		}
 		return false;
+	}
+
+	public Thumb[] getExtraFanart() {
+		return extraFanart;
+	}
+	
+	public void setExtraFanart(Thumb [] extraFanart) {
+		this.extraFanart = extraFanart;
 	}
 
 }

@@ -20,6 +20,7 @@ public class MoviescraperPreferences {
 	private static final String writeFanartAndPosters = "writeFanartAndPosters";
 	private static final String overwriteFanartAndPosters = "overwriteFanartAndPosters";
 	private static final String downloadActorImagesToActorFolder = "downloadActorImagesToActorFolder";
+	private static final String extraFanartScrapingEnabled = "extraFanartScrapingEnabled";
 	
 	public MoviescraperPreferences()
 	{
@@ -157,6 +158,15 @@ public class MoviescraperPreferences {
 		else return true; //default value if no preference has been set yet*/
 		return getBooleanValue(writeFanartAndPosters, true);
 	}
+
+	public boolean getExtraFanartScrapingEnabledPreference() {
+		return getBooleanValue(extraFanartScrapingEnabled, false);
+	}
+	
+	public void setExtraFanartScrapingEnabledPreference(boolean preferenceValue){
+		setBooleanValue(extraFanartScrapingEnabled, preferenceValue);
+	}
+	
 	
 
 	
