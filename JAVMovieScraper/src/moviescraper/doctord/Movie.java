@@ -418,8 +418,6 @@ public class Movie {
 			else
 			{
 				//no file found in directory, so we will be setting the target to create one in that directory
-				System.out.println("Last Word of File" + getLastWordOfFile(file));
-				//file.getAbsolutePath()
 				return new File(file.getAbsolutePath() + "\\" + getLastWordOfFile(file) + extension).getPath();
 			}
 		}

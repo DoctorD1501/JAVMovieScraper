@@ -1069,6 +1069,8 @@ public class GUIMain {
 	private class WriteFileDataAction implements ActionListener {
 		public void actionPerformed(ActionEvent arg0) {
 			try {
+				//Display a wait cursor since file IO sometimes takes a little bit of time
+				frmMoviescraper.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 				// Write the user or automatic selection using amalgamation
 				// of different scraping sites
 				if(movieToWriteToDisk == null)
@@ -1115,7 +1117,7 @@ public class GUIMain {
 							int currentExtraFanartNumber = 1;
 							for(Thumb currentExtraFanart : movieToWriteToDisk.getExtraFanart())
 							{
-								File fileNameToWrite = new File(extraFanartFolder.getPath() + "\\" + "extrafanart" + currentExtraFanartNumber + ".jpg");
+								File fileNameToWrite = new File(extraFanartFolder.getPath() + "\\" + "fanart" + currentExtraFanartNumber + ".jpg");
 								currentExtraFanart.writeImageToFile(fileNameToWrite);
 								currentExtraFanartNumber++;
 							}
@@ -1161,7 +1163,11 @@ public class GUIMain {
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				frmMoviescraper.setCursor(Cursor.getDefaultCursor());
 				JOptionPane.showMessageDialog(null, ExceptionUtils.getStackTrace(e),"Unhandled Exception",JOptionPane.ERROR_MESSAGE);
+			}
+			finally{
+				frmMoviescraper.setCursor(Cursor.getDefaultCursor());
 			}
 		}
 	}
