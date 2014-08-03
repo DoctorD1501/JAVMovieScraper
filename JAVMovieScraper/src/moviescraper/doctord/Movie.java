@@ -4,6 +4,7 @@ import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -414,10 +415,29 @@ public class Movie {
 			});
 			//if there are 1 or more files, it's not really in spec, so just return the first one
 			if (directoryContents.length > 0)
+			{
+				//System.out.println("dirContents > 0, returning" + directoryContents[0].getPath());
 				return directoryContents[0].getPath();
+			}
 			else
 			{
 				//no file found in directory, so we will be setting the target to create one in that directory
+				File[] directoryContentsOfAllFiles = file.listFiles(new MovieFilenameFilter());
+				if(directoryContentsOfAllFiles.length > 0)
+				{
+					//check to see if there's at least one file in the directory that is a movie and go by naming based off the first file found
+					for(File currentFile : directoryContentsOfAllFiles)
+					{
+						if(currentFile.isFile())
+						{
+							String targetFileName = getUnstackedMovieName(currentFile) + extension;
+							//System.out.println("returning " + targetFileName);
+							return targetFileName;
+						}
+					}
+				}
+				//we couldn't find a single filename in the folder, so let's just construct a new file based on the foldername
+				//System.out.println("No File found, returning :" + file.getAbsolutePath().toString() + "\\" + getLastWordOfFile(file).toString() + extension);
 				return new File(file.getAbsolutePath() + "\\" + getLastWordOfFile(file) + extension).getPath();
 			}
 		}

@@ -1187,7 +1187,7 @@ public class GUIMain {
 			chooser = new JFileChooser();
 			chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 			FileNameExtensionFilter filter = new FileNameExtensionFilter(
-					"Movies", "avi", "mp4", "wmv", "flv", "mov", "rm");
+					"Movies", "avi", "mp4", "wmv", "flv", "mov", "rm", "mkv");
 			chooser.setFileFilter(filter);
 			int returnVal = chooser.showOpenDialog(frmMoviescraper);
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
