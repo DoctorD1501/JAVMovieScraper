@@ -961,8 +961,11 @@ public class GUIMain {
 			// now.
 			else if (movieToWriteToDisk.hasPoster()) {
 				Thumb[] currentPosters = movieToWriteToDisk.getPosters();
-				currentPosters[0] = new Thumb(currentPosters[0].getThumbURL()
-						.toString(), 52.7, 0, 0, 0);
+				/*currentPosters[0] = new Thumb(currentPosters[0].getThumbURL()
+						.toString(), 52.7, 0, 0, 0);*/
+				System.out.println("in if statement");
+				currentPosters[0] = new Thumb(currentPosters[0].getThumbURL().toString(), true);
+				System.out.println("Current poster width: " + currentPosters[0].getImageIconThumbImage().getIconWidth());
 			}
 			updateAllFieldsOfSite1Movie();
 		} catch (FileNotFoundException e) {

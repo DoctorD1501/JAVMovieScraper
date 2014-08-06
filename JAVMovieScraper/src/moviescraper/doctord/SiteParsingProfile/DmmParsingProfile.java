@@ -27,7 +27,6 @@ import moviescraper.doctord.dataitem.Votes;
 import moviescraper.doctord.dataitem.Year;
 
 import org.apache.commons.codec.net.URLCodec;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
 import org.jsoup.Jsoup;
@@ -222,7 +221,8 @@ public class DmmParsingProfile extends SiteParsingProfile {
 			// for the poster, do a crop of 52.7% of the left side of the dvd case image (which includes both cover art and back art)
 			// so we only get the cover
 			if (doCrop && !scrapingExtraFanart)
-				posters.add(new Thumb(posterLink, 52.7, 0, 0, 0));
+				//posters.add(new Thumb(posterLink, 52.7, 0, 0, 0));
+				posters.add(new Thumb(posterLink, true));
 			else if (!scrapingExtraFanart)
 				posters.add(new Thumb(posterLink));
 		} catch (IOException e) {

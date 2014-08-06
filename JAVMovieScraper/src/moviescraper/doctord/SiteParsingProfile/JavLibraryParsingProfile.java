@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 import org.apache.commons.codec.net.URLCodec;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -209,7 +208,8 @@ public class JavLibraryParsingProfile extends SiteParsingProfile {
 			String posterLink = posterElement.attr("src").trim();
 			try{
 				if (doCrop)
-					posterThumbs[0] = new Thumb(posterLink, 52.7, 0, 0, 0);
+					//posterThumbs[0] = new Thumb(posterLink, 52.7, 0, 0, 0);
+					posterThumbs[0] = new Thumb(posterLink, true);
 				else
 					posterThumbs[0] = new Thumb(posterLink);
 				return posterThumbs;

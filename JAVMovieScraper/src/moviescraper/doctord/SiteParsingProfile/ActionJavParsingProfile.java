@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
 import org.jsoup.Jsoup;
@@ -198,8 +197,8 @@ public class ActionJavParsingProfile extends SiteParsingProfile {
 			Document coverPage = Jsoup.connect(coverLink).timeout(0).get();
 			Element posterImg = coverPage.select(
 					"img[src*=/web_img/covers_hires_full/]").first();
-			Thumb coverImageCrop = new Thumb(posterImg.attr("src"), 52.7, 0, 0,
-					0); 
+			//Thumb coverImageCrop = new Thumb(posterImg.attr("src"), 52.7, 0, 0,0);
+			Thumb coverImageCrop = new Thumb(posterImg.attr("src"), true); 
 			//ActionJav has back and front cover in one jpg, so we need to crop to just get the movie poster
 			Thumb[] returnResult = new Thumb[1];
 			returnResult[0] = coverImageCrop;
