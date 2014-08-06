@@ -157,6 +157,11 @@ public class GUIMain {
 	private JTextField txtFieldMovieSet;
 	private MoviescraperPreferences preferences;
 	
+	//variables for fileList
+	private static int CHAR_DELTA = 1000;
+	private String m_key;
+	private long m_time;
+	
 	//Menus
 	JMenuBar menuBar;
 	JMenu preferenceMenu;
@@ -220,6 +225,62 @@ public class GUIMain {
 
 		listModelFiles = new DefaultListModel<File>();
 		fileList = new JList<File>(listModelFiles);
+		
+		//add in a keyListener so that you can start typing letters in the list and it will take you to that item in the list
+		//if you type the second letter within CHAR_DELTA amount of time that will count as the Nth letter of the search
+		//instead of the first
+		fileList.addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+				//do nothing until the key is released
+
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				char ch = e.getKeyChar();
+
+				// ignore searches for non alpha-numeric characters
+				if (!Character.isLetterOrDigit(ch)) {
+					return;
+				}
+
+				// reset string if too much time has elapsed
+				if (m_time + CHAR_DELTA < System.currentTimeMillis()) {
+					m_key = "";
+				}
+
+				m_time = System.currentTimeMillis();
+				m_key += Character.toLowerCase(ch);
+
+				// Iterate through items in the list until a matching prefix is found.
+				// This technique is fine for small lists, however, doing a linear
+				// search over a very large list with additional string manipulation
+				// (eg: toLowerCase) within the tight loop would be quite slow.
+				// In that case, pre-processing the case-conversions, and storing the
+				// strings in a more search-efficient data structure such as a Trie
+				// or a Ternary Search Tree would lead to much faster find.
+				for (int i = 0; i < fileList.getModel().getSize(); i++) {
+					String str = fileList.getModel().getElementAt(i).getName()
+							.toString().toLowerCase();
+					if (str.startsWith(m_key)) {
+						fileList.setSelectedIndex(i); // change selected item in list
+						fileList.ensureIndexIsVisible(i); // change listbox
+						// scroll-position
+						break;
+					}
+
+				}
+
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				//do nothing until the key is released
+			}
+		});
+		
 		fileList.addListSelectionListener(new SelectFileListAction());
 		fileListScrollPane = fl.getGui(
 				showFileListSorted(currentlySelectedDirectory), listModelFiles,
