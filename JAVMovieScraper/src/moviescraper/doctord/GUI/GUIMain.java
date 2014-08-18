@@ -124,6 +124,7 @@ public class GUIMain {
 	private final Action moveToNewFolder = new MoveToNewFolderAction();
 	private File currentlySelectedNfoFile;
 	private File currentlySelectedPosterFile;
+	private File currentlySelectedFolderJpgFile;
 	private File currentlySelectedFanartFile;
 	private File currentlySelectedDirectory;
 	private File currentlySelectedMovieFile;
@@ -202,10 +203,9 @@ public class GUIMain {
 	private void initialize() {
 		preferences = new MoviescraperPreferences();
 		currentlySelectedNfoFile = new File("");
-		currentlySelectedPosterFile = new File(
-				"");
-		currentlySelectedFanartFile = new File(
-				"");
+		currentlySelectedPosterFile = new File("");
+		currentlySelectedFolderJpgFile = new File("");
+		currentlySelectedFanartFile = new File("");
 		actorsFolder = new File("");
 		extraFanartFolder = new File("");
 		frmMoviescraper = new JFrame();
@@ -639,7 +639,24 @@ public class GUIMain {
 		});
 		preferenceMenu.add(scrapeExtraFanart);
 
+		//Checkbox for also creating folder.jpg	in addition to the poster file jpg
+		JCheckBoxMenuItem createFolderJpg = new JCheckBoxMenuItem("Create folder.jpg for each folder");
+		createFolderJpg.setState(preferences.getCreateFolderJpgEnabledPreference());
+		createFolderJpg.addItemListener(new ItemListener() {
 
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				//save the menu choice off to the preference object (and the disk based settings file)
+				if(e.getStateChange() == ItemEvent.SELECTED)
+					preferences.setCreateFolderJpgEnabledPreference(true);
+				else if(e.getStateChange() == ItemEvent.DESELECTED)
+					preferences.setCreateFolderJpgEnabledPreference(false);
+
+			}
+		});
+		preferenceMenu.add(createFolderJpg);
+		
+		
 		//add the various menus together
 		menuBar.add(preferenceMenu);
 		frmMoviescraper.setJMenuBar(menuBar);
@@ -1024,9 +1041,7 @@ public class GUIMain {
 				Thumb[] currentPosters = movieToWriteToDisk.getPosters();
 				/*currentPosters[0] = new Thumb(currentPosters[0].getThumbURL()
 						.toString(), 52.7, 0, 0, 0);*/
-				System.out.println("in if statement");
 				currentPosters[0] = new Thumb(currentPosters[0].getThumbURL().toString(), true);
-				System.out.println("Current poster width: " + currentPosters[0].getImageIconThumbImage().getIconWidth());
 			}
 			updateAllFieldsOfSite1Movie();
 		} catch (FileNotFoundException e) {
@@ -1165,7 +1180,13 @@ public class GUIMain {
 					movieToWriteToDisk.writeToFile(
 							currentlySelectedNfoFile,
 							currentlySelectedPosterFile,
-							currentlySelectedFanartFile, preferences.getWriteFanartAndPostersPreference(), preferences.getWriteFanartAndPostersPreference(), preferences.getOverWriteFanartAndPostersPreference(), preferences.getOverWriteFanartAndPostersPreference());
+							currentlySelectedFanartFile,
+							currentlySelectedFolderJpgFile,
+							preferences.getWriteFanartAndPostersPreference(),
+							preferences.getWriteFanartAndPostersPreference(),
+							preferences.getOverWriteFanartAndPostersPreference(), 
+							preferences.getOverWriteFanartAndPostersPreference(),
+							preferences.getCreateFolderJpgEnabledPreference());
 					//we're outputting new files to the current visible directory, so we'll want to update GUI with the fact that they are there
 					if(!currentlySelectedMovieFile.isDirectory())
 					{
@@ -1173,13 +1194,14 @@ public class GUIMain {
 						if(!listModelFiles.contains(currentlySelectedNfoFile))
 							listModelFiles.add(selectedIndex + 1,
 								currentlySelectedNfoFile);
-						if(!listModelFiles.contains(currentlySelectedFanartFile))
+						if(!listModelFiles.contains(currentlySelectedFanartFile) && preferences.getWriteFanartAndPostersPreference())
 							listModelFiles.add(selectedIndex + 2,
 								currentlySelectedFanartFile);
-						if(!listModelFiles.contains(currentlySelectedPosterFile))
+						if(!listModelFiles.contains(currentlySelectedPosterFile) && preferences.getWriteFanartAndPostersPreference())
 							listModelFiles.add(selectedIndex + 3,
 								currentlySelectedPosterFile);
 					}
+					
 					
 					//we can only output extra fanart if we're scraping a folder, because otherwise the extra fanart will get mixed in with other files
 					if(preferences.getExtraFanartScrapingEnabledPreference() && currentlySelectedMovieFile.isDirectory() && extraFanartFolder != null)
@@ -1202,15 +1224,6 @@ public class GUIMain {
 				if(preferences.getDownloadActorImagesToActorFolderPreference() && currentlySelectedMovieFile != null && currentlySelectedDirectory != null)
 				{
 					updateActorsFolder();
-/*					actorsFolder = null;
-					if(currentlySelectedMovieFile.isDirectory())
-					{
-						actorsFolder = new File(currentlySelectedMovieFile.getPath() + "\\.actors");
-					}
-					else if(currentlySelectedMovieFile.isFile())
-					{
-						actorsFolder = new File(currentlySelectedDirectory.getPath() + "\\.actors");
-					}*/
 					//Don't create an empty .actors folder with no actors underneath it
 					if(movieToWriteToDisk.hasAtLeastOneActorThumbnail() && actorsFolder != null)
 					{
@@ -1284,6 +1297,7 @@ public class GUIMain {
 					// Clear out old selections
 					currentlySelectedNfoFile = null;
 					currentlySelectedPosterFile = null;
+					currentlySelectedFolderJpgFile = null;
 					currentlySelectedFanartFile = null;
 					currentlySelectedMovieFile = null;
 					actorsFolder = null;
@@ -1297,6 +1311,8 @@ public class GUIMain {
 							.getFileNameOfNfo(selectedValue));
 					currentlySelectedPosterFile = new File(Movie
 							.getFileNameOfPoster(selectedValue));
+					currentlySelectedFolderJpgFile = new File(Movie
+							.getFileNameOfFolderJpg(selectedValue));
 					currentlySelectedFanartFile = new File(Movie
 							.getFileNameOfFanart(selectedValue));
 					currentlySelectedMovieFile = selectedValue;
@@ -1402,8 +1418,12 @@ public class GUIMain {
 					if (currentlySelectedNfoFile.exists())
 						FileUtils.moveFileToDirectory(currentlySelectedNfoFile,destDir, true);
 					if (currentlySelectedPosterFile.exists()) {
-						// we're doing copy and delete instead of move due to
-						// occasional system lock bug I'm still working on
+						//if we're going to create folder.jpg file, just grab the poster file we already have and make a copy of it in the new folder
+						if(preferences.getCreateFolderJpgEnabledPreference())
+						{
+							currentlySelectedFolderJpgFile = new File(Movie.getFileNameOfFolderJpg(destDir));
+							FileUtils.copyFile(currentlySelectedPosterFile, currentlySelectedFolderJpgFile);
+						}
 						FileUtils.moveFileToDirectory(currentlySelectedPosterFile, destDir, true);
 					}
 					if (currentlySelectedFanartFile.exists()) {
@@ -1417,6 +1437,7 @@ public class GUIMain {
 					currentlySelectedPosterFile = null;
 					currentlySelectedFanartFile = null;
 					currentlySelectedMovieFile = null;
+					currentlySelectedFolderJpgFile = null;
 					movieToWriteToDisk = null;
 					actorsFolder = null;
 					updateFileListModel(currentlySelectedDirectory);

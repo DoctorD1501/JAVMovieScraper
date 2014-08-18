@@ -21,7 +21,7 @@ public class MoviescraperPreferences {
 	private static final String overwriteFanartAndPosters = "overwriteFanartAndPosters";
 	private static final String downloadActorImagesToActorFolder = "downloadActorImagesToActorFolder";
 	private static final String extraFanartScrapingEnabled = "extraFanartScrapingEnabled";
-	
+	private static final String createFolderJpg = "createFolderJpg";
 	public MoviescraperPreferences()
 	{
 		programPreferences = new Properties();
@@ -165,6 +165,15 @@ public class MoviescraperPreferences {
 	
 	public void setExtraFanartScrapingEnabledPreference(boolean preferenceValue){
 		setBooleanValue(extraFanartScrapingEnabled, preferenceValue);
+	}
+
+	public void setCreateFolderJpgEnabledPreference(boolean preferenceValue) {
+		setBooleanValue(createFolderJpg, preferenceValue);
+		
+	}
+
+	public boolean getCreateFolderJpgEnabledPreference() {
+		return getBooleanValue(createFolderJpg, false);
 	}
 	
 	

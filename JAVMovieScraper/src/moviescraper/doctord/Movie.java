@@ -290,7 +290,7 @@ public class Movie {
 		return title.toXML();
 	}
 
-	public void writeToFile(File nfofile, File posterFile, File fanartFile, boolean writePoster, boolean writeFanart, boolean writePosterIfAlreadyExists, boolean writeFanartIfAlreadyExists) throws IOException {
+	public void writeToFile(File nfofile, File posterFile, File fanartFile, File currentlySelectedFolderJpgFile, boolean writePoster, boolean writeFanart, boolean writePosterIfAlreadyExists, boolean writeFanartIfAlreadyExists, boolean createFolderJpgEnabledPreference) throws IOException {
 		// Output the movie to XML using XStream and a proxy class to
 		// translate things to a format that xbmc expects
 
@@ -309,10 +309,11 @@ public class Movie {
 		
 		// save the first poster out
 		// maybe we did some clipping, so we're going to have to reencode it
-		if (this.getPosters().length > 0 && writePoster && ((posterFile.exists() == writePosterIfAlreadyExists) || (!posterFile.exists())))
+		if (this.getPosters().length > 0 && 
+				(writePoster || createFolderJpgEnabledPreference) && 
+				((posterFile.exists() == writePosterIfAlreadyExists) || (!posterFile.exists() || (createFolderJpgEnabledPreference))))
 		{
-			//System.out.println("writing poster to " + posterFile);
-			if(posterToSaveToDisk.isModified())
+			if(posterToSaveToDisk.isModified() || createFolderJpgEnabledPreference)
 			{
 				//reencode the jpg since we probably did a resize
 				Iterator<ImageWriter> iter = ImageIO.getImageWritersByFormatName("jpeg");
@@ -322,26 +323,39 @@ public class Movie {
 				iwp.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
 				iwp.setCompressionQuality(1);   // an float between 0 and 1
 				// 1 specifies minimum compression and maximum quality
-				
-				//FileUtils.deleteQuietly(posterFile);
-				FileImageOutputStream output = new FileImageOutputStream(posterFile);
-				writer.setOutput(output);
 				IIOImage image = new IIOImage((RenderedImage) posterToSaveToDisk.getThumbImage(), null, null);
 				
-				writer.write(null, image, iwp);
+				if(writePoster && posterFile != null)
+				{
+					FileImageOutputStream posterFileOutput = new FileImageOutputStream(posterFile);
+					writer.setOutput(posterFileOutput);
+					writer.write(null, image, iwp);
+					posterFileOutput.close();
+				}
+				if(createFolderJpgEnabledPreference && currentlySelectedFolderJpgFile != null)
+				{
+					FileImageOutputStream folderFileOutput = new FileImageOutputStream(currentlySelectedFolderJpgFile);
+					writer.setOutput(folderFileOutput);
+					writer.write(null, image, iwp);
+					folderFileOutput.close();
+				}
 				writer.dispose();
-				output.close();
-				/*ImageIO.write((RenderedImage) posterToSaveToDisk.thumbImage,
-						"jpg", posterFile);*/
 			}
-			else
-				FileUtils.copyURLToFile(posterToSaveToDisk.getThumbURL(), fanartFile, connectionTimeout, readTimeout);
+			//else
+			//{
+				//System.out.println("In Else");
+				//if(writePoster)
+					//FileUtils.copyURLToFile(posterToSaveToDisk.getThumbURL(), fanartFile, connectionTimeout, readTimeout);
+				//if(createFolderJpgEnabledPreference)
+					//FileUtils.copyURLToFile(posterToSaveToDisk.getThumbURL(), currentlySelectedFolderJpgFile, connectionTimeout, readTimeout);
+			//}
 		}
 		
 		// save the first fanart out
 		// we didn't modify it so we can write it directly from the URL
 		if (this.getFanart().length > 0 && writeFanart && ((fanartFile.exists() == writeFanartIfAlreadyExists) || !fanartFile.exists()))
 		{
+			System.out.println("saving out first fanart");
 			FileUtils.copyURLToFile(fanartToSaveToDisk.getThumbURL(), fanartFile, connectionTimeout, readTimeout);
 		}
 	}
@@ -381,6 +395,15 @@ public class Movie {
 
 	public static String getFileNameOfPoster(File file) {
 		return getTargetFilePath(file, "-poster.jpg");
+	}
+	
+	public static String getFileNameOfFolderJpg(File selectedValue) {
+		
+		if(selectedValue.isDirectory())
+		{
+			return selectedValue.getPath() + "\\folder.jpg";
+		}
+		else return selectedValue.getParent() + "\\folder.jpg";
 	}
 	
 	public static String getFileNameOfFanart(File file) {
@@ -538,5 +561,7 @@ public class Movie {
 	public void setExtraFanart(Thumb [] extraFanart) {
 		this.extraFanart = extraFanart;
 	}
+
+
 
 }
