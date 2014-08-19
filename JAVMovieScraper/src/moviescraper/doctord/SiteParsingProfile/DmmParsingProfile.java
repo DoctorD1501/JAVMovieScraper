@@ -162,8 +162,6 @@ public class DmmParsingProfile extends SiteParsingProfile {
 		//video rental mode if it didnt find a match using above method
 			plotElement = document.select(".mg-b20.lh4").first();
 		}
-
-		System.out.println(plotElement);
 		if(doGoogleTranslation)
 		{
 			return new Plot(

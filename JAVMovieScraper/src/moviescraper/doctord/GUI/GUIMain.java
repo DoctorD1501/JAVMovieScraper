@@ -1246,18 +1246,7 @@ public class GUIMain {
 					//we can only output extra fanart if we're scraping a folder, because otherwise the extra fanart will get mixed in with other files
 					if(preferences.getExtraFanartScrapingEnabledPreference() && currentlySelectedMovieFile.isDirectory() && extraFanartFolder != null)
 					{
-						updateExtraFanartFolder();
-						if(movieToWriteToDisk.getExtraFanart() != null && movieToWriteToDisk.getExtraFanart().length > 0)
-						{
-							FileUtils.forceMkdir(extraFanartFolder);
-							int currentExtraFanartNumber = 1;
-							for(Thumb currentExtraFanart : movieToWriteToDisk.getExtraFanart())
-							{
-								File fileNameToWrite = new File(extraFanartFolder.getPath() + "\\" + "fanart" + currentExtraFanartNumber + ".jpg");
-								currentExtraFanart.writeImageToFile(fileNameToWrite);
-								currentExtraFanartNumber++;
-							}
-						}
+						writeExtraFanart(null);
 					}
 				}
 				//now write out the actor images if the user preference is set
@@ -1357,7 +1346,7 @@ public class GUIMain {
 							.getFileNameOfFanart(selectedValue, preferences.getNoMovieNameInImageFiles()));
 					currentlySelectedMovieFile = selectedValue;
 					updateActorsFolder();
-					updateExtraFanartFolder();
+					updateExtraFanartFolder(null);
 					
 					// clean up old scraped movie results from previous
 					// selection
@@ -1387,6 +1376,8 @@ public class GUIMain {
 		public void actionPerformed(ActionEvent arg0) {
 			String pathSeperator = System.getProperty("file.separator");
 			try {
+				//set the cursor to busy as this could take more than 1 or 2 seconds while files are copied or extrafanart is downloaded from the internet
+				frmMoviescraper.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 				if (currentlySelectedMovieFile != null
 						&& currentlySelectedMovieFile.exists() && currentlySelectedMovieFile.isFile()) {
 					// we can append the movie title to resulting folder name if
@@ -1470,6 +1461,13 @@ public class GUIMain {
 						FileUtils.moveFileToDirectory(currentlySelectedFanartFile, destDir, true);
 					}
 					
+					//if we are supposed to write the extrafanart, make sure to write that too
+					
+					if(preferences.getExtraFanartScrapingEnabledPreference())
+					{
+						writeExtraFanart(destDir);
+					}
+					
 
 					// remove all the old references so we aren't tempted to
 					// reuse them
@@ -1485,6 +1483,10 @@ public class GUIMain {
 			} catch (IOException e) {
 				e.printStackTrace();
 				JOptionPane.showMessageDialog(null, ExceptionUtils.getStackTrace(e),"Unhandled Exception",JOptionPane.ERROR_MESSAGE);
+			}
+			finally
+			{
+				frmMoviescraper.setCursor(Cursor.getDefaultCursor());
 			}
 		}
 
@@ -1908,9 +1910,12 @@ public class GUIMain {
 		}
 	}
 	
-	public void updateExtraFanartFolder(){
-		extraFanartFolder = null;
-		if(currentlySelectedMovieFile.isDirectory())
+	public void updateExtraFanartFolder(File destinationDirectory){
+		if(destinationDirectory != null)
+		{
+			extraFanartFolder = new File(destinationDirectory.getPath() + "\\extrafanart");
+		}	
+		else if(currentlySelectedMovieFile.isDirectory())
 		{
 			
 			extraFanartFolder = new File(currentlySelectedMovieFile.getPath() + "\\extrafanart");
@@ -1941,6 +1946,21 @@ public class GUIMain {
 			}
 		}
 		return actorFiles.toArray(new File[actorFiles.size()]);
+	}
+
+	private void writeExtraFanart(File destinationDirectory) throws IOException {
+		updateExtraFanartFolder(destinationDirectory);
+		if(movieToWriteToDisk.getExtraFanart() != null && movieToWriteToDisk.getExtraFanart().length > 0)
+		{
+			FileUtils.forceMkdir(extraFanartFolder);
+			int currentExtraFanartNumber = 1;
+			for(Thumb currentExtraFanart : movieToWriteToDisk.getExtraFanart())
+			{
+				File fileNameToWrite = new File(extraFanartFolder.getPath() + "\\" + "fanart" + currentExtraFanartNumber + ".jpg");
+				currentExtraFanart.writeImageToFile(fileNameToWrite);
+				currentExtraFanartNumber++;
+			}
+		}
 	}
 
 }
