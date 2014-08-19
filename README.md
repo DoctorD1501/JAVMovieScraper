@@ -19,7 +19,7 @@ This program is in alpha. Please submit bugs and feature requests here on github
 5. Click either the "Scrape (Automatic)" button or the "Scrape" button on the bottom part of the program. Scrape (Automatic) will work 99% of the time, but if you get the wrong result when scraping, try using "Scrape" instead to manually specify which URL to use when scraping dmm.co.jp. It's also worth trying "Scrape" if actor images are not appearing.
 6. After a little while, the metadeta for the movie will appear in the editor pane. You can select one of the several titles found using the drop down list, or edit the entry by typing in your own text.
 7. When you are happy with the way the metadata looks, click the "Write File Data" button to create the poster,fanart and nfo files for your movie. Note that for now, not all metadata downloaded is shown in the editor, but this data IS written to the nfo file.
-8. If your file wasn't already in its own directory, you can click the "MovieToNewFolder" button to move the nfo, poster, movie files, and fanart to a new folder. If the movie file was only named by the ID name (e.g. ABC-123), then the title of the movie will be automatically appended to the folder name.
+8. If your file wasn't already in its own directory, you can click the "Move Selected Movie File to New Folder" button to move the nfo, poster, movie files, and fanart to a new folder. If the movie file was only named by the ID name (e.g. ABC-123), then the title of the movie will be automatically appended to the folder name.
 
 
 In the future I intend to add batch processing modes and command line options.

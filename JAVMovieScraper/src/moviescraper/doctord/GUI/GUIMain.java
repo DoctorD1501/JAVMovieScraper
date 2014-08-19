@@ -1368,7 +1368,7 @@ public class GUIMain {
 		private static final long serialVersionUID = -2250733525782269006L;
 
 		public MoveToNewFolderAction() {
-			putValue(NAME, "MoveToNewFolder");
+			putValue(NAME, "Move Selected Movie File to New Folder");
 			putValue(SHORT_DESCRIPTION, "Move Selected Movie to New Folder");
 		}
 
@@ -1950,7 +1950,7 @@ public class GUIMain {
 
 	private void writeExtraFanart(File destinationDirectory) throws IOException {
 		updateExtraFanartFolder(destinationDirectory);
-		if(movieToWriteToDisk.getExtraFanart() != null && movieToWriteToDisk.getExtraFanart().length > 0)
+		if(movieToWriteToDisk != null && movieToWriteToDisk.getExtraFanart() != null && movieToWriteToDisk.getExtraFanart().length > 0)
 		{
 			FileUtils.forceMkdir(extraFanartFolder);
 			int currentExtraFanartNumber = 1;
