@@ -25,6 +25,7 @@ import moviescraper.doctord.SiteParsingProfile.JavLibraryParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
 import moviescraper.doctord.dataitem.*;
 import moviescraper.doctord.dataitem.Runtime;
+import moviescraper.doctord.preferences.MoviescraperPreferences;
 
 public class Movie {
 
@@ -290,7 +291,7 @@ public class Movie {
 		return title.toXML();
 	}
 
-	public void writeToFile(File nfofile, File posterFile, File fanartFile, File currentlySelectedFolderJpgFile, boolean writePoster, boolean writeFanart, boolean writePosterIfAlreadyExists, boolean writeFanartIfAlreadyExists, boolean createFolderJpgEnabledPreference) throws IOException {
+	public void writeToFile(File nfofile, File posterFile, File fanartFile, File currentlySelectedFolderJpgFile, MoviescraperPreferences preferences) throws IOException {
 		// Output the movie to XML using XStream and a proxy class to
 		// translate things to a format that xbmc expects
 
@@ -306,6 +307,12 @@ public class Movie {
 		Thumb posterToSaveToDisk = posters[0];
 		Thumb fanartToSaveToDisk = fanart[0];
 		
+		
+		boolean writePoster = preferences.getWriteFanartAndPostersPreference();
+		boolean writeFanart = preferences.getWriteFanartAndPostersPreference();
+		boolean writePosterIfAlreadyExists = preferences.getOverWriteFanartAndPostersPreference();
+		boolean writeFanartIfAlreadyExists = preferences.getOverWriteFanartAndPostersPreference();
+		boolean createFolderJpgEnabledPreference = preferences.getCreateFolderJpgEnabledPreference();
 		
 		// save the first poster out
 		// maybe we did some clipping, so we're going to have to reencode it
@@ -327,6 +334,7 @@ public class Movie {
 				
 				if(writePoster && posterFile != null)
 				{
+					System.out.println("Writing poster to " + posterFile);
 					FileImageOutputStream posterFileOutput = new FileImageOutputStream(posterFile);
 					writer.setOutput(posterFileOutput);
 					writer.write(null, image, iwp);
@@ -334,6 +342,7 @@ public class Movie {
 				}
 				if(createFolderJpgEnabledPreference && currentlySelectedFolderJpgFile != null)
 				{
+					System.out.println("Writing folder to " + currentlySelectedFolderJpgFile);
 					FileImageOutputStream folderFileOutput = new FileImageOutputStream(currentlySelectedFolderJpgFile);
 					writer.setOutput(folderFileOutput);
 					writer.write(null, image, iwp);
@@ -355,7 +364,7 @@ public class Movie {
 		// we didn't modify it so we can write it directly from the URL
 		if (this.getFanart().length > 0 && writeFanart && ((fanartFile.exists() == writeFanartIfAlreadyExists) || !fanartFile.exists()))
 		{
-			System.out.println("saving out first fanart");
+			System.out.println("saving out first fanart to " + fanartFile);
 			FileUtils.copyURLToFile(fanartToSaveToDisk.getThumbURL(), fanartFile, connectionTimeout, readTimeout);
 		}
 	}
@@ -393,8 +402,19 @@ public class Movie {
 		return getTargetFilePath(file, ".nfo");
 	}
 
-	public static String getFileNameOfPoster(File file) {
-		return getTargetFilePath(file, "-poster.jpg");
+	public static String getFileNameOfPoster(File file, boolean getNoMovieNameInImageFiles) {
+		if(getNoMovieNameInImageFiles)
+		{
+			if(file.isDirectory())
+			{
+				return  file.getPath() + "\\poster.jpg";
+			}
+			else
+			{
+				return  file.getParent() + "\\poster.jpg";
+			}
+		}
+		else return getTargetFilePath(file, "-poster.jpg");
 	}
 	
 	public static String getFileNameOfFolderJpg(File selectedValue) {
@@ -406,8 +426,19 @@ public class Movie {
 		else return selectedValue.getParent() + "\\folder.jpg";
 	}
 	
-	public static String getFileNameOfFanart(File file) {
-		return getTargetFilePath(file, "-fanart.jpg");
+	public static String getFileNameOfFanart(File file, boolean getNoMovieNameInImageFiles) {
+		if(getNoMovieNameInImageFiles)
+		{
+			if(file.isDirectory())
+			{
+				return  file.getPath() + "\\fanart.jpg";
+			}
+			else
+			{
+				return  file.getParent() + "\\fanart.jpg";
+			}
+		}
+		else return getTargetFilePath(file, "-fanart.jpg");
 	}
 	
 	private static String getLastWordOfFile(File file)

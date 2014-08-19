@@ -656,6 +656,23 @@ public class GUIMain {
 		});
 		preferenceMenu.add(createFolderJpg);
 		
+		//Checkbox for using fanart.jpg and poster.jpg, not moviename-fanart.jpg and moviename-poster.jpg
+		JCheckBoxMenuItem noMovieNameInImageFiles = new JCheckBoxMenuItem("Save poster and fanart as fanart.jpg and poster.jpg instead of moviename-fanart.jpg and moviename-poster.jpg");
+		noMovieNameInImageFiles.setState(preferences.getNoMovieNameInImageFiles());
+		noMovieNameInImageFiles.addItemListener(new ItemListener() {
+
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				//save the menu choice off to the preference object (and the disk based settings file)
+				if(e.getStateChange() == ItemEvent.SELECTED)
+					preferences.setNoMovieNameInImageFiles(true);
+				else if(e.getStateChange() == ItemEvent.DESELECTED)
+					preferences.setNoMovieNameInImageFiles(false);
+
+			}
+		});
+		preferenceMenu.add(noMovieNameInImageFiles);
+		
 		
 		//add the various menus together
 		menuBar.add(preferenceMenu);
@@ -1114,6 +1131,9 @@ public class GUIMain {
 			// TODO Maybe sort the genres after adding them all
 
 			// try to get the poster from a local file, if it exists
+			//Maybe there is a file in the directory just called folder.jpg
+			File potentialOtherPosterJpg = new File(Movie.getFileNameOfPoster(currentlySelectedMovieFile, true));
+			File standardPosterJpg = new File(Movie.getFileNameOfPoster(currentlySelectedMovieFile, false));
 			if (currentlySelectedPosterFile.exists()) {
 				try {
 					lblPosterIcon.setIcon(new ImageIcon(
@@ -1123,7 +1143,31 @@ public class GUIMain {
 					e.printStackTrace();
 				}
 			}
-			// otherwise read it from the URL specified by the object
+			//well we didn't find a poster file we were expecting, try to see if there is any file named poster.jpg in there
+			else if(currentlySelectedMovieFile.isDirectory() && potentialOtherPosterJpg.exists())
+			{
+				try {
+					//System.out.println("Reading in poster from other" + potentialOtherPosterJpg);
+					lblPosterIcon.setIcon(new ImageIcon(
+							potentialOtherPosterJpg.getCanonicalPath()));
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			//just in case, also check to see if one called moviename-poster.jpg is there, even if we were expecting a poster.jpg due to the preference we set
+			else if(standardPosterJpg.exists())
+			{
+				try {
+					//System.out.println("Reading in poster from movename-poster" + potentialOtherPosterJpg);
+					lblPosterIcon.setIcon(new ImageIcon(
+							standardPosterJpg.getCanonicalPath()));
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			// otherwise read it from the URL specified by the object since we couldn't find any local file
 			else if (movieToWriteToDisk.hasPoster()) {
 				try {
 					posterImage = movieToWriteToDisk.getPosters()[0]
@@ -1182,11 +1226,7 @@ public class GUIMain {
 							currentlySelectedPosterFile,
 							currentlySelectedFanartFile,
 							currentlySelectedFolderJpgFile,
-							preferences.getWriteFanartAndPostersPreference(),
-							preferences.getWriteFanartAndPostersPreference(),
-							preferences.getOverWriteFanartAndPostersPreference(), 
-							preferences.getOverWriteFanartAndPostersPreference(),
-							preferences.getCreateFolderJpgEnabledPreference());
+							preferences);
 					//we're outputting new files to the current visible directory, so we'll want to update GUI with the fact that they are there
 					if(!currentlySelectedMovieFile.isDirectory())
 					{
@@ -1310,11 +1350,11 @@ public class GUIMain {
 					currentlySelectedNfoFile = new File(Movie
 							.getFileNameOfNfo(selectedValue));
 					currentlySelectedPosterFile = new File(Movie
-							.getFileNameOfPoster(selectedValue));
+							.getFileNameOfPoster(selectedValue, preferences.getNoMovieNameInImageFiles()));
 					currentlySelectedFolderJpgFile = new File(Movie
 							.getFileNameOfFolderJpg(selectedValue));
 					currentlySelectedFanartFile = new File(Movie
-							.getFileNameOfFanart(selectedValue));
+							.getFileNameOfFanart(selectedValue, preferences.getNoMovieNameInImageFiles()));
 					currentlySelectedMovieFile = selectedValue;
 					updateActorsFolder();
 					updateExtraFanartFolder();

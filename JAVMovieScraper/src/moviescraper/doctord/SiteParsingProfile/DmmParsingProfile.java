@@ -154,11 +154,16 @@ public class DmmParsingProfile extends SiteParsingProfile {
 
 	@Override
 	public Plot scrapePlot() {
-		//video rental mode
-		Element plotElement = document.select(".mg-b20.lh4").first();
-		//or use dvd if it couldnt find anything
+		
+		//dvd mode
+		Element plotElement = document.select("p.mg-b20").first();
 		if(plotElement == null)
-			plotElement = document.select("p.mg-b20").first();
+		{
+		//video rental mode if it didnt find a match using above method
+			plotElement = document.select(".mg-b20.lh4").first();
+		}
+
+		System.out.println(plotElement);
 		if(doGoogleTranslation)
 		{
 			return new Plot(

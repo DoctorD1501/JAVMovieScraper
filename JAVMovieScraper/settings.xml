@@ -3,6 +3,7 @@
 <properties>
 <comment/>
 <entry key="createFolderJpg">true</entry>
+<entry key="noMovieNameInImageFiles">true</entry>
 <entry key="downloadActorImagesToActorFolder">true</entry>
 <entry key="lastUsedDirectory">X:\Jav - Testing Ground</entry>
 <entry key="extraFanartScrapingEnabled">true</entry>

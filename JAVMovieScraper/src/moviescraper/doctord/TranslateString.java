@@ -27,8 +27,8 @@ public class TranslateString {
 				//maybe it had multi-byte Kanji or weird characters and it took more than 3 URL characters per string? This workaround seems to fix this issue, but more testing is needed
 				if(newStringLength > japaneseString.length())
 				{
-					//divide by 9 because I think that's how big multi-byte kanji are in a URL? For now this seems to work but it may be worth revisting this later
-					newStringLength = numberOfCharactersToGetRidOf / 9;
+					//divide by 8 because I think that's how big multi-byte kanji are in a URL? For now this seems to work but it may be worth revisting this later
+					newStringLength = numberOfCharactersToGetRidOf / 8;
 				}
 				japaneseString = japaneseString.substring(newStringLength);
 			}
