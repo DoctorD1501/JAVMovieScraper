@@ -324,7 +324,7 @@ public class Movie {
 				(writePoster || createFolderJpgEnabledPreference) && 
 				((posterFile.exists() == writePosterIfAlreadyExists) || (!posterFile.exists() || (createFolderJpgEnabledPreference))))
 		{
-			if(posterToSaveToDisk.isModified() || createFolderJpgEnabledPreference)
+			if(posterToSaveToDisk.isModified() || createFolderJpgEnabledPreference || !posterFile.exists())
 			{
 				System.out.println("is modified: " + posterToSaveToDisk.isModified() + "URL: " + posterToSaveToDisk.getThumbURL());
 				//reencode the jpg since we probably did a resize
@@ -344,6 +344,12 @@ public class Movie {
 					writer.setOutput(posterFileOutput);
 					writer.write(null, image, iwp);
 					posterFileOutput.close();
+				}
+				//write out the poster file without reencoding it and resizing it
+				else if((!posterFile.exists() ||  writePosterIfAlreadyExists) && posterToSaveToDisk != null && posterToSaveToDisk.getThumbURL() != null && !posterToSaveToDisk.isLoadedFromDisk())
+				{
+					System.out.println("Writing poster file with no changes to " + posterFile);
+					FileUtils.copyURLToFile(posterToSaveToDisk.getThumbURL(), posterFile, connectionTimeout, readTimeout);
 				}
 				if(createFolderJpgEnabledPreference && currentlySelectedFolderJpgFile != null)
 				{

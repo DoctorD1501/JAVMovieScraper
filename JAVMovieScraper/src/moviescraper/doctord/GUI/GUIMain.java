@@ -1082,7 +1082,10 @@ public class GUIMain {
 					.toMovie();
 			fisTargetFile.close();
 			if (currentlySelectedPosterFile.exists()) {
-				// do nothing for now
+				//we don't want to resize this poster later
+				Thumb[] currentPosters = movieToWriteToDisk.getPosters();
+				Thumb fileFromDisk = new Thumb(currentlySelectedPosterFile, currentPosters[0].getThumbURL().toString());
+				currentPosters[0] = fileFromDisk;
 			}
 
 			// The poster read from the URL is not resized. Let's do a resize
@@ -1309,20 +1312,36 @@ public class GUIMain {
 				if(!currentlySelectedMovieFile.isDirectory())
 				{
 					int selectedIndex = fileList.getSelectedIndex();
+					int itemsAdded = 1;
 					if(!listModelFiles.contains(currentlySelectedNfoFile))
-						listModelFiles.add(selectedIndex + 1,
+					{
+						listModelFiles.add(selectedIndex + itemsAdded,
 							currentlySelectedNfoFile);
+						itemsAdded++;
+					}
 					if(!listModelFiles.contains(currentlySelectedFanartFile) && preferences.getWriteFanartAndPostersPreference())
-						listModelFiles.add(selectedIndex + 2,
+					{
+						listModelFiles.add(selectedIndex + itemsAdded,
 							currentlySelectedFanartFile);
+						itemsAdded++;
+					}
 					if(!listModelFiles.contains(currentlySelectedPosterFile) && preferences.getWriteFanartAndPostersPreference())
-						listModelFiles.add(selectedIndex + 3,
+					{
+						listModelFiles.add(selectedIndex + itemsAdded,
 							currentlySelectedPosterFile);
+						itemsAdded++;
+					}
 					if(!listModelFiles.contains(currentlySelectedTrailerFile) && preferences.getWriteTrailerToFile())
-						listModelFiles.add(selectedIndex + 4,
+					{
+						listModelFiles.add(selectedIndex + itemsAdded,
 							currentlySelectedTrailerFile);
+						itemsAdded++;
+					}
 					if(!listModelFiles.contains(currentlySelectedFolderJpgFile) && preferences.getCreateFolderJpgEnabledPreference())
-						listModelFiles.add(selectedIndex + 5, currentlySelectedFolderJpgFile);
+					{
+						listModelFiles.add(selectedIndex + itemsAdded, currentlySelectedFolderJpgFile);
+						itemsAdded++;
+					}
 				}
 
 			} catch (IOException e) {
@@ -1691,7 +1710,7 @@ public class GUIMain {
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
-						JOptionPane.showMessageDialog(null, ExceptionUtils.getStackTrace(e1),"Unhandled Exception",JOptionPane.ERROR_MESSAGE);
+						//JOptionPane.showMessageDialog(null, ExceptionUtils.getStackTrace(e1),"Unhandled Exception",JOptionPane.ERROR_MESSAGE);
 					}
 				}
 			};
@@ -1709,7 +1728,7 @@ public class GUIMain {
 					} catch (IOException e1) {
 
 						e1.printStackTrace();
-						JOptionPane.showMessageDialog(null, ExceptionUtils.getStackTrace(e1),"Unhandled Exception",JOptionPane.ERROR_MESSAGE);
+						//JOptionPane.showMessageDialog(null, ExceptionUtils.getStackTrace(e1),"Unhandled Exception",JOptionPane.ERROR_MESSAGE);
 					}
 				}
 			};
@@ -1728,7 +1747,7 @@ public class GUIMain {
 					} catch (IOException e1) {
 
 						e1.printStackTrace();
-						JOptionPane.showMessageDialog(null, ExceptionUtils.getStackTrace(e1),"Unhandled Exception",JOptionPane.ERROR_MESSAGE);
+						//JOptionPane.showMessageDialog(null, ExceptionUtils.getStackTrace(e1),"Unhandled Exception",JOptionPane.ERROR_MESSAGE);
 					}
 				}
 			};
@@ -1749,7 +1768,7 @@ public class GUIMain {
 					} catch (IOException e1) {
 
 						e1.printStackTrace();
-						JOptionPane.showMessageDialog(null, ExceptionUtils.getStackTrace(e1),"Unhandled Exception",JOptionPane.ERROR_MESSAGE);
+						//JOptionPane.showMessageDialog(null, ExceptionUtils.getStackTrace(e1),"Unhandled Exception",JOptionPane.ERROR_MESSAGE);
 					}
 				}
 			};
@@ -1767,7 +1786,7 @@ public class GUIMain {
 					} catch (IOException e1) {
 
 						e1.printStackTrace();
-						JOptionPane.showMessageDialog(null, ExceptionUtils.getStackTrace(e1),"Unhandled Exception",JOptionPane.ERROR_MESSAGE);
+						//JOptionPane.showMessageDialog(null, ExceptionUtils.getStackTrace(e1),"Unhandled Exception",JOptionPane.ERROR_MESSAGE);
 					}
 				}
 			};
@@ -1786,7 +1805,7 @@ public class GUIMain {
 					} catch (IOException e1) {
 
 						e1.printStackTrace();
-						JOptionPane.showMessageDialog(null, ExceptionUtils.getStackTrace(e1),"Unhandled Exception",JOptionPane.ERROR_MESSAGE);
+						//JOptionPane.showMessageDialog(null, ExceptionUtils.getStackTrace(e1),"Unhandled Exception",JOptionPane.ERROR_MESSAGE);
 					}
 				}
 			};

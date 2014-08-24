@@ -8,6 +8,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
 import org.apache.commons.io.FileUtils;
@@ -17,6 +18,7 @@ public class Thumb {
 	Image thumbImage;
 	ImageIcon imageIconThumbImage;
 	private String thumbLabel;
+	private boolean loadedFromDisk;
 	protected final static int connectionTimeout = 10000; //10 seconds
 	protected final static int  readTimeout = 10000; //10 seconds
 	
@@ -160,8 +162,10 @@ public class Thumb {
 			}
 			else
 				tempImage = tempImage.getSubimage(width-croppedWidth,0,croppedWidth,height);
-			isImageModified = true;
+			this.isImageModified = true;
 		}
+		if(!useJavCoverCropRoutine)
+			this.isImageModified = false;
 		thumbImage = tempImage;
 		imageIconThumbImage = new ImageIcon(tempImage);
 		needToReloadThumbImage = false;
@@ -174,13 +178,23 @@ public class Thumb {
 		else
 			thumbURL = null;
 		//Delay the call to actually reading in the thumbImage until it is needed
-		isImageModified = false;
+		this.isImageModified = false;
 		needToReloadThumbImage = true;
 	}
 
 
 	//TODO: Generate an empty thumbnail that points to nowhere
 	public Thumb() {
+		this.isImageModified = false;
+		needToReloadThumbImage = false;
+	}
+	
+	public Thumb(File file, String url) throws IOException
+	{
+		this.setImage(ImageIO.read(file));
+		this.isImageModified = false;
+		this.thumbURL = new URL(url);
+		loadedFromDisk = true;
 	}
 
 	public URL getThumbURL() {
@@ -250,6 +264,10 @@ public class Thumb {
 
 	public void writeImageToFile(File fileNameToWrite) throws IOException {
 			FileUtils.copyURLToFile(thumbURL, fileNameToWrite, connectionTimeout, readTimeout);
+	}
+
+	public boolean isLoadedFromDisk() {
+		return loadedFromDisk;
 	}
 
 }
