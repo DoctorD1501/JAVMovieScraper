@@ -333,11 +333,11 @@ public class JavLibraryParsingProfile extends SiteParsingProfile {
 					//This condition is used for when user picks URL to scrape from
 					if(getOverrideURLDMM() != null && getOverrideURLDMM().length() > 0)
 					{
-						dmmMovie = Movie.scrapeMovie(new File(movieID.getId()), new DmmParsingProfile(false), getOverrideURLDMM(), true);
+						dmmMovie = Movie.scrapeMovie(new File(movieID.getId()), new DmmParsingProfile(false, false), getOverrideURLDMM(), true);
 					}
 					else //when using automatic scraping mode
 					{
-						dmmMovie = Movie.scrapeMovie(new File(movieID.getId()), new DmmParsingProfile(false), getOverrideURLDMM(), false);
+						dmmMovie = Movie.scrapeMovie(new File(movieID.getId()), new DmmParsingProfile(false, false), getOverrideURLDMM(), false);
 					}
 					if(dmmMovie != null)
 					{

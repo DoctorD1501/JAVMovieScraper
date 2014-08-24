@@ -23,6 +23,7 @@ public class MoviescraperPreferences {
 	private static final String extraFanartScrapingEnabled = "extraFanartScrapingEnabled";
 	private static final String createFolderJpg = "createFolderJpg";
 	private static final String noMovieNameInImageFiles = "noMovieNameInImageFiles";
+	private static final String writeTrailerToFile = "writeTrailerToFile";
 	public MoviescraperPreferences()
 	{
 		programPreferences = new Properties();
@@ -183,6 +184,14 @@ public class MoviescraperPreferences {
 	
 	public void setNoMovieNameInImageFiles(boolean preferenceValue){
 		setBooleanValue(noMovieNameInImageFiles, preferenceValue);
+	}
+	
+	public boolean getWriteTrailerToFile(){
+		return getBooleanValue(writeTrailerToFile, false);
+	}
+	
+	public void setWriteTrailerToFile(boolean preferenceValue){
+		setBooleanValue(writeTrailerToFile, preferenceValue);
 	}
 	
 	

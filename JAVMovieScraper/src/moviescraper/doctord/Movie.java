@@ -51,6 +51,8 @@ public class Movie {
 	private Title title;
 
 	private Top250 top250;
+	
+	private Trailer trailer;
 
 	private Votes votes;
 
@@ -64,7 +66,7 @@ public class Movie {
 			OriginalTitle originalTitle, Outline outline, Plot plot,
 			Thumb[] posters, Rating rating, Runtime runtime, Set set,
 			SortTitle sortTitle, Studio studio, Tagline tagline, Title title,
-			Top250 top250, Votes votes, Year year) {
+			Top250 top250, Trailer trailer, Votes votes, Year year) {
 		super();
 		this.actors = actors;
 		this.directors = directors;
@@ -85,6 +87,7 @@ public class Movie {
 		this.tagline = tagline;
 		this.title = title;
 		this.top250 = top250;
+		this.trailer = trailer;
 		this.votes = votes;
 		this.year = year;
 	}
@@ -97,6 +100,7 @@ public class Movie {
 		rating = siteToScrapeFrom.scrapeRating();
 		year = siteToScrapeFrom.scrapeYear();
 		top250 = siteToScrapeFrom.scrapeTop250();
+		trailer = siteToScrapeFrom.scrapeTrailer();
 		votes = siteToScrapeFrom.scrapeVotes();
 		outline = siteToScrapeFrom.scrapeOutline();
 		plot = siteToScrapeFrom.scrapePlot();
@@ -277,7 +281,7 @@ public class Movie {
 	public String toString() {
 		return "Movie [title=" + title + ", originalTitle=" + originalTitle
 				+ ", sortTitle=" + sortTitle + ", set=" + set + ", rating="
-				+ rating + ", year=" + year + ", top250=" + top250 + ", votes="
+				+ rating + ", year=" + year + ", top250=" + top250 + ", trailer = " + trailer + ", votes="
 				+ votes + ", outline=" + outline + ", plot=" + plot
 				+ ", tagline=" + tagline + ", studio=" + studio + ", runtime="
 				+ runtime + ", posters=" + Arrays.toString(posters)
@@ -322,6 +326,7 @@ public class Movie {
 		{
 			if(posterToSaveToDisk.isModified() || createFolderJpgEnabledPreference)
 			{
+				System.out.println("is modified: " + posterToSaveToDisk.isModified() + "URL: " + posterToSaveToDisk.getThumbURL());
 				//reencode the jpg since we probably did a resize
 				Iterator<ImageWriter> iter = ImageIO.getImageWritersByFormatName("jpeg");
 				ImageWriter writer = (ImageWriter)iter.next();
@@ -332,7 +337,7 @@ public class Movie {
 				// 1 specifies minimum compression and maximum quality
 				IIOImage image = new IIOImage((RenderedImage) posterToSaveToDisk.getThumbImage(), null, null);
 				
-				if(writePoster && posterFile != null)
+				if(writePoster && posterFile != null && posterToSaveToDisk.isModified())
 				{
 					System.out.println("Writing poster to " + posterFile);
 					FileImageOutputStream posterFileOutput = new FileImageOutputStream(posterFile);
@@ -424,6 +429,10 @@ public class Movie {
 			return selectedValue.getPath() + "\\folder.jpg";
 		}
 		else return selectedValue.getParent() + "\\folder.jpg";
+	}
+	
+	public static String getFileNameOfTrailer(File selectedValue) {
+		return getTargetFilePath(selectedValue, "-trailer.mp4");
 	}
 	
 	public static String getFileNameOfFanart(File file, boolean getNoMovieNameInImageFiles) {
@@ -592,6 +601,16 @@ public class Movie {
 	public void setExtraFanart(Thumb [] extraFanart) {
 		this.extraFanart = extraFanart;
 	}
+
+	public Trailer getTrailer() {
+		return trailer;
+	}
+
+	public void setTrailer(Trailer trailer) {
+		this.trailer = trailer;
+	}
+
+
 
 
 

@@ -17,6 +17,7 @@ public class XbmcXmlMovieBean {
 	private String set;
 	private String year;
 	private String top250;
+	private String trailer;
 	private String votes;
 	private String rating;
 	private String outline;
@@ -47,6 +48,7 @@ public class XbmcXmlMovieBean {
 		set = movie.getSet().getSet();
 		year = movie.getYear().getYear();
 		top250 = movie.getTop250().getTop250();
+		trailer = movie.getTrailer().getTrailer();
 		votes = movie.getVotes().getVotes();
 		rating = movie.getRating().getRatingOutOfTen();
 		outline = movie.getOutline().getOutline();
@@ -126,10 +128,13 @@ public class XbmcXmlMovieBean {
 			fanartThumbs = new Thumb[0];
 		}
 		
-		ArrayList<Genre> genres = new ArrayList<Genre>(genre.length);
-		for (int i = 0; i < genre.length; i++)
+		ArrayList<Genre> genres = new ArrayList<Genre>();
+		if(genre != null)
 		{
-			genres.add(new Genre(genre[i]));
+			for (int i = 0; i < genre.length; i++)
+			{
+				genres.add(new Genre(genre[i]));
+			}
 		}
 		
 		ArrayList<Director> directors = new ArrayList<Director>();
@@ -142,13 +147,12 @@ public class XbmcXmlMovieBean {
 			}
 		}
 		Thumb [] emptyExtraFanrt = new Thumb[0];
-		//TODO finish this constructor by filling in the null values
 		Movie movie = new Movie(actors, directors, fanartThumbs, emptyExtraFanrt, genres, new ID(id),
 				new MPAARating(mpaa), new OriginalTitle(originaltitle),
 				new Outline(outline), new Plot(plot), posterThumbs, new Rating(10,rating),
 				new Runtime(runtime), new Set(set), new SortTitle(sorttitle),
 				new Studio(studio), new Tagline(tagline), new Title(title),
-				new Top250(top250), new Votes(votes), new Year(year));
+				new Top250(top250), new Trailer(trailer), new Votes(votes), new Year(year));
 		return movie;
 	}
 

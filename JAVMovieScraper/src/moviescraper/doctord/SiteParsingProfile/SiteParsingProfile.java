@@ -30,6 +30,7 @@ import moviescraper.doctord.dataitem.Studio;
 import moviescraper.doctord.dataitem.Tagline;
 import moviescraper.doctord.dataitem.Title;
 import moviescraper.doctord.dataitem.Top250;
+import moviescraper.doctord.dataitem.Trailer;
 import moviescraper.doctord.dataitem.Votes;
 import moviescraper.doctord.dataitem.Year;
 
@@ -151,6 +152,10 @@ public abstract class SiteParsingProfile {
 	
 	public  abstract String createSearchString(File file);
 	
+	public Trailer scrapeTrailer() {
+		return new Trailer("");
+	}
+	
 	public abstract SearchResult[] getSearchResults(String searchString) throws IOException;
 	
 	public SearchResult [] getLinksFromGoogle(String searchQuery, String site)
@@ -181,6 +186,8 @@ public abstract class SiteParsingProfile {
 	        return linksToReturn.toArray(new SearchResult[linksToReturn.size()]);
 	    }
 	}
+
+
 
 	
 }

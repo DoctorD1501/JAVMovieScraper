@@ -2,8 +2,12 @@ package moviescraper.doctord.SiteParsingProfile;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.Thumb;
@@ -23,6 +27,7 @@ import moviescraper.doctord.dataitem.Studio;
 import moviescraper.doctord.dataitem.Tagline;
 import moviescraper.doctord.dataitem.Title;
 import moviescraper.doctord.dataitem.Top250;
+import moviescraper.doctord.dataitem.Trailer;
 import moviescraper.doctord.dataitem.Votes;
 import moviescraper.doctord.dataitem.Year;
 
@@ -38,6 +43,7 @@ public class DmmParsingProfile extends SiteParsingProfile {
 
 	final static double dmmMaxRating = 5.00;
 	private boolean doGoogleTranslation;
+	private boolean scrapeTrailers;
 	public DmmParsingProfile(Document document) {
 		super(document);
 		doGoogleTranslation = true;
@@ -51,10 +57,12 @@ public class DmmParsingProfile extends SiteParsingProfile {
 	 */
 	public DmmParsingProfile() {
 		doGoogleTranslation = true;
+		scrapeTrailers = true;
 	}
 
-	public DmmParsingProfile(boolean doGoogleTranslation) {
+	public DmmParsingProfile(boolean doGoogleTranslation, boolean scrapeTrailers) {
 		this.doGoogleTranslation = doGoogleTranslation;
+		this.scrapeTrailers = scrapeTrailers;
 	}
 
 	public DmmParsingProfile(Document document, boolean doGoogleTranslation) {
@@ -188,6 +196,127 @@ public class DmmParsingProfile extends SiteParsingProfile {
 		return new moviescraper.doctord.dataitem.Runtime(runtime);
 
 	}
+	
+	private String getCIDFromDocumentURL()
+	{
+		String pageURL = document.location();
+		if(pageURL != null)
+		{
+			String subStringToSearchFor = "/=/cid=";
+			String cid = pageURL.substring(pageURL.indexOf("/=/cid=") + subStringToSearchFor.length(), pageURL.length()-1);
+			return cid;
+		}
+		return null;
+	}
+	@Override
+	public Trailer scrapeTrailer(){
+		//we can return no trailers if scraping trailers is not enabled or the page we are scraping does not have a button to link to the trailer
+		if(scrapeTrailers && document.select("a.d-btn[onclick*=sampleplay]").first() != null)
+		{
+			String cid = getCIDFromDocumentURL();
+			if(cid != null && cid.length() >= 3)
+			{
+				//String movieExtension = "_dmb_w.mp4";
+				//System.out.println("CID: " + cid);
+				//String firstLetterOfCid = cid.substring(0,1);
+				//String threeLetterCidCode = cid.substring(0,3);
+
+				//get the widescreen trailer URLs
+				ArrayList<String> trailerURL = constructTrailerURLs(cid, "_dmb_w.mp4");
+				//get the 4:3 ration trailer urls
+				ArrayList<String> trailerURLSquareAspectRatio = constructTrailerURLs(cid, "_dmb_s.mp4");
+				ArrayList<String> trailerURLSquareAspectRatioSmall = constructTrailerURLs(cid, "_sm_s.mp4");
+
+				//sometimes DMM throws a number in there at the start of the cid which throws things off for no good reason
+				//let's also consider the set of trailers without this number
+				ArrayList<String> trailerURLNoFirstLetter = constructTrailerURLs(cid.substring(1), "_dmb_w.mp4");
+				ArrayList<String> trailerURLSquareAspectRatioNoFirstLetter = constructTrailerURLs(cid.substring(1), "_dmb_s.mp4");
+				ArrayList<String> trailerURLSquareAspectRatioSmallNoFirstLetter = constructTrailerURLs(cid.substring(1), "_sm_s.mp4");
+				//combine them together
+				trailerURL.addAll(trailerURLSquareAspectRatio);
+				trailerURL.addAll(trailerURLSquareAspectRatioSmall);
+				trailerURL.addAll(trailerURLNoFirstLetter);
+				trailerURL.addAll(trailerURLSquareAspectRatioNoFirstLetter);
+				trailerURL.addAll(trailerURLSquareAspectRatioSmallNoFirstLetter);
+				for(String potentialTrailerURL : trailerURL)
+				{
+					//System.out.println("potentialTrailerURL:" + potentialTrailerURL);
+					if(fileExistsAtURL(potentialTrailerURL))
+					{
+						//System.out.println("Trailer existed at: " + potentialTrailerURL);
+						return new Trailer(potentialTrailerURL);
+					}
+					else
+					{
+						//System.out.println("File does not exist");
+					}
+				}
+			}
+		}
+		return new Trailer("");
+	}
+	
+	private ArrayList<String> constructTrailerURLs(String cid, String movieExtension)
+	{
+		ArrayList<String> trailerURL = new ArrayList<String>();
+		//String movieExtension = "_dmb_w.mp4";
+		String firstLetterOfCid = cid.substring(0,1);
+		String threeLetterCidCode = cid.substring(0,3);
+		trailerURL.add("http://cc3001.dmm.co.jp/litevideo/freepv/" + firstLetterOfCid + "/" + threeLetterCidCode + "/" + cid + "/" + cid + movieExtension);
+		
+		String potentialCid1 = cid.replaceFirst("0", "00");
+		trailerURL.add("http://cc3001.dmm.co.jp/litevideo/freepv/" + firstLetterOfCid + "/" + threeLetterCidCode + "/" + potentialCid1 + "/" + potentialCid1 + movieExtension);
+		
+		
+		String potentialCid2 = cid.replaceFirst("0", "000");
+		trailerURL.add("http://cc3001.dmm.co.jp/litevideo/freepv/" + firstLetterOfCid + "/" + threeLetterCidCode + "/" + potentialCid2 + "/" + potentialCid2 + movieExtension);
+		
+		//find the index of the last character (a-z) of the string
+		int indexOfLastCharacterInCid = -1;
+		for(int i = 0; i< cid.length()-1; i++)
+		{
+			if(Character.isAlphabetic(cid.charAt(i)) && Character.isDigit(cid.charAt(i + 1)))
+			{
+				indexOfLastCharacterInCid = i;
+				break;
+			}
+		}
+		
+		if(indexOfLastCharacterInCid != -1)
+		{
+			String firstPartOfCid = cid.substring(0,indexOfLastCharacterInCid+1);
+			//System.out.println("first partOfCid " + firstPartOfCid);
+			String secondPartOfCid = cid.substring(indexOfLastCharacterInCid+1);
+			//System.out.println("second part of cid " + secondPartOfCid);
+			
+			String potentialCid3 = firstPartOfCid + "0" + secondPartOfCid;
+			String potentialCid4 = firstPartOfCid + "00" + secondPartOfCid;
+			String potentialCid5 = firstPartOfCid + "000" + secondPartOfCid;
+			
+			trailerURL.add("http://cc3001.dmm.co.jp/litevideo/freepv/" + firstLetterOfCid + "/" + threeLetterCidCode + "/" + potentialCid3 + "/" + potentialCid3 + movieExtension);
+			trailerURL.add("http://cc3001.dmm.co.jp/litevideo/freepv/" + firstLetterOfCid + "/" + threeLetterCidCode + "/" + potentialCid4 + "/" + potentialCid4 + movieExtension);
+			trailerURL.add("http://cc3001.dmm.co.jp/litevideo/freepv/" + firstLetterOfCid + "/" + threeLetterCidCode + "/" + potentialCid5 + "/" + potentialCid5 + movieExtension);
+		}
+		
+		return trailerURL;
+	}
+	
+	
+	private static boolean fileExistsAtURL(String URLName){
+	    try {
+	      HttpURLConnection.setFollowRedirects(false);
+	      // note : you may also need
+	      //        HttpURLConnection.setInstanceFollowRedirects(false)
+	      HttpURLConnection con =
+	         (HttpURLConnection) new URL(URLName).openConnection();
+	      con.setRequestMethod("HEAD");
+	      return (con.getResponseCode() == HttpURLConnection.HTTP_OK);
+	    }
+	    catch (Exception e) {
+	       e.printStackTrace();
+	       return false;
+	    }
+	  }
 
 	@Override
 	public Thumb[] scrapePosters() {
