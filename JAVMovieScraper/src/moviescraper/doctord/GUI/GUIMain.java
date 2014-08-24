@@ -1303,9 +1303,12 @@ public class GUIMain {
 				Trailer trailerToWrite = movieToWriteToDisk.getTrailer();
 				if(preferences.getWriteTrailerToFile() && trailerToWrite != null && trailerToWrite.getTrailer().length() > 0)
 				{
-					System.out.println("Starting write of " + trailerToWrite + "into file" + currentlySelectedTrailerFile);
-					trailerToWrite.writeTrailerToFile(currentlySelectedTrailerFile);
-					System.out.println("Finished writing movie file");
+					//don't rewrite a file if it already exists since a trailer requires downloading from the web. this is a slow operation!
+					if(!currentlySelectedTrailerFile.exists())
+					{
+						System.out.println("Starting write of " + trailerToWrite.getTrailer() + " into file " + currentlySelectedTrailerFile);
+						trailerToWrite.writeTrailerToFile(currentlySelectedTrailerFile);
+					}
 				}
 				
 				//we're outputting new files to the current visible directory, so we'll want to update GUI with the fact that they are there
@@ -1343,6 +1346,7 @@ public class GUIMain {
 						itemsAdded++;
 					}
 				}
+				System.out.println("Finished writing movie file");
 
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -2068,7 +2072,13 @@ public class GUIMain {
 			for(Thumb currentExtraFanart : movieToWriteToDisk.getExtraFanart())
 			{
 				File fileNameToWrite = new File(extraFanartFolder.getPath() + "\\" + "fanart" + currentExtraFanartNumber + ".jpg");
-				currentExtraFanart.writeImageToFile(fileNameToWrite);
+				
+				//no need to overwrite perfectly good extra fanart since this stuff doesn't change. this will also save time when rescraping since extra IO isn't done.
+				if(!fileNameToWrite.exists())
+				{
+					System.out.println("Writing extrafanart to " + fileNameToWrite);
+					currentExtraFanart.writeImageToFile(fileNameToWrite);
+				}
 				currentExtraFanartNumber++;
 			}
 		}

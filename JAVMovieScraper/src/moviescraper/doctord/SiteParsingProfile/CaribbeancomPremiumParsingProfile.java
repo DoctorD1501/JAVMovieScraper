@@ -340,7 +340,7 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile {
 		case "83_1": return "Maid";
 		case "84_1": return "Yukata / Kimono";
 		}
-		System.out.println("No genre match for " + currentGenreCode);
+		//System.out.println("No genre match for " + currentGenreCode);
 		return null;
 	}
 
@@ -397,7 +397,6 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile {
 			if(trailerElement != null)
 			{
 				String trailerLink = trailerElement.attr("href");
-				System.out.println("Trailer: " + trailerLink);
 				if(trailerLink != null && trailerLink.length() > 0)
 					return new Trailer(trailerLink);
 			}

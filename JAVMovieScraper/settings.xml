@@ -5,9 +5,9 @@
 <entry key="createFolderJpg">true</entry>
 <entry key="noMovieNameInImageFiles">false</entry>
 <entry key="downloadActorImagesToActorFolder">true</entry>
-<entry key="lastUsedDirectory">X:\Jav - Testing Ground</entry>
+<entry key="lastUsedDirectory">X:\JAV</entry>
 <entry key="extraFanartScrapingEnabled">true</entry>
-<entry key="writeTrailerToFile">false</entry>
+<entry key="writeTrailerToFile">true</entry>
 <entry key="writeFanartAndPosters">true</entry>
 <entry key="overwriteFanartAndPosters">true</entry>
 </properties>

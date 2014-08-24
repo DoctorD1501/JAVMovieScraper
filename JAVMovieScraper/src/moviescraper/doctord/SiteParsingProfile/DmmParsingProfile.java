@@ -213,6 +213,7 @@ public class DmmParsingProfile extends SiteParsingProfile {
 		//we can return no trailers if scraping trailers is not enabled or the page we are scraping does not have a button to link to the trailer
 		if(scrapeTrailers && document.select("a.d-btn[onclick*=sampleplay]").first() != null)
 		{
+			System.out.println("There should be a trailer, searching now...");
 			String cid = getCIDFromDocumentURL();
 			if(cid != null && cid.length() >= 3)
 			{
@@ -243,12 +244,12 @@ public class DmmParsingProfile extends SiteParsingProfile {
 					//System.out.println("potentialTrailerURL:" + potentialTrailerURL);
 					if(fileExistsAtURL(potentialTrailerURL))
 					{
-						//System.out.println("Trailer existed at: " + potentialTrailerURL);
+						System.out.println("Trailer existed at: " + potentialTrailerURL);
 						return new Trailer(potentialTrailerURL);
 					}
 					else
 					{
-						//System.out.println("File does not exist");
+						System.err.println("I expected to find a trailer and did not at " + document.location());
 					}
 				}
 			}
@@ -282,12 +283,28 @@ public class DmmParsingProfile extends SiteParsingProfile {
 			}
 		}
 		
+		//System.out.println("indeOfLastCharInCid: " + indexOfLastCharacterInCid);
+		
+		//the case where the character part of the jav ID is just two letters, e.g. AB-123
+		if(indexOfLastCharacterInCid == 1)
+		{
+			String firstPartOfCid = cid.substring(0,indexOfLastCharacterInCid+1);
+			String secondPartOfCid = cid.substring(indexOfLastCharacterInCid+1);
+			String twoLetterCidCodePlusZero = threeLetterCidCode.substring(0,2) + "0";
+
+			String potentialCidOneZero = firstPartOfCid + "0" + secondPartOfCid;
+			String potentialCidTwoZero = firstPartOfCid + "00" + secondPartOfCid;
+			String potentialCidThreeZero = firstPartOfCid + "000" + secondPartOfCid;
+			trailerURL.add("http://cc3001.dmm.co.jp/litevideo/freepv/" + firstLetterOfCid + "/" + twoLetterCidCodePlusZero + "/" + potentialCidOneZero + "/" + potentialCidOneZero + movieExtension);
+			trailerURL.add("http://cc3001.dmm.co.jp/litevideo/freepv/" + firstLetterOfCid + "/" + twoLetterCidCodePlusZero + "/" + potentialCidTwoZero + "/" + potentialCidTwoZero + movieExtension);
+			trailerURL.add("http://cc3001.dmm.co.jp/litevideo/freepv/" + firstLetterOfCid + "/" + twoLetterCidCodePlusZero + "/" + potentialCidThreeZero + "/" + potentialCidThreeZero + movieExtension);
+
+		}
+		
 		if(indexOfLastCharacterInCid != -1)
 		{
 			String firstPartOfCid = cid.substring(0,indexOfLastCharacterInCid+1);
-			//System.out.println("first partOfCid " + firstPartOfCid);
 			String secondPartOfCid = cid.substring(indexOfLastCharacterInCid+1);
-			//System.out.println("second part of cid " + secondPartOfCid);
 			
 			String potentialCid3 = firstPartOfCid + "0" + secondPartOfCid;
 			String potentialCid4 = firstPartOfCid + "00" + secondPartOfCid;
@@ -297,6 +314,8 @@ public class DmmParsingProfile extends SiteParsingProfile {
 			trailerURL.add("http://cc3001.dmm.co.jp/litevideo/freepv/" + firstLetterOfCid + "/" + threeLetterCidCode + "/" + potentialCid4 + "/" + potentialCid4 + movieExtension);
 			trailerURL.add("http://cc3001.dmm.co.jp/litevideo/freepv/" + firstLetterOfCid + "/" + threeLetterCidCode + "/" + potentialCid5 + "/" + potentialCid5 + movieExtension);
 		}
+		
+
 		
 		return trailerURL;
 	}
