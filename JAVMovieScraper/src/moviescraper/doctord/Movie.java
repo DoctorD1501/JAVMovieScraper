@@ -502,7 +502,6 @@ public class Movie {
 			//if there are 1 or more files, it's not really in spec, so just return the first one
 			if (directoryContents.length > 0)
 			{
-				//System.out.println("dirContents > 0, returning" + directoryContents[0].getPath());
 				return directoryContents[0].getPath();
 			}
 			else
@@ -522,12 +521,7 @@ public class Movie {
 						}
 					}
 				}
-				/*
-				//we couldn't find a single filename in the folder, so let's just construct a new file based on the foldername
-				System.out.println("No File found, returning :" + file.getAbsolutePath().toString() + "\\" + getLastWordOfFile(file).toString() + extension);
-				return new File(file.getAbsolutePath() + "\\" + getLastWordOfFile(file) + extension).getPath();
-				*/
-				//System.out.println("No File found, returning :" + (new File(file.getAbsolutePath() + "\\" + file.getName() + extension).getPath()));
+				//Use the folder name as the basis for the filename created
 				return new File(file.getAbsolutePath() + "\\" + file.getName() + extension).getPath();
 			}
 		}

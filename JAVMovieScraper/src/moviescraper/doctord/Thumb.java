@@ -83,7 +83,7 @@ public class Thumb {
 	//call this with whole numbers for percents; must be smaller than 100 and greater than 0
 	public Thumb (String url, double horizontalPercentLeft, double horizontalPercentRight, double verticalPercentTop, double verticalPercentBottom) throws IOException
 	{
-		System.out.println("old crop method being called");
+		//System.out.println("old crop method being called");
 		thumbURL = new URL(url);
 		//get our image from the cache, if it exists. otherwise, download it from the URL and put in the cache
 		BufferedImage tempImage = (BufferedImage)ImageCache.getImageFromCache(thumbURL);
