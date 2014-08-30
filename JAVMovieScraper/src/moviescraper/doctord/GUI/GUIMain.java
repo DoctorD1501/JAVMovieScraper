@@ -2,6 +2,8 @@ package moviescraper.doctord.GUI;
 
 import java.awt.EventQueue;
 
+import javax.annotation.Resource;
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.BoundedRangeModel;
 import javax.swing.DefaultComboBoxModel;
@@ -68,6 +70,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.Transparency;
 
 import com.jgoodies.forms.layout.FormLayout;
@@ -86,6 +89,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
@@ -229,6 +233,14 @@ public class GUIMain {
 		frmMoviescraper.setTitle("JAVMovieScraper");
 		frmMoviescraper.setBounds(100, 100, 1024, 768);
 		frmMoviescraper.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		URL programIconURL = frmMoviescraper.getClass().getResource("/res/AppIcon.png");
+		Image programIcon;
+		try {
+			programIcon = ImageIO.read(programIconURL);
+			frmMoviescraper.setIconImage(programIcon);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
 
 		JPanel FileListPanel = new JPanel();
 		FileListPanel.setPreferredSize(new Dimension(200, 10));
