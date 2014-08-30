@@ -117,7 +117,7 @@ public class XbmcXmlMovieBean {
 		}
 		
 		Thumb[] fanartThumbs;
-		if (fanart != null) {
+		if (fanart != null && fanart.getThumb() != null) {
 			fanartThumbs = new Thumb[fanart.getThumb().length];
 			for (int i = 0; i < fanartThumbs.length; i++) {
 				fanartThumbs[i] = new Thumb(fanart.getThumb()[i]);

@@ -247,13 +247,10 @@ public class DmmParsingProfile extends SiteParsingProfile {
 						System.out.println("Trailer existed at: " + potentialTrailerURL);
 						return new Trailer(potentialTrailerURL);
 					}
-					else
-					{
-						System.err.println("I expected to find a trailer and did not at " + document.location());
-					}
 				}
 			}
-		}
+			System.err.println("I expected to find a trailer and did not at " + document.location());
+		}		
 		return new Trailer("");
 	}
 	

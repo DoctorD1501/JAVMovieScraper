@@ -20,6 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import moviescraper.doctord.SiteParsingProfile.Data18MovieParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.DmmParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.JavLibraryParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
@@ -33,6 +34,8 @@ public class Movie {
 	private ArrayList<Director> directors;
 	private Thumb[] fanart;
 	private Thumb[] extraFanart;
+	private Thumb[] extraFanartPreviews;
+	private Thumb preferredFanartToWriteToDisk;
 	private ArrayList<Genre> genres;
 	private ID id;
 	private MPAARating mpaa;
@@ -309,7 +312,7 @@ public class Movie {
 				org.apache.commons.lang3.CharEncoding.UTF_8);
 		
 		Thumb posterToSaveToDisk = posters[0];
-		Thumb fanartToSaveToDisk = fanart[0];
+
 		
 		
 		boolean writePoster = preferences.getWriteFanartAndPostersPreference();
@@ -326,7 +329,6 @@ public class Movie {
 		{
 			if(posterToSaveToDisk.isModified() || createFolderJpgEnabledPreference || !posterFile.exists())
 			{
-				System.out.println("is modified: " + posterToSaveToDisk.isModified() + "URL: " + posterToSaveToDisk.getThumbURL());
 				//reencode the jpg since we probably did a resize
 				Iterator<ImageWriter> iter = ImageIO.getImageWritersByFormatName("jpeg");
 				ImageWriter writer = (ImageWriter)iter.next();
@@ -353,11 +355,19 @@ public class Movie {
 				}
 				if(createFolderJpgEnabledPreference && currentlySelectedFolderJpgFile != null)
 				{
-					System.out.println("Writing folder to " + currentlySelectedFolderJpgFile);
-					FileImageOutputStream folderFileOutput = new FileImageOutputStream(currentlySelectedFolderJpgFile);
-					writer.setOutput(folderFileOutput);
-					writer.write(null, image, iwp);
-					folderFileOutput.close();
+					if(!posterToSaveToDisk.isModified())
+					{
+						System.out.println("Writing folder.jpg (no changes) to " + currentlySelectedFolderJpgFile);
+						FileUtils.copyURLToFile(posterToSaveToDisk.getThumbURL(), currentlySelectedFolderJpgFile, connectionTimeout, readTimeout);
+					}
+					else
+					{
+						System.out.println("Writing folder to " + currentlySelectedFolderJpgFile);
+						FileImageOutputStream folderFileOutput = new FileImageOutputStream(currentlySelectedFolderJpgFile);
+						writer.setOutput(folderFileOutput);
+						writer.write(null, image, iwp);
+						folderFileOutput.close();
+					}
 				}
 				writer.dispose();
 			}
@@ -375,8 +385,16 @@ public class Movie {
 		// we didn't modify it so we can write it directly from the URL
 		if (this.getFanart().length > 0 && writeFanart && ((fanartFile.exists() == writeFanartIfAlreadyExists) || !fanartFile.exists()))
 		{
+			if(fanart != null && fanart.length > 0)
+			{
+			Thumb fanartToSaveToDisk;
+			if(preferredFanartToWriteToDisk != null)
+				fanartToSaveToDisk = preferredFanartToWriteToDisk;
+			else
+				fanartToSaveToDisk = fanart[0];
 			System.out.println("saving out first fanart to " + fanartFile);
 			FileUtils.copyURLToFile(fanartToSaveToDisk.getThumbURL(), fanartFile, connectionTimeout, readTimeout);
+			}
 		}
 	}
 
@@ -574,12 +592,14 @@ public class Movie {
 			searchResults = new SearchResult[1];
 			if(siteToParseFrom instanceof DmmParsingProfile)
 				searchResults[0] = new SearchResult(urlToScrapeFromDMM);
+			else if(siteToParseFrom instanceof Data18MovieParsingProfile)
+				searchResults[0] = new SearchResult(urlToScrapeFromDMM);
 			else if(siteToParseFrom instanceof JavLibraryParsingProfile)
 				searchResults[0] = new SearchResult(((JavLibraryParsingProfile) siteToParseFrom).getOverrideURLJavLibrary());
 		}
 		if (searchResults != null && searchResults.length > 0)
 		{
-			//System.out.println("Scraping this webpage for movie: " + searchResults[searchResultNumberToUse]);
+			System.out.println("Scraping this webpage for movie: " + searchResults[searchResultNumberToUse].getUrlPath());
 			//for now just set the movie to the first thing found unless we found a link which had something close to the ID
 			Document searchMatch = Jsoup.connect(searchResults[searchResultNumberToUse].getUrlPath()).timeout(0).userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:5.0) Gecko/20100101 Firefox/5.0").get();
 			siteToParseFrom.setDocument(searchMatch);

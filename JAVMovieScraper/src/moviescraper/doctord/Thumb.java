@@ -15,12 +15,19 @@ import org.apache.commons.io.FileUtils;
 
 public class Thumb {
 	private URL thumbURL;
+	private URL previewURL; //smaller version of the image used in GUI pickers
 	Image thumbImage;
+	Image previewThumbImage;
 	ImageIcon imageIconThumbImage;
+	ImageIcon previewIconThumbImage;
 	private String thumbLabel;
 	private boolean loadedFromDisk;
 	protected final static int connectionTimeout = 10000; //10 seconds
 	protected final static int  readTimeout = 10000; //10 seconds
+	//Did the image change from the original image from url (this matters when knowing whether we need to reencode when saving it back to disk)
+	private boolean isImageModified;
+	private boolean needToReloadThumbImage = false;
+	private boolean needToReloadPreviewImage = false;
 	
 	public String getThumbLabel() {
 		return thumbLabel;
@@ -39,10 +46,19 @@ public class Thumb {
 		}
 		return imageIconThumbImage;
 	}
+	
+	public ImageIcon getPreviewImageIconThumbImage(){
+		try{
+			getPreviewImage();
+		}
+		catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return previewIconThumbImage;
+	}
 
-	//Did the image change from the original image from url (this matters when knowing whether we need to reencode when saving it back to disk)
-	private boolean isImageModified;
-	private boolean needToReloadThumbImage = false;
+
 
 
 	public void setThumbURL(URL thumbURL) {
@@ -196,6 +212,13 @@ public class Thumb {
 		this.thumbURL = new URL(url);
 		loadedFromDisk = true;
 	}
+	
+	public Thumb(File file) throws IOException
+	{
+		this.setImage(ImageIO.read(file));
+		this.isImageModified = false;
+		loadedFromDisk = true;
+	}
 
 	public URL getThumbURL() {
 		return thumbURL;
@@ -230,6 +253,22 @@ public class Thumb {
 			needToReloadThumbImage = false;
 		}
 		return thumbImage;
+	}
+	
+	public Image getPreviewImage() throws IOException
+	{
+		if(previewURL == null)
+		{
+			needToReloadPreviewImage = false;
+			return previewThumbImage;
+		}
+		if(needToReloadPreviewImage || previewThumbImage == null)
+		{
+			previewThumbImage = ImageCache.getImageFromCache(previewURL);
+			previewIconThumbImage = new ImageIcon(previewThumbImage);
+			needToReloadPreviewImage = false;
+		}
+		return previewThumbImage;
 	}
 
 	public String toXML()
@@ -268,6 +307,14 @@ public class Thumb {
 
 	public boolean isLoadedFromDisk() {
 		return loadedFromDisk;
+	}
+
+	public URL getPreviewURL() {
+		return previewURL;
+	}
+
+	public void setPreviewURL(URL previewURL) {
+		this.previewURL = previewURL;
 	}
 
 }

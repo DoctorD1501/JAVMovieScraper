@@ -160,6 +160,7 @@ public abstract class SiteParsingProfile {
 	
 	public SearchResult [] getLinksFromGoogle(String searchQuery, String site)
 	{
+		System.out.println("calling get links from google");
 		Document doc;
 		ArrayList<SearchResult> linksToReturn = new ArrayList<SearchResult>();
 	    try{
@@ -170,6 +171,7 @@ public abstract class SiteParsingProfile {
 	        Elements links = doc.select("li[class=g]");
 	        for (Element link : links) {	            
 	            Elements hrefs = link.select("h3.r a");
+	            System.out.println("hrefs = " + hrefs);
 	            String href = hrefs.attr("href");
 	            href = URLDecoder.decode(href, encodingScheme);
 	            href = href.replaceFirst(Pattern.quote("/url?q="), "");
@@ -177,7 +179,7 @@ public abstract class SiteParsingProfile {
 	            int startIndexToRemove = href.indexOf("&sa=");
 	            if (startIndexToRemove > -1)
 	            	href = href.substring(0, startIndexToRemove);
-	            linksToReturn.add(new SearchResult(href));
+	            linksToReturn.add(new SearchResult(href,hrefs.text()));
 	        }
 	        return linksToReturn.toArray(new SearchResult[linksToReturn.size()]);
 	    }
