@@ -555,6 +555,7 @@ public class Movie {
 	}*/
 	
 	public static Movie scrapeMovie(File movieFile, SiteParsingProfile siteToParseFrom, String urlToScrapeFromDMM, boolean useURLtoScrapeFrom) throws IOException{
+		System.out.println("movieFile = " + movieFile);
 		String searchString = siteToParseFrom.createSearchString(movieFile);
 		SearchResult [] searchResults = null;
 		int searchResultNumberToUse = 0;
@@ -595,7 +596,7 @@ public class Movie {
 			else if(siteToParseFrom instanceof JavLibraryParsingProfile)
 				searchResults[0] = new SearchResult(((JavLibraryParsingProfile) siteToParseFrom).getOverrideURLJavLibrary());
 		}
-		if (searchResults != null && searchResults.length > 0)
+		if (searchResults != null && searchResults.length > 0 && searchResults[searchResultNumberToUse].getUrlPath().length() > 0)
 		{
 			System.out.println("Scraping this webpage for movie: " + searchResults[searchResultNumberToUse].getUrlPath());
 			//for now just set the movie to the first thing found unless we found a link which had something close to the ID

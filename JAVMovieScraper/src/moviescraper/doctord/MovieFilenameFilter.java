@@ -20,7 +20,7 @@ public class MovieFilenameFilter implements FilenameFilter {
 		{
 		case "avi": case "mpeg": case "mpg": case "wmv": case "asf": case "flv": case "mkv": case "mka": case "mov": case "qt": case "mp4": case"m4v": 
 		case "m4a": case "aac": case "nut": case "ogg": case "ogm": case "rmvb": case "rm": case "ram": case "ra": case "3gp": 
-		case "vivo": case "pva": case "nuv": case "nsa": case "fli": case "flc": case "dvr-ms": case "wtv":
+		case "vivo": case "pva": case "nuv": case "nsa": case "fli": case "flc": case "dvr-ms": case "wtv": case "iso": case "vob":
 			return true;
 		}
 		return false;

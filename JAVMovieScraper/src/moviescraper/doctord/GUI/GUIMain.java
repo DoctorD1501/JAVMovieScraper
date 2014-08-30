@@ -192,7 +192,7 @@ public class GUIMain {
 	private static final int posterSizeX = 379;
 	private static final int posterSizeY = 536;
 	
-	private final static boolean debugMessages = false;
+	private final static boolean debugMessages = true;
 
 	/**
 	 * Launch the application.
@@ -744,17 +744,20 @@ public class GUIMain {
 		frmMoviescraper.setJMenuBar(menuBar);
 	}
 	protected void removeOldScrapedMovieReferences() {
+		debugWriter("removing old movie references");
 		currentlySelectedMovieDMMList = null;
 		currentlySelectedMovieActionJavList = null;
 		currentlySelectedMovieSquarePlusList = null;
 		currentlySelectedMovieJavLibraryList = null;
 		currentlySelectedMovieJavZooList = null;
 		currentlySelectedMovieCaribbeancomPremiumList = null;
+		currentlySelectedMovieData18MovieList = null;
 		if(movieToWriteToDiskList != null)
 			movieToWriteToDiskList.clear();
 
 	}
 	protected void removeOldSelectedFileReferences(){
+		debugWriter("removing old file references");
 		currentlySelectedNfoFileList.clear();
 		currentlySelectedMovieFileList.clear();
 		currentlySelectedActorsFolderList.clear();
@@ -771,6 +774,8 @@ public class GUIMain {
 		for (File file : filesToList) {
 			listModelFiles.addElement(file);
 		}
+		removeOldScrapedMovieReferences();
+		removeOldSelectedFileReferences();
 
 	}
 
@@ -1186,7 +1191,7 @@ public class GUIMain {
 	protected void updateAllFieldsOfSite1Movie() {
 		if (movieToWriteToDiskList == null) {
 			clearAllFieldsOfSite1Movie();
-		} else if (movieToWriteToDiskList != null) {
+		} else if (movieToWriteToDiskList != null && movieToWriteToDiskList.get(0) != null) {
 			clearAllFieldsOfSite1Movie();
 
 			if(movieToWriteToDiskList != null)
@@ -1829,15 +1834,24 @@ public class GUIMain {
 					currentlySelectedMovieData18MovieList.setFanart(ArrayUtils.toArray(fanartPicked));
 			}
 			
-			if(movieToWriteToDiskList == null)
+			if(movieToWriteToDiskList == null || movieToWriteToDiskList.get(movieNumberInList) == null)
 			{
 				System.out.println("No movie result found");
 				JOptionPane.showMessageDialog(frmMoviescraper, "Could not find any movies that match the selected file while scraping.", "No Movies Found", JOptionPane.ERROR_MESSAGE, null);
 			}
 			//Let's clear out the actorsFolder so we can get new images from the scraped results instead of relying on whatever is there locally
 			//currentlySelectedActorsFolderList.clear();
-			updateAllFieldsOfSite1Movie();
+			clearOverrides();
+			if(movieToWriteToDiskList != null && movieToWriteToDiskList.get(movieNumberInList) != null)
+				updateAllFieldsOfSite1Movie();
 			}
+		}
+
+
+		private void clearOverrides() {
+			this.overrideURLData18Movie = "";
+			this.overrideURLDMM = "";
+			
 		}
 
 
@@ -1908,6 +1922,7 @@ public class GUIMain {
 					try {
 						Data18MovieParsingProfile data18MoviePP = new Data18MovieParsingProfile();
 						//data18MoviePP.setExtraFanartScrapingEnabled(preferences.getExtraFanartScrapingEnabledPreference());
+						debugWriter("Scraping this file (Data18) " + currentlySelectedMovieFileList.get(currentMovieNumberInList));
 						currentlySelectedMovieData18MovieList = Movie.scrapeMovie(
 								currentlySelectedMovieFileList.get(currentMovieNumberInList),
 								data18MoviePP, overrideURLData18Movie, promptUserForURLWhenScraping);
