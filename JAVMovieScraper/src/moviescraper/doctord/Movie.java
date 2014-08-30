@@ -522,9 +522,13 @@ public class Movie {
 						}
 					}
 				}
+				/*
 				//we couldn't find a single filename in the folder, so let's just construct a new file based on the foldername
-				//System.out.println("No File found, returning :" + file.getAbsolutePath().toString() + "\\" + getLastWordOfFile(file).toString() + extension);
+				System.out.println("No File found, returning :" + file.getAbsolutePath().toString() + "\\" + getLastWordOfFile(file).toString() + extension);
 				return new File(file.getAbsolutePath() + "\\" + getLastWordOfFile(file) + extension).getPath();
+				*/
+				//System.out.println("No File found, returning :" + (new File(file.getAbsolutePath() + "\\" + file.getName() + extension).getPath()));
+				return new File(file.getAbsolutePath() + "\\" + file.getName() + extension).getPath();
 			}
 		}
 	}

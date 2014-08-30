@@ -1819,7 +1819,7 @@ public class GUIMain {
 		         bwin.add(panel);
 		         bwin.pack();
 				
-				int result = JOptionPane.showOptionDialog(null, panel, "Select Movie to Scrape From " + windowTitle,
+				int result = JOptionPane.showOptionDialog(null, panel, windowTitle,
 		                JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,
 		                null, null, null);
 				if(result == JOptionPane.OK_OPTION)
