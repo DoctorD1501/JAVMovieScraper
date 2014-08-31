@@ -145,13 +145,13 @@ public class GUIMain {
 	private File currentlySelectedDirectoryList;
 	
 	//scraped movies
-	private Movie currentlySelectedMovieDMMList;
-	private Movie currentlySelectedMovieActionJavList;
-	private Movie currentlySelectedMovieSquarePlusList;
-	private Movie currentlySelectedMovieJavLibraryList;
-	private Movie currentlySelectedMovieJavZooList;
-	private Movie currentlySelectedMovieCaribbeancomPremiumList;
-	private Movie currentlySelectedMovieData18MovieList;
+	private Movie currentlySelectedMovieDMM;
+	private Movie currentlySelectedMovieActionJav;
+	private Movie currentlySelectedMovieSquarePlus;
+	private Movie currentlySelectedMovieJavLibrary;
+	private Movie currentlySelectedMovieJavZoo;
+	private Movie currentlySelectedMovieCaribbeancomPremium;
+	private Movie currentlySelectedMovieData18Movie;
 	private List <Movie> movieToWriteToDiskList;
 
 	//Gui Elements
@@ -762,13 +762,13 @@ public class GUIMain {
 	}
 	protected void removeOldScrapedMovieReferences() {
 		debugWriter("removing old movie references");
-		currentlySelectedMovieDMMList = null;
-		currentlySelectedMovieActionJavList = null;
-		currentlySelectedMovieSquarePlusList = null;
-		currentlySelectedMovieJavLibraryList = null;
-		currentlySelectedMovieJavZooList = null;
-		currentlySelectedMovieCaribbeancomPremiumList = null;
-		currentlySelectedMovieData18MovieList = null;
+		currentlySelectedMovieDMM = null;
+		currentlySelectedMovieActionJav = null;
+		currentlySelectedMovieSquarePlus = null;
+		currentlySelectedMovieJavLibrary = null;
+		currentlySelectedMovieJavZoo = null;
+		currentlySelectedMovieCaribbeancomPremium = null;
+		currentlySelectedMovieData18Movie = null;
 		if(movieToWriteToDiskList != null)
 			movieToWriteToDiskList.clear();
 
@@ -1216,16 +1216,16 @@ public class GUIMain {
 			//All the titles from the various versions scraped of this movie from the different sites
 			if(movieToWriteToDiskList != null)
 				comboBoxMovieTitleText.addItem(movieToWriteToDiskList.get(0).getTitle().getTitle());
-			if(currentlySelectedMovieDMMList != null)
-				comboBoxMovieTitleText.addItem(currentlySelectedMovieDMMList.getTitle().getTitle());
-			if(currentlySelectedMovieJavLibraryList != null)
-				comboBoxMovieTitleText.addItem(currentlySelectedMovieJavLibraryList.getTitle().getTitle());
-			if(currentlySelectedMovieSquarePlusList != null)
-				comboBoxMovieTitleText.addItem(currentlySelectedMovieSquarePlusList.getTitle().getTitle());
-			if(currentlySelectedMovieActionJavList != null)
-				comboBoxMovieTitleText.addItem(currentlySelectedMovieActionJavList.getTitle().getTitle());
-			if(currentlySelectedMovieJavZooList != null)
-				comboBoxMovieTitleText.addItem(currentlySelectedMovieJavZooList.getTitle().getTitle());
+			if(currentlySelectedMovieDMM != null)
+				comboBoxMovieTitleText.addItem(currentlySelectedMovieDMM.getTitle().getTitle());
+			if(currentlySelectedMovieJavLibrary != null)
+				comboBoxMovieTitleText.addItem(currentlySelectedMovieJavLibrary.getTitle().getTitle());
+			if(currentlySelectedMovieSquarePlus != null)
+				comboBoxMovieTitleText.addItem(currentlySelectedMovieSquarePlus.getTitle().getTitle());
+			if(currentlySelectedMovieActionJav != null)
+				comboBoxMovieTitleText.addItem(currentlySelectedMovieActionJav.getTitle().getTitle());
+			if(currentlySelectedMovieJavZoo != null)
+				comboBoxMovieTitleText.addItem(currentlySelectedMovieJavZoo.getTitle().getTitle());
 			if(comboBoxMovieTitleText.getItemCount() > 0)
 				comboBoxMovieTitleText.setEditable(true);
 			
@@ -1353,11 +1353,11 @@ public class GUIMain {
 					if(movieToWriteToDiskList == null)
 					{
 						Movie amalgamationAutoPickMovie = amalgamateMovie(
-								currentlySelectedMovieDMMList,
-								currentlySelectedMovieActionJavList,
-								currentlySelectedMovieSquarePlusList,
-								currentlySelectedMovieJavLibraryList,
-								currentlySelectedMovieJavZooList, movieNumberInList);
+								currentlySelectedMovieDMM,
+								currentlySelectedMovieActionJav,
+								currentlySelectedMovieSquarePlus,
+								currentlySelectedMovieJavLibrary,
+								currentlySelectedMovieJavZoo, movieNumberInList);
 
 						movieToWriteToDiskList.add(amalgamationAutoPickMovie);
 					}
@@ -1702,6 +1702,7 @@ public class GUIMain {
 		boolean promptUserForURLWhenScraping; //do we stop to ask the user to pick a URL when scraping
 		boolean scrapeJAV = true;
 		boolean scrapeData18Movie = false;
+		boolean manuallyPickFanart = true;
 		
 		public SearchResult showOptionPane(SearchResult [] searchResults, String siteName)
 		{
@@ -1822,17 +1823,26 @@ public class GUIMain {
 					e1.printStackTrace();
 				}
 			}
+			Movie javMovie = null;
+			Movie data18Movie = null;
 			if(scrapeJAV)
-				makeJavThreadsAndScrape(movieNumberInList);
+				javMovie = makeJavThreadsAndScrape(movieNumberInList);
 			else if(scrapeData18Movie)
-				makeData18MovieThreadsAndScrape(movieNumberInList);
+				data18Movie = makeData18MovieThreadsAndScrape(movieNumberInList);
 			
-			boolean manuallyPickFanart = true;
-			if(manuallyPickFanart && currentlySelectedMovieData18MovieList != null)
+			
+			if(manuallyPickFanart && data18Movie != null)
 			{
-				Thumb fanartPicked = showFanartPicker(ArrayUtils.addAll(currentlySelectedMovieData18MovieList.getFanart(), currentlySelectedMovieData18MovieList.getExtraFanart()),"Pick Fanart");
+				Thumb fanartPicked = showFanartPicker(ArrayUtils.addAll(data18Movie.getFanart(), data18Movie.getExtraFanart()),"Pick Fanart");
 				if(fanartPicked != null)
-					currentlySelectedMovieData18MovieList.setFanart(ArrayUtils.toArray(fanartPicked));
+					currentlySelectedMovieData18Movie.setFanart(ArrayUtils.toArray(fanartPicked));
+			}
+			
+			else if(manuallyPickFanart && javMovie != null)
+			{
+				Thumb fanartPicked = showFanartPicker(ArrayUtils.addAll(javMovie.getFanart(), javMovie.getExtraFanart()),"Pick Fanart");
+				if(fanartPicked != null)
+					javMovie.setFanart(ArrayUtils.toArray(fanartPicked));
 			}
 			
 			if(movieToWriteToDiskList == null || movieToWriteToDiskList.get(movieNumberInList) == null)
@@ -1915,7 +1925,7 @@ public class GUIMain {
 		}
 
 
-		private void makeData18MovieThreadsAndScrape(int movieNumberInList) {
+		private Movie makeData18MovieThreadsAndScrape(int movieNumberInList) {
 			//we need to create a final copy of the loop variable to pass it into each run method and make the compiler happy
 			final int currentMovieNumberInList = movieNumberInList;
 			Thread scrapeQueryData18MovieThread = new Thread() {
@@ -1924,12 +1934,12 @@ public class GUIMain {
 						Data18MovieParsingProfile data18MoviePP = new Data18MovieParsingProfile();
 						//data18MoviePP.setExtraFanartScrapingEnabled(preferences.getExtraFanartScrapingEnabledPreference());
 						debugWriter("Scraping this file (Data18) " + currentlySelectedMovieFileList.get(currentMovieNumberInList));
-						currentlySelectedMovieData18MovieList = Movie.scrapeMovie(
+						currentlySelectedMovieData18Movie = Movie.scrapeMovie(
 								currentlySelectedMovieFileList.get(currentMovieNumberInList),
 								data18MoviePP, overrideURLData18Movie, promptUserForURLWhenScraping);
 
 						System.out.println("Data18 Movie scrape results: "
-								+ currentlySelectedMovieData18MovieList);
+								+ currentlySelectedMovieData18Movie);
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -1944,7 +1954,7 @@ public class GUIMain {
 				scrapeQueryData18MovieThread.start();
 				scrapeQueryData18MovieThread.join();
 
-				movieToWriteToDiskList.add(currentlySelectedMovieData18MovieList);
+				movieToWriteToDiskList.add(currentlySelectedMovieData18Movie);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -1953,24 +1963,26 @@ public class GUIMain {
 			{
 				frmMoviescraper.setCursor(Cursor.getDefaultCursor());
 			}
+			return currentlySelectedMovieData18Movie;
 		}
 
 
-		private void makeJavThreadsAndScrape(int movieNumberInList) {
+		private Movie makeJavThreadsAndScrape(int movieNumberInList) {
 			//we need to create a final copy of the loop variable to pass it into each run method and make the compiler happy
 			final int currentMovieNumberInList = movieNumberInList;
+			Movie movieAmalgamated = null;
 			// Scape dmm.co.jp for currently selected movie
 			Thread scrapeQueryDMMThread = new Thread() {
 				public void run() {
 					try {
 						DmmParsingProfile dmmPP = new DmmParsingProfile();
 						dmmPP.setExtraFanartScrapingEnabled(preferences.getExtraFanartScrapingEnabledPreference());
-						currentlySelectedMovieDMMList = Movie.scrapeMovie(
+						currentlySelectedMovieDMM = Movie.scrapeMovie(
 								currentlySelectedMovieFileList.get(currentMovieNumberInList),
 								dmmPP, overrideURLDMM, promptUserForURLWhenScraping);
 
 						System.out.println("DMM scrape results: "
-								+ currentlySelectedMovieDMMList);
+								+ currentlySelectedMovieDMM);
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -1982,12 +1994,12 @@ public class GUIMain {
 			Thread scrapeQueryActionJavThread = new Thread() {
 				public void run() {
 					try {
-						currentlySelectedMovieActionJavList = Movie.scrapeMovie(
+						currentlySelectedMovieActionJav = Movie.scrapeMovie(
 								currentlySelectedMovieFileList.get(currentMovieNumberInList),
 								new ActionJavParsingProfile(), overrideURLDMM, false);
 
 						System.out.println("Action jav scrape results: "
-								+ currentlySelectedMovieActionJavList);
+								+ currentlySelectedMovieActionJav);
 
 					} catch (IOException e1) {
 
@@ -2001,12 +2013,12 @@ public class GUIMain {
 			Thread scrapeQuerySquarePlusThread = new Thread() {
 				public void run() {
 					try {
-						currentlySelectedMovieSquarePlusList = Movie.scrapeMovie(
+						currentlySelectedMovieSquarePlus = Movie.scrapeMovie(
 								currentlySelectedMovieFileList.get(currentMovieNumberInList),
 								new SquarePlusParsingProfile(), overrideURLDMM, false);
 
 						System.out.println("SquarePlus scrape results: "
-								+ currentlySelectedMovieSquarePlusList);
+								+ currentlySelectedMovieSquarePlus);
 
 					} catch (IOException e1) {
 
@@ -2022,12 +2034,12 @@ public class GUIMain {
 					try {
 						JavLibraryParsingProfile jlParsingProfile = new JavLibraryParsingProfile();
 						jlParsingProfile.setOverrideURLJavLibrary(overrideURLJavLibrary);
-						currentlySelectedMovieJavLibraryList = Movie.scrapeMovie(
+						currentlySelectedMovieJavLibrary = Movie.scrapeMovie(
 								currentlySelectedMovieFileList.get(currentMovieNumberInList),
 								jlParsingProfile, overrideURLDMM, promptUserForURLWhenScraping);
 
 						System.out.println("JavLibrary scrape results: "
-								+ currentlySelectedMovieJavLibraryList);
+								+ currentlySelectedMovieJavLibrary);
 
 					} catch (IOException e1) {
 
@@ -2040,12 +2052,12 @@ public class GUIMain {
 			Thread scrapeQueryJavZooThread = new Thread() {
 				public void run() {
 					try {
-						currentlySelectedMovieJavZooList = Movie.scrapeMovie(
+						currentlySelectedMovieJavZoo = Movie.scrapeMovie(
 								currentlySelectedMovieFileList.get(currentMovieNumberInList),
 								new JavZooParsingProfile(), overrideURLDMM, false);
 
 						System.out.println("JavZoo scrape results: "
-								+ currentlySelectedMovieJavZooList);
+								+ currentlySelectedMovieJavZoo);
 
 					} catch (IOException e1) {
 
@@ -2059,12 +2071,12 @@ public class GUIMain {
 			Thread scrapeQueryCaribbeancomPremium = new Thread() {
 				public void run() {
 					try {
-						currentlySelectedMovieCaribbeancomPremiumList = Movie.scrapeMovie(
+						currentlySelectedMovieCaribbeancomPremium = Movie.scrapeMovie(
 								currentlySelectedMovieFileList.get(currentMovieNumberInList),
 								new CaribbeancomPremiumParsingProfile(), overrideURLDMM, false);
 
 						System.out.println("CaribbeancomPremium scrape results: "
-								+ currentlySelectedMovieCaribbeancomPremiumList);
+								+ currentlySelectedMovieCaribbeancomPremium);
 
 					} catch (IOException e1) {
 
@@ -2095,14 +2107,14 @@ public class GUIMain {
 				scrapeQuerySquarePlusThread.join();
 				scrapeQueryJavZooThread.join();
 				scrapeQueryCaribbeancomPremium.join();
-				Movie movieAmalgamated = amalgamateMovie(currentlySelectedMovieDMMList,
-						currentlySelectedMovieActionJavList,
-						currentlySelectedMovieSquarePlusList,
-						currentlySelectedMovieJavLibraryList,
-						currentlySelectedMovieJavZooList, movieNumberInList);
+				movieAmalgamated = amalgamateMovie(currentlySelectedMovieDMM,
+						currentlySelectedMovieActionJav,
+						currentlySelectedMovieSquarePlus,
+						currentlySelectedMovieJavLibrary,
+						currentlySelectedMovieJavZoo, movieNumberInList);
 				//if we didn't get a result from the general jav db's, then maybe this is from a webonly type scraper
-				if(movieAmalgamated == null && currentlySelectedMovieCaribbeancomPremiumList != null)
-					movieAmalgamated = currentlySelectedMovieCaribbeancomPremiumList;
+				if(movieAmalgamated == null && currentlySelectedMovieCaribbeancomPremium != null)
+					movieAmalgamated = currentlySelectedMovieCaribbeancomPremium;
 				if(movieAmalgamated != null)
 				{
 					movieToWriteToDiskList.add(movieAmalgamated);
@@ -2116,7 +2128,9 @@ public class GUIMain {
 			{
 				frmMoviescraper.setCursor(Cursor.getDefaultCursor());
 			}
+			return movieAmalgamated;
 		}
+		
 	}
 	private class ScrapeMovieActionAutomatic extends ScrapeMovieAction
 	{
@@ -2131,6 +2145,7 @@ public class GUIMain {
 			putValue(NAME, "Scrape as JAV (Automatic)");
 			putValue(SHORT_DESCRIPTION, "Scrape Selected Movie (Automatic)");
 			promptUserForURLWhenScraping = false;
+			manuallyPickFanart = false;
 		}
 		public void actionPerformed(ActionEvent e){
 			super.actionPerformed(e);
