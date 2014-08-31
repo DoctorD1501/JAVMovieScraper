@@ -28,4 +28,9 @@ public class ImageCache {
 			return imageFromUrl;
 		}
 	}
+	
+	public static void removeImageFromCachce(URL url)
+	{
+		cache.remove(url);
+	}
 }

@@ -1174,6 +1174,7 @@ public class GUIMain {
 			// now.
 			else if (movieToWriteToDiskList.get(0).hasPoster()) {
 				Thumb[] currentPosters = movieToWriteToDiskList.get(0).getPosters();
+				//this was the old method before I wrote in method from pythoncovercrop. it is no longer used
 				/*currentPosters[0] = new Thumb(currentPosters[0].getThumbURL()
 						.toString(), 52.7, 0, 0, 0);*/
 				currentPosters[0] = new Thumb(currentPosters[0].getThumbURL().toString(), true);
@@ -1204,13 +1205,15 @@ public class GUIMain {
 		txtFieldMovieSet.setText("");
 
 	}
-
+	
+	//Update the GUI so the user can see what is scraped in
 	protected void updateAllFieldsOfSite1Movie() {
 		if (movieToWriteToDiskList == null) {
 			clearAllFieldsOfSite1Movie();
 		} else if (movieToWriteToDiskList != null && movieToWriteToDiskList.get(0) != null) {
 			clearAllFieldsOfSite1Movie();
-
+			
+			//All the titles from the various versions scraped of this movie from the different sites
 			if(movieToWriteToDiskList != null)
 				comboBoxMovieTitleText.addItem(movieToWriteToDiskList.get(0).getTitle().getTitle());
 			if(currentlySelectedMovieDMMList != null)
@@ -1225,25 +1228,36 @@ public class GUIMain {
 				comboBoxMovieTitleText.addItem(currentlySelectedMovieJavZooList.getTitle().getTitle());
 			if(comboBoxMovieTitleText.getItemCount() > 0)
 				comboBoxMovieTitleText.setEditable(true);
+			
+			//original title
 			lblOriginalTitleTextSite1.setText(movieToWriteToDiskList.get(0)
 					.getOriginalTitle().getOriginalTitle());
+			//ID
 			if(movieToWriteToDiskList.get(0).getId() != null)
 				lblIDCurrentMovie.setText(movieToWriteToDiskList.get(0).getId().getId());
+			//Year
 			if(movieToWriteToDiskList.get(0).getYear() != null)
 			lblYearGoesHere.setText(movieToWriteToDiskList.get(0).getYear().getYear());
+			//Plot
 			if(movieToWriteToDiskList.get(0).getPlot() != null)
 				moviePlotTextField.setText(movieToWriteToDiskList.get(0).getPlot().getPlot());
+			//Set
 			if(movieToWriteToDiskList.get(0).getSet() != null)
 				txtFieldMovieSet.setText(movieToWriteToDiskList.get(0).getSet().getSet());
 			// clear out any old genres
 			listModelGenresSite1.removeAllElements();
+			
+			//Add in all the genres
 			for (Genre genre : movieToWriteToDiskList.get(0).getGenres()) {
 				listModelGenresSite1.addElement(genre.getGenre());
 			}
+			
+			//remove the old actors in the list
 			listModelActorsSite1.removeAllElements();
+			
+			//Actors
 			for (Actor actor : movieToWriteToDiskList.get(0).getActors()) {
 				listModelActorsSite1.addElement(actor.getName());
-
 			}
 
 
@@ -1497,14 +1511,6 @@ public class GUIMain {
 					// No selection
 					// Clear out old selections
 					removeOldSelectedFileReferences();
-					/*currentlySelectedPosterFileList = null;
-					currentlySelectedFolderJpgFileList = null;
-					currentlySelectedFanartFileList = null;
-					currentlySelectedMovieFileList = null;
-					currentlySelectedTrailerFileList = null;
-					currentlySelectedActorsFolderList = null;
-					currentlySelectedExtraFanartFolderList = null;*/
-					// System.out.println("Selection nothing");
 
 				} else {
 
@@ -1668,14 +1674,6 @@ public class GUIMain {
 
 					// remove all the old references so we aren't tempted to
 					// reuse them
-					/*currentlySelectedNfoFileList = null;
-					currentlySelectedPosterFileList = null;
-					currentlySelectedFanartFileList = null;
-					currentlySelectedMovieFileList = null;
-					currentlySelectedFolderJpgFileList = null;
-					currentlySelectedTrailerFileList = null;
-					movieToWriteToDiskList = null;
-					currentlySelectedActorsFolderList = null;*/
 					removeOldSelectedFileReferences();
 					removeOldScrapedMovieReferences();
 					updateFileListModel(currentlySelectedDirectoryList);
@@ -1709,18 +1707,6 @@ public class GUIMain {
 		{
 			if(searchResults.length > 0)
 			{
-				/*JLabel [] options = new JLabel[searchResults.length];
-				for(int i = 0; i < searchResults.length; i++)
-				{
-					JLabel currentLabel = new JLabel();
-					currentLabel.setText(searchResults[i].getUrlPath());
-					Thumb currentThumb = searchResults[i].getPreviewImage();
-					if(currentThumb.getThumbURL() != null)
-					{
-						currentLabel.setIcon(currentThumb.getImageIconThumbImage());
-					}
-					options[i] = currentLabel;
-				}*/
 				JPanel panel = new JPanel();
 				panel.setLayout(new BorderLayout());
 				JList<SearchResult> labelList = new JList<SearchResult>(searchResults);
@@ -1728,8 +1714,6 @@ public class GUIMain {
 				labelList.setVisible(true);
 				JScrollPane pane = new JScrollPane(labelList);
 				panel.add(pane, BorderLayout.CENTER);
-				//JButton okButton = new JButton("OK");
-				//panel.add(okButton,BorderLayout.SOUTH);
 				panel.setPreferredSize(new Dimension(500,400));
 				
 				final JDialog bwin = new JDialog();
