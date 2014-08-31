@@ -24,6 +24,7 @@ public class MoviescraperPreferences {
 	private static final String createFolderJpg = "createFolderJpg";
 	private static final String noMovieNameInImageFiles = "noMovieNameInImageFiles";
 	private static final String writeTrailerToFile = "writeTrailerToFile";
+	private static final String nfoNamedMovieDotNfo = "nfoNamedMovieDotNfo";
 	public MoviescraperPreferences()
 	{
 		programPreferences = new Properties();
@@ -194,6 +195,13 @@ public class MoviescraperPreferences {
 		setBooleanValue(writeTrailerToFile, preferenceValue);
 	}
 	
+	public boolean getNfoNamedMovieDotNfo(){
+		return getBooleanValue(nfoNamedMovieDotNfo, false);
+	}
+	
+	public void setNfoNamedMovieDotNfo(boolean preferenceValue){
+		setBooleanValue(nfoNamedMovieDotNfo, preferenceValue);
+	}
 	
 
 	

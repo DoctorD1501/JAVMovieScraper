@@ -426,9 +426,13 @@ public class Movie {
 		return fileName;
 	}
 	
-	public static String getFileNameOfNfo(File file)
+	public static String getFileNameOfNfo(File file, boolean nfoNamedMovieDotNfo)
 	{
-		return getTargetFilePath(file, ".nfo");
+		if(nfoNamedMovieDotNfo)
+		{
+			return  file.getPath() + "\\movie.nfo";
+		}
+		else return getTargetFilePath(file, ".nfo");
 	}
 
 	public static String getFileNameOfPoster(File file, boolean getNoMovieNameInImageFiles) {

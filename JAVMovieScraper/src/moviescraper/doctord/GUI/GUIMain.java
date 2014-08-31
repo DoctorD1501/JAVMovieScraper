@@ -737,6 +737,23 @@ public class GUIMain {
 		});
 		preferenceMenu.add(writeTrailerToFile);
 		
+		//Checkbox for naming .nfo file movie.nfo instead of using movie name in file
+		JCheckBoxMenuItem nfoNamedMovieDotNfo = new JCheckBoxMenuItem(".nfo file named movie.nfo instead of using movie name");
+		nfoNamedMovieDotNfo.setState(preferences.getNfoNamedMovieDotNfo());
+		nfoNamedMovieDotNfo.addItemListener(new ItemListener() {
+
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				//save the menu choice off to the preference object (and the disk based settings file)
+				if(e.getStateChange() == ItemEvent.SELECTED)
+					preferences.setNfoNamedMovieDotNfo(true);
+				else if(e.getStateChange() == ItemEvent.DESELECTED)
+					preferences.setNfoNamedMovieDotNfo(false);
+
+			}
+		});
+		preferenceMenu.add(nfoNamedMovieDotNfo);
+		
 		
 		
 		//add the various menus together
@@ -1498,7 +1515,7 @@ public class GUIMain {
 					for(File currentSelectedFile : fileList.getSelectedValuesList())
 					{
 						currentlySelectedNfoFileList.add(new File(Movie
-								.getFileNameOfNfo(currentSelectedFile)));
+								.getFileNameOfNfo(currentSelectedFile, preferences.getNfoNamedMovieDotNfo())));
 						currentlySelectedPosterFileList.add(new File(Movie
 								.getFileNameOfPoster(currentSelectedFile, preferences.getNoMovieNameInImageFiles())));
 						currentlySelectedFolderJpgFileList.add(new File(Movie
