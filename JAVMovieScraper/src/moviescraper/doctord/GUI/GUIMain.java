@@ -1871,7 +1871,14 @@ public class GUIMain {
 				
 				Thumb fanartPicked = showFanartPicker(uniqueElementsArray,"Pick Fanart");
 				if(fanartPicked != null)
-					currentlySelectedMovieData18Movie.setFanart(ArrayUtils.toArray(fanartPicked));
+				{
+					//remove the item from the picked from the existing fanart and put it at the front of the list
+					ArrayList<Thumb> existingFanart = new ArrayList<Thumb>(Arrays.asList(currentlySelectedMovieData18Movie.getFanart()));
+					existingFanart.remove(fanartPicked);
+					existingFanart.add(0,fanartPicked);
+					Thumb [] fanartArray = new Thumb[existingFanart.size()];
+					currentlySelectedMovieData18Movie.setFanart(existingFanart.toArray(fanartArray));
+				}
 			}
 			
 			else if(manuallyPickFanart && javMovie != null)
