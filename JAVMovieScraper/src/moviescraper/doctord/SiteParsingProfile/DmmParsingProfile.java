@@ -2,8 +2,6 @@ package moviescraper.doctord.SiteParsingProfile;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -242,7 +240,7 @@ public class DmmParsingProfile extends SiteParsingProfile {
 				for(String potentialTrailerURL : trailerURL)
 				{
 					//System.out.println("potentialTrailerURL:" + potentialTrailerURL);
-					if(fileExistsAtURL(potentialTrailerURL))
+					if(SiteParsingProfile.fileExistsAtURL(potentialTrailerURL))
 					{
 						System.out.println("Trailer existed at: " + potentialTrailerURL);
 						return new Trailer(potentialTrailerURL);
@@ -318,22 +316,6 @@ public class DmmParsingProfile extends SiteParsingProfile {
 	}
 	
 	
-	private static boolean fileExistsAtURL(String URLName){
-	    try {
-	      HttpURLConnection.setFollowRedirects(false);
-	      // note : you may also need
-	      //        HttpURLConnection.setInstanceFollowRedirects(false)
-	      HttpURLConnection con =
-	         (HttpURLConnection) new URL(URLName).openConnection();
-	      con.setRequestMethod("HEAD");
-	      return (con.getResponseCode() == HttpURLConnection.HTTP_OK);
-	    }
-	    catch (Exception e) {
-	       e.printStackTrace();
-	       return false;
-	    }
-	  }
-
 	@Override
 	public Thumb[] scrapePosters() {
 

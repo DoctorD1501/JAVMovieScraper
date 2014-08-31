@@ -21,6 +21,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import moviescraper.doctord.SiteParsingProfile.Data18MovieParsingProfile;
+import moviescraper.doctord.SiteParsingProfile.Data18WebContentParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.DmmParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.JavLibraryParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
@@ -595,7 +596,7 @@ public class Movie {
 			searchResults = new SearchResult[1];
 			if(siteToParseFrom instanceof DmmParsingProfile)
 				searchResults[0] = new SearchResult(urlToScrapeFromDMM);
-			else if(siteToParseFrom instanceof Data18MovieParsingProfile)
+			else if(siteToParseFrom instanceof Data18MovieParsingProfile || siteToParseFrom instanceof Data18WebContentParsingProfile)
 				searchResults[0] = new SearchResult(urlToScrapeFromDMM);
 			else if(siteToParseFrom instanceof JavLibraryParsingProfile)
 				searchResults[0] = new SearchResult(((JavLibraryParsingProfile) siteToParseFrom).getOverrideURLJavLibrary());

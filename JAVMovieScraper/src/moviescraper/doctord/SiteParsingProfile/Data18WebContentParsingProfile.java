@@ -7,14 +7,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
-import org.apache.commons.codec.EncoderException;
-import org.apache.commons.codec.net.URLCodec;
-import org.apache.commons.io.FilenameUtils;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
 import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.Thumb;
 import moviescraper.doctord.dataitem.Actor;
@@ -36,12 +28,19 @@ import moviescraper.doctord.dataitem.Top250;
 import moviescraper.doctord.dataitem.Votes;
 import moviescraper.doctord.dataitem.Year;
 
-public class Data18MovieParsingProfile extends SiteParsingProfile {
-	
+import org.apache.commons.codec.EncoderException;
+import org.apache.commons.codec.net.URLCodec;
+import org.apache.commons.io.FilenameUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+public class Data18WebContentParsingProfile extends SiteParsingProfile{
 	boolean useSiteSearch = true;
 	String yearFromFilename = "";
 	String fileName;
-
+	Thumb[] scrapedPosters;
 	@Override
 	public Title scrapeTitle() {
 		Element titleElement = document.select("div#centered.main2 div div h1.h1big").first();
@@ -63,7 +62,15 @@ public class Data18MovieParsingProfile extends SiteParsingProfile {
 
 	@Override
 	public Set scrapeSet() {
-		Element setElement = document.select("a[href*=/series/]").first();
+		
+		//relatedMovie is used for split scenes
+		Element relatedMovie = document.select("div.gen:contains(Related Movie and Scenes:) ~ div ~ div p a").first();
+		if(relatedMovie != null && relatedMovie.text().length() > 0)
+		{
+			return new Set(relatedMovie.text());
+		}
+		//setElement used below is for web downloads
+		Element setElement = document.select("div#centered.main2 div.dloc.gen12 a").last();
 		if(setElement != null)
 			return new Set(setElement.text());
 		else return new Set("");
@@ -77,7 +84,10 @@ public class Data18MovieParsingProfile extends SiteParsingProfile {
 
 	@Override
 	public Year scrapeYear() {
-		Element releaseDateElement = document.select("div p:contains(Release Date:) b").first();
+		Element releaseDateElement = document.select("div p:contains(Date:) a").first();
+		//case where the date is not a hyperlink, but just a month and a year
+		if(releaseDateElement!= null & releaseDateElement.text().contains("errors"))
+			releaseDateElement = document.select("div p:contains(Date:) b").first();
 		if(releaseDateElement != null)
 		{
 			String releaseDateText = releaseDateElement.text().trim();
@@ -111,9 +121,9 @@ public class Data18MovieParsingProfile extends SiteParsingProfile {
 
 	@Override
 	public Plot scrapePlot() {
-		Element plotElement = document.select("div.gen12 b:contains(Description:) ~ p").first();
+		Element plotElement = document.select("div.gen12 p:contains(Story:)").first();
 		if(plotElement != null)
-			return new Plot(plotElement.text());
+			return new Plot(plotElement.ownText());
 		return new Plot("");
 	}
 
@@ -125,87 +135,27 @@ public class Data18MovieParsingProfile extends SiteParsingProfile {
 
 	@Override
 	public Runtime scrapeRuntime() {
-		Element runtimeElement = document.select("p.gen12:contains(Length:)").first();
-		if(runtimeElement != null)
-		{
-			String runtimeElementText = runtimeElement.text().replaceFirst(Pattern.quote("Length:"), "").replaceFirst(Pattern.quote(" min."), "").trim();
-			return new Runtime(runtimeElementText);
-		}
-		//System.out.println("runtime " + runtimeElement.text());
-		else return new Runtime("");
+		return new Runtime("");
 	}
 
 	@Override
 	public Thumb[] scrapePosters() {
-		Element posterElement = document.select("a[data-lightbox=covers]").first();
-		if(posterElement != null)
-		{
-			Thumb[] posterThumbs = new Thumb[1];
-			try {
-				posterThumbs[0] = new Thumb(posterElement.attr("href"));
-				return posterThumbs;
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-				return new Thumb[0];
-			}
-		}
-		return new Thumb[0];
-	}
-
-	@Override
-	public Thumb[] scrapeFanart() {
-		Element posterElement = document.select("a[data-lightbox=covers]:contains(Back Cover)").first();
-		if(posterElement != null)
-		{
-			Thumb[] posterThumbs = new Thumb[1];
-			try {
-				posterThumbs[0] = new Thumb(posterElement.attr("href"));
-				return posterThumbs;
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-				return new Thumb[0];
-			}
-		}
-		return new Thumb[0];
-	}
-
-	@Override
-	public Thumb[] scrapeExtraFanart() {
 		//find split scene links from a full movie
-		Elements sceneContentLinks = document.select("div[onmouseout]:matches(Scene \\d\\d?)");
-		//System.out.println("Scenecontentlinsk " + sceneContentLinks);
 		ArrayList<String> contentLinks = new ArrayList<String>();
 		ArrayList<Thumb> extraFanart = new ArrayList<Thumb>();
-		if(sceneContentLinks != null)
-		{
-			//get just the id from url of the content
-			for(Element sceneContentLink : sceneContentLinks)
-			{
-				Element linkElement = sceneContentLink.select("a[href*=/content/").first();
-				if(linkElement != null)
-					{
-					String linkElementURL = linkElement.attr("href");
-					if(linkElementURL.contains("/"))
-					{
-						String contentID = linkElementURL.substring(linkElementURL.lastIndexOf("/")+1,linkElementURL.length());
-						//System.out.println(contentID);
-						contentLinks.add(contentID);
-					}
-				}
-			}
-		}
-		
+		String docLocation = document.location();
+		String contentIDFromPage = docLocation.substring(docLocation.lastIndexOf("/")+1,docLocation.length());
+		contentLinks.add(contentIDFromPage);
 		//for each id, go to the viewer page for that ID
 		for(String contentID : contentLinks)
 		{
-			//int viewerPageNumber = 1;
 			for(int viewerPageNumber = 1; viewerPageNumber <= 15; viewerPageNumber++)
 			{
 				//System.out.println("viewerPageNumber: " + String.format("%02d", viewerPageNumber));
 				String currentViewerPageURL = "http://www.data18.com/viewer/" + contentID + "/" + String.format("%02d", viewerPageNumber);
 				//System.out.println("currentVIewerPageURL + " + currentViewerPageURL);
 				try {
-					
+
 					Document viewerDocument = Jsoup.connect(currentViewerPageURL).timeout(0).userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:5.0) Gecko/20100101 Firefox/5.0").get();
 					if(viewerDocument!= null)
 					{
@@ -215,20 +165,37 @@ public class Data18MovieParsingProfile extends SiteParsingProfile {
 							String mainImageUrl = imgElement.attr("src");
 							Thumb thumbToAdd = new Thumb(mainImageUrl);
 							String previewURL = mainImageUrl.substring(0,mainImageUrl.length()-6) + "th8/" + mainImageUrl.substring(mainImageUrl.length()-6,mainImageUrl.length());
+							if(!fileExistsAtURL(previewURL))
+								previewURL = mainImageUrl.substring(0,mainImageUrl.length()-6) + "thumb2/" + mainImageUrl.substring(mainImageUrl.length()-6,mainImageUrl.length());	
 							if(fileExistsAtURL(previewURL))
 								thumbToAdd.setPreviewURL(new URL(previewURL));
+							//System.out.println("previewURL : " + previewURL);
 							extraFanart.add(thumbToAdd);
 						}
 					}
-					
+
 				} catch (IOException e) {
 					e.printStackTrace();
-					//continue;
-			}
-			
+				}
+
 			}
 		}
-		return extraFanart.toArray(new Thumb[extraFanart.size()]);
+		scrapedPosters = extraFanart.toArray(new Thumb[extraFanart.size()]);
+		return scrapedPosters;
+	}
+
+	@Override
+	public Thumb[] scrapeFanart() {
+		if(scrapedPosters != null)
+			return scrapedPosters;
+		else return scrapePosters();
+	}
+
+	@Override
+	public Thumb[] scrapeExtraFanart() {
+		if(scrapedPosters != null)
+			return scrapedPosters;
+		else return scrapePosters();
 	}
 
 	@Override
@@ -247,20 +214,19 @@ public class Data18MovieParsingProfile extends SiteParsingProfile {
 	public ArrayList<Genre> scrapeGenres() {
 		ArrayList<Genre> genreList = new ArrayList<Genre>();
 		//Elements genreElements = document.select("span.gensmall ~ a");
-		Elements genreElements = document.select("div.gen12:contains(Categories:) a");
-		//alternate version data18 sometimes uses with "Categories" perhaps?
-		/*if(genreElements == null || genreElements.size() == 0)
-		{
-			System.out.println("alt genre method");
-			genreElements = document.select("div.gen12:contains(Categories:) a");
-		}*/
+		Elements genreElements = document.select("div.gen12 div:contains(Categories) a");
 		if (genreElements != null)
 		{
 			for(Element currentGenreElement : genreElements)
 			{
-				String genreText = currentGenreElement.text().trim();
-				if(genreText != null && genreText.length() > 0)
-					genreList.add(new Genre(genreText));
+				//Quick fix to get rid of the search link from appearing as a category
+				if(!(currentGenreElement.attr("href").equals("http://www.data18.com/content/search.html")))
+				{
+					String genreText = currentGenreElement.text().trim();
+					if(genreText != null && genreText.length() > 0)
+						genreList.add(new Genre(genreText));
+				}
+
 			}
 		}
 		
@@ -269,31 +235,50 @@ public class Data18MovieParsingProfile extends SiteParsingProfile {
 
 	@Override
 	public ArrayList<Actor> scrapeActors() {
-		Elements actorElements = document.select("p.line1 a img");
+		Elements actorElements = document.select("p:contains(Starring:) a.bold");
 		ArrayList<Actor> actorList = new ArrayList<Actor>();
 		if(actorElements != null)
 		{
 			for(Element currentActorElement : actorElements)
 			{
-				String actorName = currentActorElement.attr("alt");
-				String actorThumbnail = currentActorElement.attr("src");
-				
-				//case with actor with thumbnail
-				if(actorThumbnail != null && !actorThumbnail.equals("http://img.data18.com/images/no_prev_60.gif"))
+				String actorPageLink = currentActorElement.attr("href");
+				String actorName = currentActorElement.text();
+				//Connect to the actor page to get the thumbnail
+				if(actorPageLink!= null)
 				{
 					try {
-						actorThumbnail = actorThumbnail.replaceFirst(Pattern.quote("/60/"), "/120/");
-						actorList.add(new Actor(actorName, null, new Thumb(actorThumbnail)));
-					} catch (MalformedURLException e) {
-						actorList.add(new Actor(actorName, null, null));
+						Document actorPage = Jsoup.connect(actorPageLink).timeout(0).get();
+						Element actorThumbnailElement = actorPage.select("div.imagepic a img[src*=/stars/]").first();
+						String actorThumbnail = null;
+						if(actorThumbnailElement != null)
+						{
+							actorThumbnail = actorThumbnailElement.attr("src");
+						}
+
+						//case with actor with thumbnail
+						if(actorThumbnail != null && 
+								!actorThumbnail.equals("http://img.data18.com/images/no_prev_60.gif")
+								&& (!actorThumbnail.equals("http://img.data18.com/images/no_prev_star.jpg")))
+						{
+							try {
+								actorThumbnail = actorThumbnail.replaceFirst(Pattern.quote("/60/"), "/120/");
+								actorList.add(new Actor(actorName, null, new Thumb(actorThumbnail)));
+							} catch (MalformedURLException e) {
+								actorList.add(new Actor(actorName, null, null));
+								e.printStackTrace();
+							}
+						}
+						//add the actor with no thumbnail
+						else
+						{
+							actorList.add(new Actor(actorName, null, null));
+						}
+					} catch (IOException e) {
 						e.printStackTrace();
 					}
 				}
-				//add the actor with no thumbnail
-				else
-				{
-					actorList.add(new Actor(actorName, null, null));
-				}
+
+
 			}
 		}
 		return actorList;
@@ -302,19 +287,12 @@ public class Data18MovieParsingProfile extends SiteParsingProfile {
 	@Override
 	public ArrayList<Director> scrapeDirectors() {
 		ArrayList<Director> directorList = new ArrayList<Director>();
-		Element directorElement = document.select("a[href*=director=]").first();
-		if(directorElement != null)
-		{
-			String directorName = directorElement.text();
-			if(directorName != null && directorName.length() > 0 && !directorName.equals("Unknown"))
-				directorList.add(new Director(directorName,null));
-		}
 		return directorList;
 	}
 
 	@Override
 	public Studio scrapeStudio() {
-		Element studioElement = document.select("p.gen12 b:contains(Studio:) ~ a").first();
+		Element studioElement = document.select("div#centered.main2 div.dloc.gen12 a:contains(Sites) ~ a").first();
 		if(studioElement != null)
 		{
 			String studioText = studioElement.text();
@@ -348,7 +326,7 @@ public class Data18MovieParsingProfile extends SiteParsingProfile {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			fileBaseName = "http://www.data18.com/search/?k=" + fileBaseName + "&t=2";
+			fileBaseName = "http://www.data18.com/search/?k=" + fileBaseName + "&t=0";
 			return fileBaseName;
 		}
 		return FilenameUtils.getBaseName(file.getName());
@@ -357,6 +335,8 @@ public class Data18MovieParsingProfile extends SiteParsingProfile {
 	@Override
 	public SearchResult[] getSearchResults(String searchString)
 			throws IOException {
+		//we're searching for new file, reset the scraped posters
+		scrapedPosters = null;
 		if(useSiteSearch)
 		{
 			ArrayList<SearchResult> linksList = new ArrayList<SearchResult>();
@@ -365,7 +345,7 @@ public class Data18MovieParsingProfile extends SiteParsingProfile {
 			if(movieSearchResultElements == null || movieSearchResultElements.size() == 0)
 			{
 				this.useSiteSearch = false;
-				return getLinksFromGoogle(fileName, "data18.com/movies/");
+				return getLinksFromGoogle(fileName, "data18.com/content/");
 			}
 			else
 			{
@@ -385,8 +365,7 @@ public class Data18MovieParsingProfile extends SiteParsingProfile {
 		else
 		{
 			this.useSiteSearch = false;
-			return getLinksFromGoogle(searchString, "data18.com/movies/");
+			return getLinksFromGoogle(searchString, "data18.com/content/");
 		}
 	}
-
 }

@@ -317,4 +317,37 @@ public class Thumb {
 		this.previewURL = previewURL;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((previewURL == null) ? 0 : previewURL.hashCode());
+		result = prime * result
+				+ ((thumbURL == null) ? 0 : thumbURL.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Thumb other = (Thumb) obj;
+		if (previewURL == null) {
+			if (other.previewURL != null)
+				return false;
+		} else if (!previewURL.equals(other.previewURL))
+			return false;
+		if (thumbURL == null) {
+			if (other.thumbURL != null)
+				return false;
+		} else if (!thumbURL.equals(other.thumbURL))
+			return false;
+		return true;
+	}
+
 }

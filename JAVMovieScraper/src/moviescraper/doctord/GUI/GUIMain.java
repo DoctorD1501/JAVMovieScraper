@@ -36,6 +36,7 @@ import moviescraper.doctord.XbmcXmlMovieBean;
 import moviescraper.doctord.SiteParsingProfile.ActionJavParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.CaribbeancomPremiumParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.Data18MovieParsingProfile;
+import moviescraper.doctord.SiteParsingProfile.Data18WebContentParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.DmmParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.JavZooParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.SquarePlusParsingProfile;
@@ -96,6 +97,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -195,7 +197,7 @@ public class GUIMain {
 	private static final int posterSizeX = 379;
 	private static final int posterSizeY = 536;
 	
-	private final static boolean debugMessages = true;
+	private final static boolean debugMessages = false;
 
 	/**
 	 * Launch the application.
@@ -591,9 +593,13 @@ public class GUIMain {
 		btnScrapeSelectMovieAutomatic.setAction(new ScrapeMovieActionAutomatic());
 		buttonsPanel.add(btnScrapeSelectMovieAutomatic);
 		
-		JButton btnScrapeSelectMovieData18Movie = new JButton("Scrape Movie (Data18 Movie)");
+		JButton btnScrapeSelectMovieData18Movie = new JButton("Scrape Data18 Movie");
 		btnScrapeSelectMovieData18Movie.setAction(new ScrapeMovieActionData18Movie());
 		buttonsPanel.add(btnScrapeSelectMovieData18Movie);
+		
+		JButton btnScrapeSelectMovieData18WebContent = new JButton("Scrape Data18 Web Content");
+		btnScrapeSelectMovieData18WebContent.setAction(new ScrapeMovieActionData18WebContent());
+		buttonsPanel.add(btnScrapeSelectMovieData18WebContent);
 		
 
 		JButton btnMoveFileToFolder = new JButton("Move file to folder");
@@ -605,7 +611,7 @@ public class GUIMain {
 		buttonsPanel.add(btnWriteFileData);
 
 		JButton openCurrentlySelectedFileButton = new JButton(
-				"Open Currently Selected File");
+				"Open Selected File");
 		openCurrentlySelectedFileButton.addActionListener(new OpenFileAction());
 		buttonsPanel.add(openCurrentlySelectedFileButton);
 		initializeMenus();
@@ -1485,6 +1491,9 @@ public class GUIMain {
 	private class OpenDirectoryAction implements ActionListener {
 		public void actionPerformed(ActionEvent arg0) {
 			chooser = new JFileChooser();
+			//remember our last used directory and start the search there
+			if(preferences.getLastUsedDirectory().exists())
+				chooser.setCurrentDirectory(preferences.getLastUsedDirectory());
 			chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 			FileNameExtensionFilter filter = new FileNameExtensionFilter(
 					"Movies", "avi", "mp4", "wmv", "flv", "mov", "rm", "mkv");
@@ -1572,8 +1581,8 @@ public class GUIMain {
 		private static final long serialVersionUID = -2250733525782269006L;
 
 		public MoveToNewFolderAction() {
-			putValue(NAME, "Move Selected Movie File to New Folder");
-			putValue(SHORT_DESCRIPTION, "Move Selected Movie to New Folder");
+			putValue(NAME, "Move File to New Folder");
+			putValue(SHORT_DESCRIPTION, "Move File to New Folder");
 		}
 
 		@Override
@@ -1710,6 +1719,7 @@ public class GUIMain {
 		boolean promptUserForURLWhenScraping; //do we stop to ask the user to pick a URL when scraping
 		boolean scrapeJAV = true;
 		boolean scrapeData18Movie = false;
+		boolean scrapeData18WebContent = false;
 		boolean manuallyPickFanart = true;
 		
 		public SearchResult showOptionPane(SearchResult [] searchResults, String siteName)
@@ -1758,7 +1768,7 @@ public class GUIMain {
 		
 
 		public ScrapeMovieAction() {
-			putValue(NAME, "Scrape as JAV");
+			putValue(NAME, "Scrape JAV");
 			putValue(SHORT_DESCRIPTION, "Scrape Selected Movie");
 			overrideURLDMM = "";
 			overrideURLJavLibrary = "";
@@ -1816,10 +1826,14 @@ public class GUIMain {
 				}
 			}
 
-			else if(promptUserForURLWhenScraping && scrapeData18Movie)
+			else if(promptUserForURLWhenScraping && (scrapeData18Movie || scrapeData18WebContent))
 			{
 				try {
-					Data18MovieParsingProfile data18ParsingProfile = new Data18MovieParsingProfile();
+					SiteParsingProfile data18ParsingProfile = null;
+					if(scrapeData18Movie)
+						data18ParsingProfile = new Data18MovieParsingProfile();
+					else if(scrapeData18WebContent)
+						data18ParsingProfile = new Data18WebContentParsingProfile();
 					String searchStringData18Movie = data18ParsingProfile.createSearchString(currentlySelectedMovieFileList.get(movieNumberInList));
 					SearchResult [] searchResultData18Movie = data18ParsingProfile.getSearchResults(searchStringData18Movie);
 					if(searchResultData18Movie != null && searchResultData18Movie.length > 0)
@@ -1840,18 +1854,29 @@ public class GUIMain {
 			if(scrapeJAV)
 				javMovie = makeJavThreadsAndScrape(movieNumberInList);
 			else if(scrapeData18Movie)
-				data18Movie = makeData18MovieThreadsAndScrape(movieNumberInList);
+				data18Movie = makeData18MovieThreadsAndScrape(movieNumberInList, true);
+			else if(scrapeData18WebContent)
+			{
+				data18Movie = makeData18MovieThreadsAndScrape(movieNumberInList, false);
+			}
 			
-			
+			//Allow the user to manually pick fanart from a dialog box
 			if(manuallyPickFanart && data18Movie != null)
 			{
-				Thumb fanartPicked = showFanartPicker(ArrayUtils.addAll(data18Movie.getFanart(), data18Movie.getExtraFanart()),"Pick Fanart");
+				//get all unique elements from the fanart and the extrafanart - my method here is probably pretty inefficient, but the lists aren't more than 100 items, so no big deal
+				HashSet<Thumb> uniqueElements = new HashSet<Thumb>(Arrays.asList(data18Movie.getFanart()));
+				uniqueElements.addAll(Arrays.asList(data18Movie.getExtraFanart()));
+				ArrayList<Thumb> uniqueElementsList = (new ArrayList<Thumb>(uniqueElements));
+				Thumb [] uniqueElementsArray = uniqueElementsList.toArray(new Thumb[uniqueElementsList.size()]);
+				
+				Thumb fanartPicked = showFanartPicker(uniqueElementsArray,"Pick Fanart");
 				if(fanartPicked != null)
 					currentlySelectedMovieData18Movie.setFanart(ArrayUtils.toArray(fanartPicked));
 			}
 			
 			else if(manuallyPickFanart && javMovie != null)
 			{
+				//we don't need to worry about picking out the unique elements like above since there is no duplication between fanart and extrafanart in this case
 				Thumb fanartPicked = showFanartPicker(ArrayUtils.addAll(javMovie.getFanart(), javMovie.getExtraFanart()),"Pick Fanart");
 				if(fanartPicked != null)
 					javMovie.setFanart(ArrayUtils.toArray(fanartPicked));
@@ -1942,20 +1967,25 @@ public class GUIMain {
 		}
 
 
-		private Movie makeData18MovieThreadsAndScrape(int movieNumberInList) {
+		private Movie makeData18MovieThreadsAndScrape(int movieNumberInList, boolean isData18Movie) {
 			//we need to create a final copy of the loop variable to pass it into each run method and make the compiler happy
 			final int currentMovieNumberInList = movieNumberInList;
+			final boolean parsingType = isData18Movie;
 			Thread scrapeQueryData18MovieThread = new Thread() {
 				public void run() {
 					try {
-						Data18MovieParsingProfile data18MoviePP = new Data18MovieParsingProfile();
+						SiteParsingProfile data18MoviePP;
+						if(parsingType)
+							data18MoviePP = new Data18MovieParsingProfile();
+						else
+							data18MoviePP = new Data18WebContentParsingProfile();
 						//data18MoviePP.setExtraFanartScrapingEnabled(preferences.getExtraFanartScrapingEnabledPreference());
 						debugWriter("Scraping this file (Data18) " + currentlySelectedMovieFileList.get(currentMovieNumberInList));
 						currentlySelectedMovieData18Movie = Movie.scrapeMovie(
 								currentlySelectedMovieFileList.get(currentMovieNumberInList),
 								data18MoviePP, overrideURLData18Movie, promptUserForURLWhenScraping);
 
-						System.out.println("Data18 Movie scrape results: "
+						System.out.println("Data18 Scrape results: "
 								+ currentlySelectedMovieData18Movie);
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
@@ -2149,7 +2179,7 @@ public class GUIMain {
 		public ScrapeMovieActionAutomatic()
 		{
 			super();
-			putValue(NAME, "Scrape as JAV (Automatic)");
+			putValue(NAME, "Scrape JAV (Automatic)");
 			putValue(SHORT_DESCRIPTION, "Scrape Selected Movie (Automatic)");
 			promptUserForURLWhenScraping = false;
 			manuallyPickFanart = false;
@@ -2166,11 +2196,30 @@ public class GUIMain {
 		public ScrapeMovieActionData18Movie()
 		 {
 			super();
-			putValue(NAME, "Scrape as Data18 (American) Movie");
-			putValue(SHORT_DESCRIPTION, "Scrape Selected Movie as Data18 (American) Movie");
+			putValue(NAME, "Scrape Data18 Movie");
+			putValue(SHORT_DESCRIPTION, "Scrape Data18 Movie");
 			promptUserForURLWhenScraping = true;
 			this.scrapeData18Movie = true;
 			this.scrapeJAV = false;
+		 }
+		public void actionPerformed(ActionEvent e){
+			super.actionPerformed(e);
+		}
+	}
+	
+	private class ScrapeMovieActionData18WebContent extends ScrapeMovieAction
+	{
+		private static final long serialVersionUID = 1L;
+
+		public ScrapeMovieActionData18WebContent()
+		 {
+			super();
+			putValue(NAME, "Scrape Data18 WebContent");
+			putValue(SHORT_DESCRIPTION, "Scrape Data18 WebContent");
+			promptUserForURLWhenScraping = true;
+			this.scrapeData18Movie = false;
+			this.scrapeJAV = false;
+			this.scrapeData18WebContent = true;
 		 }
 		public void actionPerformed(ActionEvent e){
 			super.actionPerformed(e);

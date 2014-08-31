@@ -2,6 +2,8 @@ package moviescraper.doctord.SiteParsingProfile;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -171,7 +173,6 @@ public abstract class SiteParsingProfile {
 	        Elements links = doc.select("li[class=g]");
 	        for (Element link : links) {	            
 	            Elements hrefs = link.select("h3.r a");
-	            System.out.println("hrefs = " + hrefs);
 	            String href = hrefs.attr("href");
 	            href = URLDecoder.decode(href, encodingScheme);
 	            href = href.replaceFirst(Pattern.quote("/url?q="), "");
@@ -188,6 +189,22 @@ public abstract class SiteParsingProfile {
 	        return linksToReturn.toArray(new SearchResult[linksToReturn.size()]);
 	    }
 	}
+
+	protected static boolean fileExistsAtURL(String URLName){
+	    try {
+	      HttpURLConnection.setFollowRedirects(false);
+	      // note : you may also need
+	      //        HttpURLConnection.setInstanceFollowRedirects(false)
+	      HttpURLConnection con =
+	         (HttpURLConnection) new URL(URLName).openConnection();
+	      con.setRequestMethod("HEAD");
+	      return (con.getResponseCode() == HttpURLConnection.HTTP_OK);
+	    }
+	    catch (Exception e) {
+	       e.printStackTrace();
+	       return false;
+	    }
+	  }
 
 
 
