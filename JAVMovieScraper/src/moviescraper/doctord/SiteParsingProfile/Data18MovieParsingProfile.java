@@ -326,7 +326,11 @@ public class Data18MovieParsingProfile extends SiteParsingProfile {
 
 	@Override
 	public String createSearchString(File file) {
-		String fileBaseName = FilenameUtils.getBaseName(file.getName());
+		String fileBaseName;
+		if(file.isFile())
+			fileBaseName = FilenameUtils.getBaseName(file.getName());
+		else
+			fileBaseName = file.getName();
 		fileName = fileBaseName;
 		String [] splitBySpace = fileBaseName.split(" ");
 		if(splitBySpace.length > 1)

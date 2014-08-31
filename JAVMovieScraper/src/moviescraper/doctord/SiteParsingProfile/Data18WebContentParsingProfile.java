@@ -304,9 +304,14 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile{
 
 	@Override
 	public String createSearchString(File file) {
-		String fileBaseName = FilenameUtils.getBaseName(file.getName());
+		String fileBaseName;
+		if(file.isFile())
+			fileBaseName = FilenameUtils.getBaseName(file.getName());
+		else
+			fileBaseName = file.getName();
+		System.out.println("fileBaseName = " + fileBaseName);
 		fileName = fileBaseName;
-		String [] splitBySpace = fileBaseName.split(" ");
+		/*String [] splitBySpace = fileBaseName.split(" ");
 		if(splitBySpace.length > 1)
 		{
 			//check if last word in filename contains a year like (2012) or [2012]
@@ -316,7 +321,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile{
 				fileBaseName = fileBaseName.replaceFirst("[\\(\\[]\\d{4}[\\)\\]]","").trim();
 
 			}
-		}
+		}*/
 		if(useSiteSearch)
 		{
 			URLCodec codec = new URLCodec();
@@ -336,6 +341,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile{
 	public SearchResult[] getSearchResults(String searchString)
 			throws IOException {
 		//we're searching for new file, reset the scraped posters
+		System.out.println("searchString = " + searchString);
 		scrapedPosters = null;
 		if(useSiteSearch)
 		{
@@ -345,7 +351,10 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile{
 			if(movieSearchResultElements == null || movieSearchResultElements.size() == 0)
 			{
 				this.useSiteSearch = false;
-				return getLinksFromGoogle(fileName, "data18.com/content/");
+				SearchResult[] googleResults = getLinksFromGoogle(fileName, "data18.com/content/");
+				if(googleResults == null || googleResults.length == 0)
+					googleResults = getLinksFromGoogle(fileName.replaceAll("[0-9]", ""), "data18.com/content/");
+				return googleResults;
 			}
 			else
 			{
@@ -365,7 +374,10 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile{
 		else
 		{
 			this.useSiteSearch = false;
-			return getLinksFromGoogle(searchString, "data18.com/content/");
+			SearchResult[] googleResults = getLinksFromGoogle(searchString, "data18.com/content/");
+			if(googleResults == null || googleResults.length == 0)
+				googleResults = getLinksFromGoogle(fileName.replaceAll("[0-9]", ""), "data18.com/content/");
+			return googleResults;
 		}
 	}
 }

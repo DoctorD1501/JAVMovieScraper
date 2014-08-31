@@ -1600,7 +1600,7 @@ public class GUIMain {
 					// ID in the filename (assuming the file is only named the
 					// ID of the movie)
 					String destinationDirectoryPrefix = "";
-					if (movieToWriteToDiskList != null) {
+					if (movieToWriteToDiskList != null && movieToWriteToDiskList.size() > 0) {
 						String possibleID = movieToWriteToDiskList.get(movieNumberInList).getId().getId()
 								.toUpperCase();
 						String possibleIDWithoutDash = possibleID.replaceFirst(
@@ -2391,7 +2391,7 @@ public class GUIMain {
 
 	public File[] actorFolderFiles(int movieNumberInList) {
 		ArrayList<File> actorFiles = new ArrayList<File>();
-		if(movieToWriteToDiskList != null && movieToWriteToDiskList.get(movieNumberInList).getActors() != null)
+		if(movieToWriteToDiskList != null && movieToWriteToDiskList.size() > 0 && movieToWriteToDiskList.get(movieNumberInList).getActors() != null)
 		{
 			if(currentlySelectedActorsFolderList != null && currentlySelectedActorsFolderList.get(movieNumberInList).isDirectory())
 			{
@@ -2413,7 +2413,7 @@ public class GUIMain {
 
 	private void writeExtraFanart(File destinationDirectory, int movieNumberInList) throws IOException {
 		updateExtraFanartFolder(destinationDirectory);
-		if(movieToWriteToDiskList != null && movieToWriteToDiskList.get(movieNumberInList).getExtraFanart() != null && movieToWriteToDiskList.get(movieNumberInList).getExtraFanart().length > 0)
+		if(movieToWriteToDiskList != null && movieToWriteToDiskList.size() > 0 && movieToWriteToDiskList.get(movieNumberInList).getExtraFanart() != null && movieToWriteToDiskList.get(movieNumberInList).getExtraFanart().length > 0)
 		{
 			FileUtils.forceMkdir(currentlySelectedExtraFanartFolderList.get(movieNumberInList));
 			int currentExtraFanartNumber = 1;
