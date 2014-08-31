@@ -4,11 +4,15 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.image.BufferedImage;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
+
+import org.imgscalr.Scalr;
+import org.imgscalr.Scalr.Method;
 
 import moviescraper.doctord.Thumb;
 
@@ -32,8 +36,10 @@ public class FanartPickerRenderer extends JLabel implements ListCellRenderer<Thu
 		if(currentIcon == null)
 		{
 			currentIcon = entry.getImageIconThumbImage();
-			Image scaledImg = currentIcon.getImage().getScaledInstance(60, 60, java.awt.Image.SCALE_SMOOTH);
-			currentIcon = new ImageIcon(scaledImg);
+			//Image scaledImg = currentIcon.getImage().getScaledInstance(250, 250, java.awt.Image.SCALE_SMOOTH);
+			BufferedImage img = (BufferedImage) currentIcon.getImage();
+			BufferedImage scaledImage = Scalr.resize(img, Method.QUALITY, 250, 250, Scalr.OP_ANTIALIAS);
+			currentIcon = new ImageIcon(scaledImage);
 		}
 		if(currentIcon != null)
 		{

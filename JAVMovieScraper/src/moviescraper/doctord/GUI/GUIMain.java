@@ -119,8 +119,11 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.imgscalr.Scalr;
+import org.imgscalr.Scalr.Method;
 
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 
 import javax.swing.BoxLayout;
 
@@ -761,7 +764,6 @@ public class GUIMain {
 		frmMoviescraper.setJMenuBar(menuBar);
 	}
 	protected void removeOldScrapedMovieReferences() {
-		debugWriter("removing old movie references");
 		currentlySelectedMovieDMM = null;
 		currentlySelectedMovieActionJav = null;
 		currentlySelectedMovieSquarePlus = null;
@@ -774,7 +776,6 @@ public class GUIMain {
 
 	}
 	protected void removeOldSelectedFileReferences(){
-		debugWriter("removing old file references");
 		currentlySelectedNfoFileList.clear();
 		currentlySelectedMovieFileList.clear();
 		currentlySelectedActorsFolderList.clear();
@@ -1170,14 +1171,14 @@ public class GUIMain {
 				currentPosters[0] = fileFromDisk;
 			}
 
-			// The poster read from the URL is not resized. Let's do a resize
-			// now.
+			// The poster read from the URL is not resized. We used to do a resize here when this was only a jav scraper, but for now i've turned this off
 			else if (movieToWriteToDiskList.get(0).hasPoster()) {
 				Thumb[] currentPosters = movieToWriteToDiskList.get(0).getPosters();
 				//this was the old method before I wrote in method from pythoncovercrop. it is no longer used
 				/*currentPosters[0] = new Thumb(currentPosters[0].getThumbURL()
 						.toString(), 52.7, 0, 0, 0);*/
-				currentPosters[0] = new Thumb(currentPosters[0].getThumbURL().toString(), true);
+				//for now don't resize
+				//currentPosters[0] = new Thumb(currentPosters[0].getThumbURL().toString(), true);
 			}
 			updateAllFieldsOfSite1Movie();
 		} catch (FileNotFoundException e) {
@@ -1267,9 +1268,11 @@ public class GUIMain {
 			File standardPosterJpg = new File(Movie.getFileNameOfPoster(currentlySelectedMovieFileList.get(0), false));
 			if (currentlySelectedPosterFileList.get(0).exists()) {
 				try {
-					ImageIcon newPosterIcon = new ImageIcon(currentlySelectedPosterFileList.get(0).getCanonicalPath());
-					Image scaledImg = newPosterIcon.getImage().getScaledInstance(posterSizeX, posterSizeY, java.awt.Image.SCALE_SMOOTH);
-					newPosterIcon = new ImageIcon(scaledImg);
+					ImageIcon newPosterIcon;
+					//Image scaledImg = newPosterIcon.getImage().getScaledInstance(posterSizeX, posterSizeY, java.awt.Image.SCALE_SMOOTH);
+					BufferedImage img = ImageIO.read(currentlySelectedPosterFileList.get(0));
+					BufferedImage scaledImage = Scalr.resize(img, Method.QUALITY, posterSizeX, posterSizeY, Scalr.OP_ANTIALIAS);
+					newPosterIcon = new ImageIcon(scaledImage);
 					lblPosterIcon.setIcon(newPosterIcon);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
@@ -1281,9 +1284,11 @@ public class GUIMain {
 			{
 				try {
 					//System.out.println("Reading in poster from other" + potentialOtherPosterJpg);
-					ImageIcon newPosterIcon = new ImageIcon(potentialOtherPosterJpg.getCanonicalPath());
-					Image scaledImg = newPosterIcon.getImage().getScaledInstance(posterSizeX, posterSizeY, java.awt.Image.SCALE_SMOOTH);
-					newPosterIcon = new ImageIcon(scaledImg);
+					ImageIcon newPosterIcon;
+					//Image scaledImg = newPosterIcon.getImage().getScaledInstance(posterSizeX, posterSizeY, java.awt.Image.SCALE_SMOOTH);
+					BufferedImage img = ImageIO.read(potentialOtherPosterJpg);
+					BufferedImage scaledImage = Scalr.resize(img, Method.QUALITY, posterSizeX, posterSizeY, Scalr.OP_ANTIALIAS);
+					newPosterIcon = new ImageIcon(scaledImage);
 					lblPosterIcon.setIcon(newPosterIcon);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
@@ -1308,7 +1313,10 @@ public class GUIMain {
 					posterImage = movieToWriteToDiskList.get(0).getPosters()[0]
 							.getThumbImage();
 					ImageIcon newPosterIcon = new ImageIcon(posterImage);
-					posterImage = newPosterIcon.getImage().getScaledInstance(posterSizeX, posterSizeY, java.awt.Image.SCALE_SMOOTH);
+					BufferedImage img = (BufferedImage) newPosterIcon.getImage();
+					BufferedImage scaledImage = Scalr.resize(img, Method.QUALITY, posterSizeX, posterSizeY, Scalr.OP_ANTIALIAS);
+					//posterImage = new PosterIcon.getImage().getScaledInstance(posterSizeX, posterSizeY, java.awt.Image.SCALE_SMOOTH);
+					posterImage = scaledImage;
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -1891,7 +1899,7 @@ public class GUIMain {
 				panel.add(pane, BorderLayout.CENTER);
 				//JButton okButton = new JButton("OK");
 				//panel.add(okButton,BorderLayout.SOUTH);
-				panel.setPreferredSize(new Dimension(800,600));
+				panel.setPreferredSize(new Dimension(325,600));
 				
 				final JDialog bwin = new JDialog();
 		         bwin.addWindowFocusListener(new WindowFocusListener()
