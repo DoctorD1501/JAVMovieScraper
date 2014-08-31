@@ -1767,7 +1767,11 @@ public class GUIMain {
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			
+			try
+			{
+			//this takes a while to do, so set the cursor to busy
+			frmMoviescraper.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));	
+				
 			// clear out all old values of the scraped movie
 			removeOldScrapedMovieReferences();
 			
@@ -1864,6 +1868,11 @@ public class GUIMain {
 			if(movieToWriteToDiskList != null && movieToWriteToDiskList.get(movieNumberInList) != null)
 				updateAllFieldsOfSite1Movie();
 			}
+			}
+			finally
+			{
+				frmMoviescraper.setCursor(Cursor.getDefaultCursor());
+			}
 		}
 
 
@@ -1958,7 +1967,6 @@ public class GUIMain {
 
 			try
 			{
-				frmMoviescraper.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 				scrapeQueryData18MovieThread.start();
 				scrapeQueryData18MovieThread.join();
 
@@ -1966,10 +1974,6 @@ public class GUIMain {
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
-			finally
-			{
-				frmMoviescraper.setCursor(Cursor.getDefaultCursor());
 			}
 			return currentlySelectedMovieData18Movie;
 		}
@@ -2097,8 +2101,7 @@ public class GUIMain {
 
 			try
 			{
-				// Run all the threads in parallel, put busy cursor on as this could take a while
-				frmMoviescraper.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+				// Run all the threads in parallel
 				scrapeQueryDMMThread.start();
 				scrapeQueryActionJavThread.start();
 				scrapeQuerySquarePlusThread.start();
@@ -2131,10 +2134,6 @@ public class GUIMain {
 			catch (InterruptedException e1) {
 				e1.printStackTrace();
 				JOptionPane.showMessageDialog(null, ExceptionUtils.getStackTrace(e1),"Unhandled Exception",JOptionPane.ERROR_MESSAGE);
-			}
-			finally
-			{
-				frmMoviescraper.setCursor(Cursor.getDefaultCursor());
 			}
 			return movieAmalgamated;
 		}
