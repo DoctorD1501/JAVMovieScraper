@@ -140,9 +140,37 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile{
 
 	@Override
 	public Thumb[] scrapePosters() {
-		//find split scene links from a full movie
+		//If scene is from a page that has video stills, grab the posters from the trailer link
+		ArrayList<Thumb> posters = new ArrayList<Thumb>();
+		Elements trailerImgElements = document.select("img.noborder[title=Scene Preview]");
+		if(trailerImgElements != null && trailerImgElements.size() > 0)
+		{
+			//add the trailer image
+			try {
+				posters.add(new Thumb(trailerImgElements.first().attr("src")));
+			} catch (MalformedURLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			//get any video stills too
+			Elements videoStills = document.select("div:containsOwn(Video Stills:) ~ div img");
+			if(videoStills != null && videoStills.size() > 0)
+			{
+				try {
+					for(Element currentVideoStill : videoStills)
+						posters.add(new Thumb(currentVideoStill.attr("src")));
+				} catch (MalformedURLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			return posters.toArray(new Thumb[posters.size()]);
+		}
+		
+		
+		//otherwise, find split scene links from a full movie
 		ArrayList<String> contentLinks = new ArrayList<String>();
-		ArrayList<Thumb> extraFanart = new ArrayList<Thumb>();
 		String docLocation = document.location();
 		String contentIDFromPage = docLocation.substring(docLocation.lastIndexOf("/")+1,docLocation.length());
 		contentLinks.add(contentIDFromPage);
@@ -170,7 +198,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile{
 							if(fileExistsAtURL(previewURL))
 								thumbToAdd.setPreviewURL(new URL(previewURL));
 							//System.out.println("previewURL : " + previewURL);
-							extraFanart.add(thumbToAdd);
+							posters.add(thumbToAdd);
 						}
 					}
 
@@ -180,7 +208,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile{
 
 			}
 		}
-		scrapedPosters = extraFanart.toArray(new Thumb[extraFanart.size()]);
+		scrapedPosters = posters.toArray(new Thumb[posters.size()]);
 		return scrapedPosters;
 	}
 

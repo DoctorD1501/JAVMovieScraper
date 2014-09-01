@@ -2320,9 +2320,9 @@ public class GUIMain {
 			label.setFont(font);
 			label.setBorder(BorderFactory.createLineBorder(Color.black));
 			if (index % 2 == 0) {
-				label.setBackground(SystemColor.controlHighlight);
+				label.setBackground(SystemColor.controlShadow);
 			} else {
-				label.setBackground(SystemColor.controlLtHighlight);
+				label.setBackground(SystemColor.controlHighlight);
 			}
 			return label;
 		}
