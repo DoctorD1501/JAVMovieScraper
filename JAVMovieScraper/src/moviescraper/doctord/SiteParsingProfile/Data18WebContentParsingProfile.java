@@ -142,19 +142,21 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile{
 	public Thumb[] scrapePosters() {
 		//If scene is from a page that has video stills, grab the posters from the trailer link
 		ArrayList<Thumb> posters = new ArrayList<Thumb>();
-		Elements trailerImgElements = document.select("img.noborder[title=Scene Preview]");
-		if(trailerImgElements != null && trailerImgElements.size() > 0)
+		Elements trailerImgElements = document.select("img.noborder[title=Scene Preview], img.noborder[title=Play this video], a[href*=/trailer] img.noborder:not([src*=play.png])");
+		Elements videoStills = document.select("div:containsOwn(Video Stills:) ~ div img");
+		if(trailerImgElements != null && trailerImgElements.size() > 0 && (videoStills == null || videoStills.size() == 0))
 		{
 			//add the trailer image
 			try {
-				posters.add(new Thumb(trailerImgElements.first().attr("src")));
+				for(Element currentTrailerElement: trailerImgElements)
+					posters.add(new Thumb(currentTrailerElement.attr("src")));
 			} catch (MalformedURLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
 			//get any video stills too
-			Elements videoStills = document.select("div:containsOwn(Video Stills:) ~ div img");
+			
 			if(videoStills != null && videoStills.size() > 0)
 			{
 				try {
