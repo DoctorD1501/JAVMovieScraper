@@ -63,7 +63,7 @@ public class Data18MovieParsingProfile extends SiteParsingProfile {
 
 	@Override
 	public Set scrapeSet() {
-		Element setElement = document.select("a[href*=/series/]").first();
+		Element setElement = document.select("div div.p8 div p a[href*=/series/]").first();
 		if(setElement != null)
 			return new Set(setElement.text());
 		else return new Set("");
@@ -77,8 +77,24 @@ public class Data18MovieParsingProfile extends SiteParsingProfile {
 
 	@Override
 	public Year scrapeYear() {
+		
+		//old method before site update in September 2014
 		Element releaseDateElement = document.select("div p:contains(Release Date:) b").first();
-		if(releaseDateElement != null)
+		//new method after site update in sept 2014
+		if(releaseDateElement == null)
+		{
+			
+			releaseDateElement = document.select("div.p8 div h1.h1big ~ p").first();
+			String releaseDateText = releaseDateElement.text().trim();
+			if(releaseDateText.length() > 4)
+			{
+				//just get the first 4 letters which is the year
+				releaseDateText = releaseDateText.substring(0,4);
+				return new Year(releaseDateText);
+			}
+			else return new Year("");
+		}
+		else if(releaseDateElement != null)
 		{
 			String releaseDateText = releaseDateElement.text().trim();
 			//just get the last 4 letters which is the year
@@ -137,7 +153,7 @@ public class Data18MovieParsingProfile extends SiteParsingProfile {
 
 	@Override
 	public Thumb[] scrapePosters() {
-		Element posterElement = document.select("a[data-lightbox=covers]").first();
+		Element posterElement = document.select("a[rel=covers]").first();
 		if(posterElement != null)
 		{
 			Thumb[] posterThumbs = new Thumb[1];
@@ -154,7 +170,7 @@ public class Data18MovieParsingProfile extends SiteParsingProfile {
 
 	@Override
 	public Thumb[] scrapeFanart() {
-		Element posterElement = document.select("a[data-lightbox=covers]:contains(Back Cover)").first();
+		Element posterElement = document.select("a[rel=covers]:contains(Back Cover)").first();
 		if(posterElement != null)
 		{
 			Thumb[] posterThumbs = new Thumb[1];
@@ -314,10 +330,10 @@ public class Data18MovieParsingProfile extends SiteParsingProfile {
 
 	@Override
 	public Studio scrapeStudio() {
-		Element studioElement = document.select("p.gen12 b:contains(Studio:) ~ a").first();
+		Element studioElement = document.select("div div.p8 div p a[href*=/studios/").first();
 		if(studioElement != null)
 		{
-			String studioText = studioElement.text();
+			String studioText = studioElement.text().trim();
 			if(studioText != null && studioText.length() > 0)
 				return new Studio(studioText);
 		}
