@@ -1721,6 +1721,7 @@ public class GUIMain {
 		boolean scrapeData18Movie = false;
 		boolean scrapeData18WebContent = false;
 		boolean manuallyPickFanart = true;
+		boolean manuallyPickPoster = true;
 		
 		public SearchResult showOptionPane(SearchResult [] searchResults, String siteName)
 		{
@@ -1860,6 +1861,27 @@ public class GUIMain {
 				data18Movie = makeData18MovieThreadsAndScrape(movieNumberInList, false);
 			}
 			
+			//Allow the user to manually pick poster from a dialog box for data18 movies
+			if(manuallyPickPoster && data18Movie != null)
+			{
+				//get all unique elements from the posters and the extrafanart - my method here is probably pretty inefficient, but the lists aren't more than 100 items, so no big deal
+				HashSet<Thumb> uniqueElements = new HashSet<Thumb>(Arrays.asList(data18Movie.getPosters()));
+				uniqueElements.addAll(Arrays.asList(data18Movie.getExtraFanart()));
+				ArrayList<Thumb> uniqueElementsList = (new ArrayList<Thumb>(uniqueElements));
+				Thumb [] uniqueElementsArray = uniqueElementsList.toArray(new Thumb[uniqueElementsList.size()]);
+				
+				Thumb posterPicked = showArtPicker(uniqueElementsArray,"Pick Poster");
+				if(posterPicked != null)
+				{
+					//remove the item from the picked from the existing poster and put it at the front of the list
+					ArrayList<Thumb> existingPosters = new ArrayList<Thumb>(Arrays.asList(currentlySelectedMovieData18Movie.getPosters()));
+					existingPosters.remove(posterPicked);
+					existingPosters.add(0,posterPicked);
+					Thumb [] posterArray = new Thumb[existingPosters.size()];
+					currentlySelectedMovieData18Movie.setPosters(existingPosters.toArray(posterArray));
+				}
+			}
+			
 			//Allow the user to manually pick fanart from a dialog box
 			if(manuallyPickFanart && data18Movie != null)
 			{
@@ -1869,7 +1891,7 @@ public class GUIMain {
 				ArrayList<Thumb> uniqueElementsList = (new ArrayList<Thumb>(uniqueElements));
 				Thumb [] uniqueElementsArray = uniqueElementsList.toArray(new Thumb[uniqueElementsList.size()]);
 				
-				Thumb fanartPicked = showFanartPicker(uniqueElementsArray,"Pick Fanart");
+				Thumb fanartPicked = showArtPicker(uniqueElementsArray,"Pick Fanart");
 				if(fanartPicked != null)
 				{
 					//remove the item from the picked from the existing fanart and put it at the front of the list
@@ -1884,7 +1906,7 @@ public class GUIMain {
 			else if(manuallyPickFanart && javMovie != null)
 			{
 				//we don't need to worry about picking out the unique elements like above since there is no duplication between fanart and extrafanart in this case
-				Thumb fanartPicked = showFanartPicker(ArrayUtils.addAll(javMovie.getFanart(), javMovie.getExtraFanart()),"Pick Fanart");
+				Thumb fanartPicked = showArtPicker(ArrayUtils.addAll(javMovie.getFanart(), javMovie.getExtraFanart()),"Pick Fanart");
 				if(fanartPicked != null)
 					javMovie.setFanart(ArrayUtils.toArray(fanartPicked));
 			}
@@ -1914,32 +1936,18 @@ public class GUIMain {
 			
 		}
 
-
-		public Thumb showFanartPicker(Thumb [] fanarts, String windowTitle)
+		//Selection Dialog box used to display posters and fanarts
+		public Thumb showArtPicker(Thumb [] thumbArray, String windowTitle)
 		{
-			if(fanarts.length > 0)
+			if(thumbArray.length > 0)
 			{
-				/*JLabel [] options = new JLabel[fanarts.length];
-				for(int i = 0; i < fanarts.length; i++)
-				{
-					JLabel currentLabel = new JLabel();
-					//currentLabel.setText(fanarts[i].getUrlPath());
-					Thumb currentThumb = fanarts[i];
-					if(currentThumb.getThumbURL() != null)
-					{
-						currentLabel.setIcon(currentThumb.getImageIconThumbImage());
-					}
-					options[i] = currentLabel;
-				}*/
 				JPanel panel = new JPanel();
 				panel.setLayout(new BorderLayout());
-				JList<Thumb> labelList = new JList<Thumb>(fanarts);
+				JList<Thumb> labelList = new JList<Thumb>(thumbArray);
 				labelList.setCellRenderer(new FanartPickerRenderer());
 				labelList.setVisible(true);
 				JScrollPane pane = new JScrollPane(labelList);
 				panel.add(pane, BorderLayout.CENTER);
-				//JButton okButton = new JButton("OK");
-				//panel.add(okButton,BorderLayout.SOUTH);
 				panel.setPreferredSize(new Dimension(325,600));
 				
 				final JDialog bwin = new JDialog();
