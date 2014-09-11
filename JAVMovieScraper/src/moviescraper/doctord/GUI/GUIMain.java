@@ -1862,7 +1862,7 @@ public class GUIMain {
 			}
 			
 			//Allow the user to manually pick poster from a dialog box for data18 movies
-			if(manuallyPickPoster && data18Movie != null)
+			if(manuallyPickPoster && data18Movie != null && data18Movie.getPosters() != null && data18Movie.getPosters().length > 1)
 			{
 				//get all unique elements from the posters and the extrafanart - my method here is probably pretty inefficient, but the lists aren't more than 100 items, so no big deal
 				HashSet<Thumb> uniqueElements = new HashSet<Thumb>(Arrays.asList(data18Movie.getPosters()));
@@ -1883,7 +1883,7 @@ public class GUIMain {
 			}
 			
 			//Allow the user to manually pick fanart from a dialog box
-			if(manuallyPickFanart && data18Movie != null)
+			if(manuallyPickFanart && data18Movie != null && data18Movie.getFanart() != null && data18Movie.getFanart().length > 1)
 			{
 				//get all unique elements from the fanart and the extrafanart - my method here is probably pretty inefficient, but the lists aren't more than 100 items, so no big deal
 				HashSet<Thumb> uniqueElements = new HashSet<Thumb>(Arrays.asList(data18Movie.getFanart()));
