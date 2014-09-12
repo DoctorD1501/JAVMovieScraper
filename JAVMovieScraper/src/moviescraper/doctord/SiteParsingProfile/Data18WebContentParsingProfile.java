@@ -70,7 +70,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile{
 			return new Set(relatedMovie.text());
 		}
 		//setElement used below is for web downloads
-		Element setElement = document.select("div#centered.main2 div.dloc.gen12 a").last();
+		Element setElement = document.select("div.main.gre1 div#centered.main2 div.dloc a").last();
 		if(setElement != null)
 			return new Set(setElement.text());
 		else return new Set("");
@@ -322,7 +322,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile{
 
 	@Override
 	public Studio scrapeStudio() {
-		Element studioElement = document.select("div#centered.main2 div.dloc.gen12 a:contains(Sites) ~ a").first();
+		Element studioElement = document.select("div.main.gre1 div#centered.main2 a:contains(Sites) ~ a").first();
 		if(studioElement != null)
 		{
 			String studioText = studioElement.text();
