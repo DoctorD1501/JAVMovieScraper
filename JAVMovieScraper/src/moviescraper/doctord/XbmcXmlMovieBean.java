@@ -38,7 +38,16 @@ public class XbmcXmlMovieBean {
 	public static XbmcXmlMovieBean makeFromXML(String xml) {
 		XStream xstream = XbmcXmlMovieBean.getXMLSerializer();
 		xstream.ignoreUnknownElements();
-		return (XbmcXmlMovieBean) xstream.fromXML(xml);
+		try{
+			XbmcXmlMovieBean beanToReturn = (XbmcXmlMovieBean) xstream.fromXML(xml);
+			return beanToReturn;
+		}
+		catch(Exception e)
+		{
+			System.err.println("File read from nfo is not in XBMC XML format. This movie will not be read in.");
+			return null;
+		}
+
 	}
 
 	public XbmcXmlMovieBean(Movie movie) {

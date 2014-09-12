@@ -1187,7 +1187,7 @@ public class GUIMain {
 	}
 
 	protected void readMovieFromNfoFile(File nfoFile) {
-		FileInputStream fisTargetFile;
+		FileInputStream fisTargetFile = null;
 		try {
 			fisTargetFile = new FileInputStream(nfoFile);
 			String targetFileStr = IOUtils.toString(fisTargetFile, "UTF-8");
@@ -1200,38 +1200,40 @@ public class GUIMain {
 				{
 					if(targetFileStr.length() > 1)
 					{
-					targetFileStr = targetFileStr.substring(1,targetFileStr.length());
+						targetFileStr = targetFileStr.substring(1,targetFileStr.length());
 					}
 					else break;
 				}
 			}
-			movieToWriteToDiskList.add(XbmcXmlMovieBean.makeFromXML(targetFileStr)
-					.toMovie());
-			fisTargetFile.close();
-			if (currentlySelectedPosterFileList.get(0).exists()) {
-				//we don't want to resize this poster later
-				Thumb[] currentPosters = movieToWriteToDiskList.get(0).getPosters();
-				Thumb fileFromDisk;
-				if(currentPosters.length > 0 && currentPosters[0] != null && currentPosters[0].getThumbURL() != null)
-					fileFromDisk = new Thumb(currentlySelectedPosterFileList.get(0), currentPosters[0].getThumbURL().toString());
-				else
-				{
-					fileFromDisk = new Thumb(currentlySelectedPosterFileList.get(0));
-					currentPosters = new Thumb[1];
+			XbmcXmlMovieBean xmlMovieBean = XbmcXmlMovieBean.makeFromXML(targetFileStr);
+			if(xmlMovieBean != null)
+			{
+				Movie movieFromNfo = xmlMovieBean.toMovie();
+				movieToWriteToDiskList.add(movieFromNfo);
+				if (currentlySelectedPosterFileList.get(0).exists()) {
+					//we don't want to resize this poster later
+					Thumb[] currentPosters = movieToWriteToDiskList.get(0).getPosters();
+					Thumb fileFromDisk;
+					if(currentPosters.length > 0 && currentPosters[0] != null && currentPosters[0].getThumbURL() != null)
+						fileFromDisk = new Thumb(currentlySelectedPosterFileList.get(0), currentPosters[0].getThumbURL().toString());
+					else
+					{
+						fileFromDisk = new Thumb(currentlySelectedPosterFileList.get(0));
+						currentPosters = new Thumb[1];
+					}
+					currentPosters[0] = fileFromDisk;
 				}
-				currentPosters[0] = fileFromDisk;
-			}
 
-			// The poster read from the URL is not resized. We used to do a resize here when this was only a jav scraper, but for now i've turned this off
-			else if (movieToWriteToDiskList.get(0).hasPoster()) {
-				Thumb[] currentPosters = movieToWriteToDiskList.get(0).getPosters();
-				//this was the old method before I wrote in method from pythoncovercrop. it is no longer used
-				/*currentPosters[0] = new Thumb(currentPosters[0].getThumbURL()
+				// The poster read from the URL is not resized. We used to do a resize here when this was only a jav scraper, but for now i've turned this off
+				else if (movieToWriteToDiskList.get(0).hasPoster()) {
+					Thumb[] currentPosters = movieToWriteToDiskList.get(0).getPosters();
+					//this was the old method before I wrote in method from pythoncovercrop. it is no longer used
+					/*currentPosters[0] = new Thumb(currentPosters[0].getThumbURL()
 						.toString(), 52.7, 0, 0, 0);*/
-				//for now don't resize
-				//currentPosters[0] = new Thumb(currentPosters[0].getThumbURL().toString(), true);
+					//for now don't resize
+					//currentPosters[0] = new Thumb(currentPosters[0].getThumbURL().toString(), true);
+				}
 			}
-			updateAllFieldsOfSite1Movie();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			JOptionPane.showMessageDialog(null, ExceptionUtils.getStackTrace(e),"Unhandled Exception",JOptionPane.ERROR_MESSAGE);
@@ -1240,7 +1242,20 @@ public class GUIMain {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(null, ExceptionUtils.getStackTrace(e),"Unhandled Exception",JOptionPane.ERROR_MESSAGE);
-			
+
+		}
+		finally
+		{
+			try {
+				fisTargetFile.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			finally
+			{
+				updateAllFieldsOfSite1Movie();
+			}
 		}
 	}
 
@@ -1261,7 +1276,7 @@ public class GUIMain {
 	
 	//Update the GUI so the user can see what is scraped in
 	protected void updateAllFieldsOfSite1Movie() {
-		if (movieToWriteToDiskList == null) {
+		if (movieToWriteToDiskList == null || movieToWriteToDiskList.size() == 0) {
 			clearAllFieldsOfSite1Movie();
 		} else if (movieToWriteToDiskList != null && movieToWriteToDiskList.get(0) != null) {
 			clearAllFieldsOfSite1Movie();
