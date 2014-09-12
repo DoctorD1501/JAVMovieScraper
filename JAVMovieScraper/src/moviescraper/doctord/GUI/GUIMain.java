@@ -22,6 +22,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import java.awt.BorderLayout;
@@ -179,7 +180,7 @@ public class GUIMain {
 	private JLabel lblOriginalTitleTextSite1;
 	private JFileChooser chooser;
 	private JLabel lblIDCurrentMovie;
-	private JTextField moviePlotTextField;
+	private JTextArea moviePlotTextField;
 	private JTextField txtFieldMovieSet;
 	private JTextField txtFieldStudio;
 
@@ -383,7 +384,7 @@ public class GUIMain {
 
 
 
-		String [] initialTitleComboBox = {"Not Scraped Yet"};
+		String [] initialTitleComboBox = {""};
 		
 		//using this workaround for JComboBox constructor for problem with generics in WindowBuilder as per this stackoverflow thread: https://stackoverflow.com/questions/8845139/jcombobox-warning-preventing-opening-the-design-page-in-eclipse
 		comboBoxMovieTitleText = new JComboBox<String>();
@@ -433,7 +434,7 @@ public class GUIMain {
 
 
 
-		lblOriginalTitleTextSite1 = new JLabel("Not Scraped Yet");
+		lblOriginalTitleTextSite1 = new JLabel("");
 		FileDetailsPanel.add(lblOriginalTitleTextSite1, "6, 6");
 
 
@@ -441,13 +442,13 @@ public class GUIMain {
 		FileDetailsPanel.add(lblYear, "2, 8");
 		
 
-		lblScrapedYearText = new JLabel("Not Scraped Yet");
+		lblScrapedYearText = new JLabel("");
 		FileDetailsPanel.add(lblScrapedYearText, "6, 8");
 		
 		JLabel lblID = new JLabel("ID:");
 		FileDetailsPanel.add(lblID, "2, 10");
 		
-		lblIDCurrentMovie = new JLabel("Not Scraped Yet");
+		lblIDCurrentMovie = new JLabel("");
 		FileDetailsPanel.add(lblIDCurrentMovie,"6, 10");
 		
 		JLabel lblStudio = new JLabel("Studio:");
@@ -535,21 +536,9 @@ public class GUIMain {
 		FileDetailsPanel.add(lblPlot, "2,16");
 		
 
-		moviePlotTextField = new JTextField(35);
-		moviePlotTextField.addActionListener(new ActionListener(){
-	        @Override
-	        public void actionPerformed(ActionEvent e) {
-	            
-	            if(movieToWriteToDiskList != null)
-	            {
-	            	String newValue = (String) moviePlotTextField.getText();
-	            	if(newValue != null)
-	            	{
-	            		movieToWriteToDiskList.get(0).setPlot(new Plot(newValue));
-	            	}
-	            }
-	        }
-	    });
+		moviePlotTextField = new JTextArea(3,35);
+		moviePlotTextField.setLineWrap(true);
+		moviePlotTextField.setWrapStyleWord(true);
 		moviePlotTextField.addKeyListener(new KeyListener() {
 			
 			@Override
@@ -572,15 +561,10 @@ public class GUIMain {
 			
 		});
 
-		JScrollBar moviePlotScroller = new JScrollBar(JScrollBar.HORIZONTAL);
-		JPanel plotPanel = new JPanel();
-		plotPanel.setLayout(new BoxLayout(plotPanel, BoxLayout.Y_AXIS));
-		 BoundedRangeModel brm = moviePlotTextField.getHorizontalVisibility();
-		 moviePlotScroller.setModel(brm);
-		 plotPanel.add(moviePlotTextField);
-		 plotPanel.add(moviePlotScroller);
+		JScrollPane plotPanelScrollPane = new JScrollPane(moviePlotTextField, 
+				   JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-		FileDetailsPanel.add(plotPanel,"6,16");
+		FileDetailsPanel.add(plotPanelScrollPane,"6,16");
 		
 
 		JLabel lblActors = new JLabel("Actors:");
