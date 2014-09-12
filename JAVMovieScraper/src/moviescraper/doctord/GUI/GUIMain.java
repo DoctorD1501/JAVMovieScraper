@@ -148,6 +148,8 @@ public class GUIMain {
 	private List<File> currentlySelectedActorsFolderList;
 	private List<File> currentlySelectedExtraFanartFolderList;
 	private File currentlySelectedDirectoryList;
+	private File defaultHomeDirectory;
+	private MoviescraperPreferences preferences;
 	
 	//scraped movies
 	private Movie currentlySelectedMovieDMM;
@@ -174,14 +176,14 @@ public class GUIMain {
 	private Image posterImage;
 	private JPanel artworkPanel;
 	private JLabel lblPosterIcon;
-	private JLabel lblYearGoesHere;
-	private File defaultHomeDirectory;
+	private JLabel lblScrapedYearText;
+	private JLabel lblScrapedStudioText;
 	private JLabel lblOriginalTitleTextSite1;
 	private JFileChooser chooser;
 	private JLabel lblIDCurrentMovie;
 	private JTextField moviePlotTextField;
 	private JTextField txtFieldMovieSet;
-	private MoviescraperPreferences preferences;
+
 	
 	//variables for fileList
 	private static int CHAR_DELTA = 1000;
@@ -368,6 +370,8 @@ public class GUIMain {
 				FormFactory.RELATED_GAP_ROWSPEC,
 				FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC,
 				RowSpec.decode("default:grow"),
 				FormFactory.RELATED_GAP_ROWSPEC,
 				RowSpec.decode("default:grow"),
@@ -439,8 +443,8 @@ public class GUIMain {
 		FileDetailsPanel.add(lblYear, "2, 8");
 		
 
-		lblYearGoesHere = new JLabel("Not Scraped Yet");
-		FileDetailsPanel.add(lblYearGoesHere, "6, 8");
+		lblScrapedYearText = new JLabel("Not Scraped Yet");
+		FileDetailsPanel.add(lblScrapedYearText, "6, 8");
 		
 		JLabel lblID = new JLabel("ID:");
 		FileDetailsPanel.add(lblID, "2, 10");
@@ -448,8 +452,13 @@ public class GUIMain {
 		lblIDCurrentMovie = new JLabel("Not Scraped Yet");
 		FileDetailsPanel.add(lblIDCurrentMovie,"6, 10");
 		
+		JLabel lblStudio = new JLabel("Studio:");
+		lblScrapedStudioText = new JLabel("Not Scraped Yet");
+		FileDetailsPanel.add(lblStudio,"2,12");
+		FileDetailsPanel.add(lblScrapedStudioText,"6,12");
+		
 		JLabel lblSet = new JLabel("Movie Set:");
-		FileDetailsPanel.add(lblSet,"2, 12");
+		FileDetailsPanel.add(lblSet,"2, 14");
 		txtFieldMovieSet = new JTextField("");
 		txtFieldMovieSet.addActionListener(new ActionListener(){
 	        @Override
@@ -486,10 +495,10 @@ public class GUIMain {
 			}
 			
 		});
-		FileDetailsPanel.add(txtFieldMovieSet,"6,12");
+		FileDetailsPanel.add(txtFieldMovieSet,"6,14");
 		
 		JLabel lblPlot = new JLabel("Plot:");
-		FileDetailsPanel.add(lblPlot, "2,14");
+		FileDetailsPanel.add(lblPlot, "2,16");
 		
 
 		moviePlotTextField = new JTextField(35);
@@ -537,11 +546,11 @@ public class GUIMain {
 		 plotPanel.add(moviePlotTextField);
 		 plotPanel.add(moviePlotScroller);
 
-		FileDetailsPanel.add(plotPanel,"6,14");
+		FileDetailsPanel.add(plotPanel,"6,16");
 		
 
 		JLabel lblActors = new JLabel("Actors:");
-		FileDetailsPanel.add(lblActors, "2, 16");
+		FileDetailsPanel.add(lblActors, "2, 18");
 
 		listModelActorsSite1 = new DefaultListModel<String>();
 		actorListSite1 = new JList<String>(listModelActorsSite1);
@@ -551,17 +560,17 @@ public class GUIMain {
 		JScrollPane actorListScroller = new JScrollPane(actorListSite1);
 		actorListScroller.setPreferredSize(new Dimension(250, 300));
 		actorListSite1.setSize(new Dimension(250, 300));
-		FileDetailsPanel.add(actorListScroller, "6, 16");
+		FileDetailsPanel.add(actorListScroller, "6, 18");
 
 		JLabel lblGenres = new JLabel("Genres:");
-		FileDetailsPanel.add(lblGenres, "2, 18");
+		FileDetailsPanel.add(lblGenres, "2, 20");
 
 		listModelGenresSite1 = new DefaultListModel<String>();
 		genreListSite1 = new JList<String>(listModelGenresSite1);
 		JScrollPane listScrollerGenres = new JScrollPane(genreListSite1);
 
 		genreListSite1.setSize(new Dimension(200, 200));
-		FileDetailsPanel.add(listScrollerGenres, "6, 18");
+		FileDetailsPanel.add(listScrollerGenres, "6, 20");
 
 		artworkPanel = new JPanel();
 		JScrollPane artworkPanelScrollPane = new JScrollPane(artworkPanel);
@@ -1203,7 +1212,8 @@ public class GUIMain {
 		comboBoxMovieTitleText.removeAllItems();
 		comboBoxMovieTitleText.setEditable(false);
 		lblOriginalTitleTextSite1.setText("");
-		lblYearGoesHere.setText("");
+		lblScrapedYearText.setText("");
+		lblScrapedStudioText.setText("");
 		lblIDCurrentMovie.setText("");
 		listModelGenresSite1.removeAllElements();
 		listModelActorsSite1.removeAllElements();
@@ -1242,9 +1252,12 @@ public class GUIMain {
 			//ID
 			if(movieToWriteToDiskList.get(0).getId() != null)
 				lblIDCurrentMovie.setText(movieToWriteToDiskList.get(0).getId().getId());
+			//Studio
+			if(movieToWriteToDiskList.get(0).getStudio() != null)
+				lblScrapedStudioText.setText(movieToWriteToDiskList.get(0).getStudio().getStudio());
 			//Year
 			if(movieToWriteToDiskList.get(0).getYear() != null)
-			lblYearGoesHere.setText(movieToWriteToDiskList.get(0).getYear().getYear());
+			lblScrapedYearText.setText(movieToWriteToDiskList.get(0).getYear().getYear());
 			//Plot
 			if(movieToWriteToDiskList.get(0).getPlot() != null)
 				moviePlotTextField.setText(movieToWriteToDiskList.get(0).getPlot().getPlot());
