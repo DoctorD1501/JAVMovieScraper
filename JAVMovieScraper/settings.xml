@@ -2,8 +2,8 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
 <comment/>
-<entry key="overwriteFanartAndPosters">true</entry>
-<entry key="lastUsedDirectory">B:\Newsgroup\test</entry>
+<entry key="overwriteFanartAndPosters">false</entry>
+<entry key="lastUsedDirectory">X:\Scrape - American Full Movies</entry>
 <entry key="writeTrailerToFile">true</entry>
 <entry key="writeFanartAndPosters">true</entry>
 <entry key="nfoNamedMovieDotNfo">false</entry>

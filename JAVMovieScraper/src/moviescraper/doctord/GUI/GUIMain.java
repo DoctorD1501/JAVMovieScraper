@@ -1375,6 +1375,11 @@ public class GUIMain {
 
 						movieToWriteToDiskList.add(amalgamationAutoPickMovie);
 					}
+					if(movieToWriteToDiskList.get(movieNumberInList) == null)
+					{
+						System.out.println("No match for this movie in the array, skipping writing");
+						continue;
+					}
 					System.out.println("Writing this movie to file: "
 							+ movieToWriteToDiskList);
 					if(movieToWriteToDiskList != null)
