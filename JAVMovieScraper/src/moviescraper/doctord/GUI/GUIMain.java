@@ -177,12 +177,12 @@ public class GUIMain {
 	private JPanel artworkPanel;
 	private JLabel lblPosterIcon;
 	private JLabel lblScrapedYearText;
-	private JLabel lblScrapedStudioText;
 	private JLabel lblOriginalTitleTextSite1;
 	private JFileChooser chooser;
 	private JLabel lblIDCurrentMovie;
 	private JTextField moviePlotTextField;
 	private JTextField txtFieldMovieSet;
+	private JTextField txtFieldStudio;
 
 	
 	//variables for fileList
@@ -453,9 +453,45 @@ public class GUIMain {
 		FileDetailsPanel.add(lblIDCurrentMovie,"6, 10");
 		
 		JLabel lblStudio = new JLabel("Studio:");
-		lblScrapedStudioText = new JLabel("Not Scraped Yet");
+		txtFieldStudio = new JTextField("");
+		txtFieldStudio.addActionListener(new ActionListener(){
+	        @Override
+	        public void actionPerformed(ActionEvent e) {
+	            
+	            if(movieToWriteToDiskList != null)
+	            {
+	            	String newValue = (String) txtFieldStudio.getText();
+	            	if(newValue != null)
+	            	{
+	            		movieToWriteToDiskList.get(0).setStudio(new Studio(newValue));
+	            	}
+	            }
+	        }
+	    });
+		txtFieldStudio.addKeyListener(new KeyListener() {
+			
+			@Override
+			public void keyTyped(KeyEvent e) {
+			}
+			
+			@Override
+			public void keyReleased(KeyEvent e) {
+				String newValue = (String) txtFieldStudio.getText();
+            	if(newValue != null)
+            	{
+            		movieToWriteToDiskList.get(0).setStudio(new Studio(newValue));
+            	}
+				
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+			}
+			
+		});
+		
 		FileDetailsPanel.add(lblStudio,"2,12");
-		FileDetailsPanel.add(lblScrapedStudioText,"6,12");
+		FileDetailsPanel.add(txtFieldStudio,"6,12");
 		
 		JLabel lblSet = new JLabel("Movie Set:");
 		FileDetailsPanel.add(lblSet,"2, 14");
@@ -1213,7 +1249,7 @@ public class GUIMain {
 		comboBoxMovieTitleText.setEditable(false);
 		lblOriginalTitleTextSite1.setText("");
 		lblScrapedYearText.setText("");
-		lblScrapedStudioText.setText("");
+		txtFieldStudio.setText("");
 		lblIDCurrentMovie.setText("");
 		listModelGenresSite1.removeAllElements();
 		listModelActorsSite1.removeAllElements();
@@ -1254,7 +1290,7 @@ public class GUIMain {
 				lblIDCurrentMovie.setText(movieToWriteToDiskList.get(0).getId().getId());
 			//Studio
 			if(movieToWriteToDiskList.get(0).getStudio() != null)
-				lblScrapedStudioText.setText(movieToWriteToDiskList.get(0).getStudio().getStudio());
+				txtFieldStudio.setText(movieToWriteToDiskList.get(0).getStudio().getStudio());
 			//Year
 			if(movieToWriteToDiskList.get(0).getYear() != null)
 			lblScrapedYearText.setText(movieToWriteToDiskList.get(0).getYear().getYear());
