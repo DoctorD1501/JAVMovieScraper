@@ -164,7 +164,6 @@ public class GUIMain {
 	//Gui Elements
 	private JFrame frmMoviescraper;
 	private final Action moveToNewFolder = new MoveToNewFolderAction();
-	private File[] filesToList;
 	private JComboBox<String> comboBoxMovieTitleText;
 	private DefaultListModel<String> listModelActorsSite1;
 	private JList<String> actorListSite1;
@@ -189,7 +188,6 @@ public class GUIMain {
 	private static int CHAR_DELTA = 1000;
 	private String m_key;
 	private long m_time;
-	//private boolean fireListSelectionEvents = true;
 	
 	//Menus
 	JMenuBar menuBar;
@@ -838,14 +836,21 @@ public class GUIMain {
 	}
 
 	private void updateFileListModel(File currentlySelectedDirectory) {
-		filesToList = showFileListSorted(currentlySelectedDirectory);
+		File [] filesToList = showFileListSorted(currentlySelectedDirectory);
+		List<File> selectValuesListBeforeUpdate = fileList.getSelectedValuesList();
 		listModelFiles.removeAllElements();
 		for (File file : filesToList) {
 			listModelFiles.addElement(file);
 		}
 		removeOldScrapedMovieReferences();
 		removeOldSelectedFileReferences();
-
+		
+		//select the old values we had before we updated the list
+		for(File currentValueToSelect : selectValuesListBeforeUpdate)
+		{
+			fileList.setSelectedValue(currentValueToSelect, false);
+		}
+		
 	}
 
 	private File[] showFileListSorted(File currentlySelectedDirectory) {
@@ -1595,7 +1600,7 @@ public class GUIMain {
 
 				if (fileList.getSelectedIndex() == -1) {
 					// No selection
-					// Clear out old selections
+					// Clear out old selection references
 					removeOldSelectedFileReferences();
 
 				} else {
