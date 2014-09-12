@@ -1626,6 +1626,11 @@ public class GUIMain {
 					if (currentlySelectedNfoFileList.get(0).exists()) {
 						readMovieFromNfoFile(currentlySelectedNfoFileList.get(0));
 					}
+					//if no nfo file for file or directory, we want to just update the gui
+					else
+					{
+						updateAllFieldsOfSite1Movie();
+					}
 				}
 			}
 		}
