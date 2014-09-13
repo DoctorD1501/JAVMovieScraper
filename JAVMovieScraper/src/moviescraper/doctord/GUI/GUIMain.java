@@ -142,6 +142,8 @@ public class GUIMain {
 
 	
 	
+
+
 	//Objects Used to Keep Track of Program State
 	private List<File> currentlySelectedNfoFileList;
 	private List<File> currentlySelectedPosterFileList;
@@ -240,6 +242,8 @@ public class GUIMain {
 			System.out.println(message);
 	}
 	
+
+	
 	/**
 	 * Initialize the contents of the frame.
 	 */
@@ -269,6 +273,7 @@ public class GUIMain {
 		URL japanIconURL = frmMoviescraper.getClass().getResource("/res/JapanIcon.png");
 		URL openIconURL = frmMoviescraper.getClass().getResource("/res/OpenIcon.png");
 		URL fileFolderIconURL = frmMoviescraper.getClass().getResource("/res/FileFolderIcon.png");
+		URL upIconURL = frmMoviescraper.getClass().getResource("/res/UpIcon.png");
 		
 		//Used for icon in the title bar
 		Image programIcon = null;
@@ -281,54 +286,22 @@ public class GUIMain {
 		}
 		
 		//used in the write to file button
-		ImageIcon saveIcon = null;
-		try {
-			BufferedImage saveIconBufferedImage = ImageIO.read(saveButtonIconURL);
-			saveIconBufferedImage = Scalr.resize(saveIconBufferedImage, Method.QUALITY, iconSizeX, iconSizeY, Scalr.OP_ANTIALIAS);
-			saveIcon = new ImageIcon(saveIconBufferedImage);
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
+		ImageIcon saveIcon = initializeImageIcon(saveButtonIconURL);
 		
 		//used in the scrape data18 buttons
-		ImageIcon data18Icon = null;
-		try {
-			BufferedImage data18BufferedImage = ImageIO.read(data18IconURL);
-			data18BufferedImage = Scalr.resize(data18BufferedImage, Method.QUALITY, iconSizeX, iconSizeY, Scalr.OP_ANTIALIAS);
-			data18Icon = new ImageIcon(data18BufferedImage);
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
+		ImageIcon data18Icon = initializeImageIcon(data18IconURL);
 		
 		//used for scraping japanese movies
-		ImageIcon japanIcon = null;
-		try {
-			BufferedImage japanBufferedImage = ImageIO.read(japanIconURL);
-			japanBufferedImage = Scalr.resize(japanBufferedImage, Method.QUALITY, iconSizeX, iconSizeY, Scalr.OP_ANTIALIAS);
-			japanIcon = new ImageIcon(japanBufferedImage);
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
+		ImageIcon japanIcon = initializeImageIcon(japanIconURL);
 		
 		//open the file icon
-		ImageIcon openIcon = null;
-		try {
-			BufferedImage openBufferedImage = ImageIO.read(openIconURL);
-			openBufferedImage = Scalr.resize(openBufferedImage, Method.QUALITY, iconSizeX, iconSizeY, Scalr.OP_ANTIALIAS);
-			openIcon = new ImageIcon(openBufferedImage);
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
+		ImageIcon openIcon = initializeImageIcon(openIconURL);
 		
 		//move to new folder icon
-		ImageIcon moveToFolderIcon = null;
-		try {
-			BufferedImage moveToFolderBufferedImage = ImageIO.read(fileFolderIconURL);
-			moveToFolderBufferedImage = Scalr.resize(moveToFolderBufferedImage, Method.QUALITY, iconSizeX, iconSizeY, Scalr.OP_ANTIALIAS);
-			moveToFolderIcon = new ImageIcon(moveToFolderBufferedImage);
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
+		ImageIcon moveToFolderIcon = initializeImageIcon(fileFolderIconURL);
+		
+		//up one folder icon
+		ImageIcon upIcon = initializeImageIcon(upIconURL);
 
 		JPanel fileListPanel = new JPanel();
 		fileListPanel.setPreferredSize(new Dimension(200, 10));
@@ -460,14 +433,31 @@ public class GUIMain {
 		fileListScrollPane = fl.getGui(
 				showFileListSorted(currentlySelectedDirectoryList), listModelFiles,
 				true);
+		fileListPanel.setLayout(new BoxLayout(fileListPanel, BoxLayout.Y_AXIS));
 		fileListPanel.add(fileListScrollPane);
 		fileListPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+		
+		//set up buttons in the file panel
+		
+		JPanel fileListPanelButtonsPanel = new JPanel();
+		fileListPanelButtonsPanel.setAlignmentY(Component.BOTTOM_ALIGNMENT);
+		fileListPanelButtonsPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		fileListPanelButtonsPanel.setMaximumSize(new Dimension(200,200));
+		
+		JButton btnUpDirectory = new JButton();
+		btnUpDirectory.addActionListener(new UpDirectoryAction());
+		btnUpDirectory.setIcon(upIcon);
+		
 		JButton btnOpenDirectory = new JButton("Open Directory");
-		btnOpenDirectory.setAlignmentY(Component.BOTTOM_ALIGNMENT);
-		btnOpenDirectory.setAlignmentX(Component.CENTER_ALIGNMENT);
+		//btnOpenDirectory.setAlignmentY(Component.BOTTOM_ALIGNMENT);
+		//btnOpenDirectory.setAlignmentX(Component.CENTER_ALIGNMENT);
 		btnOpenDirectory.addActionListener(new OpenDirectoryAction());
-		fileListPanel.setLayout(new BoxLayout(fileListPanel, BoxLayout.Y_AXIS));
-		fileListPanel.add(btnOpenDirectory);
+		
+		
+		//fileListPanel.add(btnUpDirectory);
+		fileListPanelButtonsPanel.add(btnUpDirectory);
+		fileListPanelButtonsPanel.add(btnOpenDirectory);
+		fileListPanel.add(fileListPanelButtonsPanel);
 
 		JPanel fileDetailsPanel = new JPanel();
 		fileDetailsPanel.setBorder(BorderFactory.createLineBorder(Color.black));
@@ -790,6 +780,17 @@ public class GUIMain {
 		
 		initializeMenus();
 	}
+	
+	private ImageIcon initializeImageIcon(URL url){
+		try {
+			BufferedImage iconBufferedImage = ImageIO.read(url);
+			iconBufferedImage = Scalr.resize(iconBufferedImage, Method.QUALITY, iconSizeX, iconSizeY, Scalr.OP_ANTIALIAS);
+			return new ImageIcon(iconBufferedImage);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+			return null;
+		}
+	}
 
 	private void initializeMenus(){
 		menuBar = new JMenuBar();
@@ -981,7 +982,6 @@ public class GUIMain {
 		{
 			fileList.setSelectedValue(currentValueToSelect, false);
 		}
-		
 	}
 
 	private File[] showFileListSorted(File currentlySelectedDirectory) {
@@ -2663,6 +2663,29 @@ public class GUIMain {
 				currentExtraFanartNumber++;
 			}
 		}
+	}
+	
+	private class UpDirectoryAction implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			try{
+				File parentDirectory = currentlySelectedDirectoryList.getParentFile();
+				if(parentDirectory != null && parentDirectory.exists())
+				{
+					currentlySelectedDirectoryList = parentDirectory;
+					frmMoviescraper.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+					updateFileListModel(currentlySelectedDirectoryList);
+				}
+			}
+			finally
+			{
+				preferences.setLastUsedDirectory(currentlySelectedDirectoryList);
+				frmMoviescraper.setCursor(Cursor.getDefaultCursor());
+			}
+
+		}
+
 	}
 
 }
