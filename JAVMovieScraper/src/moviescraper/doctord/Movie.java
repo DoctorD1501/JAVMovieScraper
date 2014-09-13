@@ -560,7 +560,7 @@ public class Movie {
 	}*/
 	
 	public static Movie scrapeMovie(File movieFile, SiteParsingProfile siteToParseFrom, String urlToScrapeFromDMM, boolean useURLtoScrapeFrom) throws IOException{
-		System.out.println("movieFile = " + movieFile);
+		//System.out.println("movieFile = " + movieFile);
 		String searchString = siteToParseFrom.createSearchString(movieFile);
 		SearchResult [] searchResults = null;
 		int searchResultNumberToUse = 0;

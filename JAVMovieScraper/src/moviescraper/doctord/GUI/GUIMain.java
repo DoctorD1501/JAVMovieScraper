@@ -2091,7 +2091,7 @@ public class GUIMain {
 
 				// clear out all old values of the scraped movie
 				removeOldScrapedMovieReferences();
-
+				clearOverrides();
 				for(int movieNumberInList = 0; movieNumberInList < currentlySelectedMovieFileList.size(); movieNumberInList++)
 				{
 					//set the cursor to busy as this may take a while
@@ -2242,6 +2242,7 @@ public class GUIMain {
 		private void clearOverrides() {
 			this.overrideURLData18Movie = "";
 			this.overrideURLDMM = "";
+			this.overrideURLJavLibrary = "";
 			
 		}
 

@@ -162,7 +162,7 @@ public abstract class SiteParsingProfile {
 	
 	public SearchResult [] getLinksFromGoogle(String searchQuery, String site)
 	{
-		System.out.println("calling get links from google with searchQuery = " + searchQuery);
+		//System.out.println("calling get links from google with searchQuery = " + searchQuery);
 		Document doc;
 		ArrayList<SearchResult> linksToReturn = new ArrayList<SearchResult>();
 	    try{
