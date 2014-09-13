@@ -328,9 +328,9 @@ public class GUIMain {
 			e1.printStackTrace();
 		}
 
-		JPanel FileListPanel = new JPanel();
-		FileListPanel.setPreferredSize(new Dimension(200, 10));
-		frmMoviescraper.getContentPane().add(FileListPanel, BorderLayout.WEST);
+		JPanel fileListPanel = new JPanel();
+		fileListPanel.setPreferredSize(new Dimension(200, 10));
+		frmMoviescraper.getContentPane().add(fileListPanel, BorderLayout.WEST);
 
 		defaultHomeDirectory = preferences.getLastUsedDirectory();
 		currentlySelectedDirectoryList = defaultHomeDirectory;
@@ -398,20 +398,21 @@ public class GUIMain {
 		fileListScrollPane = fl.getGui(
 				showFileListSorted(currentlySelectedDirectoryList), listModelFiles,
 				true);
-		FileListPanel.add(fileListScrollPane);
+		fileListPanel.add(fileListScrollPane);
+		fileListPanel.setBorder(BorderFactory.createLineBorder(Color.black));
 		JButton btnOpenDirectory = new JButton("Open Directory");
 		btnOpenDirectory.setAlignmentY(Component.BOTTOM_ALIGNMENT);
 		btnOpenDirectory.setAlignmentX(Component.CENTER_ALIGNMENT);
 		btnOpenDirectory.addActionListener(new OpenDirectoryAction());
-		FileListPanel.setLayout(new BoxLayout(FileListPanel, BoxLayout.Y_AXIS));
-		FileListPanel.add(btnOpenDirectory);
+		fileListPanel.setLayout(new BoxLayout(fileListPanel, BoxLayout.Y_AXIS));
+		fileListPanel.add(btnOpenDirectory);
 
-		JPanel FileDetailsPanel = new JPanel();
-		JScrollPane FileDetailsScrollPane = new JScrollPane(FileDetailsPanel);
-		FileDetailsPanel.setForeground(Color.GRAY);
+		JPanel fileDetailsPanel = new JPanel();
+		fileDetailsPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+		JScrollPane FileDetailsScrollPane = new JScrollPane(fileDetailsPanel);
 		frmMoviescraper.getContentPane().add(FileDetailsScrollPane,
 				BorderLayout.CENTER);
-		FileDetailsPanel.setLayout(new FormLayout(new ColumnSpec[] {
+		fileDetailsPanel.setLayout(new FormLayout(new ColumnSpec[] {
 				FormFactory.RELATED_GAP_COLSPEC,
 				FormFactory.DEFAULT_COLSPEC,
 				FormFactory.RELATED_GAP_COLSPEC,
@@ -444,7 +445,7 @@ public class GUIMain {
 
 
 		JLabel lblTitle = new JLabel("Title:");
-		FileDetailsPanel.add(lblTitle, "2, 4");
+		fileDetailsPanel.add(lblTitle, "2, 4");
 
 
 
@@ -489,31 +490,31 @@ public class GUIMain {
 			
 		});
 		
-		FileDetailsPanel.add(comboBoxMovieTitleText, "6, 4");
+		fileDetailsPanel.add(comboBoxMovieTitleText, "6, 4");
 
 
 
 		JLabel lblOriginalTitle = new JLabel("Original Title:");
-		FileDetailsPanel.add(lblOriginalTitle, "2, 6");
+		fileDetailsPanel.add(lblOriginalTitle, "2, 6");
 
 
 
 		lblOriginalTitleTextSite1 = new JLabel("");
-		FileDetailsPanel.add(lblOriginalTitleTextSite1, "6, 6");
+		fileDetailsPanel.add(lblOriginalTitleTextSite1, "6, 6");
 
 
 		JLabel lblYear = new JLabel("Year:");
-		FileDetailsPanel.add(lblYear, "2, 8");
+		fileDetailsPanel.add(lblYear, "2, 8");
 		
 
 		lblScrapedYearText = new JLabel("");
-		FileDetailsPanel.add(lblScrapedYearText, "6, 8");
+		fileDetailsPanel.add(lblScrapedYearText, "6, 8");
 		
 		JLabel lblID = new JLabel("ID:");
-		FileDetailsPanel.add(lblID, "2, 10");
+		fileDetailsPanel.add(lblID, "2, 10");
 		
 		lblIDCurrentMovie = new JLabel("");
-		FileDetailsPanel.add(lblIDCurrentMovie,"6, 10");
+		fileDetailsPanel.add(lblIDCurrentMovie,"6, 10");
 		
 		JLabel lblStudio = new JLabel("Studio:");
 		txtFieldStudio = new JTextField("");
@@ -553,11 +554,11 @@ public class GUIMain {
 			
 		});
 		
-		FileDetailsPanel.add(lblStudio,"2,12");
-		FileDetailsPanel.add(txtFieldStudio,"6,12");
+		fileDetailsPanel.add(lblStudio,"2,12");
+		fileDetailsPanel.add(txtFieldStudio,"6,12");
 		
 		JLabel lblSet = new JLabel("Movie Set:");
-		FileDetailsPanel.add(lblSet,"2, 14");
+		fileDetailsPanel.add(lblSet,"2, 14");
 		txtFieldMovieSet = new JTextField("");
 		txtFieldMovieSet.addActionListener(new ActionListener(){
 	        @Override
@@ -594,10 +595,10 @@ public class GUIMain {
 			}
 			
 		});
-		FileDetailsPanel.add(txtFieldMovieSet,"6,14");
+		fileDetailsPanel.add(txtFieldMovieSet,"6,14");
 		
 		JLabel lblPlot = new JLabel("Plot:");
-		FileDetailsPanel.add(lblPlot, "2,16");
+		fileDetailsPanel.add(lblPlot, "2,16");
 		
 
 		moviePlotTextField = new JTextArea(3,35);
@@ -628,11 +629,11 @@ public class GUIMain {
 		JScrollPane plotPanelScrollPane = new JScrollPane(moviePlotTextField, 
 				   JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-		FileDetailsPanel.add(plotPanelScrollPane,"6,16");
+		fileDetailsPanel.add(plotPanelScrollPane,"6,16");
 		
 
 		JLabel lblActors = new JLabel("Actors:");
-		FileDetailsPanel.add(lblActors, "2, 18");
+		fileDetailsPanel.add(lblActors, "2, 18");
 
 		listModelActorsSite1 = new DefaultListModel<String>();
 		actorListSite1 = new JList<String>(listModelActorsSite1);
@@ -642,19 +643,20 @@ public class GUIMain {
 		JScrollPane actorListScroller = new JScrollPane(actorListSite1);
 		actorListScroller.setPreferredSize(new Dimension(250, 250));
 		actorListSite1.setSize(new Dimension(250, 250));
-		FileDetailsPanel.add(actorListScroller, "6, 18");
+		fileDetailsPanel.add(actorListScroller, "6, 18");
 
 		JLabel lblGenres = new JLabel("Genres:");
-		FileDetailsPanel.add(lblGenres, "2, 20");
+		fileDetailsPanel.add(lblGenres, "2, 20");
 
 		listModelGenresSite1 = new DefaultListModel<String>();
 		genreListSite1 = new JList<String>(listModelGenresSite1);
 		JScrollPane listScrollerGenres = new JScrollPane(genreListSite1);
 
 		genreListSite1.setSize(new Dimension(200, 200));
-		FileDetailsPanel.add(listScrollerGenres, "6, 20");
+		fileDetailsPanel.add(listScrollerGenres, "6, 20");
 
 		artworkPanel = new JPanel();
+		artworkPanel.setBorder(BorderFactory.createLineBorder(Color.black));
 		JScrollPane artworkPanelScrollPane = new JScrollPane(artworkPanel);
 		lblPosterIcon = new JLabel("");
 
@@ -674,9 +676,12 @@ public class GUIMain {
 		frmMoviescraper.getContentPane().add(artworkPanelScrollPane, BorderLayout.EAST);
 
 		JPanel buttonsPanel = new JPanel();
+		buttonsPanel.setBorder(BorderFactory.createLineBorder(Color.black));
 		buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.PAGE_AXIS));
 		JPanel scrapeButtons = new JPanel();
+		//scrapeButtons.setBackground(SystemColor.controlShadow);
 		JPanel fileOperationsButtons = new JPanel();
+		//fileOperationsButtons.setBackground(SystemColor.controlDkShadow);
 		frmMoviescraper.getContentPane().add(buttonsPanel, BorderLayout.SOUTH);
 
 		JButton btnScrapeSelectMovieJAV = new JButton("Scrape JAV");
@@ -701,17 +706,16 @@ public class GUIMain {
 			btnScrapeSelectMovieData18WebContent.setIcon(data18Icon);
 		scrapeButtons.add(btnScrapeSelectMovieData18WebContent);
 		
-
-		JButton btnMoveFileToFolder = new JButton("Move file to folder");
-		btnMoveFileToFolder.setAction(moveToNewFolder);
-		btnMoveFileToFolder.setIcon(moveToFolderIcon);
-		fileOperationsButtons.add(btnMoveFileToFolder);
-
 		JButton btnWriteFileData = new JButton("Write File Data");
 		if(saveIcon != null)
 			btnWriteFileData.setIcon(saveIcon);
 		btnWriteFileData.addActionListener(new WriteFileDataAction());
 		fileOperationsButtons.add(btnWriteFileData);
+
+		JButton btnMoveFileToFolder = new JButton("Move file to folder");
+		btnMoveFileToFolder.setAction(moveToNewFolder);
+		btnMoveFileToFolder.setIcon(moveToFolderIcon);
+		fileOperationsButtons.add(btnMoveFileToFolder);
 
 		JButton openCurrentlySelectedFileButton = new JButton(
 				"Open File");
