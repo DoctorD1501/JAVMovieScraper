@@ -108,6 +108,8 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
 
@@ -391,6 +393,66 @@ public class GUIMain {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				//do nothing until the key is released
+			}
+		});
+		
+		//add mouse listener for double click
+		fileList.addMouseListener(new MouseListener() {
+			
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				if(e.getClickCount() >= 2){
+					@SuppressWarnings("unchecked")
+					JList<File> theList = (JList<File>) e.getSource();
+					try {
+						File doubleClickedFile  = theList.getSelectedValue();
+						if(doubleClickedFile != null && doubleClickedFile.exists() && doubleClickedFile.isDirectory())
+						{
+							try{
+								currentlySelectedDirectoryList = doubleClickedFile;
+								frmMoviescraper.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+								updateFileListModel(currentlySelectedDirectoryList);
+							}
+							finally
+							{
+								preferences.setLastUsedDirectory(currentlySelectedDirectoryList);
+								frmMoviescraper.setCursor(Cursor.getDefaultCursor());
+							}
+						}
+						else
+						{
+							Desktop.getDesktop().open(theList.getSelectedValue());
+						}
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
 			}
 		});
 		
