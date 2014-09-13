@@ -124,6 +124,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.imgscalr.Scalr;
 import org.imgscalr.Scalr.Method;
+import org.imgscalr.Scalr.Mode;
 
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -193,10 +194,13 @@ public class GUIMain {
 	//Menus
 	JMenuBar menuBar;
 	JMenu preferenceMenu;
+
 	
 	//Dimensions of various elements
 	private static final int posterSizeX = 379;
 	private static final int posterSizeY = 536;
+	private static final int iconSizeX = 16;
+	private static final int iconSizeY = 16;
 	
 	private final static boolean debugMessages = false;
 
@@ -255,11 +259,71 @@ public class GUIMain {
 		frmMoviescraper.setTitle("JAVMovieScraper");
 		frmMoviescraper.setBounds(100, 100, 1024, 768);
 		frmMoviescraper.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		//initialize the icons used in the program
 		URL programIconURL = frmMoviescraper.getClass().getResource("/res/AppIcon.png");
-		Image programIcon;
+		URL saveButtonIconURL = frmMoviescraper.getClass().getResource("/res/SaveButtonIcon.png");
+		URL data18IconURL = frmMoviescraper.getClass().getResource("/res/Data18Icon.png");
+		URL japanIconURL = frmMoviescraper.getClass().getResource("/res/JapanIcon.png");
+		URL openIconURL = frmMoviescraper.getClass().getResource("/res/OpenIcon.png");
+		URL fileFolderIconURL = frmMoviescraper.getClass().getResource("/res/FileFolderIcon.png");
+		
+		//Used for icon in the title bar
+		Image programIcon = null;
 		try {
 			programIcon = ImageIO.read(programIconURL);
-			frmMoviescraper.setIconImage(programIcon);
+			if(programIcon != null)
+				frmMoviescraper.setIconImage(programIcon);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		
+		//used in the write to file button
+		ImageIcon saveIcon = null;
+		try {
+			BufferedImage saveIconBufferedImage = ImageIO.read(saveButtonIconURL);
+			saveIconBufferedImage = Scalr.resize(saveIconBufferedImage, Method.QUALITY, iconSizeX, iconSizeY, Scalr.OP_ANTIALIAS);
+			saveIcon = new ImageIcon(saveIconBufferedImage);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		
+		//used in the scrape data18 buttons
+		ImageIcon data18Icon = null;
+		try {
+			BufferedImage data18BufferedImage = ImageIO.read(data18IconURL);
+			data18BufferedImage = Scalr.resize(data18BufferedImage, Method.QUALITY, iconSizeX, iconSizeY, Scalr.OP_ANTIALIAS);
+			data18Icon = new ImageIcon(data18BufferedImage);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		
+		//used for scraping japanese movies
+		ImageIcon japanIcon = null;
+		try {
+			BufferedImage japanBufferedImage = ImageIO.read(japanIconURL);
+			japanBufferedImage = Scalr.resize(japanBufferedImage, Method.QUALITY, iconSizeX, iconSizeY, Scalr.OP_ANTIALIAS);
+			japanIcon = new ImageIcon(japanBufferedImage);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		
+		//open the file icon
+		ImageIcon openIcon = null;
+		try {
+			BufferedImage openBufferedImage = ImageIO.read(openIconURL);
+			openBufferedImage = Scalr.resize(openBufferedImage, Method.QUALITY, iconSizeX, iconSizeY, Scalr.OP_ANTIALIAS);
+			openIcon = new ImageIcon(openBufferedImage);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		
+		//move to new folder icon
+		ImageIcon moveToFolderIcon = null;
+		try {
+			BufferedImage moveToFolderBufferedImage = ImageIO.read(fileFolderIconURL);
+			moveToFolderBufferedImage = Scalr.resize(moveToFolderBufferedImage, Method.QUALITY, iconSizeX, iconSizeY, Scalr.OP_ANTIALIAS);
+			moveToFolderIcon = new ImageIcon(moveToFolderBufferedImage);
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -576,8 +640,8 @@ public class GUIMain {
 
 
 		JScrollPane actorListScroller = new JScrollPane(actorListSite1);
-		actorListScroller.setPreferredSize(new Dimension(250, 300));
-		actorListSite1.setSize(new Dimension(250, 300));
+		actorListScroller.setPreferredSize(new Dimension(250, 250));
+		actorListSite1.setSize(new Dimension(250, 250));
 		FileDetailsPanel.add(actorListScroller, "6, 18");
 
 		JLabel lblGenres = new JLabel("Genres:");
@@ -610,37 +674,54 @@ public class GUIMain {
 		frmMoviescraper.getContentPane().add(artworkPanelScrollPane, BorderLayout.EAST);
 
 		JPanel buttonsPanel = new JPanel();
+		buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.PAGE_AXIS));
+		JPanel scrapeButtons = new JPanel();
+		JPanel fileOperationsButtons = new JPanel();
 		frmMoviescraper.getContentPane().add(buttonsPanel, BorderLayout.SOUTH);
 
-		JButton btnScrapeSelectMovie = new JButton("Scrape Selected Movie");
-		btnScrapeSelectMovie.setAction(new ScrapeMovieAction());
-		buttonsPanel.add(btnScrapeSelectMovie);
+		JButton btnScrapeSelectMovieJAV = new JButton("Scrape JAV");
+		btnScrapeSelectMovieJAV.setAction(new ScrapeMovieAction());
+		btnScrapeSelectMovieJAV.setIcon(japanIcon);
+		scrapeButtons.add(btnScrapeSelectMovieJAV);
 		
-		JButton btnScrapeSelectMovieAutomatic = new JButton("Scrape Movie (Automatic Mode)");
-		btnScrapeSelectMovieAutomatic.setAction(new ScrapeMovieActionAutomatic());
-		buttonsPanel.add(btnScrapeSelectMovieAutomatic);
+		JButton btnScrapeSelectMovieJAVAutomatic = new JButton("Scrape JAV (Automatic)");
+		btnScrapeSelectMovieJAVAutomatic.setAction(new ScrapeMovieActionAutomatic());
+		btnScrapeSelectMovieJAVAutomatic.setIcon(japanIcon);
+		scrapeButtons.add(btnScrapeSelectMovieJAVAutomatic);
 		
 		JButton btnScrapeSelectMovieData18Movie = new JButton("Scrape Data18 Movie");
 		btnScrapeSelectMovieData18Movie.setAction(new ScrapeMovieActionData18Movie());
-		buttonsPanel.add(btnScrapeSelectMovieData18Movie);
+		if(data18Icon != null)
+			btnScrapeSelectMovieData18Movie.setIcon(data18Icon);
+		scrapeButtons.add(btnScrapeSelectMovieData18Movie);
 		
 		JButton btnScrapeSelectMovieData18WebContent = new JButton("Scrape Data18 Web Content");
 		btnScrapeSelectMovieData18WebContent.setAction(new ScrapeMovieActionData18WebContent());
-		buttonsPanel.add(btnScrapeSelectMovieData18WebContent);
+		if(data18Icon != null)
+			btnScrapeSelectMovieData18WebContent.setIcon(data18Icon);
+		scrapeButtons.add(btnScrapeSelectMovieData18WebContent);
 		
 
 		JButton btnMoveFileToFolder = new JButton("Move file to folder");
 		btnMoveFileToFolder.setAction(moveToNewFolder);
-		buttonsPanel.add(btnMoveFileToFolder);
+		btnMoveFileToFolder.setIcon(moveToFolderIcon);
+		fileOperationsButtons.add(btnMoveFileToFolder);
 
 		JButton btnWriteFileData = new JButton("Write File Data");
+		if(saveIcon != null)
+			btnWriteFileData.setIcon(saveIcon);
 		btnWriteFileData.addActionListener(new WriteFileDataAction());
-		buttonsPanel.add(btnWriteFileData);
+		fileOperationsButtons.add(btnWriteFileData);
 
 		JButton openCurrentlySelectedFileButton = new JButton(
-				"Open Selected File");
+				"Open File");
 		openCurrentlySelectedFileButton.addActionListener(new OpenFileAction());
-		buttonsPanel.add(openCurrentlySelectedFileButton);
+		openCurrentlySelectedFileButton.setIcon(openIcon);
+		fileOperationsButtons.add(openCurrentlySelectedFileButton);
+		
+		buttonsPanel.add(scrapeButtons);
+		buttonsPanel.add(fileOperationsButtons);
+		
 		initializeMenus();
 	}
 
