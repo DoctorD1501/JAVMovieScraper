@@ -640,6 +640,13 @@ public class Movie {
 		this.trailer = trailer;
 	}
 
+	public boolean hasFanart() {
+		if (this.fanart.length > 0)
+			return true;
+		else
+			return false;
+	}
+
 
 
 

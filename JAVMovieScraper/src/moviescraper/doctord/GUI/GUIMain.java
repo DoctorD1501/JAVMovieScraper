@@ -2,14 +2,11 @@ package moviescraper.doctord.GUI;
 
 import java.awt.EventQueue;
 
-import javax.annotation.Resource;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
-import javax.swing.BoundedRangeModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComboBox;
@@ -20,10 +17,10 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
 
 import java.awt.BorderLayout;
 
@@ -72,7 +69,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
-import java.awt.Toolkit;
 import java.awt.Transparency;
 
 import com.jgoodies.forms.layout.FormLayout;
@@ -117,7 +113,6 @@ import javax.swing.Action;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.filechooser.FileSystemView;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -126,7 +121,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.imgscalr.Scalr;
 import org.imgscalr.Scalr.Method;
-import org.imgscalr.Scalr.Mode;
 
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -179,8 +173,10 @@ public class GUIMain {
 	private JScrollPane fileListScrollPane;
 	private JList<File> fileList;
 	private Image posterImage;
+	private Image fanartImage;
 	private JPanel artworkPanel;
 	private JLabel lblPosterIcon;
+	private JLabel lblFanartIcon;
 	private JLabel lblScrapedYearText;
 	private JLabel lblOriginalTitleTextSite1;
 	private JFileChooser chooser;
@@ -199,12 +195,16 @@ public class GUIMain {
 	JMenuBar menuBar;
 	JMenu preferenceMenu;
 
+
 	
 	//Dimensions of various elements
 	private static final int posterSizeX = 379;
 	private static final int posterSizeY = 536;
+	private int fanartSizeX = 85;
+	private int fanartSizeY = 85;
 	private static final int iconSizeX = 16;
 	private static final int iconSizeY = 16;
+
 	
 	private final static boolean debugMessages = false;
 
@@ -448,16 +448,17 @@ public class GUIMain {
 		fileListPanelButtonsPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		fileListPanelButtonsPanel.setMaximumSize(new Dimension(200,200));
 		
+		//Button to go up a directory for the current directory
 		JButton btnUpDirectory = new JButton();
 		btnUpDirectory.addActionListener(new UpDirectoryAction());
 		btnUpDirectory.setIcon(upIcon);
 		
+		//Button to bring up a file chooser so the user can browse and pick what directory they want to view
 		JButton btnBrowseDirectory = new JButton("Browse Directory");
 		btnBrowseDirectory.addActionListener(new BrowseDirectoryAction());
 		btnBrowseDirectory.setIcon(browseDirectoryIcon);
 		
 		
-		//fileListPanel.add(btnUpDirectory);
 		fileListPanelButtonsPanel.add(btnUpDirectory);
 		fileListPanelButtonsPanel.add(btnBrowseDirectory);
 		fileListPanel.add(fileListPanelButtonsPanel);
@@ -711,23 +712,47 @@ public class GUIMain {
 		fileDetailsPanel.add(listScrollerGenres, "6, 20");
 
 		artworkPanel = new JPanel();
+		artworkPanel.setLayout(new BoxLayout(artworkPanel, BoxLayout.PAGE_AXIS));
 		artworkPanel.setBorder(BorderFactory.createLineBorder(Color.black));
-		JScrollPane artworkPanelScrollPane = new JScrollPane(artworkPanel);
+		
+		
+		//set up the poster
 		lblPosterIcon = new JLabel("");
-
-		Dimension posterSize = new Dimension(posterSizeX, posterSizeY);
+		
+		//Dimension posterSize = new Dimension(posterSizeX, posterSizeY);
 		// posterImage is initially a transparent poster size rectangle
 		posterImage = GraphicsEnvironment.getLocalGraphicsEnvironment()
 				.getDefaultScreenDevice().getDefaultConfiguration()
-				.createCompatibleImage(379, 536, Transparency.TRANSLUCENT);
+				.createCompatibleImage(posterSizeX, posterSizeY, Transparency.TRANSLUCENT);
+		
 		ImageIcon posterIcon = new ImageIcon(posterImage);
 		lblPosterIcon.setIcon(posterIcon);
-		lblPosterIcon.setSize(new Dimension(379, 536));
-		lblPosterIcon.setMaximumSize(posterSize);
-		lblPosterIcon.setMinimumSize(posterSize);
-		lblPosterIcon.setPreferredSize(posterSize);
-
+		//lblPosterIcon.setSize(posterSize);
+		//lblPosterIcon.setMaximumSize(posterSize);
+		//lblPosterIcon.setMinimumSize(posterSize);
+		//lblPosterIcon.setPreferredSize(posterSize);
+		lblPosterIcon.setAlignmentX(Component.LEFT_ALIGNMENT);
+		lblPosterIcon.setAlignmentY(Component.CENTER_ALIGNMENT);
+		
+		//set up the fanart
+		lblFanartIcon = new JLabel("");
+		//Dimension fanartSize = new Dimension(fanartSizeX, fanartSizeY);
+		// fanartImage is intiailly a transparent rectangle
+		fanartImage = GraphicsEnvironment.getLocalGraphicsEnvironment()
+				.getDefaultScreenDevice().getDefaultConfiguration()
+				.createCompatibleImage(fanartSizeX, fanartSizeY, Transparency.TRANSLUCENT);
+		ImageIcon fanartIcon = new ImageIcon(fanartImage);
+		lblFanartIcon.setIcon(fanartIcon);
+		//lblFanartIcon.setMaximumSize(fanartSize);
+		//lblFanartIcon.setMinimumSize(fanartSize);
+		//lblFanartIcon.setPreferredSize(fanartSize);
+		lblFanartIcon.setAlignmentX(Component.LEFT_ALIGNMENT);
+		lblFanartIcon.setAlignmentY(Component.BOTTOM_ALIGNMENT);
+		
+		
 		artworkPanel.add(lblPosterIcon);
+		artworkPanel.add(lblFanartIcon);
+		JScrollPane artworkPanelScrollPane = new JScrollPane(artworkPanel);
 		frmMoviescraper.getContentPane().add(artworkPanelScrollPane, BorderLayout.EAST);
 
 		JPanel buttonsPanel = new JPanel();
@@ -1365,7 +1390,7 @@ public class GUIMain {
 
 				// The poster read from the URL is not resized. We used to do a resize here when this was only a jav scraper, but for now i've turned this off
 				else if (movieToWriteToDiskList.get(0).hasPoster()) {
-					Thumb[] currentPosters = movieToWriteToDiskList.get(0).getPosters();
+					//Thumb[] currentPosters = movieToWriteToDiskList.get(0).getPosters();
 					//this was the old method before I wrote in method from pythoncovercrop. it is no longer used
 					/*currentPosters[0] = new Thumb(currentPosters[0].getThumbURL()
 						.toString(), 52.7, 0, 0, 0);*/
@@ -1408,6 +1433,7 @@ public class GUIMain {
 		listModelGenresSite1.removeAllElements();
 		listModelActorsSite1.removeAllElements();
 		lblPosterIcon.setIcon(null);
+		lblFanartIcon.setIcon(null);
 		moviePlotTextField.setText("");
 		txtFieldMovieSet.setText("");
 
@@ -1470,56 +1496,100 @@ public class GUIMain {
 				listModelActorsSite1.addElement(actor.getName());
 			}
 			boolean posterFileUpdateOccured = false;
+			boolean fanartFileUpdateOccured = false;
 			if(!forceUpdatePoster)
 			{
-			// try to get the poster from a local file, if it exists
-			//Maybe there is a file in the directory just called folder.jpg
-			File potentialOtherPosterJpg = new File(Movie.getFileNameOfPoster(currentlySelectedMovieFileList.get(0), true));
-			File standardPosterJpg = new File(Movie.getFileNameOfPoster(currentlySelectedMovieFileList.get(0), false));
-			if (currentlySelectedPosterFileList.get(0).exists()) {
-				try {
-					ImageIcon newPosterIcon;
-					//Image scaledImg = newPosterIcon.getImage().getScaledInstance(posterSizeX, posterSizeY, java.awt.Image.SCALE_SMOOTH);
-					BufferedImage img = ImageIO.read(currentlySelectedPosterFileList.get(0));
-					BufferedImage scaledImage = Scalr.resize(img, Method.QUALITY, posterSizeX, posterSizeY, Scalr.OP_ANTIALIAS);
-					newPosterIcon = new ImageIcon(scaledImage);
-					lblPosterIcon.setIcon(newPosterIcon);
-					posterFileUpdateOccured = true;
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				// try to get the poster from a local file, if it exists
+				//Maybe there is a file in the directory just called folder.jpg
+				File potentialOtherPosterJpg = new File(Movie.getFileNameOfPoster(currentlySelectedMovieFileList.get(0), true));
+				File potentialOtherFanartJpg = new File(Movie.getFileNameOfFanart(currentlySelectedMovieFileList.get(0), true));
+				//the poster would be called moviename-poster.jpg
+				File standardPosterJpg = new File(Movie.getFileNameOfPoster(currentlySelectedMovieFileList.get(0), false));
+				File standardFanartJpg = new File(Movie.getFileNameOfFanart(currentlySelectedMovieFileList.get(0), false));
+				if (currentlySelectedPosterFileList.get(0).exists()) {
+					try {
+						ImageIcon newPosterIcon;
+						BufferedImage img = ImageIO.read(currentlySelectedPosterFileList.get(0));
+						BufferedImage scaledImage = Scalr.resize(img, Method.QUALITY, posterSizeX, posterSizeY, Scalr.OP_ANTIALIAS);
+						newPosterIcon = new ImageIcon(scaledImage);
+						lblPosterIcon.setIcon(newPosterIcon);
+						posterFileUpdateOccured = true;
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
-			}
-			//well we didn't find a poster file we were expecting, try to see if there is any file named poster.jpg in there
-			else if(currentlySelectedMovieFileList.get(0).isDirectory() && potentialOtherPosterJpg.exists())
-			{
-				try {
-					//System.out.println("Reading in poster from other" + potentialOtherPosterJpg);
-					ImageIcon newPosterIcon;
-					//Image scaledImg = newPosterIcon.getImage().getScaledInstance(posterSizeX, posterSizeY, java.awt.Image.SCALE_SMOOTH);
-					BufferedImage img = ImageIO.read(potentialOtherPosterJpg);
-					BufferedImage scaledImage = Scalr.resize(img, Method.QUALITY, posterSizeX, posterSizeY, Scalr.OP_ANTIALIAS);
-					newPosterIcon = new ImageIcon(scaledImage);
-					lblPosterIcon.setIcon(newPosterIcon);
-					posterFileUpdateOccured = true;
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				if(currentlySelectedFanartFileList.get(0).exists())
+				{
+					try {
+						//System.out.println("found the standard fanart");
+						ImageIcon newFanartIcon;
+						BufferedImage img = ImageIO.read(currentlySelectedFanartFileList.get(0));
+						BufferedImage scaledImage = Scalr.resize(img, Method.QUALITY, fanartSizeX, fanartSizeY, Scalr.OP_ANTIALIAS);
+						newFanartIcon = new ImageIcon(scaledImage);
+						lblFanartIcon.setIcon(newFanartIcon);
+						fanartFileUpdateOccured = true;
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
-			}
-			//just in case, also check to see if one called moviename-poster.jpg is there, even if we were expecting a poster.jpg due to the preference we set
-			else if(standardPosterJpg.exists())
-			{
-				try {
-					//System.out.println("Reading in poster from movename-poster" + potentialOtherPosterJpg);
-					lblPosterIcon.setIcon(new ImageIcon(
-							standardPosterJpg.getCanonicalPath()));
-					posterFileUpdateOccured = true;
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				//well we didn't find a poster file we were expecting, try to see if there is any file named poster.jpg in there
+				if(currentlySelectedMovieFileList.get(0).isDirectory() && potentialOtherPosterJpg.exists() && !posterFileUpdateOccured)
+				{
+					try {
+						//System.out.println("Reading in poster from other" + potentialOtherPosterJpg);
+						ImageIcon newPosterIcon;
+						BufferedImage img = ImageIO.read(potentialOtherPosterJpg);
+						BufferedImage scaledImage = Scalr.resize(img, Method.QUALITY, posterSizeX, posterSizeY, Scalr.OP_ANTIALIAS);
+						newPosterIcon = new ImageIcon(scaledImage);
+						lblPosterIcon.setIcon(newPosterIcon);
+						posterFileUpdateOccured = true;
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
-			}
+				//well we didn't find a poster file we were expecting, try to see if there is any file named fanart.jpg in there
+				if(currentlySelectedMovieFileList.get(0).isDirectory() && potentialOtherFanartJpg.exists() && !fanartFileUpdateOccured)
+				{
+					try {
+						//System.out.println("Reading in fanart from other" + potentialOtherPosterJpg);
+						ImageIcon newFanartIcon;
+						BufferedImage img = ImageIO.read(potentialOtherFanartJpg);
+						BufferedImage scaledImage = Scalr.resize(img, Method.QUALITY, posterSizeX, posterSizeY, Scalr.OP_ANTIALIAS);
+						newFanartIcon = new ImageIcon(scaledImage);
+						lblFanartIcon.setIcon(newFanartIcon);
+						fanartFileUpdateOccured = true;
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+				
+				//just in case, also check to see if one called moviename-poster.jpg is there, even if we were expecting a poster.jpg due to the preference we set
+				if(standardPosterJpg.exists() && !posterFileUpdateOccured)
+				{
+					try {
+						//System.out.println("Reading in poster from moviename-poster" + potentialOtherPosterJpg);
+						lblPosterIcon.setIcon(new ImageIcon(
+								standardPosterJpg.getCanonicalPath()));
+						posterFileUpdateOccured = true;
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				
+				//just in case, also check to see if one called moviename-fanart.jpg is there, even if we were expecting a poster.jpg due to the preference we set
+				if(standardFanartJpg.exists() && !fanartFileUpdateOccured)
+				{
+					try {
+						//System.out.println("Reading in fanart from moviename-fanart" + potentialOtherPosterJpg);
+						lblFanartIcon.setIcon(new ImageIcon(
+								standardFanartJpg.getCanonicalPath()));
+						fanartFileUpdateOccured = true;
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
 			}
 			// otherwise read it from the URL specified by the object since we couldn't find any local file
 			if (movieToWriteToDiskList.get(0).hasPoster() && !posterFileUpdateOccured) {
@@ -1529,14 +1599,32 @@ public class GUIMain {
 					ImageIcon newPosterIcon = new ImageIcon(posterImage);
 					BufferedImage img = (BufferedImage) newPosterIcon.getImage();
 					BufferedImage scaledImage = Scalr.resize(img, Method.QUALITY, posterSizeX, posterSizeY, Scalr.OP_ANTIALIAS);
-					//posterImage = new PosterIcon.getImage().getScaledInstance(posterSizeX, posterSizeY, java.awt.Image.SCALE_SMOOTH);
 					posterImage = scaledImage;
+					posterFileUpdateOccured = true;
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 					JOptionPane.showMessageDialog(null, ExceptionUtils.getStackTrace(e),"Unhandled Exception",JOptionPane.ERROR_MESSAGE);
 				}
 				lblPosterIcon.setIcon(new ImageIcon(posterImage));
+			}
+			
+			//try to read the fanart from the url since we couldn't find any local file
+			if (movieToWriteToDiskList.get(0).hasFanart() && !fanartFileUpdateOccured) {
+				System.out.println("Reading in the fanart from the url");
+				try {
+					fanartImage = movieToWriteToDiskList.get(0).getFanart()[0]
+							.getThumbImage();
+					ImageIcon newFanartIcon = new ImageIcon(fanartImage);
+					BufferedImage img = (BufferedImage) newFanartIcon.getImage();
+					BufferedImage scaledImage = Scalr.resize(img, Method.QUALITY, fanartSizeX, fanartSizeY, Scalr.OP_ANTIALIAS);
+					fanartImage = scaledImage;
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, ExceptionUtils.getStackTrace(e),"Unhandled Exception",JOptionPane.ERROR_MESSAGE);
+				}
+				lblFanartIcon.setIcon(new ImageIcon(fanartImage));
 			}
 		}
 	}
