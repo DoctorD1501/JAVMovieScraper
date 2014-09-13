@@ -274,6 +274,7 @@ public class GUIMain {
 		URL openIconURL = frmMoviescraper.getClass().getResource("/res/OpenIcon.png");
 		URL fileFolderIconURL = frmMoviescraper.getClass().getResource("/res/FileFolderIcon.png");
 		URL upIconURL = frmMoviescraper.getClass().getResource("/res/UpIcon.png");
+		URL browseIconURL = frmMoviescraper.getClass().getResource("/res/BrowseDirectoryIcon.png");
 		
 		//Used for icon in the title bar
 		Image programIcon = null;
@@ -302,6 +303,9 @@ public class GUIMain {
 		
 		//up one folder icon
 		ImageIcon upIcon = initializeImageIcon(upIconURL);
+		
+		//browse directory icon
+		ImageIcon browseDirectoryIcon = initializeImageIcon(browseIconURL);
 
 		JPanel fileListPanel = new JPanel();
 		fileListPanel.setPreferredSize(new Dimension(200, 10));
@@ -448,15 +452,14 @@ public class GUIMain {
 		btnUpDirectory.addActionListener(new UpDirectoryAction());
 		btnUpDirectory.setIcon(upIcon);
 		
-		JButton btnOpenDirectory = new JButton("Open Directory");
-		//btnOpenDirectory.setAlignmentY(Component.BOTTOM_ALIGNMENT);
-		//btnOpenDirectory.setAlignmentX(Component.CENTER_ALIGNMENT);
-		btnOpenDirectory.addActionListener(new OpenDirectoryAction());
+		JButton btnBrowseDirectory = new JButton("Browse Directory");
+		btnBrowseDirectory.addActionListener(new BrowseDirectoryAction());
+		btnBrowseDirectory.setIcon(browseDirectoryIcon);
 		
 		
 		//fileListPanel.add(btnUpDirectory);
 		fileListPanelButtonsPanel.add(btnUpDirectory);
-		fileListPanelButtonsPanel.add(btnOpenDirectory);
+		fileListPanelButtonsPanel.add(btnBrowseDirectory);
 		fileListPanel.add(fileListPanelButtonsPanel);
 
 		JPanel fileDetailsPanel = new JPanel();
@@ -1698,7 +1701,7 @@ public class GUIMain {
 		}
 	}
 
-	private class OpenDirectoryAction implements ActionListener {
+	private class BrowseDirectoryAction implements ActionListener {
 		public void actionPerformed(ActionEvent arg0) {
 			chooser = new JFileChooser();
 			//remember our last used directory and start the search there
