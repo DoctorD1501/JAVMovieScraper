@@ -468,40 +468,43 @@ public class GUIMain {
 		JScrollPane FileDetailsScrollPane = new JScrollPane(fileDetailsPanel);
 		frmMoviescraper.getContentPane().add(FileDetailsScrollPane,
 				BorderLayout.CENTER);
-		fileDetailsPanel.setLayout(new FormLayout(new ColumnSpec[] {
-				FormFactory.RELATED_GAP_COLSPEC,
-				FormFactory.DEFAULT_COLSPEC,
-				FormFactory.RELATED_GAP_COLSPEC,
-				FormFactory.DEFAULT_COLSPEC,
-				FormFactory.RELATED_GAP_COLSPEC,
-				ColumnSpec.decode("default:grow"),
-				FormFactory.RELATED_GAP_COLSPEC,},
+		FormLayout formLayout = new FormLayout(new ColumnSpec[] {
+				FormFactory.RELATED_GAP_COLSPEC, // 1 - empty space
+				FormFactory.DEFAULT_COLSPEC, //2 - label for each of the form items
+				FormFactory.RELATED_GAP_COLSPEC,//3 - empty space
+				ColumnSpec.decode("default:grow"), // 4 - Form text items
+				FormFactory.RELATED_GAP_COLSPEC,//5 - empty space
+				FormFactory.DEFAULT_COLSPEC},// 6 - artwork panel
 			new RowSpec[] {
-				FormFactory.RELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC,
-				RowSpec.decode("default:grow"),
-				FormFactory.RELATED_GAP_ROWSPEC,
-				RowSpec.decode("default:grow"),
-				FormFactory.RELATED_GAP_ROWSPEC,
-				RowSpec.decode("default:grow"),}));
-
+				FormFactory.RELATED_GAP_ROWSPEC, //1 - empty space
+				FormFactory.DEFAULT_ROWSPEC, //2 - Title and artwork panel
+				FormFactory.RELATED_GAP_ROWSPEC,//3 - empty space
+				FormFactory.DEFAULT_ROWSPEC,//4 - original title
+				FormFactory.RELATED_GAP_ROWSPEC,//5 - empty space
+				FormFactory.DEFAULT_ROWSPEC,//6 - Year
+				FormFactory.RELATED_GAP_ROWSPEC,//7 - empty space
+				FormFactory.DEFAULT_ROWSPEC,//8 - ID
+				FormFactory.RELATED_GAP_ROWSPEC,//9 - empty space
+				FormFactory.DEFAULT_ROWSPEC,//10 - Studio
+				FormFactory.RELATED_GAP_ROWSPEC,//11 - empty space
+				FormFactory.DEFAULT_ROWSPEC,//12 - Movie set
+				FormFactory.RELATED_GAP_ROWSPEC,//13 - empty space
+				FormFactory.DEFAULT_ROWSPEC,//14 - Plot
+				FormFactory.RELATED_GAP_ROWSPEC,//15 - empty space
+				RowSpec.decode("default:grow"),//16 - actors
+				FormFactory.RELATED_GAP_ROWSPEC,//17 - empty space
+				RowSpec.decode("default:grow"),//18 - genres
+				FormFactory.RELATED_GAP_ROWSPEC//19 - empty space
+				});
+		
+		
+		//formLayout.setColumnGroups(new int[][]{{4, 6}});
+		
+		fileDetailsPanel.setLayout(formLayout);
 
 
 		JLabel lblTitle = new JLabel("Title:");
-		fileDetailsPanel.add(lblTitle, "2, 4");
+		fileDetailsPanel.add(lblTitle, "2, 2");
 
 
 
@@ -546,31 +549,31 @@ public class GUIMain {
 			
 		});
 		
-		fileDetailsPanel.add(comboBoxMovieTitleText, "6, 4");
+		fileDetailsPanel.add(comboBoxMovieTitleText, "4, 2");
 
 
 
 		JLabel lblOriginalTitle = new JLabel("Original Title:");
-		fileDetailsPanel.add(lblOriginalTitle, "2, 6");
+		fileDetailsPanel.add(lblOriginalTitle, "2, 4");
 
 
 
 		lblOriginalTitleTextSite1 = new JLabel("");
-		fileDetailsPanel.add(lblOriginalTitleTextSite1, "6, 6");
+		fileDetailsPanel.add(lblOriginalTitleTextSite1, "4, 4");
 
 
 		JLabel lblYear = new JLabel("Year:");
-		fileDetailsPanel.add(lblYear, "2, 8");
+		fileDetailsPanel.add(lblYear, "2, 6");
 		
 
 		lblScrapedYearText = new JLabel("");
-		fileDetailsPanel.add(lblScrapedYearText, "6, 8");
+		fileDetailsPanel.add(lblScrapedYearText, "4, 6");
 		
 		JLabel lblID = new JLabel("ID:");
-		fileDetailsPanel.add(lblID, "2, 10");
+		fileDetailsPanel.add(lblID, "2, 8");
 		
 		lblIDCurrentMovie = new JLabel("");
-		fileDetailsPanel.add(lblIDCurrentMovie,"6, 10");
+		fileDetailsPanel.add(lblIDCurrentMovie,"4, 8");
 		
 		JLabel lblStudio = new JLabel("Studio:");
 		txtFieldStudio = new JTextField("");
@@ -610,11 +613,11 @@ public class GUIMain {
 			
 		});
 		
-		fileDetailsPanel.add(lblStudio,"2,12");
-		fileDetailsPanel.add(txtFieldStudio,"6,12");
+		fileDetailsPanel.add(lblStudio,"2,10");
+		fileDetailsPanel.add(txtFieldStudio,"4,10");
 		
 		JLabel lblSet = new JLabel("Movie Set:");
-		fileDetailsPanel.add(lblSet,"2, 14");
+		fileDetailsPanel.add(lblSet,"2, 12");
 		txtFieldMovieSet = new JTextField("");
 		txtFieldMovieSet.addActionListener(new ActionListener(){
 	        @Override
@@ -651,10 +654,10 @@ public class GUIMain {
 			}
 			
 		});
-		fileDetailsPanel.add(txtFieldMovieSet,"6,14");
+		fileDetailsPanel.add(txtFieldMovieSet,"4,12");
 		
 		JLabel lblPlot = new JLabel("Plot:");
-		fileDetailsPanel.add(lblPlot, "2,16");
+		fileDetailsPanel.add(lblPlot, "2,14");
 		
 
 		moviePlotTextField = new JTextArea(3,35);
@@ -685,11 +688,11 @@ public class GUIMain {
 		JScrollPane plotPanelScrollPane = new JScrollPane(moviePlotTextField, 
 				   JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-		fileDetailsPanel.add(plotPanelScrollPane,"6,16");
+		fileDetailsPanel.add(plotPanelScrollPane,"4,14");
 		
 
 		JLabel lblActors = new JLabel("Actors:");
-		fileDetailsPanel.add(lblActors, "2, 18");
+		fileDetailsPanel.add(lblActors, "2, 16");
 
 		listModelActorsSite1 = new DefaultListModel<String>();
 		actorListSite1 = new JList<String>(listModelActorsSite1);
@@ -699,17 +702,17 @@ public class GUIMain {
 		JScrollPane actorListScroller = new JScrollPane(actorListSite1);
 		actorListScroller.setPreferredSize(new Dimension(250, 250));
 		actorListSite1.setSize(new Dimension(250, 250));
-		fileDetailsPanel.add(actorListScroller, "6, 18");
+		fileDetailsPanel.add(actorListScroller, "4, 16");
 
 		JLabel lblGenres = new JLabel("Genres:");
-		fileDetailsPanel.add(lblGenres, "2, 20");
+		fileDetailsPanel.add(lblGenres, "2, 18");
 
 		listModelGenresSite1 = new DefaultListModel<String>();
 		genreListSite1 = new JList<String>(listModelGenresSite1);
 		JScrollPane listScrollerGenres = new JScrollPane(genreListSite1);
 
 		genreListSite1.setSize(new Dimension(200, 200));
-		fileDetailsPanel.add(listScrollerGenres, "6, 20");
+		fileDetailsPanel.add(listScrollerGenres, "4, 18");
 
 		artworkPanel = new JPanel();
 		artworkPanel.setLayout(new BoxLayout(artworkPanel, BoxLayout.PAGE_AXIS));
@@ -752,9 +755,13 @@ public class GUIMain {
 		
 		artworkPanel.add(lblPosterIcon);
 		artworkPanel.add(lblFanartIcon);
-		JScrollPane artworkPanelScrollPane = new JScrollPane(artworkPanel);
-		frmMoviescraper.getContentPane().add(artworkPanelScrollPane, BorderLayout.EAST);
-
+		//JScrollPane artworkPanelScrollPane = new JScrollPane(artworkPanel);
+		
+		//frmMoviescraper.getContentPane().add(artworkPanelScrollPane, BorderLayout.EAST);
+		//fileDetailsPanel.add(artworkPanelScrollPane, "6, 2");
+		fileDetailsPanel.add(artworkPanel,"6,2,1,18");
+		
+		
 		JPanel buttonsPanel = new JPanel();
 		buttonsPanel.setBorder(BorderFactory.createLineBorder(Color.black));
 		buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.PAGE_AXIS));
