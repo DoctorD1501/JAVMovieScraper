@@ -758,7 +758,6 @@ public class GUIMain {
 		//JScrollPane artworkPanelScrollPane = new JScrollPane(artworkPanel);
 		
 		//frmMoviescraper.getContentPane().add(artworkPanelScrollPane, BorderLayout.EAST);
-		//fileDetailsPanel.add(artworkPanelScrollPane, "6, 2");
 		fileDetailsPanel.add(artworkPanel,"6,2,1,18");
 		
 		
@@ -766,9 +765,7 @@ public class GUIMain {
 		buttonsPanel.setBorder(BorderFactory.createLineBorder(Color.black));
 		buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.PAGE_AXIS));
 		JPanel scrapeButtons = new JPanel();
-		//scrapeButtons.setBackground(SystemColor.controlShadow);
 		JPanel fileOperationsButtons = new JPanel();
-		//fileOperationsButtons.setBackground(SystemColor.controlDkShadow);
 		frmMoviescraper.getContentPane().add(buttonsPanel, BorderLayout.SOUTH);
 
 		JButton btnScrapeSelectMovieJAV = new JButton("Scrape JAV");
@@ -1558,10 +1555,10 @@ public class GUIMain {
 				if(currentlySelectedMovieFileList.get(0).isDirectory() && potentialOtherFanartJpg.exists() && !fanartFileUpdateOccured)
 				{
 					try {
-						//System.out.println("Reading in fanart from other" + potentialOtherPosterJpg);
+						//System.out.println("Reading in fanart from other" + potentialOtherFanartJpg);
 						ImageIcon newFanartIcon;
 						BufferedImage img = ImageIO.read(potentialOtherFanartJpg);
-						BufferedImage scaledImage = Scalr.resize(img, Method.QUALITY, posterSizeX, posterSizeY, Scalr.OP_ANTIALIAS);
+						BufferedImage scaledImage = Scalr.resize(img, Method.QUALITY, fanartSizeX, fanartSizeY, Scalr.OP_ANTIALIAS);
 						newFanartIcon = new ImageIcon(scaledImage);
 						lblFanartIcon.setIcon(newFanartIcon);
 						fanartFileUpdateOccured = true;
@@ -1589,8 +1586,13 @@ public class GUIMain {
 				{
 					try {
 						//System.out.println("Reading in fanart from moviename-fanart" + potentialOtherPosterJpg);
-						lblFanartIcon.setIcon(new ImageIcon(
-								standardFanartJpg.getCanonicalPath()));
+						ImageIcon newFanartIcon;
+						BufferedImage img = ImageIO.read(standardFanartJpg);
+						BufferedImage scaledImage = Scalr.resize(img, Method.QUALITY, fanartSizeX, fanartSizeY, Scalr.OP_ANTIALIAS);
+						newFanartIcon = new ImageIcon(scaledImage);
+						lblFanartIcon.setIcon(newFanartIcon);
+						/*lblFanartIcon.setIcon(new ImageIcon(
+								standardFanartJpg.getCanonicalPath()));*/
 						fanartFileUpdateOccured = true;
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
