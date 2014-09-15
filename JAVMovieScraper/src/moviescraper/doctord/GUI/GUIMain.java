@@ -548,7 +548,6 @@ public class GUIMain {
 			}
 			
 		});
-		
 		fileDetailsPanel.add(comboBoxMovieTitleText, "4, 2");
 
 

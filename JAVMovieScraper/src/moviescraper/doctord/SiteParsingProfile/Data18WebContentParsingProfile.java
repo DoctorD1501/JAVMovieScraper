@@ -142,14 +142,18 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile{
 	public Thumb[] scrapePosters() {
 		//If scene is from a page that has video stills, grab the posters from the trailer link
 		ArrayList<Thumb> posters = new ArrayList<Thumb>();
-		Elements trailerImgElements = document.select("img.noborder[title=Scene Preview], img.noborder[title=Play this video], a[href*=/trailer] img.noborder:not([src*=play.png])");
+		ArrayList<Thumb> trailerImages = new ArrayList<Thumb>();
+		Elements trailerImgElements = document.select("img.noborder[title=Scene Preview], img.noborder[alt=Play this video]:not(img.noborder[src*=play.png]), div#pretrailer a[href*=/trailer] img.noborder:not(img.noborder[src*=play.png])");
 		Elements videoStills = document.select("div:containsOwn(Video Stills:) ~ div img");
 		if(trailerImgElements != null && trailerImgElements.size() > 0 && (videoStills == null || videoStills.size() == 0))
 		{
+			System.out.println("poster 1");
 			//add the trailer image
 			try {
 				for(Element currentTrailerElement: trailerImgElements)
-					posters.add(new Thumb(currentTrailerElement.attr("src")));
+				{
+					trailerImages.add(new Thumb(currentTrailerElement.attr("src")));
+				}
 			} catch (MalformedURLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -167,7 +171,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile{
 					e.printStackTrace();
 				}
 			}
-			return posters.toArray(new Thumb[posters.size()]);
+			//return posters.toArray(new Thumb[posters.size()]);
 		}
 		
 		
@@ -211,7 +215,13 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile{
 			}
 		}
 		scrapedPosters = posters.toArray(new Thumb[posters.size()]);
-		return scrapedPosters;
+		if(scrapedPosters != null && scrapedPosters.length > 0)
+			return scrapedPosters;
+		else 
+		{
+			scrapedPosters = trailerImages.toArray(new Thumb[trailerImages.size()]);
+			return scrapedPosters;
+		}
 	}
 
 	@Override
