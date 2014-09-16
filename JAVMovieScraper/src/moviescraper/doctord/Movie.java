@@ -23,6 +23,7 @@ import org.jsoup.nodes.Document;
 import moviescraper.doctord.SiteParsingProfile.Data18MovieParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.Data18WebContentParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.DmmParsingProfile;
+import moviescraper.doctord.SiteParsingProfile.IAFDParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.JavLibraryParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
 import moviescraper.doctord.dataitem.*;
@@ -600,6 +601,8 @@ public class Movie {
 				searchResults[0] = new SearchResult(urlToScrapeFromDMM);
 			else if(siteToParseFrom instanceof JavLibraryParsingProfile)
 				searchResults[0] = new SearchResult(((JavLibraryParsingProfile) siteToParseFrom).getOverrideURLJavLibrary());
+			else if(siteToParseFrom instanceof IAFDParsingProfile)
+				searchResults[0] = new SearchResult(urlToScrapeFromDMM);
 		}
 		if (searchResults != null && searchResults.length > 0 && searchResults[searchResultNumberToUse].getUrlPath().length() > 0)
 		{

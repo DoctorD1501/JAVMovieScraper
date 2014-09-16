@@ -25,6 +25,8 @@ public class MoviescraperPreferences {
 	private static final String noMovieNameInImageFiles = "noMovieNameInImageFiles";
 	private static final String writeTrailerToFile = "writeTrailerToFile";
 	private static final String nfoNamedMovieDotNfo = "nfoNamedMovieDotNfo";
+	private static final String useIAFDForActors = "useIAFDForActors";
+
 	public MoviescraperPreferences()
 	{
 		programPreferences = new Properties();
@@ -203,8 +205,12 @@ public class MoviescraperPreferences {
 		setBooleanValue(nfoNamedMovieDotNfo, preferenceValue);
 	}
 	
-
+	public boolean getUseIAFDForActors() {
+		return getBooleanValue(useIAFDForActors, false);
+	}
 	
-	
+	public void setUseIAFDForActors(boolean preferenceValue) {
+		setBooleanValue(useIAFDForActors, preferenceValue);
+	}	
 
 }

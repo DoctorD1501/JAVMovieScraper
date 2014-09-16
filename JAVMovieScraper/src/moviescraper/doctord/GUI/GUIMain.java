@@ -20,7 +20,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.ScrollPaneConstants;
 
 import java.awt.BorderLayout;
 
@@ -36,6 +35,7 @@ import moviescraper.doctord.SiteParsingProfile.CaribbeancomPremiumParsingProfile
 import moviescraper.doctord.SiteParsingProfile.Data18MovieParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.Data18WebContentParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.DmmParsingProfile;
+import moviescraper.doctord.SiteParsingProfile.IAFDParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.JavZooParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.SquarePlusParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.JavLibraryParsingProfile;
@@ -696,6 +696,7 @@ public class GUIMain {
 		listModelActorsSite1 = new DefaultListModel<String>();
 		actorListSite1 = new JList<String>(listModelActorsSite1);
 		actorListSite1.setCellRenderer(new ActressListRenderer());
+		actorListSite1.setComponentPopupMenu(new Popup(new ActorAdder(movieToWriteToDiskList, listModelActorsSite1)));
 
 
 		JScrollPane actorListScroller = new JScrollPane(actorListSite1);
@@ -709,7 +710,8 @@ public class GUIMain {
 		listModelGenresSite1 = new DefaultListModel<String>();
 		genreListSite1 = new JList<String>(listModelGenresSite1);
 		JScrollPane listScrollerGenres = new JScrollPane(genreListSite1);
-
+		genreListSite1.setComponentPopupMenu(new Popup(new GenreAdder(movieToWriteToDiskList, listModelGenresSite1)));
+		
 		genreListSite1.setSize(new Dimension(200, 200));
 		fileDetailsPanel.add(listScrollerGenres, "4, 18");
 
@@ -969,7 +971,22 @@ public class GUIMain {
 		});
 		preferenceMenu.add(nfoNamedMovieDotNfo);
 		
-		
+		//Checkbox for using IAFD Actors instead of Data18
+		JCheckBoxMenuItem useIAFDForActors = new JCheckBoxMenuItem("Using IAFD Actors instead of Data18");
+		useIAFDForActors.setState(preferences.getUseIAFDForActors());
+		useIAFDForActors.addItemListener(new ItemListener() {
+
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				//save the menu choice off to the preference object (and the disk based settings file)
+				if(e.getStateChange() == ItemEvent.SELECTED)
+					preferences.setUseIAFDForActors(true);
+				else if(e.getStateChange() == ItemEvent.DESELECTED)
+					preferences.setUseIAFDForActors(false);
+
+			}
+		});
+		preferenceMenu.add(useIAFDForActors);
 		
 		//add the various menus together
 		menuBar.add(preferenceMenu);
@@ -2029,6 +2046,7 @@ public class GUIMain {
 		String overrideURLDMM;
 		String overrideURLJavLibrary;
 		String overrideURLData18Movie;
+		String overrideURLIAFD;
 		private static final long serialVersionUID = 1L;
 		boolean promptUserForURLWhenScraping; //do we stop to ask the user to pick a URL when scraping
 		boolean scrapeJAV = true;
@@ -2041,42 +2059,13 @@ public class GUIMain {
 		{
 			if(searchResults.length > 0)
 			{
-				JPanel panel = new JPanel();
-				panel.setLayout(new BorderLayout());
-				JList<SearchResult> labelList = new JList<SearchResult>(searchResults);
-				labelList.setCellRenderer(new SearchResultsRenderer());
-				labelList.setVisible(true);
-				JScrollPane pane = new JScrollPane(labelList);
-				panel.add(pane, BorderLayout.CENTER);
-				panel.setPreferredSize(new Dimension(500,400));
-				
-				final JDialog bwin = new JDialog();
-		         bwin.addWindowFocusListener(new WindowFocusListener()
-		         {
-		             @Override
-		             public void windowLostFocus(WindowEvent e)
-		             {
-		               bwin.setVisible(false);
-		               bwin.dispose();
-		             }
 
-		             @Override
-		             public void windowGainedFocus(WindowEvent e)
-		             {
-		             }
-		         }); 
-		         bwin.add(panel);
-		         bwin.pack();
-				
-				int result = JOptionPane.showOptionDialog(null, panel, "Select Movie to Scrape From " + siteName,
+				SelectionDialog selectionDialog = new SelectionDialog(searchResults, siteName);
+
+				int result = JOptionPane.showOptionDialog(null, selectionDialog, "Select Movie to Scrape From " + siteName,
 		                JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,
 		                null, null, null);
-				if(result == JOptionPane.OK_OPTION)
-				{
-					SearchResult optionPickedFromPanel = labelList.getSelectedValue();
-					return optionPickedFromPanel;
-				}
-				else return null;
+				return selectionDialog.getSelectedValue();
 			}
 			else return null;
 		}
@@ -2158,6 +2147,26 @@ public class GUIMain {
 									return;
 								overrideURLData18Movie = searchResultFromUser.getUrlPath();
 
+							}
+							
+							if( scrapeData18Movie && preferences.getUseIAFDForActors() ) {
+								IAFDParsingProfile iafdParsingProfile = new IAFDParsingProfile();
+								SearchResult[] searchResultsIAFD = iafdParsingProfile.getSearchResults(iafdParsingProfile.createSearchString(currentlySelectedMovieFileList.get(movieNumberInList)));
+								System.out.println("neues");
+								System.out.println(searchStringData18Movie);
+								System.out.println(searchResultsIAFD);
+								
+								if(searchResultsIAFD != null && searchResultsIAFD.length > 0)
+								{
+									SearchResult searchResultFromUser = this.showOptionPane(searchResultsIAFD, "Data18 Movie");
+									if(searchResultFromUser == null)
+										return;
+									overrideURLIAFD = searchResultFromUser.getUrlPath();
+									if (!overrideURLIAFD.contains("iafd.com"))
+										overrideURLIAFD = "http://www.iafd.com/" + overrideURLIAFD;
+									System.out.println("Neue URL " + overrideURLIAFD);
+									
+								}
 							}
 						} catch (IOException e1) {
 							// TODO Auto-generated catch block
@@ -2320,6 +2329,16 @@ public class GUIMain {
 
 						System.out.println("Data18 Scrape results: "
 								+ currentlySelectedMovieData18Movie);
+						
+						if ( preferences.getUseIAFDForActors() ) {
+							Movie scrapeMovieIAFD = Movie.scrapeMovie(
+									currentlySelectedMovieFileList.get(currentMovieNumberInList),
+									new IAFDParsingProfile(), overrideURLIAFD, promptUserForURLWhenScraping);
+							System.out.println("IAFD Scrape results: "
+									+ scrapeMovieIAFD);
+							
+							currentlySelectedMovieData18Movie.setActors( scrapeMovieIAFD.getActors() );
+						}
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
