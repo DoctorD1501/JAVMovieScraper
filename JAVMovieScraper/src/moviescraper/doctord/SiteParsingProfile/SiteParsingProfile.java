@@ -7,6 +7,8 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.FilenameUtils;
@@ -170,6 +172,16 @@ public abstract class SiteParsingProfile {
 	    	String queryToEncode = "site:" + site + " " + searchQuery;
 	    	String encodedSearchQuery = URLEncoder.encode(queryToEncode, encodingScheme);
 	        doc = Jsoup.connect("https://www.google.com/search?q="+encodedSearchQuery).userAgent("Mozilla").ignoreHttpErrors(true).timeout(0).get();
+	        Elements sorryLink = doc.select("form[action=CaptchaRedirect] input");
+	        Map<String, String> captchaData = new HashMap<>();
+	        for (Element element : sorryLink) {
+	        	String key = element.attr("name");
+	        	String value = element.attr("value");
+	        	captchaData.put(key, value);
+			}
+	        if ( captchaData.size() > 0 )
+	        	System.out.println("Found Captchadata : " + captchaData);
+	        
 	        Elements links = doc.select("li[class=g]");
 	        for (Element link : links) {	            
 	            Elements hrefs = link.select("h3.r a");
