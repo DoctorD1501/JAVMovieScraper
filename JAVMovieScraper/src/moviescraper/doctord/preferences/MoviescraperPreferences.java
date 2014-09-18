@@ -26,6 +26,9 @@ public class MoviescraperPreferences {
 	private static final String writeTrailerToFile = "writeTrailerToFile";
 	private static final String nfoNamedMovieDotNfo = "nfoNamedMovieDotNfo";
 	private static final String useIAFDForActors = "useIAFDForActors";
+	private static final String sanitizerForFilename = "sanitizerForFilename";
+	private static final String renamerString = "renamerString";
+	private static final String renameMovieFile = "renameMovieFile";
 
 	public MoviescraperPreferences()
 	{
@@ -211,6 +214,30 @@ public class MoviescraperPreferences {
 	
 	public void setUseIAFDForActors(boolean preferenceValue) {
 		setBooleanValue(useIAFDForActors, preferenceValue);
-	}	
+	}
+	
+	public String getSanitizerForFilename() {
+		return programPreferences.getProperty(sanitizerForFilename, "[\\\\/:*?\"<>|\\r\\n]|[ ]+$|(?<=[^.])[.]+$|(?<=.{250})(.+)(?=[.]\\p{Alnum}{3}$)");
+	}
+	
+	public void setSanitizerForFilename(String preferenceValue) {
+		programPreferences.setProperty(sanitizerForFilename, preferenceValue);
+	}
+	
+	public String getRenamerString() {
+		return programPreferences.getProperty(renamerString, "");
+	}
+	
+	public void setRenamerString(String preferenceValue) {
+		programPreferences.setProperty(renamerString, preferenceValue);
+	}
+	
+	public boolean getRenameMovieFile() {
+		return getBooleanValue(renameMovieFile, false);
+	}
+	
+	public void setRenameMovieFile(boolean preferenceValue) {
+		setBooleanValue(renameMovieFile, preferenceValue);
+	}
 
 }

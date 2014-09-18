@@ -15,6 +15,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -59,6 +60,7 @@ import moviescraper.doctord.dataitem.Top250;
 import moviescraper.doctord.dataitem.Trailer;
 import moviescraper.doctord.dataitem.Votes;
 import moviescraper.doctord.dataitem.Year;
+import moviescraper.doctord.model.Renamer;
 import moviescraper.doctord.preferences.MoviescraperPreferences;
 
 import javax.swing.JLabel;
@@ -988,8 +990,37 @@ public class GUIMain {
 		});
 		preferenceMenu.add(useIAFDForActors);
 		
+		//Checkbox for renaming Movie file
+		JCheckBoxMenuItem renameMovieFile = new JCheckBoxMenuItem("Rename Movie File");
+		renameMovieFile.setState(preferences.getRenameMovieFile());
+		renameMovieFile.addItemListener(new ItemListener() {
+
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				//save the menu choice off to the preference object (and the disk based settings file)
+				if(e.getStateChange() == ItemEvent.SELECTED)
+					preferences.setRenameMovieFile(true);
+				else if(e.getStateChange() == ItemEvent.DESELECTED)
+					preferences.setRenameMovieFile(false);
+
+			}
+		});
+		preferenceMenu.add(renameMovieFile);
+		
+		JMenu renameMenu = new JMenu("Rename Settings");
+		
+		JMenuItem renameSettings = new JMenuItem("Rename Settings");
+		renameSettings.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new RenamerGUI(preferences);
+			}
+		});
+		renameMenu.add(renameSettings);
+		
 		//add the various menus together
 		menuBar.add(preferenceMenu);
+		menuBar.add(renameMenu);
 		frmMoviescraper.setJMenuBar(menuBar);
 	}
 	protected void removeOldScrapedMovieReferences() {
@@ -1705,15 +1736,35 @@ public class GUIMain {
 							+ movieToWriteToDiskList);
 					if(movieToWriteToDiskList != null)
 					{
-						
-						movieToWriteToDiskList.get(movieNumberInList).writeToFile(
-								currentlySelectedNfoFileList.get(movieNumberInList),
-								currentlySelectedPosterFileList.get(movieNumberInList),
-								currentlySelectedFanartFileList.get(movieNumberInList),
-								currentlySelectedFolderJpgFileList.get(movieNumberInList),
-								preferences);
-
-
+						if ( preferences.getRenameMovieFile() ) {
+							////TODO New Filewrite
+							System.out.println(currentlySelectedMovieFileList.get(0));
+							File oldMovieFile = currentlySelectedMovieFileList.get(movieNumberInList);
+							Movie movie = movieToWriteToDiskList.get(movieNumberInList);
+							
+							String sanitizerString = preferences.getSanitizerForFilename();
+							String renameString = preferences.getRenamerString(); 
+							Renamer renamer = new Renamer(renameString, sanitizerString, movie, oldMovieFile);
+							String newMovieFilename = renamer.getNewFileName();
+							System.out.println( "New Filename : " + newMovieFilename );
+							File newMovieFile = new File(newMovieFilename);
+							oldMovieFile.renameTo(newMovieFile);
+							
+							movieToWriteToDiskList.get(movieNumberInList).writeToFile(
+									new File( movie.getFileNameOfNfo(newMovieFile, preferences.getNfoNamedMovieDotNfo()) ),
+									new File( movie.getFileNameOfPoster(newMovieFile, preferences.getNoMovieNameInImageFiles()) ),
+									new File( movie.getFileNameOfFanart(newMovieFile, preferences.getNoMovieNameInImageFiles())),
+									new File( movie.getFileNameOfFolderJpg(newMovieFile) ),
+									preferences);							
+						} else {
+							//save without renaming movie
+							movieToWriteToDiskList.get(movieNumberInList).writeToFile(
+							currentlySelectedNfoFileList.get(movieNumberInList),
+							currentlySelectedPosterFileList.get(movieNumberInList),
+							currentlySelectedFanartFileList.get(movieNumberInList),
+							currentlySelectedFolderJpgFileList.get(movieNumberInList),
+							preferences);
+						}
 
 						//we can only output extra fanart if we're scraping a folder, because otherwise the extra fanart will get mixed in with other files
 						if(preferences.getExtraFanartScrapingEnabledPreference() && currentlySelectedMovieFileList.get(movieNumberInList).isDirectory() && currentlySelectedExtraFanartFolderList != null)

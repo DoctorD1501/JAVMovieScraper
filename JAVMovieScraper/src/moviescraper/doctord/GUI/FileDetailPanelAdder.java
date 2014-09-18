@@ -3,9 +3,6 @@ package moviescraper.doctord.GUI;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.util.List;
-
-import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -16,11 +13,11 @@ import moviescraper.doctord.Thumb;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Genre;
 
-abstract class AbstractAddGUI {
+abstract class AbstractFileDetailPanelAddGUI {
 
-	protected List<Movie> selectedMovies;
-	protected AbstractAddGUI( List<Movie> selectedMovies ) {
-		this.selectedMovies = selectedMovies;
+	protected FileDetailPanel fileDetailPanel;
+	protected AbstractFileDetailPanelAddGUI( FileDetailPanel fileDetailPanel ) {
+		this.fileDetailPanel = fileDetailPanel;
 	}
 	
 	protected void showOptionDialog(JPanel panel, String title) {
@@ -31,7 +28,7 @@ abstract class AbstractAddGUI {
 			try {
 				addAction();
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
+				// TODO sansibar better error detection instead of try-catch
 				e.printStackTrace();
 			}
 	}
@@ -39,73 +36,15 @@ abstract class AbstractAddGUI {
 	public abstract String getMenuItemName();
 	public abstract void showGUI();
 	public abstract void addAction() throws Exception;
-	
 }
 
-class GenreAdder extends AbstractAddGUI {
-	
-	private DefaultListModel<String> genres;
+class FileDetailPanelActorAdder extends AbstractFileDetailPanelAddGUI {
 
-	public GenreAdder(List<Movie> selectedMovies, DefaultListModel<String> genres) {
-		super(selectedMovies);
-		this.genres = genres;
-	}
-
-	private JTextField textFieldGenre;
-
-	private JPanel initializeInnerFrame() {
-		JPanel innerPanel = new JPanel();
-		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWeights = new double[]{0.0, 1.0};
-		innerPanel.setLayout(gridBagLayout);
-		
-		JLabel lblGenre = new JLabel("Genre :");
-		GridBagConstraints gbc_lblGenre = new GridBagConstraints();
-		gbc_lblGenre.insets = new Insets(0, 0, 0, 5);
-		gbc_lblGenre.anchor = GridBagConstraints.EAST;
-		gbc_lblGenre.gridx = 0;
-		gbc_lblGenre.gridy = 0;
-		innerPanel.add(lblGenre, gbc_lblGenre);
-		
-		textFieldGenre = new JTextField();
-		GridBagConstraints gbc_textField = new GridBagConstraints();
-		gbc_textField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_textField.gridx = 1;
-		gbc_textField.gridy = 0;
-		innerPanel.add(textFieldGenre, gbc_textField);
-		textFieldGenre.setColumns(10);
-		
-		return innerPanel;
-	}
-
-	@Override
-	public String getMenuItemName() {
-		return "Add New Genre";
-	}
-
-	@Override
-	public void showGUI() {
-		showOptionDialog(initializeInnerFrame(), "Add manually new Genre");
-	}
-
-	@Override
-	public void addAction() throws Exception {
-		String genre = textFieldGenre.getText();
-		if (selectedMovies.size() > 0) {
-			selectedMovies.get(0).getGenres().add(new Genre(genre));
-			genres.addElement(genre);
-		}
-	}
-}
-
-class ActorAdder extends AbstractAddGUI {
-	private DefaultListModel<String> actors;
 	private JTextField textFieldActor;
 	private JTextField textFieldURL;
 	
-	public ActorAdder(List<Movie> selectedMovies, DefaultListModel<String> actors) {
-		super(selectedMovies);
-		this.actors = actors;
+	public FileDetailPanelActorAdder(FileDetailPanel fileDetailPanel) {
+		super(fileDetailPanel);
 	}
 	
 	private JPanel initializeInnerFrame() {
@@ -168,14 +107,69 @@ class ActorAdder extends AbstractAddGUI {
 			newThumb = new Thumb(actorURL);
 		}
 		newActor = new Actor(actorName, null, newThumb);
-		if (selectedMovies.size() > 0) {
-			selectedMovies.get(0).getActors().add(newActor);
-			actors.addElement(actorName);
+		Movie currentMovie = fileDetailPanel.getCurrentMovie();
+		if (currentMovie != null) {
+			currentMovie.getActors().add(newActor);
+			fileDetailPanel.updateView();
 		}
 	}
 	
 	@Override
 	public String getMenuItemName() {
 		return "Add new Author";
+	}
+}
+
+class FileDetailPanelGenreAdder extends AbstractFileDetailPanelAddGUI {
+	
+	public FileDetailPanelGenreAdder(FileDetailPanel fileDetailPanel) {
+		super(fileDetailPanel);
+	}
+
+	private JTextField textFieldGenre;
+
+	private JPanel initializeInnerFrame() {
+		JPanel innerPanel = new JPanel();
+		GridBagLayout gridBagLayout = new GridBagLayout();
+		gridBagLayout.columnWeights = new double[]{0.0, 1.0};
+		innerPanel.setLayout(gridBagLayout);
+		
+		JLabel lblGenre = new JLabel("Genre :");
+		GridBagConstraints gbc_lblGenre = new GridBagConstraints();
+		gbc_lblGenre.insets = new Insets(0, 0, 0, 5);
+		gbc_lblGenre.anchor = GridBagConstraints.EAST;
+		gbc_lblGenre.gridx = 0;
+		gbc_lblGenre.gridy = 0;
+		innerPanel.add(lblGenre, gbc_lblGenre);
+		
+		textFieldGenre = new JTextField();
+		GridBagConstraints gbc_textField = new GridBagConstraints();
+		gbc_textField.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textField.gridx = 1;
+		gbc_textField.gridy = 0;
+		innerPanel.add(textFieldGenre, gbc_textField);
+		textFieldGenre.setColumns(10);
+		
+		return innerPanel;
+	}
+
+	@Override
+	public String getMenuItemName() {
+		return "Add New Genre";
+	}
+
+	@Override
+	public void showGUI() {
+		showOptionDialog(initializeInnerFrame(), "Add manually new Genre");
+	}
+
+	@Override
+	public void addAction() throws Exception {
+		String genre = textFieldGenre.getText();
+		Movie currentMovie = fileDetailPanel.getCurrentMovie();
+		if (currentMovie != null) {
+			currentMovie.getGenres().add(new Genre(genre));
+			fileDetailPanel.updateView();
+		}
 	}
 }
