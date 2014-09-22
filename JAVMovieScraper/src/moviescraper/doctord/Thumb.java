@@ -99,6 +99,17 @@ public class Thumb {
 		needToReloadThumbImage = false;
 	}
 	
+	public Thumb(String url, int croppedWidth) throws IOException {
+		thumbURL = new URL(url);
+		BufferedImage tempImage = (BufferedImage)ImageCache.getImageFromCache(thumbURL);
+		int startWidth = tempImage.getWidth() - croppedWidth;
+		tempImage = tempImage.getSubimage(startWidth, 0, croppedWidth, tempImage.getHeight());
+		
+		this.isImageModified = true;
+		thumbImage = tempImage;
+		imageIconThumbImage = new ImageIcon(tempImage);
+		needToReloadThumbImage = false;
+	}
 	
 	public Thumb(String url, boolean useJavCoverCropRoutine) throws IOException
 	{

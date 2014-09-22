@@ -16,6 +16,7 @@ import org.jsoup.select.Elements;
 import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.Thumb;
 import moviescraper.doctord.TranslateString;
+import moviescraper.doctord.SiteParsingProfile.specific.SpecificProfile;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Director;
 import moviescraper.doctord.dataitem.Genre;
@@ -36,7 +37,7 @@ import moviescraper.doctord.dataitem.Trailer;
 import moviescraper.doctord.dataitem.Votes;
 import moviescraper.doctord.dataitem.Year;
 
-public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile {
+public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implements SpecificProfile {
 	
 	private Document japanesePage;
 
@@ -462,4 +463,9 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile {
 		else return japanesePage;
 	}
 
+	@Override
+	public String getParserName() {
+		return "Caribbean";
+	}
+	
 }

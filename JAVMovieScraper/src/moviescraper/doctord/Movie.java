@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
@@ -54,6 +55,8 @@ public class Movie {
 	private Tagline tagline;
 
 	private Title title;
+	
+	private List<Title> allTitles = new ArrayList<>();
 
 	private Top250 top250;
 	
@@ -648,6 +651,14 @@ public class Movie {
 			return true;
 		else
 			return false;
+	}
+
+	public List<Title> getAllTitles() {
+		return allTitles;
+	}
+
+	public void setAllTitles(List<Title> allTitles) {
+		this.allTitles = allTitles;
 	}
 
 

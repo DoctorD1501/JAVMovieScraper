@@ -37,6 +37,8 @@ import moviescraper.doctord.dataitem.Top250;
 import moviescraper.doctord.dataitem.Trailer;
 import moviescraper.doctord.dataitem.Votes;
 import moviescraper.doctord.dataitem.Year;
+import moviescraper.doctord.model.AbstractMovieScraper;
+import moviescraper.doctord.model.GenericMovieScraper;
 
 public abstract class SiteParsingProfile {
 	
@@ -218,7 +220,8 @@ public abstract class SiteParsingProfile {
 	    }
 	  }
 
-
-
+	public AbstractMovieScraper getMovieScraper() {
+		return new GenericMovieScraper(this);
+	}
 	
 }

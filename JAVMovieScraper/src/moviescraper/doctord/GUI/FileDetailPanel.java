@@ -6,6 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.swing.AbstractListModel;
 import javax.swing.BorderFactory;
@@ -19,13 +21,27 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import moviescraper.doctord.Movie;
+import moviescraper.doctord.Thumb;
 import moviescraper.doctord.GUI.renderer.ActressListRenderer;
 import moviescraper.doctord.dataitem.Actor;
+import moviescraper.doctord.dataitem.Director;
 import moviescraper.doctord.dataitem.Genre;
+import moviescraper.doctord.dataitem.ID;
+import moviescraper.doctord.dataitem.MPAARating;
+import moviescraper.doctord.dataitem.OriginalTitle;
+import moviescraper.doctord.dataitem.Outline;
 import moviescraper.doctord.dataitem.Plot;
+import moviescraper.doctord.dataitem.Rating;
+import moviescraper.doctord.dataitem.Runtime;
 import moviescraper.doctord.dataitem.Set;
+import moviescraper.doctord.dataitem.SortTitle;
 import moviescraper.doctord.dataitem.Studio;
+import moviescraper.doctord.dataitem.Tagline;
 import moviescraper.doctord.dataitem.Title;
+import moviescraper.doctord.dataitem.Top250;
+import moviescraper.doctord.dataitem.Trailer;
+import moviescraper.doctord.dataitem.Votes;
+import moviescraper.doctord.dataitem.Year;
 import moviescraper.doctord.preferences.MoviescraperPreferences;
 
 import com.jgoodies.forms.factories.FormFactory;
@@ -47,9 +63,11 @@ public class FileDetailPanel extends JPanel {
 	private JList<Actor> actorListSite1;
 	private JList<String> genreListSite1;
 	
-	protected Movie currentMovie;
+	protected Movie currentMovie = getEmptyMovie();
 
 	private MoviescraperPreferences preferences;
+
+	private ArtWorkPanel artWorkPanel;
 
 	/**
 	 * Create the panel.
@@ -104,7 +122,7 @@ public class FileDetailPanel extends JPanel {
 		
 		//using this workaround for JComboBox constructor for problem with generics in WindowBuilder as per this stackoverflow thread: https://stackoverflow.com/questions/8845139/jcombobox-warning-preventing-opening-the-design-page-in-eclipse
 		comboBoxMovieTitleText = new JComboBox<String>();
-		comboBoxMovieTitleText.setModel(new DefaultComboBoxModel<String>(initialTitleComboBox));
+		comboBoxMovieTitleText.setModel( new TitleListModel() );
 		comboBoxMovieTitleText.addActionListener(new ActionListener(){
 	        @Override
 	        public void actionPerformed(ActionEvent e) {
@@ -305,6 +323,9 @@ public class FileDetailPanel extends JPanel {
 		genreListSite1.setSize(new Dimension(200, 200));
 		fileDetailsPanel.add(listScrollerGenres, "4, 18");
 		
+		artWorkPanel = new ArtWorkPanel();
+		//frmMoviescraper.getContentPane().add(artworkPanelScrollPane, BorderLayout.EAST);
+		fileDetailsPanel.add(artWorkPanel,"6,2,1,18");
 	}
 	
 	//Sets a new movie and updates a view
@@ -312,11 +333,15 @@ public class FileDetailPanel extends JPanel {
 		this.currentMovie = newMovie;
 		updateView();
 	}
+	
+	public void clearView() {
+		artWorkPanel.clearPictures();
+		setNewMovie( getEmptyMovie() );
+	}
 
 	//Updates the view for the current movie
 	public void updateView() {
-		String[] titles = {currentMovie.getTitle().getTitle()};
-		comboBoxMovieTitleText.setModel(new DefaultComboBoxModel<String>( titles ));
+		comboBoxMovieTitleText.setModel( new TitleListModel() );
 		lblOriginalTitleTextSite1.setText( currentMovie.getOriginalTitle().getOriginalTitle() );
 		lblScrapedYearText.setText( currentMovie.getYear().getYear() );
 		lblIDCurrentMovie.setText( currentMovie.getId().getId() );
@@ -324,14 +349,70 @@ public class FileDetailPanel extends JPanel {
 		txtFieldMovieSet.setText( currentMovie.getSet().getSet() );
 		moviePlotTextField.setText( currentMovie.getPlot().getPlot() );
 		
+		//select first Title
+		if ( comboBoxMovieTitleText.getItemCount() > 0 )
+			comboBoxMovieTitleText.setSelectedIndex(0);
+		
 		//Actors and Genres are automatically generated
 		actorListSite1.updateUI();
 		genreListSite1.updateUI();
 		comboBoxMovieTitleText.updateUI();
+		
+		try {
+			if (currentMovie.getFanart().length > 0)
+				artWorkPanel.setNewFanart( ArtWorkPanel.resizeToFanart( currentMovie.getFanart()[0].getThumbImage() ) );
+//			else
+//				artWorkPanel.clearFanart();
+			
+			if (currentMovie.getPosters().length > 0)
+				artWorkPanel.setNewPoster( currentMovie.getPosters()[0].getThumbImage() );
+//			else
+//				artWorkPanel.clearPoster();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public Movie getCurrentMovie() {
 		return currentMovie;
+	}
+	
+	public Movie getEmptyMovie() {
+
+		ArrayList<Actor> actors = new ArrayList<Actor>();
+		ArrayList<Director> directors = new ArrayList<>();
+		ArrayList<Genre> genres = new ArrayList<Genre>();
+		
+		Thumb[] fanart = new Thumb[0]; 
+		Thumb[] extraFanart = new Thumb[0]; 
+		Thumb[] posters = new Thumb[0]; 
+		
+		ID id = new ID("");
+		MPAARating mpaa = new MPAARating("");
+		OriginalTitle originalTitle = new OriginalTitle("");
+		Outline outline = new Outline("");
+		Plot plot = new Plot("");
+		Rating rating = new Rating(0.0, "");
+		Runtime runtime = new Runtime("");
+		Set set = new Set("");
+		SortTitle sortTitle= new SortTitle("");
+		Studio studio = new Studio("");
+		Tagline tagline = new Tagline("");
+		Title title = new Title("");
+		Top250 top250 = new Top250("");
+		Trailer trailer = new Trailer(null);
+		Votes votes = new Votes("");
+		Year year = new Year("");
+		
+		return new Movie(actors, directors, fanart, extraFanart, genres, id, mpaa, originalTitle, outline, plot, posters, rating, runtime, set, sortTitle, studio, tagline, title, top250, trailer, votes, year);
+	}
+	
+	public void setTitleEditable(boolean value) {
+		comboBoxMovieTitleText.setEditable(value);
+	}
+	
+	public ArtWorkPanel getArtWorkPanel() {
+		return artWorkPanel;
 	}
 	
 	class GenreItemListModel extends AbstractListModel<String> {
@@ -365,5 +446,22 @@ public class FileDetailPanel extends JPanel {
 		}
 		
 	}
+	
+	class TitleListModel extends DefaultComboBoxModel<String> {
+
+		private static final long serialVersionUID = -8954125792857066062L;
+
+		@Override
+		public int getSize() {
+			return currentMovie.getAllTitles().size();
+		}
+
+		@Override
+		public String getElementAt(int index) {
+			return currentMovie.getAllTitles().get(0).getTitle();
+		}
+		
+	}
+	
 }
 
