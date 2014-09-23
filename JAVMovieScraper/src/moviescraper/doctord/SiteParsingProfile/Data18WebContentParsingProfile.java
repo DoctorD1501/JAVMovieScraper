@@ -321,6 +321,15 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile{
 
 			}
 		}
+		//Actors without pictures
+		Elements otherActors = document.select("[href^=http://www.data18.com/dev/]");
+		if(otherActors != null) {
+		    for (Element element : otherActors) {
+		        String actorName = element.attr("alt");
+		        actorName = element.childNode(0).toString();
+		        actorList.add(new Actor(actorName, null, null));
+		    }
+		}
 		return actorList;
 	}
 
