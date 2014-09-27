@@ -35,11 +35,17 @@ public class MoviescraperPreferences {
 		programPreferences = new Properties();
 		try {
 			programPreferences.loadFromXML(new FileInputStream(fileNameOfPreferences));
+			//initialize default values that must exist in the settings file
+			setSanitizerForFilename(getSanitizerForFilename());
+			setRenamerString(getRenamerString());
 		} catch (InvalidPropertiesFormatException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (FileNotFoundException e) {
 			savePreferences(); //file doesn't exist. this will create the file
+			//initialize default values that must exist in the settings file
+			setSanitizerForFilename(getSanitizerForFilename());
+			setRenamerString(getRenamerString());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -76,33 +82,15 @@ public class MoviescraperPreferences {
 	}
 	
 	public void setOverWriteFanartAndPostersPreference(boolean preferenceValue){
-		/*if(preferenceValue)
-			programPreferences.setProperty(overwriteFanartAndPosters, "true");
-		else
-			programPreferences.setProperty(overwriteFanartAndPosters, "false");
-		savePreferences();*/
 		setBooleanValue(overwriteFanartAndPosters, preferenceValue);
 	}
 	
 	public boolean getOverWriteFanartAndPostersPreference()
 	{
-		/*String overwriteFanartAndPostersPref = programPreferences.getProperty(overwriteFanartAndPosters);
-		if(overwriteFanartAndPostersPref != null)
-		{
-		if(overwriteFanartAndPostersPref.equals("true"))
-			return true;
-		else return false;
-		}
-		else return true; //default value if no preference has been set yet*/
 		return getBooleanValue(overwriteFanartAndPosters, true);
 	}
 	
 	public void setWriteFanartAndPostersPreference(boolean preferenceValue){
-		/*if(preferenceValue)
-			programPreferences.setProperty(writeFanartAndPosters, "true");
-		else
-			programPreferences.setProperty(writeFanartAndPosters, "false");
-		savePreferences();*/
 		setBooleanValue(writeFanartAndPosters, preferenceValue);
 	}
 	
@@ -225,11 +213,12 @@ public class MoviescraperPreferences {
 	}
 	
 	public String getRenamerString() {
-		return programPreferences.getProperty(renamerString, "");
+		return programPreferences.getProperty(renamerString, "%[ID]% %TITLE% %[ACTORS]% %(YEAR)%");
 	}
 	
 	public void setRenamerString(String preferenceValue) {
 		programPreferences.setProperty(renamerString, preferenceValue);
+		savePreferences();
 	}
 	
 	public boolean getRenameMovieFile() {
@@ -238,6 +227,7 @@ public class MoviescraperPreferences {
 	
 	public void setRenameMovieFile(boolean preferenceValue) {
 		setBooleanValue(renameMovieFile, preferenceValue);
+		savePreferences();
 	}
 
 }
