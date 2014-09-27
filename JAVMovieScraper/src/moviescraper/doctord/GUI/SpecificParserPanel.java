@@ -79,6 +79,7 @@ public class SpecificParserPanel extends JPanel {
 			ScraperAction action = new ScraperAction(spp, spp.getMovieScraper(), toScrape );
 			Movie scrapedMovie = action.scrape();
 			main.getFileDetailPanel().setNewMovie( scrapedMovie );
+			
 		} else {
 			JOptionPane.showMessageDialog(this, "No file selected.", "No file selected.", JOptionPane.ERROR_MESSAGE);
 		}

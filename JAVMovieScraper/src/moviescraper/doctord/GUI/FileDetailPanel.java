@@ -376,7 +376,6 @@ public class FileDetailPanel extends JPanel {
 	public Movie getCurrentMovie() {
 		return currentMovie;
 	}
-	
 	public Movie getEmptyMovie() {
 
 		ArrayList<Actor> actors = new ArrayList<Actor>();
