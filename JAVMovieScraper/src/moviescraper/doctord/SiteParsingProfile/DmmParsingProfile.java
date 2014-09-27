@@ -53,9 +53,10 @@ public class DmmParsingProfile extends SiteParsingProfile {
 	 * This constructor is mostly used for calling createSearchString() and
 	 * getSearchResults()
 	 */
-	public DmmParsingProfile() {
-		doGoogleTranslation = true;
+	public DmmParsingProfile(boolean doGoogleTranslation) {
+		this.doGoogleTranslation = doGoogleTranslation;
 		scrapeTrailers = true;
+		System.out.println("created parsing profile with translation = " + doGoogleTranslation);
 	}
 
 	public DmmParsingProfile(boolean doGoogleTranslation, boolean scrapeTrailers) {

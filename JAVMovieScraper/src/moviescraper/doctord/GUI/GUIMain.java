@@ -697,6 +697,23 @@ public class GUIMain {
 		});
 		preferenceMenu.add(renameMovieFile);
 		
+		//Checkbox for scraping JAV files in japanese instead of english when clicking scrape jav
+		JCheckBoxMenuItem scrapeInJapanese = new JCheckBoxMenuItem("Scrape JAV Movies in Japanese Instead of English");
+		scrapeInJapanese.setState(preferences.getScrapeInJapanese());
+		scrapeInJapanese.addItemListener(new ItemListener() {
+
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				//save the menu choice off to the preference object (and the disk based settings file)
+				if(e.getStateChange() == ItemEvent.SELECTED)
+					preferences.setScrapeInJapanese(true);
+				else if(e.getStateChange() == ItemEvent.DESELECTED)
+					preferences.setScrapeInJapanese(false);
+
+			}
+		});
+		preferenceMenu.add(scrapeInJapanese);
+		
 		JMenu renameMenu = new JMenu("Rename Settings");
 		
 		JMenuItem renameSettings = new JMenuItem("Rename Settings");
@@ -707,6 +724,8 @@ public class GUIMain {
 			}
 		});
 		renameMenu.add(renameSettings);
+		
+		
 		
 		//add the various menus together
 		menuBar.add(preferenceMenu);
@@ -1818,7 +1837,7 @@ public class GUIMain {
 					{
 						//bring up some dialog boxes so the user can choose what URL to use for each site
 						try {
-							DmmParsingProfile dmmPP = new DmmParsingProfile();
+							DmmParsingProfile dmmPP = new DmmParsingProfile(!preferences.getScrapeInJapanese());
 							JavLibraryParsingProfile jlPP = new JavLibraryParsingProfile();
 							String searchStringDMM = dmmPP.createSearchString(currentlySelectedMovieFileList.get(movieNumberInList));
 							SearchResult [] searchResultsDMM = dmmPP.getSearchResults(searchStringDMM);
@@ -1831,13 +1850,17 @@ public class GUIMain {
 								overrideURLDMM = searchResultFromUser.getUrlPath();
 
 							}
-							SearchResult [] searchResultsJavLibStrings = jlPP.getSearchResults(searchStringJL);
-							if(searchResultsJavLibStrings != null && searchResultsJavLibStrings.length > 0)
+							//don't read from jav library if we're scraping in japanese since that site is only useful for english lang content
+							if(!preferences.getScrapeInJapanese())
 							{
-								SearchResult searchResultFromUser = this.showOptionPane(searchResultsJavLibStrings, "javlibrary.com");
-								if(searchResultFromUser == null)
-									return;
-								overrideURLJavLibrary = searchResultFromUser.getUrlPath();				
+								SearchResult [] searchResultsJavLibStrings = jlPP.getSearchResults(searchStringJL);
+								if(searchResultsJavLibStrings != null && searchResultsJavLibStrings.length > 0)
+								{
+									SearchResult searchResultFromUser = this.showOptionPane(searchResultsJavLibStrings, "javlibrary.com");
+									if(searchResultFromUser == null)
+										return;
+									overrideURLJavLibrary = searchResultFromUser.getUrlPath();				
+								}
 							}
 						} catch (IOException e2) {
 							// TODO Auto-generated catch block
@@ -2084,7 +2107,7 @@ public class GUIMain {
 			Thread scrapeQueryDMMThread = new Thread() {
 				public void run() {
 					try {
-						DmmParsingProfile dmmPP = new DmmParsingProfile();
+						DmmParsingProfile dmmPP = new DmmParsingProfile(!preferences.getScrapeInJapanese());
 						dmmPP.setExtraFanartScrapingEnabled(preferences.getExtraFanartScrapingEnabledPreference());
 						currentlySelectedMovieDMM = Movie.scrapeMovie(
 								currentlySelectedMovieFileList.get(currentMovieNumberInList),
@@ -2200,26 +2223,35 @@ public class GUIMain {
 			{
 				// Run all the threads in parallel
 				scrapeQueryDMMThread.start();
-				scrapeQueryActionJavThread.start();
-				scrapeQuerySquarePlusThread.start();
-				scrapeQueryJavLibraryThread.start();
-				scrapeQueryJavZooThread.start();
-				scrapeQueryCaribbeancomPremium.start();
+				if(!preferences.getScrapeInJapanese())
+				{
+					scrapeQueryActionJavThread.start();
+					scrapeQuerySquarePlusThread.start();
+					scrapeQueryJavLibraryThread.start();
+					scrapeQueryJavZooThread.start();
+					scrapeQueryCaribbeancomPremium.start();
+				}
 
 
 				// wait for them to finish before updating gui
-
-				scrapeQueryJavLibraryThread.join();
 				scrapeQueryDMMThread.join();
-				scrapeQueryActionJavThread.join();
-				scrapeQuerySquarePlusThread.join();
-				scrapeQueryJavZooThread.join();
-				scrapeQueryCaribbeancomPremium.join();
-				movieAmalgamated = amalgamateMovie(currentlySelectedMovieDMM,
-						currentlySelectedMovieActionJav,
-						currentlySelectedMovieSquarePlus,
-						currentlySelectedMovieJavLibrary,
-						currentlySelectedMovieJavZoo, movieNumberInList);
+				if(!preferences.getScrapeInJapanese())
+				{
+					scrapeQueryJavLibraryThread.join();
+					scrapeQueryActionJavThread.join();
+					scrapeQuerySquarePlusThread.join();
+					scrapeQueryJavZooThread.join();
+					scrapeQueryCaribbeancomPremium.join();
+				}
+				if(preferences.getScrapeInJapanese())
+					movieAmalgamated = currentlySelectedMovieDMM;
+				else{
+					movieAmalgamated = amalgamateMovie(currentlySelectedMovieDMM,
+							currentlySelectedMovieActionJav,
+							currentlySelectedMovieSquarePlus,
+							currentlySelectedMovieJavLibrary,
+							currentlySelectedMovieJavZoo, movieNumberInList);
+				}
 				//if we didn't get a result from the general jav db's, then maybe this is from a webonly type scraper
 				if(movieAmalgamated == null && currentlySelectedMovieCaribbeancomPremium != null)
 					movieAmalgamated = currentlySelectedMovieCaribbeancomPremium;

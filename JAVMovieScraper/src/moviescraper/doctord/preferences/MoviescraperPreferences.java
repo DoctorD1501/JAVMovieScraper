@@ -29,6 +29,7 @@ public class MoviescraperPreferences {
 	private static final String sanitizerForFilename = "sanitizerForFilename";
 	private static final String renamerString = "renamerString";
 	private static final String renameMovieFile = "renameMovieFile";
+	private static final String scrapeInJapanese = "scrapeInJapanese";
 
 	public MoviescraperPreferences()
 	{
@@ -228,6 +229,14 @@ public class MoviescraperPreferences {
 	public void setRenameMovieFile(boolean preferenceValue) {
 		setBooleanValue(renameMovieFile, preferenceValue);
 		savePreferences();
+	}
+	
+	public boolean getScrapeInJapanese(){
+		return getBooleanValue(scrapeInJapanese, false);
+	}
+	
+	public void setScrapeInJapanese(boolean preferenceValue){
+		setBooleanValue(scrapeInJapanese, preferenceValue);
 	}
 
 }
