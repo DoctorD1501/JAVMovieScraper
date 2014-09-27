@@ -4,6 +4,7 @@
 <comment/>
 <entry key="useIAFDForActors">false</entry>
 <entry key="createFolderJpg">true</entry>
+<entry key="renameMovieFile">true</entry>
 <entry key="lastUsedDirectory">B:\Newsgroup\test</entry>
 <entry key="writeTrailerToFile">true</entry>
 <entry key="extraFanartScrapingEnabled">true</entry>
