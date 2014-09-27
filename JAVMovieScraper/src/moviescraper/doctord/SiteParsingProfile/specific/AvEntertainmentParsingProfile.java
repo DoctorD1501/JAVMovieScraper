@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
 
+import org.apache.commons.lang3.text.WordUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -229,7 +230,7 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 		ArrayList<Actor> list = new ArrayList<>();
 		for (Element element : elements) {
 			String href = element.attr("href");
-			String name = element.childNode(0).toString();
+			String name = WordUtils.capitalize(element.childNode(0).toString());
 			Thumb thumb = null;
 			try {
 				Document actorDoc = Jsoup.connect(href).userAgent("Mozilla").ignoreHttpErrors(true).timeout(0).get();
