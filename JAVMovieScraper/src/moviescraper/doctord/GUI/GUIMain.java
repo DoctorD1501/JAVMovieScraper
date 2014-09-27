@@ -149,7 +149,7 @@ public class GUIMain {
 	private Movie currentlySelectedMovieJavZoo;
 	private Movie currentlySelectedMovieCaribbeancomPremium;
 	private Movie currentlySelectedMovieData18Movie;
-	private List <Movie> movieToWriteToDiskList;
+	public List <Movie> movieToWriteToDiskList;
 
 	//Gui Elements
 	private JFrame frmMoviescraper;
@@ -1391,10 +1391,6 @@ public class GUIMain {
 
 						movieToWriteToDiskList.add(amalgamationAutoPickMovie);
 					}
-					if(fileDetailPanel.getCurrentMovie() != null)
-					{
-						movieToWriteToDiskList.add(fileDetailPanel.getCurrentMovie());
-					}
 					if(movieToWriteToDiskList.get(movieNumberInList) == null)
 					{
 						System.out.println("No match for this movie in the array, skipping writing");
@@ -2530,9 +2526,9 @@ public class GUIMain {
 		return fileDetailPanel;
 	}
 
-	public File getCurrentFile() {
+	public List<File> getCurrentFile() {
 		if (currentlySelectedMovieFileList.size() > 0)
-			return currentlySelectedMovieFileList.get(0);
+			return currentlySelectedMovieFileList;
 		return null;
 	}
 

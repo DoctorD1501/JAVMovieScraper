@@ -74,11 +74,16 @@ public class SpecificParserPanel extends JPanel {
 	}
 
 	protected void scrape(SiteParsingProfile spp) {
-		File toScrape = main.getCurrentFile();
+		List<File> toScrape = main.getCurrentFile();
 		if (toScrape != null) {
-			ScraperAction action = new ScraperAction(spp, spp.getMovieScraper(), toScrape );
+			for(File currentFile : toScrape)
+			{
+			ScraperAction action = new ScraperAction(spp, spp.getMovieScraper(), currentFile );
 			Movie scrapedMovie = action.scrape();
+			if(scrapedMovie != null)
+				main.movieToWriteToDiskList.add(scrapedMovie);
 			main.getFileDetailPanel().setNewMovie( scrapedMovie );
+			}
 			
 		} else {
 			JOptionPane.showMessageDialog(this, "No file selected.", "No file selected.", JOptionPane.ERROR_MESSAGE);
