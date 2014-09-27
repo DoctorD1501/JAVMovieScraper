@@ -5,12 +5,16 @@ import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -96,7 +100,6 @@ public class SpecificParserPanel extends JPanel {
 					String title = sp.getParserName();
 					ComboItem comboItem = new ComboItem(title, (SiteParsingProfile) instance);
 					items.add(comboItem);
-					System.out.println( comboItem );
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -141,12 +144,42 @@ public class SpecificParserPanel extends JPanel {
 	 * @param packageName The package name for classes found inside the base directory
 	 * @return The classes
 	 * @throws ClassNotFoundException
+	 * @throws IOException 
 	 */
 	@SuppressWarnings("rawtypes")
-	private static List<Class> findClasses(File directory, String packageName) throws ClassNotFoundException {
+	private static List<Class> findClasses(File directory, String packageName) throws ClassNotFoundException, IOException {
 	    List<Class> classes = new ArrayList<Class>();
 	    if (!directory.exists()) {
-	        return classes;
+	    	//maybe we are running from a jar file, so try that
+	    	File thisJarFile = new File(new java.io.File(SpecificParserPanel.class.getProtectionDomain()
+	    			  .getCodeSource()
+	    			  .getLocation()
+	    			  .getPath())
+	    			.getName());
+	    	if(thisJarFile != null && thisJarFile.exists())
+	    	{
+	    		List<Class> classNames=new ArrayList<Class>();
+	    		ZipInputStream zip=new ZipInputStream(new FileInputStream(thisJarFile.getPath()));
+	    		for(ZipEntry entry=zip.getNextEntry();entry!=null;entry=zip.getNextEntry())
+	    		    if(entry.getName().endsWith(".class") && !entry.isDirectory()) {
+	    		        // This ZipEntry represents a class. Now, what class does it represent?
+	    		        StringBuilder className=new StringBuilder();
+	    		        for(String part : entry.getName().split("/")) {
+	    		            if(className.length() != 0)
+	    		                className.append(".");
+	    		            className.append(part);
+	    		            if(part.endsWith(".class"))
+	    		                className.setLength(className.length()-".class".length());
+	    		        }
+
+	    		        if(className.toString().contains(packageName))
+	    		        {
+	    		        	classNames.add(Class.forName(className.toString()));
+	    		        }
+	    		    }
+	    		return classNames;
+	    	}
+	    	else return classes;
 	    }
 	    File[] files = directory.listFiles();
 	    for (File file : files) {
