@@ -95,7 +95,7 @@ public abstract class SiteParsingProfile {
 		else fileNameNoExtension = file.getName();
 		String fileNameNoExtensionNoDiscNumber = stripDiscNumber(fileNameNoExtension);
 		String[] splitFileName = fileNameNoExtensionNoDiscNumber.split(" ");
-		String lastWord = splitFileName[0];
+		String lastWord = splitFileName[splitFileName.length-1];
 		
 		//Some people like to enclose the ID number in parenthesis or brackets like this (ABC-123) or this [ABC-123] so this gets rid of that
 		//TODO: Maybe consolidate these lines of code using a single REGEX?
