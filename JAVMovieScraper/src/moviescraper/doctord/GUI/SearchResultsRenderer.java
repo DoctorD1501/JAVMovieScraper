@@ -30,7 +30,7 @@ class SearchResultsRenderer extends JLabel implements ListCellRenderer<SearchRes
 			setText("<html>" + "<p>" + entry.getLabel() + "</p>" + "<br>" + "<p>" + entry.getUrlPath() + "</p" +  "</html>");
 		else
 			setText(entry.getUrlPath());
-		if(entry.getPreviewImage().getThumbURL() != null)
+		if(entry.getPreviewImage() != null && entry.getPreviewImage().getThumbURL() != null)
 			setIcon(entry.getPreviewImage().getImageIconThumbImage());
 		if (isSelected) {
 			setBackground(HIGHLIGHT_COLOR);
