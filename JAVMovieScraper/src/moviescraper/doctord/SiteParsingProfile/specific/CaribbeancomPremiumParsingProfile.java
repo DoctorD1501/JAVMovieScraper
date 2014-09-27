@@ -1,4 +1,4 @@
-package moviescraper.doctord.SiteParsingProfile;
+package moviescraper.doctord.SiteParsingProfile.specific;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,7 +16,7 @@ import org.jsoup.select.Elements;
 import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.Thumb;
 import moviescraper.doctord.TranslateString;
-import moviescraper.doctord.SiteParsingProfile.specific.SpecificProfile;
+import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Director;
 import moviescraper.doctord.dataitem.Genre;

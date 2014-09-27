@@ -7,7 +7,7 @@
 <entry key="renameMovieFile">true</entry>
 <entry key="sanitizerForFilename">[\\/:*?"&lt;&gt;|\r\n]|[ ]+$|(?&lt;=[^.])[.]+$|(?&lt;=.{250})(.+)(?=[.]\p{Alnum}{3}$)</entry>
 <entry key="renamerString">%[ID]% %TITLE% %[ACTORS]% %(YEAR)%</entry>
-<entry key="lastUsedDirectory">B:\Newsgroup\test</entry>
+<entry key="lastUsedDirectory">X:\JAV - Needs Folder</entry>
 <entry key="writeTrailerToFile">true</entry>
 <entry key="extraFanartScrapingEnabled">false</entry>
 </properties>
