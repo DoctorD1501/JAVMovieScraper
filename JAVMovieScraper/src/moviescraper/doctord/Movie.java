@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
@@ -23,6 +24,7 @@ import org.jsoup.nodes.Document;
 import moviescraper.doctord.SiteParsingProfile.Data18MovieParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.Data18WebContentParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.DmmParsingProfile;
+import moviescraper.doctord.SiteParsingProfile.IAFDParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.JavLibraryParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
 import moviescraper.doctord.dataitem.*;
@@ -53,6 +55,8 @@ public class Movie {
 	private Tagline tagline;
 
 	private Title title;
+	
+	private List<Title> allTitles = new ArrayList<>();
 
 	private Top250 top250;
 	
@@ -600,6 +604,8 @@ public class Movie {
 				searchResults[0] = new SearchResult(urlToScrapeFromDMM);
 			else if(siteToParseFrom instanceof JavLibraryParsingProfile)
 				searchResults[0] = new SearchResult(((JavLibraryParsingProfile) siteToParseFrom).getOverrideURLJavLibrary());
+			else if(siteToParseFrom instanceof IAFDParsingProfile)
+				searchResults[0] = new SearchResult(urlToScrapeFromDMM);
 		}
 		if (searchResults != null && searchResults.length > 0 && searchResults[searchResultNumberToUse].getUrlPath().length() > 0)
 		{
@@ -645,6 +651,14 @@ public class Movie {
 			return true;
 		else
 			return false;
+	}
+
+	public List<Title> getAllTitles() {
+		return allTitles;
+	}
+
+	public void setAllTitles(List<Title> allTitles) {
+		this.allTitles = allTitles;
 	}
 
 

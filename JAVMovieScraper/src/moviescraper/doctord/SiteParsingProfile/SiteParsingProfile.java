@@ -7,6 +7,8 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.FilenameUtils;
@@ -35,6 +37,8 @@ import moviescraper.doctord.dataitem.Top250;
 import moviescraper.doctord.dataitem.Trailer;
 import moviescraper.doctord.dataitem.Votes;
 import moviescraper.doctord.dataitem.Year;
+import moviescraper.doctord.model.AbstractMovieScraper;
+import moviescraper.doctord.model.GenericMovieScraper;
 
 public abstract class SiteParsingProfile {
 	
@@ -91,7 +95,7 @@ public abstract class SiteParsingProfile {
 		else fileNameNoExtension = file.getName();
 		String fileNameNoExtensionNoDiscNumber = stripDiscNumber(fileNameNoExtension);
 		String[] splitFileName = fileNameNoExtensionNoDiscNumber.split(" ");
-		String lastWord = splitFileName[splitFileName.length-1];
+		String lastWord = splitFileName[0];
 		
 		//Some people like to enclose the ID number in parenthesis or brackets like this (ABC-123) or this [ABC-123] so this gets rid of that
 		//TODO: Maybe consolidate these lines of code using a single REGEX?
@@ -170,6 +174,16 @@ public abstract class SiteParsingProfile {
 	    	String queryToEncode = "site:" + site + " " + searchQuery;
 	    	String encodedSearchQuery = URLEncoder.encode(queryToEncode, encodingScheme);
 	        doc = Jsoup.connect("https://www.google.com/search?q="+encodedSearchQuery).userAgent("Mozilla").ignoreHttpErrors(true).timeout(0).get();
+	        Elements sorryLink = doc.select("form[action=CaptchaRedirect] input");
+	        Map<String, String> captchaData = new HashMap<>();
+	        for (Element element : sorryLink) {
+	        	String key = element.attr("name");
+	        	String value = element.attr("value");
+	        	captchaData.put(key, value);
+			}
+	        if ( captchaData.size() > 0 )
+	        	System.out.println("Found Captchadata : " + captchaData);
+	        
 	        Elements links = doc.select("li[class=g]");
 	        for (Element link : links) {	            
 	            Elements hrefs = link.select("h3.r a");
@@ -206,7 +220,8 @@ public abstract class SiteParsingProfile {
 	    }
 	  }
 
-
-
+	public AbstractMovieScraper getMovieScraper() {
+		return new GenericMovieScraper(this);
+	}
 	
 }

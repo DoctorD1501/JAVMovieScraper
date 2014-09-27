@@ -4,23 +4,20 @@ import java.awt.EventQueue;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.ScrollPaneConstants;
 
 import java.awt.BorderLayout;
 
@@ -36,6 +33,7 @@ import moviescraper.doctord.SiteParsingProfile.CaribbeancomPremiumParsingProfile
 import moviescraper.doctord.SiteParsingProfile.Data18MovieParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.Data18WebContentParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.DmmParsingProfile;
+import moviescraper.doctord.SiteParsingProfile.IAFDParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.JavZooParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.SquarePlusParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.JavLibraryParsingProfile;
@@ -59,6 +57,7 @@ import moviescraper.doctord.dataitem.Top250;
 import moviescraper.doctord.dataitem.Trailer;
 import moviescraper.doctord.dataitem.Votes;
 import moviescraper.doctord.dataitem.Year;
+import moviescraper.doctord.model.Renamer;
 import moviescraper.doctord.preferences.MoviescraperPreferences;
 
 import javax.swing.JLabel;
@@ -70,11 +69,6 @@ import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.Transparency;
-
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.RowSpec;
-import com.jgoodies.forms.factories.FormFactory;
 
 import javax.swing.JButton;
 
@@ -134,10 +128,6 @@ import javax.swing.event.ListSelectionEvent;
 
 public class GUIMain {
 
-	
-	
-
-
 	//Objects Used to Keep Track of Program State
 	private List<File> currentlySelectedNfoFileList;
 	private List<File> currentlySelectedPosterFileList;
@@ -164,27 +154,16 @@ public class GUIMain {
 	//Gui Elements
 	private JFrame frmMoviescraper;
 	private final Action moveToNewFolder = new MoveToNewFolderAction();
-	private JComboBox<String> comboBoxMovieTitleText;
-	private DefaultListModel<String> listModelActorsSite1;
-	private JList<String> actorListSite1;
-	private DefaultListModel<String> listModelGenresSite1;
 	private DefaultListModel<File> listModelFiles;
-	private JList<String> genreListSite1;
+	
+	private JPanel fileListPanel;
+	private FileDetailPanel fileDetailPanel;
+
 	private JScrollPane fileListScrollPane;
 	private JList<File> fileList;
-	private Image posterImage;
-	private Image fanartImage;
-	private JPanel artworkPanel;
-	private JLabel lblPosterIcon;
-	private JLabel lblFanartIcon;
-	private JLabel lblScrapedYearText;
-	private JLabel lblOriginalTitleTextSite1;
 	private JFileChooser chooser;
-	private JLabel lblIDCurrentMovie;
-	private JTextArea moviePlotTextField;
-	private JTextField txtFieldMovieSet;
-	private JTextField txtFieldStudio;
-
+	
+	private ArtWorkPanel artWorkPanel;
 	
 	//variables for fileList
 	private static int CHAR_DELTA = 1000;
@@ -194,18 +173,11 @@ public class GUIMain {
 	//Menus
 	JMenuBar menuBar;
 	JMenu preferenceMenu;
-
-
 	
 	//Dimensions of various elements
-	private static final int posterSizeX = 379;
-	private static final int posterSizeY = 536;
-	private int fanartSizeX = 85;
-	private int fanartSizeY = 85;
 	private static final int iconSizeX = 16;
 	private static final int iconSizeY = 16;
 
-	
 	private final static boolean debugMessages = false;
 
 	/**
@@ -307,8 +279,8 @@ public class GUIMain {
 		//browse directory icon
 		ImageIcon browseDirectoryIcon = initializeImageIcon(browseIconURL);
 
-		JPanel fileListPanel = new JPanel();
-		fileListPanel.setPreferredSize(new Dimension(200, 10));
+		fileListPanel = new JPanel();
+//		fileListPanel.setPreferredSize(new Dimension(200, 10));
 		frmMoviescraper.getContentPane().add(fileListPanel, BorderLayout.WEST);
 
 		defaultHomeDirectory = preferences.getLastUsedDirectory();
@@ -444,328 +416,50 @@ public class GUIMain {
 		//set up buttons in the file panel
 		
 		JPanel fileListPanelButtonsPanel = new JPanel();
+		fileListPanelButtonsPanel.setLayout( new BoxLayout(fileListPanelButtonsPanel, BoxLayout.Y_AXIS));
 		fileListPanelButtonsPanel.setAlignmentY(Component.BOTTOM_ALIGNMENT);
 		fileListPanelButtonsPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-		fileListPanelButtonsPanel.setMaximumSize(new Dimension(200,200));
+		
+//		fileListPanelButtonsPanel.setMaximumSize(new Dimension(200,200));
 		
 		//Button to go up a directory for the current directory
 		JButton btnUpDirectory = new JButton();
 		btnUpDirectory.addActionListener(new UpDirectoryAction());
 		btnUpDirectory.setIcon(upIcon);
+		btnUpDirectory.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 		//Button to bring up a file chooser so the user can browse and pick what directory they want to view
 		JButton btnBrowseDirectory = new JButton("Browse Directory");
 		btnBrowseDirectory.addActionListener(new BrowseDirectoryAction());
 		btnBrowseDirectory.setIcon(browseDirectoryIcon);
-		
+		btnBrowseDirectory.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 		fileListPanelButtonsPanel.add(btnUpDirectory);
 		fileListPanelButtonsPanel.add(btnBrowseDirectory);
 		fileListPanel.add(fileListPanelButtonsPanel);
 
-		JPanel fileDetailsPanel = new JPanel();
-		fileDetailsPanel.setBorder(BorderFactory.createLineBorder(Color.black));
-		JScrollPane FileDetailsScrollPane = new JScrollPane(fileDetailsPanel);
+
+		fileDetailPanel = new FileDetailPanel(preferences);
+		JScrollPane FileDetailsScrollPane = new JScrollPane(fileDetailPanel);
 		frmMoviescraper.getContentPane().add(FileDetailsScrollPane,
 				BorderLayout.CENTER);
-		FormLayout formLayout = new FormLayout(new ColumnSpec[] {
-				FormFactory.RELATED_GAP_COLSPEC, // 1 - empty space
-				FormFactory.DEFAULT_COLSPEC, //2 - label for each of the form items
-				FormFactory.RELATED_GAP_COLSPEC,//3 - empty space
-				ColumnSpec.decode("default:grow"), // 4 - Form text items
-				FormFactory.RELATED_GAP_COLSPEC,//5 - empty space
-				FormFactory.DEFAULT_COLSPEC},// 6 - artwork panel
-			new RowSpec[] {
-				FormFactory.RELATED_GAP_ROWSPEC, //1 - empty space
-				FormFactory.DEFAULT_ROWSPEC, //2 - Title and artwork panel
-				FormFactory.RELATED_GAP_ROWSPEC,//3 - empty space
-				FormFactory.DEFAULT_ROWSPEC,//4 - original title
-				FormFactory.RELATED_GAP_ROWSPEC,//5 - empty space
-				FormFactory.DEFAULT_ROWSPEC,//6 - Year
-				FormFactory.RELATED_GAP_ROWSPEC,//7 - empty space
-				FormFactory.DEFAULT_ROWSPEC,//8 - ID
-				FormFactory.RELATED_GAP_ROWSPEC,//9 - empty space
-				FormFactory.DEFAULT_ROWSPEC,//10 - Studio
-				FormFactory.RELATED_GAP_ROWSPEC,//11 - empty space
-				FormFactory.DEFAULT_ROWSPEC,//12 - Movie set
-				FormFactory.RELATED_GAP_ROWSPEC,//13 - empty space
-				FormFactory.DEFAULT_ROWSPEC,//14 - Plot
-				FormFactory.RELATED_GAP_ROWSPEC,//15 - empty space
-				RowSpec.decode("default:grow"),//16 - actors
-				FormFactory.RELATED_GAP_ROWSPEC,//17 - empty space
-				RowSpec.decode("default:grow"),//18 - genres
-				FormFactory.RELATED_GAP_ROWSPEC//19 - empty space
-				});
 		
+		artWorkPanel = fileDetailPanel.getArtWorkPanel();
 		
-		//formLayout.setColumnGroups(new int[][]{{4, 6}});
-		
-		fileDetailsPanel.setLayout(formLayout);
+		JPanel southPanel = new JPanel();
+		southPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+		southPanel.setLayout(new BoxLayout(southPanel, BoxLayout.X_AXIS));
+		frmMoviescraper.getContentPane().add(southPanel, BorderLayout.SOUTH);
 
-
-		JLabel lblTitle = new JLabel("Title:");
-		fileDetailsPanel.add(lblTitle, "2, 2");
-
-
-
-		String [] initialTitleComboBox = {""};
-		
-		//using this workaround for JComboBox constructor for problem with generics in WindowBuilder as per this stackoverflow thread: https://stackoverflow.com/questions/8845139/jcombobox-warning-preventing-opening-the-design-page-in-eclipse
-		comboBoxMovieTitleText = new JComboBox<String>();
-		comboBoxMovieTitleText.setModel(new DefaultComboBoxModel<String>(initialTitleComboBox));
-		comboBoxMovieTitleText.addActionListener(new ActionListener(){
-	        @Override
-	        public void actionPerformed(ActionEvent e) {
-	            
-	            if(movieToWriteToDiskList != null)
-	            {
-	            	String newValue = (String) comboBoxMovieTitleText.getSelectedItem();
-	            	if(newValue != null)
-	            	{
-	            		movieToWriteToDiskList.get(0).setTitle(new Title(newValue));
-	            	}
-	            }
-	        }
-	    });
-		comboBoxMovieTitleText.getEditor().getEditorComponent().addKeyListener(new KeyListener() {
-			
-			@Override
-			public void keyTyped(KeyEvent e) {
-			}
-			
-			@Override
-			public void keyReleased(KeyEvent e) {
-				String newValue = (String) comboBoxMovieTitleText.getSelectedItem();
-            	if(newValue != null)
-            	{
-            		movieToWriteToDiskList.get(0).setTitle(new Title(newValue));
-            	}
-				
-			}
-
-			@Override
-			public void keyPressed(KeyEvent e) {
-			}
-			
-		});
-		fileDetailsPanel.add(comboBoxMovieTitleText, "4, 2");
-
-
-
-		JLabel lblOriginalTitle = new JLabel("Original Title:");
-		fileDetailsPanel.add(lblOriginalTitle, "2, 4");
-
-
-
-		lblOriginalTitleTextSite1 = new JLabel("");
-		fileDetailsPanel.add(lblOriginalTitleTextSite1, "4, 4");
-
-
-		JLabel lblYear = new JLabel("Year:");
-		fileDetailsPanel.add(lblYear, "2, 6");
-		
-
-		lblScrapedYearText = new JLabel("");
-		fileDetailsPanel.add(lblScrapedYearText, "4, 6");
-		
-		JLabel lblID = new JLabel("ID:");
-		fileDetailsPanel.add(lblID, "2, 8");
-		
-		lblIDCurrentMovie = new JLabel("");
-		fileDetailsPanel.add(lblIDCurrentMovie,"4, 8");
-		
-		JLabel lblStudio = new JLabel("Studio:");
-		txtFieldStudio = new JTextField("");
-		txtFieldStudio.addActionListener(new ActionListener(){
-	        @Override
-	        public void actionPerformed(ActionEvent e) {
-	            
-	            if(movieToWriteToDiskList != null)
-	            {
-	            	String newValue = (String) txtFieldStudio.getText();
-	            	if(newValue != null)
-	            	{
-	            		movieToWriteToDiskList.get(0).setStudio(new Studio(newValue));
-	            	}
-	            }
-	        }
-	    });
-		txtFieldStudio.addKeyListener(new KeyListener() {
-			
-			@Override
-			public void keyTyped(KeyEvent e) {
-			}
-			
-			@Override
-			public void keyReleased(KeyEvent e) {
-				String newValue = (String) txtFieldStudio.getText();
-            	if(newValue != null)
-            	{
-            		movieToWriteToDiskList.get(0).setStudio(new Studio(newValue));
-            	}
-				
-			}
-
-			@Override
-			public void keyPressed(KeyEvent e) {
-			}
-			
-		});
-		
-		fileDetailsPanel.add(lblStudio,"2,10");
-		fileDetailsPanel.add(txtFieldStudio,"4,10");
-		
-		JLabel lblSet = new JLabel("Movie Set:");
-		fileDetailsPanel.add(lblSet,"2, 12");
-		txtFieldMovieSet = new JTextField("");
-		txtFieldMovieSet.addActionListener(new ActionListener(){
-	        @Override
-	        public void actionPerformed(ActionEvent e) {
-	            
-	            if(movieToWriteToDiskList != null)
-	            {
-	            	String newValue = (String) txtFieldMovieSet.getText();
-	            	if(newValue != null)
-	            	{
-	            		movieToWriteToDiskList.get(0).setSet(new Set(newValue));
-	            	}
-	            }
-	        }
-	    });
-		txtFieldMovieSet.addKeyListener(new KeyListener() {
-			
-			@Override
-			public void keyTyped(KeyEvent e) {
-			}
-			
-			@Override
-			public void keyReleased(KeyEvent e) {
-				String newValue = (String) txtFieldMovieSet.getText();
-            	if(newValue != null)
-            	{
-            		movieToWriteToDiskList.get(0).setSet(new Set(newValue));
-            	}
-				
-			}
-
-			@Override
-			public void keyPressed(KeyEvent e) {
-			}
-			
-		});
-		fileDetailsPanel.add(txtFieldMovieSet,"4,12");
-		
-		JLabel lblPlot = new JLabel("Plot:");
-		fileDetailsPanel.add(lblPlot, "2,14");
-		
-
-		moviePlotTextField = new JTextArea(3,35);
-		moviePlotTextField.setLineWrap(true);
-		moviePlotTextField.setWrapStyleWord(true);
-		moviePlotTextField.addKeyListener(new KeyListener() {
-			
-			@Override
-			public void keyTyped(KeyEvent e) {
-			}
-			
-			@Override
-			public void keyReleased(KeyEvent e) {
-				String newValue = (String) moviePlotTextField.getText();
-            	if(newValue != null)
-            	{
-            		movieToWriteToDiskList.get(0).setPlot(new Plot(newValue));
-            	}
-				
-			}
-
-			@Override
-			public void keyPressed(KeyEvent e) {
-			}
-			
-		});
-
-		JScrollPane plotPanelScrollPane = new JScrollPane(moviePlotTextField, 
-				   JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-
-		fileDetailsPanel.add(plotPanelScrollPane,"4,14");
-		
-
-		JLabel lblActors = new JLabel("Actors:");
-		fileDetailsPanel.add(lblActors, "2, 16");
-
-		listModelActorsSite1 = new DefaultListModel<String>();
-		actorListSite1 = new JList<String>(listModelActorsSite1);
-		actorListSite1.setCellRenderer(new ActressListRenderer());
-
-
-		JScrollPane actorListScroller = new JScrollPane(actorListSite1);
-		actorListScroller.setPreferredSize(new Dimension(250, 250));
-		actorListSite1.setSize(new Dimension(250, 250));
-		fileDetailsPanel.add(actorListScroller, "4, 16");
-
-		JLabel lblGenres = new JLabel("Genres:");
-		fileDetailsPanel.add(lblGenres, "2, 18");
-
-		listModelGenresSite1 = new DefaultListModel<String>();
-		genreListSite1 = new JList<String>(listModelGenresSite1);
-		JScrollPane listScrollerGenres = new JScrollPane(genreListSite1);
-
-		genreListSite1.setSize(new Dimension(200, 200));
-		fileDetailsPanel.add(listScrollerGenres, "4, 18");
-
-		artworkPanel = new JPanel();
-		artworkPanel.setLayout(new BoxLayout(artworkPanel, BoxLayout.PAGE_AXIS));
-		artworkPanel.setBorder(BorderFactory.createLineBorder(Color.black));
-		
-		
-		//set up the poster
-		lblPosterIcon = new JLabel("");
-		
-		//Dimension posterSize = new Dimension(posterSizeX, posterSizeY);
-		// posterImage is initially a transparent poster size rectangle
-		posterImage = GraphicsEnvironment.getLocalGraphicsEnvironment()
-				.getDefaultScreenDevice().getDefaultConfiguration()
-				.createCompatibleImage(posterSizeX, posterSizeY, Transparency.TRANSLUCENT);
-		
-		ImageIcon posterIcon = new ImageIcon(posterImage);
-		lblPosterIcon.setIcon(posterIcon);
-		//lblPosterIcon.setSize(posterSize);
-		//lblPosterIcon.setMaximumSize(posterSize);
-		//lblPosterIcon.setMinimumSize(posterSize);
-		//lblPosterIcon.setPreferredSize(posterSize);
-		lblPosterIcon.setAlignmentX(Component.LEFT_ALIGNMENT);
-		lblPosterIcon.setAlignmentY(Component.CENTER_ALIGNMENT);
-		
-		//set up the fanart
-		lblFanartIcon = new JLabel("");
-		//Dimension fanartSize = new Dimension(fanartSizeX, fanartSizeY);
-		// fanartImage is intiailly a transparent rectangle
-		fanartImage = GraphicsEnvironment.getLocalGraphicsEnvironment()
-				.getDefaultScreenDevice().getDefaultConfiguration()
-				.createCompatibleImage(fanartSizeX, fanartSizeY, Transparency.TRANSLUCENT);
-		ImageIcon fanartIcon = new ImageIcon(fanartImage);
-		lblFanartIcon.setIcon(fanartIcon);
-		//lblFanartIcon.setMaximumSize(fanartSize);
-		//lblFanartIcon.setMinimumSize(fanartSize);
-		//lblFanartIcon.setPreferredSize(fanartSize);
-		lblFanartIcon.setAlignmentX(Component.LEFT_ALIGNMENT);
-		lblFanartIcon.setAlignmentY(Component.BOTTOM_ALIGNMENT);
-		
-		
-		artworkPanel.add(lblPosterIcon);
-		artworkPanel.add(lblFanartIcon);
-		//JScrollPane artworkPanelScrollPane = new JScrollPane(artworkPanel);
-		
-		//frmMoviescraper.getContentPane().add(artworkPanelScrollPane, BorderLayout.EAST);
-		fileDetailsPanel.add(artworkPanel,"6,2,1,18");
-		
+		JComponent parserPanel = new SpecificParserPanel(this);
+		parserPanel.setPreferredSize(new Dimension(200,50));
+		southPanel.add(parserPanel);
 		
 		JPanel buttonsPanel = new JPanel();
-		buttonsPanel.setBorder(BorderFactory.createLineBorder(Color.black));
 		buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.PAGE_AXIS));
 		JPanel scrapeButtons = new JPanel();
 		JPanel fileOperationsButtons = new JPanel();
-		frmMoviescraper.getContentPane().add(buttonsPanel, BorderLayout.SOUTH);
+		southPanel.add(buttonsPanel);
 
 		JButton btnScrapeSelectMovieJAV = new JButton("Scrape JAV");
 		btnScrapeSelectMovieJAV.setAction(new ScrapeMovieAction());
@@ -969,10 +663,54 @@ public class GUIMain {
 		});
 		preferenceMenu.add(nfoNamedMovieDotNfo);
 		
+		//Checkbox for using IAFD Actors instead of Data18
+		JCheckBoxMenuItem useIAFDForActors = new JCheckBoxMenuItem("Using IAFD Actors instead of Data18");
+		useIAFDForActors.setState(preferences.getUseIAFDForActors());
+		useIAFDForActors.addItemListener(new ItemListener() {
+
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				//save the menu choice off to the preference object (and the disk based settings file)
+				if(e.getStateChange() == ItemEvent.SELECTED)
+					preferences.setUseIAFDForActors(true);
+				else if(e.getStateChange() == ItemEvent.DESELECTED)
+					preferences.setUseIAFDForActors(false);
+
+			}
+		});
+		preferenceMenu.add(useIAFDForActors);
 		
+		//Checkbox for renaming Movie file
+		JCheckBoxMenuItem renameMovieFile = new JCheckBoxMenuItem("Rename Movie File");
+		renameMovieFile.setState(preferences.getRenameMovieFile());
+		renameMovieFile.addItemListener(new ItemListener() {
+
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				//save the menu choice off to the preference object (and the disk based settings file)
+				if(e.getStateChange() == ItemEvent.SELECTED)
+					preferences.setRenameMovieFile(true);
+				else if(e.getStateChange() == ItemEvent.DESELECTED)
+					preferences.setRenameMovieFile(false);
+
+			}
+		});
+		preferenceMenu.add(renameMovieFile);
+		
+		JMenu renameMenu = new JMenu("Rename Settings");
+		
+		JMenuItem renameSettings = new JMenuItem("Rename Settings");
+		renameSettings.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new RenamerGUI(preferences);
+			}
+		});
+		renameMenu.add(renameSettings);
 		
 		//add the various menus together
 		menuBar.add(preferenceMenu);
+		menuBar.add(renameMenu);
 		frmMoviescraper.setJMenuBar(menuBar);
 	}
 	protected void removeOldScrapedMovieReferences() {
@@ -1427,19 +1165,8 @@ public class GUIMain {
 	}
 
 	protected void clearAllFieldsOfSite1Movie() {
-		comboBoxMovieTitleText.removeAllItems();
-		comboBoxMovieTitleText.setEditable(false);
-		lblOriginalTitleTextSite1.setText("");
-		lblScrapedYearText.setText("");
-		txtFieldStudio.setText("");
-		lblIDCurrentMovie.setText("");
-		listModelGenresSite1.removeAllElements();
-		listModelActorsSite1.removeAllElements();
-		lblPosterIcon.setIcon(null);
-		lblFanartIcon.setIcon(null);
-		moviePlotTextField.setText("");
-		txtFieldMovieSet.setText("");
-
+		fileDetailPanel.clearView();
+		fileDetailPanel.setTitleEditable(false);
 	}
 	
 	//Update the GUI so the user can see what is scraped in
@@ -1451,53 +1178,45 @@ public class GUIMain {
 			
 			//All the titles from the various versions scraped of this movie from the different sites
 			if(movieToWriteToDiskList != null)
-				comboBoxMovieTitleText.addItem(movieToWriteToDiskList.get(0).getTitle().getTitle());
+				fileDetailPanel.getCurrentMovie().getAllTitles().add( movieToWriteToDiskList.get(0).getTitle() );
 			if(currentlySelectedMovieDMM != null)
-				comboBoxMovieTitleText.addItem(currentlySelectedMovieDMM.getTitle().getTitle());
+				fileDetailPanel.getCurrentMovie().getAllTitles().add( currentlySelectedMovieDMM.getTitle() );
 			if(currentlySelectedMovieJavLibrary != null)
-				comboBoxMovieTitleText.addItem(currentlySelectedMovieJavLibrary.getTitle().getTitle());
+				fileDetailPanel.getCurrentMovie().getAllTitles().add( currentlySelectedMovieJavLibrary.getTitle() );
 			if(currentlySelectedMovieSquarePlus != null)
-				comboBoxMovieTitleText.addItem(currentlySelectedMovieSquarePlus.getTitle().getTitle());
+				fileDetailPanel.getCurrentMovie().getAllTitles().add( currentlySelectedMovieSquarePlus.getTitle() );
 			if(currentlySelectedMovieActionJav != null)
-				comboBoxMovieTitleText.addItem(currentlySelectedMovieActionJav.getTitle().getTitle());
+				fileDetailPanel.getCurrentMovie().getAllTitles().add( currentlySelectedMovieActionJav.getTitle() );
 			if(currentlySelectedMovieJavZoo != null)
-				comboBoxMovieTitleText.addItem(currentlySelectedMovieJavZoo.getTitle().getTitle());
-			if(comboBoxMovieTitleText.getItemCount() > 0)
-				comboBoxMovieTitleText.setEditable(true);
+				fileDetailPanel.getCurrentMovie().getAllTitles().add( currentlySelectedMovieJavZoo.getTitle() );
+			if(fileDetailPanel.getCurrentMovie().getAllTitles().size() > 0)
+				fileDetailPanel.setTitleEditable(true);
 			
 			//original title
-			lblOriginalTitleTextSite1.setText(movieToWriteToDiskList.get(0)
-					.getOriginalTitle().getOriginalTitle());
+			fileDetailPanel.getCurrentMovie().setOriginalTitle(movieToWriteToDiskList.get(0)
+					.getOriginalTitle());
 			//ID
 			if(movieToWriteToDiskList.get(0).getId() != null)
-				lblIDCurrentMovie.setText(movieToWriteToDiskList.get(0).getId().getId());
+				fileDetailPanel.getCurrentMovie().setId(movieToWriteToDiskList.get(0).getId());
 			//Studio
 			if(movieToWriteToDiskList.get(0).getStudio() != null)
-				txtFieldStudio.setText(movieToWriteToDiskList.get(0).getStudio().getStudio());
+				fileDetailPanel.getCurrentMovie().setStudio(movieToWriteToDiskList.get(0).getStudio());
 			//Year
 			if(movieToWriteToDiskList.get(0).getYear() != null)
-			lblScrapedYearText.setText(movieToWriteToDiskList.get(0).getYear().getYear());
+				fileDetailPanel.getCurrentMovie().setYear(movieToWriteToDiskList.get(0).getYear());
 			//Plot
 			if(movieToWriteToDiskList.get(0).getPlot() != null)
-				moviePlotTextField.setText(movieToWriteToDiskList.get(0).getPlot().getPlot());
+				fileDetailPanel.getCurrentMovie().setPlot(movieToWriteToDiskList.get(0).getPlot());
 			//Set
 			if(movieToWriteToDiskList.get(0).getSet() != null)
-				txtFieldMovieSet.setText(movieToWriteToDiskList.get(0).getSet().getSet());
-			// clear out any old genres
-			listModelGenresSite1.removeAllElements();
+				fileDetailPanel.getCurrentMovie().setSet(movieToWriteToDiskList.get(0).getSet());
 			
 			//Add in all the genres
-			for (Genre genre : movieToWriteToDiskList.get(0).getGenres()) {
-				listModelGenresSite1.addElement(genre.getGenre());
-			}
-			
-			//remove the old actors in the list
-			listModelActorsSite1.removeAllElements();
-			
+			fileDetailPanel.getCurrentMovie().setGenres( movieToWriteToDiskList.get(0).getGenres() );
+
 			//Actors
-			for (Actor actor : movieToWriteToDiskList.get(0).getActors()) {
-				listModelActorsSite1.addElement(actor.getName());
-			}
+			fileDetailPanel.getCurrentMovie().setActors( movieToWriteToDiskList.get(0).getActors() );
+
 			boolean posterFileUpdateOccured = false;
 			boolean fanartFileUpdateOccured = false;
 			if(!forceUpdatePoster)
@@ -1511,11 +1230,9 @@ public class GUIMain {
 				File standardFanartJpg = new File(Movie.getFileNameOfFanart(currentlySelectedMovieFileList.get(0), false));
 				if (currentlySelectedPosterFileList.get(0).exists()) {
 					try {
-						ImageIcon newPosterIcon;
 						BufferedImage img = ImageIO.read(currentlySelectedPosterFileList.get(0));
-						BufferedImage scaledImage = Scalr.resize(img, Method.QUALITY, posterSizeX, posterSizeY, Scalr.OP_ANTIALIAS);
-						newPosterIcon = new ImageIcon(scaledImage);
-						lblPosterIcon.setIcon(newPosterIcon);
+						BufferedImage scaledImage = ArtWorkPanel.resizeToPoster(img);
+						artWorkPanel.setNewPoster(scaledImage);
 						posterFileUpdateOccured = true;
 					} catch (IOException e) {
 						e.printStackTrace();
@@ -1525,11 +1242,9 @@ public class GUIMain {
 				{
 					try {
 						//System.out.println("found the standard fanart");
-						ImageIcon newFanartIcon;
 						BufferedImage img = ImageIO.read(currentlySelectedFanartFileList.get(0));
-						BufferedImage scaledImage = Scalr.resize(img, Method.QUALITY, fanartSizeX, fanartSizeY, Scalr.OP_ANTIALIAS);
-						newFanartIcon = new ImageIcon(scaledImage);
-						lblFanartIcon.setIcon(newFanartIcon);
+						BufferedImage scaledImage = ArtWorkPanel.resizeToFanart(img);
+						artWorkPanel.setNewFanart(scaledImage);
 						fanartFileUpdateOccured = true;
 					} catch (IOException e) {
 						e.printStackTrace();
@@ -1542,9 +1257,8 @@ public class GUIMain {
 						//System.out.println("Reading in poster from other" + potentialOtherPosterJpg);
 						ImageIcon newPosterIcon;
 						BufferedImage img = ImageIO.read(potentialOtherPosterJpg);
-						BufferedImage scaledImage = Scalr.resize(img, Method.QUALITY, posterSizeX, posterSizeY, Scalr.OP_ANTIALIAS);
-						newPosterIcon = new ImageIcon(scaledImage);
-						lblPosterIcon.setIcon(newPosterIcon);
+						BufferedImage scaledImage = ArtWorkPanel.resizeToPoster(img);
+						artWorkPanel.setNewPoster(scaledImage);
 						posterFileUpdateOccured = true;
 					} catch (IOException e) {
 						e.printStackTrace();
@@ -1557,9 +1271,8 @@ public class GUIMain {
 						//System.out.println("Reading in fanart from other" + potentialOtherFanartJpg);
 						ImageIcon newFanartIcon;
 						BufferedImage img = ImageIO.read(potentialOtherFanartJpg);
-						BufferedImage scaledImage = Scalr.resize(img, Method.QUALITY, fanartSizeX, fanartSizeY, Scalr.OP_ANTIALIAS);
-						newFanartIcon = new ImageIcon(scaledImage);
-						lblFanartIcon.setIcon(newFanartIcon);
+						BufferedImage scaledImage = ArtWorkPanel.resizeToFanart(img);
+						artWorkPanel.setNewFanart(scaledImage);
 						fanartFileUpdateOccured = true;
 					} catch (IOException e) {
 						e.printStackTrace();
@@ -1571,7 +1284,7 @@ public class GUIMain {
 				{
 					try {
 						//System.out.println("Reading in poster from moviename-poster" + potentialOtherPosterJpg);
-						lblPosterIcon.setIcon(new ImageIcon(
+						artWorkPanel.setNewPoster(new ImageIcon(
 								standardPosterJpg.getCanonicalPath()));
 						posterFileUpdateOccured = true;
 					} catch (IOException e) {
@@ -1587,9 +1300,8 @@ public class GUIMain {
 						//System.out.println("Reading in fanart from moviename-fanart" + potentialOtherPosterJpg);
 						ImageIcon newFanartIcon;
 						BufferedImage img = ImageIO.read(standardFanartJpg);
-						BufferedImage scaledImage = Scalr.resize(img, Method.QUALITY, fanartSizeX, fanartSizeY, Scalr.OP_ANTIALIAS);
-						newFanartIcon = new ImageIcon(scaledImage);
-						lblFanartIcon.setIcon(newFanartIcon);
+						BufferedImage scaledImage = ArtWorkPanel.resizeToFanart(img);
+						artWorkPanel.setNewFanart(scaledImage);
 						/*lblFanartIcon.setIcon(new ImageIcon(
 								standardFanartJpg.getCanonicalPath()));*/
 						fanartFileUpdateOccured = true;
@@ -1602,39 +1314,39 @@ public class GUIMain {
 			// otherwise read it from the URL specified by the object since we couldn't find any local file
 			if (movieToWriteToDiskList.get(0).hasPoster() && !posterFileUpdateOccured) {
 				try {
-					posterImage = movieToWriteToDiskList.get(0).getPosters()[0]
+					Image posterImage = movieToWriteToDiskList.get(0).getPosters()[0]
 							.getThumbImage();
 					ImageIcon newPosterIcon = new ImageIcon(posterImage);
 					BufferedImage img = (BufferedImage) newPosterIcon.getImage();
-					BufferedImage scaledImage = Scalr.resize(img, Method.QUALITY, posterSizeX, posterSizeY, Scalr.OP_ANTIALIAS);
-					posterImage = scaledImage;
+					BufferedImage scaledImage = ArtWorkPanel.resizeToPoster(img);
+					artWorkPanel.setNewPoster(scaledImage);
 					posterFileUpdateOccured = true;
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 					JOptionPane.showMessageDialog(null, ExceptionUtils.getStackTrace(e),"Unhandled Exception",JOptionPane.ERROR_MESSAGE);
 				}
-				lblPosterIcon.setIcon(new ImageIcon(posterImage));
 			}
 			
 			//try to read the fanart from the url since we couldn't find any local file
 			if (movieToWriteToDiskList.get(0).hasFanart() && !fanartFileUpdateOccured) {
 				System.out.println("Reading in the fanart from the url");
 				try {
-					fanartImage = movieToWriteToDiskList.get(0).getFanart()[0]
+					Image fanartImage = movieToWriteToDiskList.get(0).getFanart()[0]
 							.getThumbImage();
 					ImageIcon newFanartIcon = new ImageIcon(fanartImage);
 					BufferedImage img = (BufferedImage) newFanartIcon.getImage();
-					BufferedImage scaledImage = Scalr.resize(img, Method.QUALITY, fanartSizeX, fanartSizeY, Scalr.OP_ANTIALIAS);
+					BufferedImage scaledImage = ArtWorkPanel.resizeToFanart(img);
+					artWorkPanel.setNewFanart(scaledImage);
 					fanartImage = scaledImage;
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 					JOptionPane.showMessageDialog(null, ExceptionUtils.getStackTrace(e),"Unhandled Exception",JOptionPane.ERROR_MESSAGE);
 				}
-				lblFanartIcon.setIcon(new ImageIcon(fanartImage));
 			}
 		}
+		fileDetailPanel.updateView();
 	}
 
 
@@ -1688,15 +1400,35 @@ public class GUIMain {
 							+ movieToWriteToDiskList);
 					if(movieToWriteToDiskList != null)
 					{
-						
-						movieToWriteToDiskList.get(movieNumberInList).writeToFile(
-								currentlySelectedNfoFileList.get(movieNumberInList),
-								currentlySelectedPosterFileList.get(movieNumberInList),
-								currentlySelectedFanartFileList.get(movieNumberInList),
-								currentlySelectedFolderJpgFileList.get(movieNumberInList),
-								preferences);
-
-
+						if ( preferences.getRenameMovieFile() ) {
+							////TODO New Filewrite
+							System.out.println(currentlySelectedMovieFileList.get(0));
+							File oldMovieFile = currentlySelectedMovieFileList.get(movieNumberInList);
+							Movie movie = movieToWriteToDiskList.get(movieNumberInList);
+							
+							String sanitizerString = preferences.getSanitizerForFilename();
+							String renameString = preferences.getRenamerString(); 
+							Renamer renamer = new Renamer(renameString, sanitizerString, movie, oldMovieFile);
+							String newMovieFilename = renamer.getNewFileName();
+							System.out.println( "New Filename : " + newMovieFilename );
+							File newMovieFile = new File(newMovieFilename);
+							oldMovieFile.renameTo(newMovieFile);
+							
+							movieToWriteToDiskList.get(movieNumberInList).writeToFile(
+									new File( movie.getFileNameOfNfo(newMovieFile, preferences.getNfoNamedMovieDotNfo()) ),
+									new File( movie.getFileNameOfPoster(newMovieFile, preferences.getNoMovieNameInImageFiles()) ),
+									new File( movie.getFileNameOfFanart(newMovieFile, preferences.getNoMovieNameInImageFiles())),
+									new File( movie.getFileNameOfFolderJpg(newMovieFile) ),
+									preferences);							
+						} else {
+							//save without renaming movie
+							movieToWriteToDiskList.get(movieNumberInList).writeToFile(
+							currentlySelectedNfoFileList.get(movieNumberInList),
+							currentlySelectedPosterFileList.get(movieNumberInList),
+							currentlySelectedFanartFileList.get(movieNumberInList),
+							currentlySelectedFolderJpgFileList.get(movieNumberInList),
+							preferences);
+						}
 
 						//we can only output extra fanart if we're scraping a folder, because otherwise the extra fanart will get mixed in with other files
 						if(preferences.getExtraFanartScrapingEnabledPreference() && currentlySelectedMovieFileList.get(movieNumberInList).isDirectory() && currentlySelectedExtraFanartFolderList != null)
@@ -2029,6 +1761,7 @@ public class GUIMain {
 		String overrideURLDMM;
 		String overrideURLJavLibrary;
 		String overrideURLData18Movie;
+		String overrideURLIAFD;
 		private static final long serialVersionUID = 1L;
 		boolean promptUserForURLWhenScraping; //do we stop to ask the user to pick a URL when scraping
 		boolean scrapeJAV = true;
@@ -2041,42 +1774,13 @@ public class GUIMain {
 		{
 			if(searchResults.length > 0)
 			{
-				JPanel panel = new JPanel();
-				panel.setLayout(new BorderLayout());
-				JList<SearchResult> labelList = new JList<SearchResult>(searchResults);
-				labelList.setCellRenderer(new SearchResultsRenderer());
-				labelList.setVisible(true);
-				JScrollPane pane = new JScrollPane(labelList);
-				panel.add(pane, BorderLayout.CENTER);
-				panel.setPreferredSize(new Dimension(500,400));
-				
-				final JDialog bwin = new JDialog();
-		         bwin.addWindowFocusListener(new WindowFocusListener()
-		         {
-		             @Override
-		             public void windowLostFocus(WindowEvent e)
-		             {
-		               bwin.setVisible(false);
-		               bwin.dispose();
-		             }
 
-		             @Override
-		             public void windowGainedFocus(WindowEvent e)
-		             {
-		             }
-		         }); 
-		         bwin.add(panel);
-		         bwin.pack();
-				
-				int result = JOptionPane.showOptionDialog(null, panel, "Select Movie to Scrape From " + siteName,
+				SelectionDialog selectionDialog = new SelectionDialog(searchResults, siteName);
+
+				int result = JOptionPane.showOptionDialog(null, selectionDialog, "Select Movie to Scrape From " + siteName,
 		                JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,
 		                null, null, null);
-				if(result == JOptionPane.OK_OPTION)
-				{
-					SearchResult optionPickedFromPanel = labelList.getSelectedValue();
-					return optionPickedFromPanel;
-				}
-				else return null;
+				return selectionDialog.getSelectedValue();
 			}
 			else return null;
 		}
@@ -2158,6 +1862,26 @@ public class GUIMain {
 									return;
 								overrideURLData18Movie = searchResultFromUser.getUrlPath();
 
+							}
+							
+							if( scrapeData18Movie && preferences.getUseIAFDForActors() ) {
+								IAFDParsingProfile iafdParsingProfile = new IAFDParsingProfile();
+								SearchResult[] searchResultsIAFD = iafdParsingProfile.getSearchResults(iafdParsingProfile.createSearchString(currentlySelectedMovieFileList.get(movieNumberInList)));
+								System.out.println("neues");
+								System.out.println(searchStringData18Movie);
+								System.out.println(searchResultsIAFD);
+								
+								if(searchResultsIAFD != null && searchResultsIAFD.length > 0)
+								{
+									SearchResult searchResultFromUser = this.showOptionPane(searchResultsIAFD, "Data18 Movie");
+									if(searchResultFromUser == null)
+										return;
+									overrideURLIAFD = searchResultFromUser.getUrlPath();
+									if (!overrideURLIAFD.contains("iafd.com"))
+										overrideURLIAFD = "http://www.iafd.com/" + overrideURLIAFD;
+									System.out.println("Neue URL " + overrideURLIAFD);
+									
+								}
 							}
 						} catch (IOException e1) {
 							// TODO Auto-generated catch block
@@ -2320,6 +2044,16 @@ public class GUIMain {
 
 						System.out.println("Data18 Scrape results: "
 								+ currentlySelectedMovieData18Movie);
+						
+						if ( preferences.getUseIAFDForActors() ) {
+							Movie scrapeMovieIAFD = Movie.scrapeMovie(
+									currentlySelectedMovieFileList.get(currentMovieNumberInList),
+									new IAFDParsingProfile(), overrideURLIAFD, promptUserForURLWhenScraping);
+							System.out.println("IAFD Scrape results: "
+									+ scrapeMovieIAFD);
+							
+							currentlySelectedMovieData18Movie.setActors( scrapeMovieIAFD.getActors() );
+						}
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -2786,6 +2520,16 @@ public class GUIMain {
 
 		}
 
+	}
+	
+	public FileDetailPanel getFileDetailPanel() {
+		return fileDetailPanel;
+	}
+
+	public File getCurrentFile() {
+		if (currentlySelectedMovieFileList.size() > 0)
+			return currentlySelectedMovieFileList.get(0);
+		return null;
 	}
 
 }

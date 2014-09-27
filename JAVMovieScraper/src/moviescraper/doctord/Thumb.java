@@ -1,5 +1,6 @@
 package moviescraper.doctord;
 
+import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -98,6 +99,17 @@ public class Thumb {
 		needToReloadThumbImage = false;
 	}
 	
+	public Thumb(String url, int croppedWidth) throws IOException {
+		thumbURL = new URL(url);
+		BufferedImage tempImage = (BufferedImage)ImageCache.getImageFromCache(thumbURL);
+		int startWidth = tempImage.getWidth() - croppedWidth;
+		tempImage = tempImage.getSubimage(startWidth, 0, croppedWidth, tempImage.getHeight());
+		
+		this.isImageModified = true;
+		thumbImage = tempImage;
+		imageIconThumbImage = new ImageIcon(tempImage);
+		needToReloadThumbImage = false;
+	}
 	
 	public Thumb(String url, boolean useJavCoverCropRoutine) throws IOException
 	{
@@ -185,6 +197,22 @@ public class Thumb {
 		thumbImage = tempImage;
 		imageIconThumbImage = new ImageIcon(tempImage);
 		needToReloadThumbImage = false;
+	}
+	
+	public Thumb (String leftImage, String rightImage) throws IOException {
+		BufferedImage left = (BufferedImage)ImageCache.getImageFromCache( new URL(leftImage) );
+		BufferedImage right = (BufferedImage)ImageCache.getImageFromCache( new URL(rightImage) );
+		
+		int newWidth = left.getWidth() + right.getWidth();
+		int newHeigth = left.getHeight();
+		
+		BufferedImage image = new BufferedImage(newWidth, newHeigth, BufferedImage.TYPE_3BYTE_BGR);
+		Graphics graphics = image.getGraphics();
+		graphics.drawImage(left, 0, 0, null);
+		graphics.drawImage(right, left.getWidth(), 0, right.getWidth(), right.getHeight(), null);
+		
+		graphics.dispose();
+		thumbImage = image;
 	}
 
 	public Thumb (String url) throws MalformedURLException 
