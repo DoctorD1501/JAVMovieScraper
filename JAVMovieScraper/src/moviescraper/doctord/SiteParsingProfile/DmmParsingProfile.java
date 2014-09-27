@@ -202,6 +202,9 @@ public class DmmParsingProfile extends SiteParsingProfile {
 		{
 			String subStringToSearchFor = "/=/cid=";
 			String cid = pageURL.substring(pageURL.indexOf("/=/cid=") + subStringToSearchFor.length(), pageURL.length()-1);
+			//sometimes dmm will have two entries / cids for a given movie, but the trailer will always be on the non tk version of the page
+			if(cid.startsWith("tk"))
+				cid = cid.replaceFirst("tk","");
 			return cid;
 		}
 		return null;
