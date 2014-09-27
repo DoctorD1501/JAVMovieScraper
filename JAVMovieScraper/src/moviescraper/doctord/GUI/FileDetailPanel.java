@@ -342,6 +342,7 @@ public class FileDetailPanel extends JPanel {
 	//Updates the view for the current movie
 	public void updateView() {
 		comboBoxMovieTitleText.setModel( new TitleListModel() );
+		comboBoxMovieTitleText.setEditable(true);
 		lblOriginalTitleTextSite1.setText( currentMovie.getOriginalTitle().getOriginalTitle() );
 		lblScrapedYearText.setText( currentMovie.getYear().getYear() );
 		lblIDCurrentMovie.setText( currentMovie.getId().getId() );
