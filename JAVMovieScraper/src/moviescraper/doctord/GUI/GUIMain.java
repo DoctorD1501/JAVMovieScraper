@@ -86,6 +86,7 @@ import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -755,20 +756,9 @@ public class GUIMain {
 	}
 
 	private void updateFileListModel(File currentlySelectedDirectory, boolean keepSelectionsAndReferences) {
-		//fileList.updateUI();
-		
 		File [] filesToList = showFileListSorted(currentlySelectedDirectory);
 		List<File> selectValuesListBeforeUpdate = fileList.getSelectedValuesList();
-		listModelFiles.removeAllElements();
-		for (File file : filesToList) {
-			listModelFiles.addElement(file);
-		}
-		if(!keepSelectionsAndReferences)
-		{
-			removeOldScrapedMovieReferences();
-			removeOldSelectedFileReferences();
-		}
-		
+	
 		//We don't want to fire the listeners events when reselecting the items because this 
 		//will cause us additional IO that is not needed as the program rereads the nfo.
 		//To avoid this, we can save out the old listener, remove it, select the items and then add it back
@@ -777,6 +767,15 @@ public class GUIMain {
 		{
 			fileListSelectionListener = fileList.getListSelectionListeners();
 			fileList.removeListSelectionListener(fileList.getListSelectionListeners()[0]);;
+		}
+		listModelFiles.removeAllElements();
+		for (File file : filesToList) {
+			listModelFiles.addElement(file);
+		}
+		if(!keepSelectionsAndReferences)
+		{
+			removeOldScrapedMovieReferences();
+			removeOldSelectedFileReferences();
 		}
 		//select the old values we had before we updated the list
 		for(File currentValueToSelect : selectValuesListBeforeUpdate)
@@ -1568,7 +1567,6 @@ public class GUIMain {
 					removeOldSelectedFileReferences();
 
 				} else {
-
 					removeOldSelectedFileReferences();
 					
 					// Item is selected
@@ -2466,6 +2464,7 @@ public class GUIMain {
 
 	public File[] actorFolderFiles(int movieNumberInList) {
 		ArrayList<File> actorFiles = new ArrayList<File>();
+		System.out.println("actorfolderfiles " +  movieToWriteToDiskList);
 		if(movieToWriteToDiskList != null && movieToWriteToDiskList.size() > 0 && movieToWriteToDiskList.get(movieNumberInList).getActors() != null)
 		{
 			if(currentlySelectedActorsFolderList != null && currentlySelectedActorsFolderList.get(movieNumberInList).isDirectory())
@@ -2488,7 +2487,6 @@ public class GUIMain {
 
 	private void writeExtraFanart(File destinationDirectory, int movieNumberInList) throws IOException {
 		updateExtraFanartFolder(destinationDirectory);
-		System.out.println("extrafanart size is = " + movieToWriteToDiskList.get(movieNumberInList).getExtraFanart().length);
 		if(movieToWriteToDiskList != null && movieToWriteToDiskList.size() > 0 && movieToWriteToDiskList.get(movieNumberInList).getExtraFanart() != null && movieToWriteToDiskList.get(movieNumberInList).getExtraFanart().length > 0)
 		{
 			FileUtils.forceMkdir(currentlySelectedExtraFanartFolderList.get(movieNumberInList));
