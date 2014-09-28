@@ -1178,7 +1178,7 @@ public class GUIMain {
 			}
 			finally
 			{
-				updateAllFieldsOfSite1Movie(false);
+				updateAllFieldsOfFileDetailPanel(false);
 			}
 		}
 	}
@@ -1188,12 +1188,14 @@ public class GUIMain {
 		fileDetailPanel.setTitleEditable(false);
 	}
 	
-	//Update the GUI so the user can see what is scraped in
-	protected void updateAllFieldsOfSite1Movie(boolean forceUpdatePoster) {
+	//Update the File Detail Panel GUI so the user can see what is scraped in
+	protected void updateAllFieldsOfFileDetailPanel(boolean forceUpdatePoster) {
 		if (movieToWriteToDiskList == null || movieToWriteToDiskList.size() == 0) {
 			clearAllFieldsOfSite1Movie();
 		} else if (movieToWriteToDiskList != null && movieToWriteToDiskList.get(0) != null) {
 			clearAllFieldsOfSite1Movie();
+			
+			fileDetailPanel.setCurrentMovie(movieToWriteToDiskList.get(0));
 			
 			//All the titles from the various versions scraped of this movie from the different sites
 			if(movieToWriteToDiskList != null)
@@ -1631,7 +1633,7 @@ public class GUIMain {
 					//if no nfo file for file or directory, we want to just update the gui
 					else
 					{
-						updateAllFieldsOfSite1Movie(false);
+						updateAllFieldsOfFileDetailPanel(false);
 					}
 				}
 			}
@@ -1988,7 +1990,7 @@ public class GUIMain {
 			{
 				clearOverrides();
 				//by calling this with the parameter of true, we'll force a refresh from the URL not just update the poster from the file on disk
-				updateAllFieldsOfSite1Movie(true);
+				updateAllFieldsOfFileDetailPanel(true);
 				frmMoviescraper.setCursor(Cursor.getDefaultCursor());
 			}
 		}

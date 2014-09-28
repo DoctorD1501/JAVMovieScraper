@@ -487,6 +487,10 @@ public class FileDetailPanel extends JPanel {
 	public void setGenreList(JList<String> genreList) {
 		this.genreList = genreList;
 	}
+
+	public void setCurrentMovie(Movie currentMovie) {
+		this.currentMovie = currentMovie;
+	}
 	
 }
 
