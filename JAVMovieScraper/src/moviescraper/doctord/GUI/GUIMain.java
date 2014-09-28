@@ -18,6 +18,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
 
 import java.awt.BorderLayout;
 
@@ -67,6 +68,7 @@ import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
+
 import javax.swing.JButton;
 
 import java.awt.SystemColor;
@@ -363,7 +365,7 @@ public class GUIMain {
 							try{
 								currentlySelectedDirectoryList = doubleClickedFile;
 								frmMoviescraper.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-								updateFileListModel(currentlySelectedDirectoryList);
+								updateFileListModel(currentlySelectedDirectoryList, false);
 							}
 							finally
 							{
@@ -576,7 +578,7 @@ public class GUIMain {
 		preferenceMenu.add(writeActorImages);
 
 		//Checkbox for scraping extrafanart		
-		JCheckBoxMenuItem scrapeExtraFanart = new JCheckBoxMenuItem("Scrape and Download Extrafanart (Only Works if Directory Selected When Scraping)");
+		JCheckBoxMenuItem scrapeExtraFanart = new JCheckBoxMenuItem("Write Extrafanart When Writing Data to a Directory or Moving File to a Directory");
 		scrapeExtraFanart.setState(preferences.getExtraFanartScrapingEnabledPreference());
 		scrapeExtraFanart.addItemListener(new ItemListener() {
 
@@ -752,20 +754,38 @@ public class GUIMain {
 		currentlySelectedExtraFanartFolderList.clear();
 	}
 
-	private void updateFileListModel(File currentlySelectedDirectory) {
+	private void updateFileListModel(File currentlySelectedDirectory, boolean keepSelectionsAndReferences) {
+		//fileList.updateUI();
+		
 		File [] filesToList = showFileListSorted(currentlySelectedDirectory);
 		List<File> selectValuesListBeforeUpdate = fileList.getSelectedValuesList();
 		listModelFiles.removeAllElements();
 		for (File file : filesToList) {
 			listModelFiles.addElement(file);
 		}
-		removeOldScrapedMovieReferences();
-		removeOldSelectedFileReferences();
+		if(!keepSelectionsAndReferences)
+		{
+			removeOldScrapedMovieReferences();
+			removeOldSelectedFileReferences();
+		}
 		
+		//We don't want to fire the listeners events when reselecting the items because this 
+		//will cause us additional IO that is not needed as the program rereads the nfo.
+		//To avoid this, we can save out the old listener, remove it, select the items and then add it back
+		ListSelectionListener[] fileListSelectionListener = null;
+		if(keepSelectionsAndReferences)
+		{
+			fileListSelectionListener = fileList.getListSelectionListeners();
+			fileList.removeListSelectionListener(fileList.getListSelectionListeners()[0]);;
+		}
 		//select the old values we had before we updated the list
 		for(File currentValueToSelect : selectValuesListBeforeUpdate)
 		{
 			fileList.setSelectedValue(currentValueToSelect, false);
+		}
+		if(keepSelectionsAndReferences && fileListSelectionListener != null)
+		{
+			fileList.addListSelectionListener(fileListSelectionListener[0]);
 		}
 	}
 
@@ -1180,7 +1200,7 @@ public class GUIMain {
 		}
 	}
 
-	protected void clearAllFieldsOfSite1Movie() {
+	protected void clearAllFieldsOfFileDetailPanel() {
 		fileDetailPanel.clearView();
 		fileDetailPanel.setTitleEditable(false);
 	}
@@ -1188,9 +1208,9 @@ public class GUIMain {
 	//Update the File Detail Panel GUI so the user can see what is scraped in
 	protected void updateAllFieldsOfFileDetailPanel(boolean forceUpdatePoster) {
 		if (movieToWriteToDiskList == null || movieToWriteToDiskList.size() == 0) {
-			clearAllFieldsOfSite1Movie();
+			clearAllFieldsOfFileDetailPanel();
 		} else if (movieToWriteToDiskList != null && movieToWriteToDiskList.get(0) != null) {
-			clearAllFieldsOfSite1Movie();
+			clearAllFieldsOfFileDetailPanel();
 			
 			fileDetailPanel.setCurrentMovie(movieToWriteToDiskList.get(0));
 			
@@ -1489,44 +1509,6 @@ public class GUIMain {
 							trailerToWrite.writeTrailerToFile(currentlySelectedTrailerFileList.get(movieNumberInList));
 						}
 					}
-					/*
-					//we're outputting new files to the current visible directory, so we'll want to update GUI with the fact that they are there
-					if(!currentlySelectedMovieFileList.get(movieNumberInList).isDirectory())
-					{
-						//fireListSelectionEvents = false;
-						int selectedIndex = fileList.getSelectedIndex();
-						int itemsAdded = 1;
-						if(!listModelFiles.contains(currentlySelectedNfoFileList.get(movieNumberInList)))
-						{
-							listModelFiles.add(selectedIndex + itemsAdded,
-									currentlySelectedNfoFileList.get(movieNumberInList));
-							itemsAdded++;
-						}
-						if(!listModelFiles.contains(currentlySelectedFanartFileList.get(movieNumberInList)) && preferences.getWriteFanartAndPostersPreference())
-						{
-							listModelFiles.add(selectedIndex + itemsAdded,
-									currentlySelectedFanartFileList.get(movieNumberInList));
-							itemsAdded++;
-						}
-						if(!listModelFiles.contains(currentlySelectedPosterFileList.get(movieNumberInList)) && preferences.getWriteFanartAndPostersPreference())
-						{
-							listModelFiles.add(selectedIndex + itemsAdded,
-									currentlySelectedPosterFileList.get(movieNumberInList));
-							itemsAdded++;
-						}
-						if(!listModelFiles.contains(currentlySelectedTrailerFileList.get(movieNumberInList)) && preferences.getWriteTrailerToFile())
-						{
-							listModelFiles.add(selectedIndex + itemsAdded,
-									currentlySelectedTrailerFileList.get(movieNumberInList));
-							itemsAdded++;
-						}
-						if(!listModelFiles.contains(currentlySelectedFolderJpgFileList.get(movieNumberInList)) && preferences.getCreateFolderJpgEnabledPreference())
-						{
-							listModelFiles.add(selectedIndex + itemsAdded, currentlySelectedFolderJpgFileList.get(movieNumberInList ));
-							itemsAdded++;
-						}
-					}
-					*/
 					System.out.println("Finished writing a movie file");
 
 				} catch (IOException e) {
@@ -1540,7 +1522,7 @@ public class GUIMain {
 				}
 			}
 			//out of loop and done writing files, update the gui
-			updateFileListModel(currentlySelectedDirectoryList);
+			updateFileListModel(currentlySelectedDirectoryList, true);
 		}
 	}
 
@@ -1563,7 +1545,7 @@ public class GUIMain {
 				//as this can sometimes be slow
 				try{
 					frmMoviescraper.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-					updateFileListModel(currentlySelectedDirectoryList);
+					updateFileListModel(currentlySelectedDirectoryList, false);
 				}
 				finally
 				{
@@ -1690,7 +1672,7 @@ public class GUIMain {
 									+ SiteParsingProfile.stripDiscNumber(FilenameUtils
 											.getBaseName(currentlySelectedMovieFileList.get(movieNumberInList)
 													.getName())));
-					clearAllFieldsOfSite1Movie();
+					clearAllFieldsOfFileDetailPanel();
 					//copy over the .actor folder items to the destination folder, but only if the preference is set and the usual sanity checking is done
 					if (currentlySelectedMovieFileList.get(movieNumberInList).isFile() && currentlySelectedActorsFolderList != null && preferences.getDownloadActorImagesToActorFolderPreference())
 					{
@@ -1751,10 +1733,8 @@ public class GUIMain {
 					
 
 					// remove all the old references so we aren't tempted to
-					// reuse them
-					removeOldSelectedFileReferences();
-					removeOldScrapedMovieReferences();
-					updateFileListModel(currentlySelectedDirectoryList);
+					// reuse them when updating the GUI
+					updateFileListModel(currentlySelectedDirectoryList, false);
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -2508,6 +2488,7 @@ public class GUIMain {
 
 	private void writeExtraFanart(File destinationDirectory, int movieNumberInList) throws IOException {
 		updateExtraFanartFolder(destinationDirectory);
+		System.out.println("extrafanart size is = " + movieToWriteToDiskList.get(movieNumberInList).getExtraFanart().length);
 		if(movieToWriteToDiskList != null && movieToWriteToDiskList.size() > 0 && movieToWriteToDiskList.get(movieNumberInList).getExtraFanart() != null && movieToWriteToDiskList.get(movieNumberInList).getExtraFanart().length > 0)
 		{
 			FileUtils.forceMkdir(currentlySelectedExtraFanartFolderList.get(movieNumberInList));
@@ -2537,7 +2518,7 @@ public class GUIMain {
 				{
 					currentlySelectedDirectoryList = parentDirectory;
 					frmMoviescraper.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-					updateFileListModel(currentlySelectedDirectoryList);
+					updateFileListModel(currentlySelectedDirectoryList, false);
 				}
 			}
 			finally
