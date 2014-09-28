@@ -27,4 +27,24 @@ public class Genre extends MovieDataItem {
 		this.genre = sanitizeString(genre);
 	}
 
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Genre other = (Genre) obj;
+		if (genre == null) {
+			if (other.genre != null)
+				return false;
+		} else if (!genre.equals(other.genre))
+			return false;
+		return true;
+	}
+	
+	
+
 }

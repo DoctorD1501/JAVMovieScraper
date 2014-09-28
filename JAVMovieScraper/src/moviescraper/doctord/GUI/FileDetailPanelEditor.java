@@ -3,6 +3,7 @@ package moviescraper.doctord.GUI;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -13,10 +14,10 @@ import moviescraper.doctord.Thumb;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Genre;
 
-abstract class AbstractFileDetailPanelAddGUI {
+abstract class AbstractFileDetailPanelEditGUI {
 
 	protected FileDetailPanel fileDetailPanel;
-	protected AbstractFileDetailPanelAddGUI( FileDetailPanel fileDetailPanel ) {
+	protected AbstractFileDetailPanelEditGUI( FileDetailPanel fileDetailPanel ) {
 		this.fileDetailPanel = fileDetailPanel;
 	}
 	
@@ -36,14 +37,15 @@ abstract class AbstractFileDetailPanelAddGUI {
 	public abstract String getMenuItemName();
 	public abstract void showGUI();
 	public abstract void addAction() throws Exception;
+	public abstract void deleteAction();
 }
 
-class FileDetailPanelActorAdder extends AbstractFileDetailPanelAddGUI {
+class FileDetailPanelActorEditor extends AbstractFileDetailPanelEditGUI {
 
 	private JTextField textFieldActor;
 	private JTextField textFieldURL;
 	
-	public FileDetailPanelActorAdder(FileDetailPanel fileDetailPanel) {
+	public FileDetailPanelActorEditor(FileDetailPanel fileDetailPanel) {
 		super(fileDetailPanel);
 	}
 	
@@ -92,7 +94,7 @@ class FileDetailPanelActorAdder extends AbstractFileDetailPanelAddGUI {
 	
 	@Override
 	public void showGUI() {
-		showOptionDialog(initializeInnerFrame(), "Add manually new Actor");
+		showOptionDialog(initializeInnerFrame(), "Manually Add New Actor");
 	}
 	
 	@Override
@@ -116,13 +118,20 @@ class FileDetailPanelActorAdder extends AbstractFileDetailPanelAddGUI {
 	
 	@Override
 	public String getMenuItemName() {
-		return "Add new Author";
+		return "Add New Actor";
+	}
+
+	@Override
+	public void deleteAction() {
+		Actor actorToRemove = fileDetailPanel.getActorList().getSelectedValue();
+		fileDetailPanel.getCurrentMovie().getActors().remove(actorToRemove);
+		fileDetailPanel.updateView();
 	}
 }
 
-class FileDetailPanelGenreAdder extends AbstractFileDetailPanelAddGUI {
+class FileDetailPanelGenreEditor extends AbstractFileDetailPanelEditGUI {
 	
-	public FileDetailPanelGenreAdder(FileDetailPanel fileDetailPanel) {
+	public FileDetailPanelGenreEditor(FileDetailPanel fileDetailPanel) {
 		super(fileDetailPanel);
 	}
 
@@ -171,5 +180,14 @@ class FileDetailPanelGenreAdder extends AbstractFileDetailPanelAddGUI {
 			currentMovie.getGenres().add(new Genre(genre));
 			fileDetailPanel.updateView();
 		}
+	}
+
+	@Override
+	public void deleteAction() {
+		String genreToRemove = fileDetailPanel.getGenreList().getSelectedValue();
+		System.out.println("want to remove " + genreToRemove);
+		fileDetailPanel.getCurrentMovie().getGenres().remove(new Genre(genreToRemove));
+		fileDetailPanel.updateView();
+		
 	}
 }

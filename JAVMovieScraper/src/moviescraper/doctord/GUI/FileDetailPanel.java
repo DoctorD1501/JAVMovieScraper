@@ -6,6 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -60,8 +62,8 @@ public class FileDetailPanel extends JPanel {
 	private JTextField txtFieldStudio;
 	private JTextField txtFieldMovieSet;
 	private JTextArea moviePlotTextField;
-	private JList<Actor> actorListSite1;
-	private JList<String> genreListSite1;
+	private JList<Actor> actorList;
+	private JList<String> genreList;
 	
 	protected Movie currentMovie = getEmptyMovie();
 
@@ -303,24 +305,31 @@ public class FileDetailPanel extends JPanel {
 		JLabel lblActors = new JLabel("Actors:");
 		fileDetailsPanel.add(lblActors, "2, 16");
 
-		actorListSite1 = new JList<Actor>(new ActorItemListModel());
-		actorListSite1.setCellRenderer(new ActressListRenderer());
-		actorListSite1.setComponentPopupMenu(new FileDetailPanelPopup(new FileDetailPanelActorAdder(this)));
+		actorList = new JList<Actor>(new ActorItemListModel());
+		actorList.setCellRenderer(new ActressListRenderer());
+		actorList.setComponentPopupMenu(new FileDetailPanelPopup(new FileDetailPanelActorEditor(this)));
+		actorList.addMouseListener(new MouseAdapter() {
+
+		     @Override
+		     public void mousePressed(MouseEvent e) {
+		    	 actorList.setSelectedIndex(actorList.locationToIndex(e.getPoint()));
+		     }
+		});
 
 
-		JScrollPane actorListScroller = new JScrollPane(actorListSite1);
+		JScrollPane actorListScroller = new JScrollPane(actorList);
 		actorListScroller.setPreferredSize(new Dimension(250, 250));
-		actorListSite1.setSize(new Dimension(250, 250));
+		actorList.setSize(new Dimension(250, 250));
 		fileDetailsPanel.add(actorListScroller, "4, 16");
 
 		JLabel lblGenres = new JLabel("Genres:");
 		fileDetailsPanel.add(lblGenres, "2, 18");
 
-		genreListSite1 = new JList<String>(new GenreItemListModel());
-		JScrollPane listScrollerGenres = new JScrollPane(genreListSite1);
-		genreListSite1.setComponentPopupMenu(new FileDetailPanelPopup(new FileDetailPanelGenreAdder(this)));
+		genreList = new JList<String>(new GenreItemListModel());
+		JScrollPane listScrollerGenres = new JScrollPane(genreList);
+		genreList.setComponentPopupMenu(new FileDetailPanelPopup(new FileDetailPanelGenreEditor(this)));
 		
-		genreListSite1.setSize(new Dimension(200, 200));
+		genreList.setSize(new Dimension(200, 200));
 		fileDetailsPanel.add(listScrollerGenres, "4, 18");
 		
 		artWorkPanel = new ArtWorkPanel();
@@ -355,8 +364,8 @@ public class FileDetailPanel extends JPanel {
 			comboBoxMovieTitleText.setSelectedIndex(0);
 		
 		//Actors and Genres are automatically generated
-		actorListSite1.updateUI();
-		genreListSite1.updateUI();
+		actorList.updateUI();
+		genreList.updateUI();
 		comboBoxMovieTitleText.updateUI();
 		
 		try {
@@ -461,6 +470,22 @@ public class FileDetailPanel extends JPanel {
 			return currentMovie.getAllTitles().get(0).getTitle();
 		}
 		
+	}
+
+	public JList<Actor> getActorList() {
+		return actorList;
+	}
+
+	public void setActorList(JList<Actor> actorList) {
+		this.actorList = actorList;
+	}
+
+	public JList<String> getGenreList() {
+		return genreList;
+	}
+
+	public void setGenreList(JList<String> genreList) {
+		this.genreList = genreList;
 	}
 	
 }
