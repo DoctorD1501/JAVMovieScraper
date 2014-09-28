@@ -56,7 +56,7 @@ public class FileDetailPanel extends JPanel {
 	private static final long serialVersionUID = 7088761619568387476L;
 	
 	private JComboBox<String> comboBoxMovieTitleText;
-	private JLabel lblOriginalTitleTextSite1;
+	private JLabel lblOriginalTitleText;
 	private JLabel lblScrapedYearText;
 	private JLabel lblIDCurrentMovie;
 	private JTextField txtFieldStudio;
@@ -169,8 +169,8 @@ public class FileDetailPanel extends JPanel {
 
 
 
-		lblOriginalTitleTextSite1 = new JLabel("");
-		fileDetailsPanel.add(lblOriginalTitleTextSite1, "4, 4");
+		lblOriginalTitleText = new JLabel("");
+		fileDetailsPanel.add(lblOriginalTitleText, "4, 4");
 
 
 		JLabel lblYear = new JLabel("Year:");
@@ -352,7 +352,7 @@ public class FileDetailPanel extends JPanel {
 	public void updateView() {
 		comboBoxMovieTitleText.setModel( new TitleListModel() );
 		comboBoxMovieTitleText.setEditable(true);
-		lblOriginalTitleTextSite1.setText( currentMovie.getOriginalTitle().getOriginalTitle() );
+		lblOriginalTitleText.setText( currentMovie.getOriginalTitle().getOriginalTitle() );
 		lblScrapedYearText.setText( currentMovie.getYear().getYear() );
 		lblIDCurrentMovie.setText( currentMovie.getId().getId() );
 		txtFieldStudio.setText( currentMovie.getStudio().getStudio() );
@@ -467,7 +467,7 @@ public class FileDetailPanel extends JPanel {
 
 		@Override
 		public String getElementAt(int index) {
-			return currentMovie.getAllTitles().get(0).getTitle();
+			return currentMovie.getAllTitles().get(index).getTitle();
 		}
 		
 	}
