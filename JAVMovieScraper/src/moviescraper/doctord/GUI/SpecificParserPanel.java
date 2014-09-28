@@ -1,12 +1,10 @@
 package moviescraper.doctord.GUI;
 
-import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -165,7 +163,7 @@ public class SpecificParserPanel extends JPanel {
 	    	if(thisJarFile != null && thisJarFile.exists())
 	    	{
 	    		List<Class> classNames=new ArrayList<Class>();
-	    		ZipInputStream zip=new ZipInputStream(new FileInputStream(thisJarFile.getPath()));
+	    		ZipInputStream zip = new ZipInputStream(new FileInputStream(thisJarFile.getPath()));
 	    		for(ZipEntry entry=zip.getNextEntry();entry!=null;entry=zip.getNextEntry())
 	    		    if(entry.getName().endsWith(".class") && !entry.isDirectory()) {
 	    		        // This ZipEntry represents a class. Now, what class does it represent?
@@ -182,7 +180,9 @@ public class SpecificParserPanel extends JPanel {
 	    		        {
 	    		        	classNames.add(Class.forName(className.toString()));
 	    		        }
+	    		        zip.closeEntry();
 	    		    }
+	    		zip.close();
 	    		return classNames;
 	    	}
 	    	else return classes;

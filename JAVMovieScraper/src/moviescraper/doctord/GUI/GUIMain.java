@@ -66,10 +66,7 @@ import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GraphicsEnvironment;
 import java.awt.Image;
-import java.awt.Transparency;
-
 import javax.swing.JButton;
 
 import java.awt.SystemColor;
@@ -1276,7 +1273,6 @@ public class GUIMain {
 				{
 					try {
 						//System.out.println("Reading in poster from other" + potentialOtherPosterJpg);
-						ImageIcon newPosterIcon;
 						BufferedImage img = ImageIO.read(potentialOtherPosterJpg);
 						BufferedImage scaledImage = ArtWorkPanel.resizeToPoster(img);
 						artWorkPanel.setNewPoster(scaledImage);
@@ -1290,7 +1286,6 @@ public class GUIMain {
 				{
 					try {
 						//System.out.println("Reading in fanart from other" + potentialOtherFanartJpg);
-						ImageIcon newFanartIcon;
 						BufferedImage img = ImageIO.read(potentialOtherFanartJpg);
 						BufferedImage scaledImage = ArtWorkPanel.resizeToFanart(img);
 						artWorkPanel.setNewFanart(scaledImage);
@@ -1319,7 +1314,6 @@ public class GUIMain {
 				{
 					try {
 						//System.out.println("Reading in fanart from moviename-fanart" + potentialOtherPosterJpg);
-						ImageIcon newFanartIcon;
 						BufferedImage img = ImageIO.read(standardFanartJpg);
 						BufferedImage scaledImage = ArtWorkPanel.resizeToFanart(img);
 						artWorkPanel.setNewFanart(scaledImage);
@@ -1436,10 +1430,10 @@ public class GUIMain {
 							oldMovieFile.renameTo(newMovieFile);
 							
 							movieToWriteToDiskList.get(movieNumberInList).writeToFile(
-									new File( movie.getFileNameOfNfo(newMovieFile, preferences.getNfoNamedMovieDotNfo()) ),
-									new File( movie.getFileNameOfPoster(newMovieFile, preferences.getNoMovieNameInImageFiles()) ),
-									new File( movie.getFileNameOfFanart(newMovieFile, preferences.getNoMovieNameInImageFiles())),
-									new File( movie.getFileNameOfFolderJpg(newMovieFile) ),
+									new File( Movie.getFileNameOfNfo(newMovieFile, preferences.getNfoNamedMovieDotNfo()) ),
+									new File( Movie.getFileNameOfPoster(newMovieFile, preferences.getNoMovieNameInImageFiles()) ),
+									new File( Movie.getFileNameOfFanart(newMovieFile, preferences.getNoMovieNameInImageFiles())),
+									new File( Movie.getFileNameOfFolderJpg(newMovieFile) ),
 									preferences);							
 						} else {
 							//save without renaming movie
@@ -1798,7 +1792,7 @@ public class GUIMain {
 
 				SelectionDialog selectionDialog = new SelectionDialog(searchResults, siteName);
 
-				int result = JOptionPane.showOptionDialog(null, selectionDialog, "Select Movie to Scrape From " + siteName,
+				JOptionPane.showOptionDialog(null, selectionDialog, "Select Movie to Scrape From " + siteName,
 		                JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,
 		                null, null, null);
 				return selectionDialog.getSelectedValue();

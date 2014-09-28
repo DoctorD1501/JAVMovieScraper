@@ -66,8 +66,7 @@ public class FileDetailPanel extends JPanel {
 	private JList<String> genreList;
 	
 	protected Movie currentMovie = getEmptyMovie();
-
-	private MoviescraperPreferences preferences;
+	MoviescraperPreferences preferences;
 
 	private ArtWorkPanel artWorkPanel;
 
@@ -117,10 +116,6 @@ public class FileDetailPanel extends JPanel {
 
 		JLabel lblTitle = new JLabel("Title:");
 		fileDetailsPanel.add(lblTitle, "2, 2");
-
-
-
-		String [] initialTitleComboBox = {""};
 		
 		//using this workaround for JComboBox constructor for problem with generics in WindowBuilder as per this stackoverflow thread: https://stackoverflow.com/questions/8845139/jcombobox-warning-preventing-opening-the-design-page-in-eclipse
 		comboBoxMovieTitleText = new JComboBox<String>();

@@ -6,7 +6,6 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
-import org.apache.commons.codec.binary.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

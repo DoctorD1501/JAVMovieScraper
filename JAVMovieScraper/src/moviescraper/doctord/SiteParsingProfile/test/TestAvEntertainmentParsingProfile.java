@@ -14,7 +14,6 @@ import moviescraper.doctord.dataitem.Genre;
 import moviescraper.doctord.dataitem.Plot;
 import moviescraper.doctord.dataitem.Runtime;
 import moviescraper.doctord.dataitem.Set;
-import moviescraper.doctord.dataitem.SortTitle;
 import moviescraper.doctord.dataitem.Studio;
 import moviescraper.doctord.dataitem.Title;
 import moviescraper.doctord.dataitem.Year;

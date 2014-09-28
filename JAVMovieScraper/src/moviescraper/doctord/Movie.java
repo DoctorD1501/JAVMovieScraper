@@ -37,7 +37,6 @@ public class Movie {
 	private ArrayList<Director> directors;
 	private Thumb[] fanart;
 	private Thumb[] extraFanart;
-	private Thumb[] extraFanartPreviews;
 	private Thumb preferredFanartToWriteToDisk;
 	private ArrayList<Genre> genres;
 	private ID id;

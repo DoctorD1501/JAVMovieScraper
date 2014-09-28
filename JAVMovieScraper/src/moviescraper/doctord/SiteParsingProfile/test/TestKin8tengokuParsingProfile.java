@@ -39,7 +39,7 @@ public class TestKin8tengokuParsingProfile {
 	
 	@Test
 	public void findID() {
-		String id = profile.findID(file.getName());
+		String id = Kin8tengokuParsingProfile.findID(file.getName());
 		assertEquals("Found Wrong ID", "1000", id);
 	}
 	

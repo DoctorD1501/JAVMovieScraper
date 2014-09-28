@@ -1,6 +1,5 @@
 package moviescraper.doctord.GUI;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -15,6 +14,10 @@ import javax.swing.JButton;
 
 public class CaptcherGUI extends JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2764463421744666378L;
 	private JPanel contentPane;
 	private JTextField textField;
 
