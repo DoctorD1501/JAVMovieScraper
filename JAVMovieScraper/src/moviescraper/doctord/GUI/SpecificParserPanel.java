@@ -40,7 +40,7 @@ public class SpecificParserPanel extends JPanel {
 		this.main = main;
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
-		JLabel label = new JLabel("Choose specific parser");
+		JLabel label = new JLabel("Choose Specific Scraper");
 		label.setAlignmentX(CENTER_ALIGNMENT);
 		add(label);
 		
