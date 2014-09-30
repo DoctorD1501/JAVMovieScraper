@@ -280,7 +280,6 @@ public class GUIMain {
 		ImageIcon browseDirectoryIcon = initializeImageIcon(browseIconURL);
 
 		fileListPanel = new JPanel();
-//		fileListPanel.setPreferredSize(new Dimension(200, 10));
 		frmMoviescraper.getContentPane().add(fileListPanel, BorderLayout.WEST);
 
 		defaultHomeDirectory = preferences.getLastUsedDirectory();
@@ -416,7 +415,7 @@ public class GUIMain {
 		//set up buttons in the file panel
 		
 		JPanel fileListPanelButtonsPanel = new JPanel();
-		fileListPanelButtonsPanel.setLayout( new BoxLayout(fileListPanelButtonsPanel, BoxLayout.Y_AXIS));
+		fileListPanelButtonsPanel.setLayout( new BoxLayout(fileListPanelButtonsPanel, BoxLayout.X_AXIS));
 		fileListPanelButtonsPanel.setAlignmentY(Component.BOTTOM_ALIGNMENT);
 		fileListPanelButtonsPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
