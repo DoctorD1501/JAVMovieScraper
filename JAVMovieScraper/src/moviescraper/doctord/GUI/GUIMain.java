@@ -854,14 +854,41 @@ public class GUIMain {
 	}
 	// Look through the fields in the various scraped movies and try to
 	// automatically guess what the best data is and construct a Movie based on
-	// that
+	// that. this function is only called for JAV movies
 	protected Movie amalgamateMovie(Movie currentlySelectedMovieDMM,
 			Movie currentlySelectedMovieActionJav,
 			Movie currentlySelectedMovieSquarePlus,
 			Movie currentlySelectedMovieJavLibrary,
 			Movie currentlySelectedMovieJavZoo,
 			int movieNumberInList) {
-
+		
+		//Assuming we have a DMM movie, any of the other movies must contain the same ID as the DMM movie
+		//if they aren't the same ID, discard them
+		if (currentlySelectedMovieDMM != null)
+		{
+			ID idMustBeThis = currentlySelectedMovieDMM.getId();
+			System.out.println("Id must be this" + idMustBeThis);
+			if(idMustBeThis != null)
+			{
+				if(currentlySelectedMovieActionJav != null && !currentlySelectedMovieActionJav.getId().equals(idMustBeThis)){
+					System.out.println("Discarding ActionJav scraped results for faulty match based on ID = " + currentlySelectedMovieActionJav.getId());
+					currentlySelectedMovieActionJav = null;
+				}
+				if(currentlySelectedMovieSquarePlus != null && !currentlySelectedMovieSquarePlus.getId().equals(idMustBeThis)){
+					System.out.println("Discarding SquarePlus scraped results for faulty match based on ID = " + currentlySelectedMovieSquarePlus.getId());
+					currentlySelectedMovieSquarePlus = null;
+				}
+				if(currentlySelectedMovieJavLibrary != null && !currentlySelectedMovieJavLibrary.getId().equals(idMustBeThis)){
+					System.out.println("Discarding Jav Library scraped results for faulty match based on ID = " + currentlySelectedMovieJavLibrary.getId());
+					currentlySelectedMovieJavLibrary = null;
+				}
+				if(currentlySelectedMovieJavZoo != null && !currentlySelectedMovieJavZoo.getId().equals(idMustBeThis)){
+					System.out.println("Discarding JavZoo scraped results for faulty match based on ID = " + currentlySelectedMovieJavZoo.getId());
+					currentlySelectedMovieJavZoo = null;
+				}
+			}
+		}
+		
 		if (currentlySelectedMovieDMM == null
 				&& currentlySelectedMovieActionJav == null
 				&& currentlySelectedMovieSquarePlus == null
