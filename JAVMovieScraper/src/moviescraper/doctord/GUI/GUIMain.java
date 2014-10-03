@@ -873,18 +873,22 @@ public class GUIMain {
 				if(currentlySelectedMovieActionJav != null && !currentlySelectedMovieActionJav.getId().equals(idMustBeThis)){
 					System.out.println("Discarding ActionJav scraped results for faulty match based on ID = " + currentlySelectedMovieActionJav.getId());
 					currentlySelectedMovieActionJav = null;
+					this.currentlySelectedMovieActionJav = null;
 				}
 				if(currentlySelectedMovieSquarePlus != null && !currentlySelectedMovieSquarePlus.getId().equals(idMustBeThis)){
 					System.out.println("Discarding SquarePlus scraped results for faulty match based on ID = " + currentlySelectedMovieSquarePlus.getId());
 					currentlySelectedMovieSquarePlus = null;
+					this.currentlySelectedMovieSquarePlus = null;
 				}
 				if(currentlySelectedMovieJavLibrary != null && !currentlySelectedMovieJavLibrary.getId().equals(idMustBeThis)){
 					System.out.println("Discarding Jav Library scraped results for faulty match based on ID = " + currentlySelectedMovieJavLibrary.getId());
 					currentlySelectedMovieJavLibrary = null;
+					this.currentlySelectedMovieJavLibrary = null;
 				}
 				if(currentlySelectedMovieJavZoo != null && !currentlySelectedMovieJavZoo.getId().equals(idMustBeThis)){
 					System.out.println("Discarding JavZoo scraped results for faulty match based on ID = " + currentlySelectedMovieJavZoo.getId());
 					currentlySelectedMovieJavZoo = null;
+					this.currentlySelectedMovieJavZoo = null;
 				}
 			}
 		}
