@@ -325,5 +325,8 @@ public class IAFDParsingProfile extends SiteParsingProfile {
 			return getLinksFromGoogle(searchString, "www.iafd.com/title.rme");
 		}
 	}
+	public String toString(){
+		return "IAFD";
+	}
 
 }

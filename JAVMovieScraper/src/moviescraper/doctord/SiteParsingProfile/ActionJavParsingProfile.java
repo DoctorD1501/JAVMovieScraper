@@ -325,5 +325,9 @@ public class ActionJavParsingProfile extends SiteParsingProfile {
 		//No extrafanart from ActionJav, for now
 		return new Thumb[0];
 	}
+	
+	public String toString(){
+		return "ActionJav";
+	}
 
 }

@@ -347,5 +347,9 @@ public class JavZooParsingProfile extends SiteParsingProfile {
 		//no extra fanart is supported on this site, for now
 		return new Thumb[0];
 	}
+	
+	public String toString(){
+		return "JavZoo";
+	}
 
 }

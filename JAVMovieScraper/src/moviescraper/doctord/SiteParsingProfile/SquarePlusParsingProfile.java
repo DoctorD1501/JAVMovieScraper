@@ -3,6 +3,7 @@ package moviescraper.doctord.SiteParsingProfile;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -220,6 +221,10 @@ public class SquarePlusParsingProfile extends SiteParsingProfile {
 	public Thumb[] scrapeExtraFanart() {
 		//No extra fanart is supported on this site
 		return new Thumb[0];
+	}
+	
+	public String toString(){
+		return "SquarePlus";
 	}
 
 }

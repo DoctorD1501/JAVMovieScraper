@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
+
 import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.Thumb;
 import moviescraper.doctord.TranslateString;
@@ -785,6 +786,10 @@ public class DmmParsingProfile extends SiteParsingProfile {
 		if(super.isExtraFanartScrapingEnabled())
 			return scrapePostersAndFanart(false, true);
 		else return new Thumb[0];
+	}
+	
+	public String toString(){
+		return "DMM.co.jp";
 	}
 
 }

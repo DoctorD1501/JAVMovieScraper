@@ -157,6 +157,7 @@ public class GUIMain {
 
 	//Gui Elements
 	private JFrame frmMoviescraper;
+	protected WindowBlocker frmMovieScraperBlocker;
 	private final Action moveToNewFolder = new MoveToNewFolderAction();
 	private DefaultListModel<File> listModelFiles;
 	
@@ -238,6 +239,9 @@ public class GUIMain {
 		currentlySelectedExtraFanartFolderList = new ArrayList<File>();
 		movieToWriteToDiskList = new ArrayList<Movie>();
 		frmMoviescraper = new JFrame();
+		frmMovieScraperBlocker = new WindowBlocker();
+		//set up the window that sits above the frame and can block input to this frame if needed while a dialog is open
+		frmMoviescraper.setGlassPane(frmMovieScraperBlocker);
 		frmMoviescraper.setBackground(SystemColor.window);
 		frmMoviescraper.setPreferredSize(new Dimension(1024, 768));
 		frmMoviescraper.setTitle("JAVMovieScraper");
@@ -1798,10 +1802,7 @@ public class GUIMain {
 		else return null;
 	}
 	
-	private class ScrapeMovieAction extends AbstractAction implements PropertyChangeListener{
-		/**
-		 * 
-		 */
+	public class ScrapeMovieAction extends AbstractAction {
 		String overrideURLDMM;
 		String overrideURLJavLibrary;
 		String overrideURLData18Movie;
@@ -1814,6 +1815,10 @@ public class GUIMain {
 		boolean manuallyPickFanart = true;
 		boolean manuallyPickPoster = true;
 		int progress;
+		int amountOfProgressPerSubtask;
+		SwingWorker<Void, String> worker;
+		List<Thread> scrapeThreads;
+		boolean scrapeCanceled;
 		
 
 		
@@ -1826,10 +1831,20 @@ public class GUIMain {
 			overrideURLData18Movie = "";
 			promptUserForURLWhenScraping = true;
 			progress = 0;
+			amountOfProgressPerSubtask = 0;
+			scrapeCanceled = false;
 		}
 		
-		private void makeProgress(int amount, String note)
+		public void makeProgress(int amount, String note)
 		{
+			if(progressMonitor.isCanceled())
+			{
+				cancelRunningThreads();
+				System.err.println("Thing is canceled, yo");
+				handleCancelWorker();
+				
+				return;
+			}
 			if(progress < 100)
 			{
 				
@@ -1851,10 +1866,11 @@ public class GUIMain {
 
 		public void actionPerformed(ActionEvent e) {
 			
-
+			
+			resetScrapeMovieActionCounters();
 			try
 			{
-				getFrmMoviescraper().setEnabled(false);
+				setMainGUIEnabled(false);
 				//this takes a while to do, so set the cursor to busy
 				
 				// clear out all old values of the scraped movie
@@ -1864,21 +1880,28 @@ public class GUIMain {
 					
 					
 					
-					SwingWorker<Void, String> worker = new SwingWorker<Void, String>(){
+					worker = new SwingWorker<Void, String>(){
 						
 						Movie javMovie = null;
 						Movie data18Movie = null;
 						@Override
-						protected Void doInBackground()
-								throws Exception {
+						protected Void doInBackground() {
+						
 						for(int movieNumberInList = 0; movieNumberInList < currentlySelectedMovieFileList.size(); movieNumberInList++)
 						{
+							if(this.isCancelled())
+							{
+								System.err.println("Found the thread was canceled");
+								handleCancelWorker();
+								return null;
+							}
 							final int movieNumberInListFinal = movieNumberInList;
 							//set the cursor to busy as this may take a while
 							frmMoviescraper.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 							// We don't want to block the UI while waiting for a time consuming
 							// scrape, so make new threads for each scraping query
 							String currentFileName = currentlySelectedMovieFileList.get(movieNumberInList).toString();
+							
 							initializeProgressMonitor(currentFileName);
 
 							if(promptUserForURLWhenScraping && scrapeJAV)
@@ -1959,16 +1982,26 @@ public class GUIMain {
 									e1.printStackTrace();
 								}
 							}
-							if(scrapeJAV)
-								javMovie = makeJavThreadsAndScrape(movieNumberInListFinal);
-							else if(scrapeData18Movie)
-								data18Movie = makeData18MovieThreadsAndScrape(movieNumberInListFinal, true);
-							else if(scrapeData18WebContent)
+							try
 							{
-								data18Movie = makeData18MovieThreadsAndScrape(movieNumberInListFinal, false);
+								if(scrapeJAV)
+									javMovie = makeJavThreadsAndScrape(movieNumberInListFinal);
+								else if(scrapeData18Movie)
+									data18Movie = makeData18MovieThreadsAndScrape(movieNumberInListFinal, true);
+								else if(scrapeData18WebContent)
+								{
+									data18Movie = makeData18MovieThreadsAndScrape(movieNumberInListFinal, false);
+								}
+							}
+							catch(InterruptedException e)
+							{
+								System.err.println("Task interrupted");
+								
 							}
 							makeProgress(100, "Done!"); //finish up the progress monitor for the current movie scraping
 						}
+
+						
 							return null;
 						}
 						
@@ -2024,7 +2057,7 @@ public class GUIMain {
 									javMovie.setFanart(ArrayUtils.toArray(fanartPicked));
 							}
 
-							if(movieToWriteToDiskList == null || movieToWriteToDiskList.size() == 0)
+							if(!scrapeCanceled && (movieToWriteToDiskList == null || movieToWriteToDiskList.size() == 0))
 							{
 								System.out.println("No movie result found");
 								JOptionPane.showMessageDialog(frmMoviescraper, "Could not find any movies that match the selected file while scraping.", "No Movies Found", JOptionPane.ERROR_MESSAGE, null);
@@ -2034,14 +2067,18 @@ public class GUIMain {
 							//by calling this with the parameter of true, we'll force a refresh from the URL not just update the poster from the file on disk
 							updateAllFieldsOfFileDetailPanel(true);
 							frmMoviescraper.setCursor(Cursor.getDefaultCursor());
-							getFrmMoviescraper().setEnabled(true);
+							setMainGUIEnabled(true);
 						}
 						
+						
 					};
-					worker.addPropertyChangeListener(this);
-					worker.execute();
+					//worker.addPropertyChangeListener(this);
+					
+					
+						worker.execute();
 				
 			}
+
 			finally
 			{
 				/*clearOverrides();
@@ -2053,6 +2090,22 @@ public class GUIMain {
 			}
 		}
 
+		private void resetScrapeMovieActionCounters() {
+			scrapeCanceled = false;
+			progress = 0;
+			amountOfProgressPerSubtask = 0;
+		}
+
+
+		protected void handleCancelWorker() {
+			System.err.println("Calling handleCancelWorker");
+			scrapeCanceled = true;
+			removeOldScrapedMovieReferences();
+			setMainGUIEnabled(true);
+			worker.cancel(true);
+			
+			
+		}
 
 		private void initializeProgressMonitor(String fileName) {
 			progressMonitor = new ProgressMonitor(getFrmMoviescraper(),
@@ -2061,6 +2114,7 @@ public class GUIMain {
 			progressMonitor.setMillisToDecideToPopup(0);
 			progressMonitor.setMillisToPopup(0);
 			progress = 0;
+			progressMonitor.setProgress(0);
 			
 		}
 
@@ -2118,10 +2172,18 @@ public class GUIMain {
 		}
 
 
-		private Movie makeData18MovieThreadsAndScrape(int movieNumberInList, boolean isData18Movie) {
+		private Movie makeData18MovieThreadsAndScrape(int movieNumberInList, boolean isData18Movie) throws InterruptedException {
 			//we need to create a final copy of the loop variable to pass it into each run method and make the compiler happy
 			final int currentMovieNumberInList = movieNumberInList;
 			final boolean parsingType = isData18Movie;
+			final int numberOfThreads;
+			if(preferences.getUseIAFDForActors())
+				numberOfThreads = 2;
+			else numberOfThreads = 1;
+			final int amountOfProgressToMakePerThread = (100 / numberOfThreads) - 1;
+			amountOfProgressPerSubtask = amountOfProgressToMakePerThread;
+			final ScrapeMovieAction thisScrapeAction = this;
+			
 			Thread scrapeQueryData18MovieThread = new Thread() {
 				public void run() {
 					try {
@@ -2134,7 +2196,7 @@ public class GUIMain {
 						debugWriter("Scraping this file (Data18) " + currentlySelectedMovieFileList.get(currentMovieNumberInList));
 						currentlySelectedMovieData18Movie = Movie.scrapeMovie(
 								currentlySelectedMovieFileList.get(currentMovieNumberInList),
-								data18MoviePP, overrideURLData18Movie, promptUserForURLWhenScraping);
+								data18MoviePP, overrideURLData18Movie, promptUserForURLWhenScraping, thisScrapeAction);
 
 						System.out.println("Data18 Scrape results: "
 								+ currentlySelectedMovieData18Movie);
@@ -2142,7 +2204,7 @@ public class GUIMain {
 						if ( preferences.getUseIAFDForActors() ) {
 							Movie scrapeMovieIAFD = Movie.scrapeMovie(
 									currentlySelectedMovieFileList.get(currentMovieNumberInList),
-									new IAFDParsingProfile(), overrideURLIAFD, promptUserForURLWhenScraping);
+									new IAFDParsingProfile(), overrideURLIAFD, promptUserForURLWhenScraping, thisScrapeAction);
 							System.out.println("IAFD Scrape results: "
 									+ scrapeMovieIAFD);
 							
@@ -2156,27 +2218,25 @@ public class GUIMain {
 				}
 			};
 
-			try
-			{
+
 				scrapeQueryData18MovieThread.start();
 				scrapeQueryData18MovieThread.join();
 
 				movieToWriteToDiskList.add(currentlySelectedMovieData18Movie);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+
 			return currentlySelectedMovieData18Movie;
 		}
 
 
-		private Movie makeJavThreadsAndScrape(int movieNumberInList) {
+		private Movie makeJavThreadsAndScrape(int movieNumberInList) throws InterruptedException {
 			//we need to create a final copy of the loop variable to pass it into each run method and make the compiler happy
 			final int currentMovieNumberInList = movieNumberInList;
 			Movie movieAmalgamated = null;
 			// Scape dmm.co.jp for currently selected movie
 			final int numberofThreads = 6;
 			final int amountOfProgressToMakePerThread = (100 / numberofThreads) - 1;
+			amountOfProgressPerSubtask = amountOfProgressToMakePerThread;
+			final ScrapeMovieAction thisScrapeAction = this;
 			Thread scrapeQueryDMMThread = new Thread() {
 				public void run() {
 					try {
@@ -2184,11 +2244,10 @@ public class GUIMain {
 						dmmPP.setExtraFanartScrapingEnabled(preferences.getExtraFanartScrapingEnabledPreference());
 						currentlySelectedMovieDMM = Movie.scrapeMovie(
 								currentlySelectedMovieFileList.get(currentMovieNumberInList),
-								dmmPP, overrideURLDMM, promptUserForURLWhenScraping);
-
+								dmmPP, overrideURLDMM, promptUserForURLWhenScraping, thisScrapeAction);
 						System.out.println("DMM scrape results: "
 								+ currentlySelectedMovieDMM);
-						makeProgress(amountOfProgressToMakePerThread, "DMM Done");
+						//makeProgress(amountOfProgressToMakePerThread, "DMM Done");
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -2202,11 +2261,11 @@ public class GUIMain {
 					try {
 						currentlySelectedMovieActionJav = Movie.scrapeMovie(
 								currentlySelectedMovieFileList.get(currentMovieNumberInList),
-								new ActionJavParsingProfile(), overrideURLDMM, false);
+								new ActionJavParsingProfile(), overrideURLDMM, false, thisScrapeAction);
 
 						System.out.println("Action jav scrape results: "
 								+ currentlySelectedMovieActionJav);
-						makeProgress(amountOfProgressToMakePerThread, "ActionJav Done");
+						//makeProgress(amountOfProgressToMakePerThread, "ActionJav Done");
 					} catch (IOException e1) {
 
 						e1.printStackTrace();
@@ -2221,11 +2280,11 @@ public class GUIMain {
 					try {
 						currentlySelectedMovieSquarePlus = Movie.scrapeMovie(
 								currentlySelectedMovieFileList.get(currentMovieNumberInList),
-								new SquarePlusParsingProfile(), overrideURLDMM, false);
+								new SquarePlusParsingProfile(), overrideURLDMM, false, thisScrapeAction);
 
 						System.out.println("SquarePlus scrape results: "
 								+ currentlySelectedMovieSquarePlus);
-						makeProgress(amountOfProgressToMakePerThread, "SquarePlus Done");
+						//makeProgress(amountOfProgressToMakePerThread, "SquarePlus Done");
 					} catch (IOException e1) {
 
 						e1.printStackTrace();
@@ -2242,11 +2301,11 @@ public class GUIMain {
 						jlParsingProfile.setOverrideURLJavLibrary(overrideURLJavLibrary);
 						currentlySelectedMovieJavLibrary = Movie.scrapeMovie(
 								currentlySelectedMovieFileList.get(currentMovieNumberInList),
-								jlParsingProfile, overrideURLDMM, promptUserForURLWhenScraping);
+								jlParsingProfile, overrideURLDMM, promptUserForURLWhenScraping, thisScrapeAction);
 
 						System.out.println("JavLibrary scrape results: "
 								+ currentlySelectedMovieJavLibrary);
-						makeProgress(amountOfProgressToMakePerThread, "JavLib Done");
+						//makeProgress(amountOfProgressToMakePerThread, "JavLib Done");
 					} catch (IOException e1) {
 
 						e1.printStackTrace();
@@ -2260,11 +2319,11 @@ public class GUIMain {
 					try {
 						currentlySelectedMovieJavZoo = Movie.scrapeMovie(
 								currentlySelectedMovieFileList.get(currentMovieNumberInList),
-								new JavZooParsingProfile(), overrideURLDMM, false);
+								new JavZooParsingProfile(), overrideURLDMM, false, thisScrapeAction);
 
 						System.out.println("JavZoo scrape results: "
 								+ currentlySelectedMovieJavZoo);
-						makeProgress(amountOfProgressToMakePerThread, "JavZoo Done");
+						//makeProgress(amountOfProgressToMakePerThread, "JavZoo Done");
 					} catch (IOException e1) {
 
 						e1.printStackTrace();
@@ -2279,11 +2338,11 @@ public class GUIMain {
 					try {
 						currentlySelectedMovieCaribbeancomPremium = Movie.scrapeMovie(
 								currentlySelectedMovieFileList.get(currentMovieNumberInList),
-								new CaribbeancomPremiumParsingProfile(), overrideURLDMM, false);
+								new CaribbeancomPremiumParsingProfile(), overrideURLDMM, false, thisScrapeAction);
 
 						System.out.println("CaribbeancomPremium scrape results: "
 								+ currentlySelectedMovieCaribbeancomPremium);
-						makeProgress(amountOfProgressToMakePerThread, "Carib Done");
+						//makeProgress(amountOfProgressToMakePerThread, "Carib Done");
 					} catch (IOException e1) {
 
 						e1.printStackTrace();
@@ -2291,10 +2350,17 @@ public class GUIMain {
 					}
 				}
 			};
+			
+			scrapeThreads = new ArrayList<Thread>(numberofThreads);
+			scrapeThreads.add(scrapeQueryDMMThread);
+			scrapeThreads.add(scrapeQueryActionJavThread);
+			scrapeThreads.add(scrapeQuerySquarePlusThread);
+			scrapeThreads.add(scrapeQueryJavLibraryThread);
+			scrapeThreads.add(scrapeQueryJavZooThread);
+			scrapeThreads.add(scrapeQueryCaribbeancomPremium);
 
-
-			try
-			{
+		
+			
 				// Run all the threads in parallel
 				scrapeQueryDMMThread.start();
 				if(!preferences.getScrapeInJapanese())
@@ -2306,17 +2372,53 @@ public class GUIMain {
 					scrapeQueryCaribbeancomPremium.start();
 				}
 
-
+				if(anyThreadWasInterrupted())
+				{
+					System.err.println("Something was interrupted");
+					return null;
+				}
 				// wait for them to finish before updating gui
 				scrapeQueryDMMThread.join();
 				if(!preferences.getScrapeInJapanese())
 				{
+					if(anyThreadWasInterrupted())
+					{
+						System.err.println("Something was interrupted");
+						return null;
+					}
 					scrapeQueryJavLibraryThread.join();
+					if(anyThreadWasInterrupted())
+					{
+						System.err.println("Something was interrupted");
+						return null;
+					}
 					scrapeQueryActionJavThread.join();
+					if(anyThreadWasInterrupted())
+					{
+						System.err.println("Something was interrupted");
+						return null;
+					}
 					scrapeQuerySquarePlusThread.join();
+					if(anyThreadWasInterrupted())
+					{
+						System.err.println("Something was interrupted");
+						return null;
+					}
 					scrapeQueryJavZooThread.join();
+					if(anyThreadWasInterrupted())
+					{
+						System.err.println("Something was interrupted");
+						return null;
+					}
 					scrapeQueryCaribbeancomPremium.join();
 				}
+				
+				if(anyThreadWasInterrupted())
+				{
+					System.err.println("Something was interrupted");
+					return null;
+				}
+				
 				if(preferences.getScrapeInJapanese())
 					movieAmalgamated = currentlySelectedMovieDMM;
 				else{
@@ -2333,30 +2435,33 @@ public class GUIMain {
 				{
 					movieToWriteToDiskList.add(movieAmalgamated);
 				}
-			}
-			catch (InterruptedException e1) {
-				e1.printStackTrace();
-				JOptionPane.showMessageDialog(null, ExceptionUtils.getStackTrace(e1),"Unhandled Exception",JOptionPane.ERROR_MESSAGE);
-			}
+			
+			
 			return movieAmalgamated;
 		}
-
-
-		@Override
-		public void propertyChange(PropertyChangeEvent evt) {
-			System.out.println("Prop change call made");
-			if ("progress" == evt.getPropertyName()) {
-				int progress = (Integer) evt.getNewValue();
-				progressMonitor.setProgress(progress);
-				String message = String.format("Completed %d%%.\n", progress);
-				System.out.println("Progress made");
-				progressMonitor.setNote(message);
-				if (progressMonitor.isCanceled()) {
-					if (progressMonitor.isCanceled()) {
-					} else {
-					}
-				}
+		
+		private boolean anyThreadWasInterrupted() {
+			for(Thread currentThread : scrapeThreads)
+			{
+				System.out.println("CurrentThread = " + currentThread + " isInterrupted = " + currentThread.isInterrupted());
+				if(currentThread.isInterrupted())
+					return true;
 			}
+			return false;
+		}
+
+		private void cancelRunningThreads()
+		{
+			for (Thread currentThread : scrapeThreads)
+			{
+				System.err.println("Interrupting " + currentThread);
+				currentThread.interrupt();
+			}
+			handleCancelWorker();
+		}
+
+		public int getAmountOfProgressPerSubtask() {
+			return amountOfProgressPerSubtask;
 		}
 		
 	}
@@ -2560,6 +2665,17 @@ public class GUIMain {
 		}
 	}
 	
+	public void setMainGUIEnabled(boolean value) {
+		
+		System.out.println("setMainGuIEnabled with value " + value);
+		if(value)
+			frmMovieScraperBlocker.unBlock();
+		else if(!value)
+			frmMovieScraperBlocker.block();
+
+		
+	}
+
 	public void updateExtraFanartFolder(File destinationDirectory){
 		for(int movieNumberInList = 0; movieNumberInList < currentlySelectedMovieFileList.size(); movieNumberInList++)
 			{

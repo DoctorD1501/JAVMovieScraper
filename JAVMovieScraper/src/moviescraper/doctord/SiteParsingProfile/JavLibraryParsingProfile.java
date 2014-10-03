@@ -499,6 +499,10 @@ public class JavLibraryParsingProfile extends SiteParsingProfile {
 		//No extra Fanart on this site is supported, for now
 		return new Thumb[0];
 	}
+	
+	public String toString(){
+		return "JavLibrary";
+	}
 
 
 }

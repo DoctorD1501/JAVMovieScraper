@@ -418,5 +418,8 @@ public class Data18MovieParsingProfile extends SiteParsingProfile {
 			return getLinksFromGoogle(searchString, "data18.com/movies/");
 		}
 	}
+	public String toString(){
+		return "Data18Movie";
+	}
 
 }
