@@ -1840,9 +1840,6 @@ public class GUIMain {
 			if(progressMonitor.isCanceled())
 			{
 				cancelRunningThreads();
-				System.err.println("Thing is canceled, yo");
-				handleCancelWorker();
-				
 				return;
 			}
 			if(progress < 100)
@@ -1865,231 +1862,293 @@ public class GUIMain {
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			
-			
+
 			resetScrapeMovieActionCounters();
-			try
-			{
-				setMainGUIEnabled(false);
-				//this takes a while to do, so set the cursor to busy
-				
-				// clear out all old values of the scraped movie
-				removeOldScrapedMovieReferences();
-				clearOverrides();
-				
-					
-					
-					
-					worker = new SwingWorker<Void, String>(){
-						
-						Movie javMovie = null;
-						Movie data18Movie = null;
-						@Override
-						protected Void doInBackground() {
-						
-						for(int movieNumberInList = 0; movieNumberInList < currentlySelectedMovieFileList.size(); movieNumberInList++)
-						{
-							if(this.isCancelled())
-							{
-								System.err.println("Found the thread was canceled");
-								handleCancelWorker();
-								return null;
-							}
-							final int movieNumberInListFinal = movieNumberInList;
-							//set the cursor to busy as this may take a while
-							frmMoviescraper.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-							// We don't want to block the UI while waiting for a time consuming
-							// scrape, so make new threads for each scraping query
-							String currentFileName = currentlySelectedMovieFileList.get(movieNumberInList).toString();
-							
-							initializeProgressMonitor(currentFileName);
 
-							if(promptUserForURLWhenScraping && scrapeJAV)
-							{
-								//bring up some dialog boxes so the user can choose what URL to use for each site
-								try {
-									DmmParsingProfile dmmPP = new DmmParsingProfile(!preferences.getScrapeInJapanese());
-									JavLibraryParsingProfile jlPP = new JavLibraryParsingProfile();
-									String searchStringDMM = dmmPP.createSearchString(currentlySelectedMovieFileList.get(movieNumberInList));
-									SearchResult [] searchResultsDMM = dmmPP.getSearchResults(searchStringDMM);
-									String searchStringJL = jlPP.createSearchString(currentlySelectedMovieFileList.get(movieNumberInList));
-									if(searchResultsDMM != null && searchResultsDMM.length > 0)
-									{
-										SearchResult searchResultFromUser = GUIMain.showOptionPane(searchResultsDMM, "dmm.co.jp");
-										if(searchResultFromUser == null)
-											continue;
-										overrideURLDMM = searchResultFromUser.getUrlPath();
+			setMainGUIEnabled(false);
+			// this takes a while to do, so set the cursor to busy
 
-									}
-									//don't read from jav library if we're scraping in japanese since that site is only useful for english lang content
-									if(!preferences.getScrapeInJapanese())
-									{
-										SearchResult [] searchResultsJavLibStrings = jlPP.getSearchResults(searchStringJL);
-										if(searchResultsJavLibStrings != null && searchResultsJavLibStrings.length > 0)
-										{
-											SearchResult searchResultFromUser = GUIMain.showOptionPane(searchResultsJavLibStrings, "javlibrary.com");
-											if(searchResultFromUser == null)
-												continue;
-											overrideURLJavLibrary = searchResultFromUser.getUrlPath();				
-										}
-									}
-								} catch (IOException e2) {
-									// TODO Auto-generated catch block
-									e2.printStackTrace();
-								}
-							}
+			// clear out all old values of the scraped movie
+			removeOldScrapedMovieReferences();
+			clearOverrides();
 
-							else if(promptUserForURLWhenScraping && (scrapeData18Movie || scrapeData18WebContent))
-							{
-								try {
-									SiteParsingProfile data18ParsingProfile = null;
-									if(scrapeData18Movie)
-										data18ParsingProfile = new Data18MovieParsingProfile();
-									else if(scrapeData18WebContent)
-										data18ParsingProfile = new Data18WebContentParsingProfile();
-									String searchStringData18Movie = data18ParsingProfile.createSearchString(currentlySelectedMovieFileList.get(movieNumberInList));
-									SearchResult [] searchResultData18Movie = data18ParsingProfile.getSearchResults(searchStringData18Movie);
-									if(searchResultData18Movie != null && searchResultData18Movie.length > 0)
-									{
-										SearchResult searchResultFromUser = GUIMain.showOptionPane(searchResultData18Movie, "Data18 Movie");
-										if(searchResultFromUser == null)
-											continue;
-										overrideURLData18Movie = searchResultFromUser.getUrlPath();
+			worker = new SwingWorker<Void, String>() {
 
-									}
-									
-									if( scrapeData18Movie && preferences.getUseIAFDForActors() ) {
-										IAFDParsingProfile iafdParsingProfile = new IAFDParsingProfile();
-										SearchResult[] searchResultsIAFD = iafdParsingProfile.getSearchResults(iafdParsingProfile.createSearchString(currentlySelectedMovieFileList.get(movieNumberInList)));
-										System.out.println("neues");
-										System.out.println(searchStringData18Movie);
-										System.out.println(searchResultsIAFD);
-										
-										if(searchResultsIAFD != null && searchResultsIAFD.length > 0)
-										{
-											SearchResult searchResultFromUser = GUIMain.showOptionPane(searchResultsIAFD, "Data18 Movie");
-											if(searchResultFromUser == null)
-												continue;
-											overrideURLIAFD = searchResultFromUser.getUrlPath();
-											if (!overrideURLIAFD.contains("iafd.com"))
-												overrideURLIAFD = "http://www.iafd.com/" + overrideURLIAFD;
-											System.out.println("Neue URL " + overrideURLIAFD);
-											
-										}
-									}
-								} catch (IOException e1) {
-									// TODO Auto-generated catch block
-									e1.printStackTrace();
-								}
-							}
-							try
-							{
-								if(scrapeJAV)
-									javMovie = makeJavThreadsAndScrape(movieNumberInListFinal);
-								else if(scrapeData18Movie)
-									data18Movie = makeData18MovieThreadsAndScrape(movieNumberInListFinal, true);
-								else if(scrapeData18WebContent)
-								{
-									data18Movie = makeData18MovieThreadsAndScrape(movieNumberInListFinal, false);
-								}
-							}
-							catch(InterruptedException e)
-							{
-								System.err.println("Task interrupted");
-								
-							}
-							makeProgress(100, "Done!"); //finish up the progress monitor for the current movie scraping
-						}
+				Movie javMovie = null;
+				Movie data18Movie = null;
 
-						
+				@Override
+				protected Void doInBackground() {
+
+					for (int movieNumberInList = 0; movieNumberInList < currentlySelectedMovieFileList
+							.size(); movieNumberInList++) {
+						if (this.isCancelled()) {
+							System.err.println("Found the thread was canceled");
+							cancelRunningThreads();
 							return null;
 						}
-						
-						@Override
-						protected void done(){
-							//Allow the user to manually pick poster from a dialog box for data18 movies
-							if(manuallyPickPoster && data18Movie != null && data18Movie.getPosters() != null && data18Movie.getPosters().length > 1)
-							{
-								//get all unique elements from the posters and the extrafanart - my method here is probably pretty inefficient, but the lists aren't more than 100 items, so no big deal
-								HashSet<Thumb> uniqueElements = new HashSet<Thumb>(Arrays.asList(data18Movie.getPosters()));
-								uniqueElements.addAll(Arrays.asList(data18Movie.getExtraFanart()));
-								ArrayList<Thumb> uniqueElementsList = (new ArrayList<Thumb>(uniqueElements));
-								Thumb [] uniqueElementsArray = uniqueElementsList.toArray(new Thumb[uniqueElementsList.size()]);
+						final int movieNumberInListFinal = movieNumberInList;
+						// set the cursor to busy as this may take a while
+						frmMoviescraper.setCursor(Cursor
+								.getPredefinedCursor(Cursor.WAIT_CURSOR));
+						// We don't want to block the UI while waiting for a
+						// time consuming
+						// scrape, so make new threads for each scraping
+						// query
+						String currentFileName = currentlySelectedMovieFileList
+								.get(movieNumberInList).toString();
 
-								Thumb posterPicked = showArtPicker(uniqueElementsArray,"Pick Poster");
-								if(posterPicked != null)
-								{
-									//remove the item from the picked from the existing poster and put it at the front of the list
-									ArrayList<Thumb> existingPosters = new ArrayList<Thumb>(Arrays.asList(currentlySelectedMovieData18Movie.getPosters()));
-									existingPosters.remove(posterPicked);
-									existingPosters.add(0,posterPicked);
-									Thumb [] posterArray = new Thumb[existingPosters.size()];
-									currentlySelectedMovieData18Movie.setPosters(existingPosters.toArray(posterArray));
+						initializeProgressMonitor(currentFileName);
+
+						if (promptUserForURLWhenScraping && scrapeJAV) {
+							// bring up some dialog boxes so the user can
+							// choose what URL to use for each site
+							try {
+								DmmParsingProfile dmmPP = new DmmParsingProfile(
+										!preferences.getScrapeInJapanese());
+								JavLibraryParsingProfile jlPP = new JavLibraryParsingProfile();
+								String searchStringDMM = dmmPP
+										.createSearchString(currentlySelectedMovieFileList
+												.get(movieNumberInList));
+								SearchResult[] searchResultsDMM = dmmPP
+										.getSearchResults(searchStringDMM);
+								String searchStringJL = jlPP
+										.createSearchString(currentlySelectedMovieFileList
+												.get(movieNumberInList));
+								if (searchResultsDMM != null
+										&& searchResultsDMM.length > 0) {
+									SearchResult searchResultFromUser = GUIMain
+											.showOptionPane(searchResultsDMM,
+													"dmm.co.jp");
+									if (searchResultFromUser == null)
+										continue;
+									overrideURLDMM = searchResultFromUser
+											.getUrlPath();
+
 								}
-							}
-
-							//Allow the user to manually pick fanart from a dialog box
-							if(manuallyPickFanart && data18Movie != null && data18Movie.getFanart() != null && data18Movie.getFanart().length > 1)
-							{
-								//get all unique elements from the fanart and the extrafanart - my method here is probably pretty inefficient, but the lists aren't more than 100 items, so no big deal
-								HashSet<Thumb> uniqueElements = new HashSet<Thumb>(Arrays.asList(data18Movie.getFanart()));
-								uniqueElements.addAll(Arrays.asList(data18Movie.getExtraFanart()));
-								ArrayList<Thumb> uniqueElementsList = (new ArrayList<Thumb>(uniqueElements));
-								Thumb [] uniqueElementsArray = uniqueElementsList.toArray(new Thumb[uniqueElementsList.size()]);
-
-								Thumb fanartPicked = showArtPicker(uniqueElementsArray,"Pick Fanart");
-								if(fanartPicked != null)
-								{
-									//remove the item from the picked from the existing fanart and put it at the front of the list
-									ArrayList<Thumb> existingFanart = new ArrayList<Thumb>(Arrays.asList(currentlySelectedMovieData18Movie.getFanart()));
-									existingFanart.remove(fanartPicked);
-									existingFanart.add(0,fanartPicked);
-									Thumb [] fanartArray = new Thumb[existingFanart.size()];
-									currentlySelectedMovieData18Movie.setFanart(existingFanart.toArray(fanartArray));
+								// don't read from jav library if we're
+								// scraping in japanese since that site is
+								// only useful for english lang content
+								if (!preferences.getScrapeInJapanese()) {
+									SearchResult[] searchResultsJavLibStrings = jlPP
+											.getSearchResults(searchStringJL);
+									if (searchResultsJavLibStrings != null
+											&& searchResultsJavLibStrings.length > 0) {
+										SearchResult searchResultFromUser = GUIMain
+												.showOptionPane(
+														searchResultsJavLibStrings,
+														"javlibrary.com");
+										if (searchResultFromUser == null)
+											continue;
+										overrideURLJavLibrary = searchResultFromUser
+												.getUrlPath();
+									}
 								}
+							} catch (IOException e2) {
+								// TODO Auto-generated catch block
+								e2.printStackTrace();
 							}
-
-							else if(manuallyPickFanart && javMovie != null)
-							{
-								//we don't need to worry about picking out the unique elements like above since there is no duplication between fanart and extrafanart in this case
-								Thumb fanartPicked = showArtPicker(ArrayUtils.addAll(javMovie.getFanart(), javMovie.getExtraFanart()),"Pick Fanart");
-								if(fanartPicked != null)
-									javMovie.setFanart(ArrayUtils.toArray(fanartPicked));
-							}
-
-							if(!scrapeCanceled && (movieToWriteToDiskList == null || movieToWriteToDiskList.size() == 0))
-							{
-								System.out.println("No movie result found");
-								JOptionPane.showMessageDialog(frmMoviescraper, "Could not find any movies that match the selected file while scraping.", "No Movies Found", JOptionPane.ERROR_MESSAGE, null);
-							}
-							
-							clearOverrides();
-							//by calling this with the parameter of true, we'll force a refresh from the URL not just update the poster from the file on disk
-							updateAllFieldsOfFileDetailPanel(true);
-							frmMoviescraper.setCursor(Cursor.getDefaultCursor());
-							setMainGUIEnabled(true);
 						}
-						
-						
-					};
-					//worker.addPropertyChangeListener(this);
-					
-					
-						worker.execute();
-				
-			}
 
-			finally
-			{
-				/*clearOverrides();
-				//by calling this with the parameter of true, we'll force a refresh from the URL not just update the poster from the file on disk
-				updateAllFieldsOfFileDetailPanel(true);
-				frmMoviescraper.setCursor(Cursor.getDefaultCursor());*/
-				
-				
-			}
+						else if (promptUserForURLWhenScraping
+								&& (scrapeData18Movie || scrapeData18WebContent)) {
+							try {
+								SiteParsingProfile data18ParsingProfile = null;
+								if (scrapeData18Movie)
+									data18ParsingProfile = new Data18MovieParsingProfile();
+								else if (scrapeData18WebContent)
+									data18ParsingProfile = new Data18WebContentParsingProfile();
+								String searchStringData18Movie = data18ParsingProfile
+										.createSearchString(currentlySelectedMovieFileList
+												.get(movieNumberInList));
+								SearchResult[] searchResultData18Movie = data18ParsingProfile
+										.getSearchResults(searchStringData18Movie);
+								if (searchResultData18Movie != null
+										&& searchResultData18Movie.length > 0) {
+									SearchResult searchResultFromUser = GUIMain
+											.showOptionPane(
+													searchResultData18Movie,
+													"Data18 Movie");
+									if (searchResultFromUser == null)
+										continue;
+									overrideURLData18Movie = searchResultFromUser
+											.getUrlPath();
+
+								}
+
+								if (scrapeData18Movie
+										&& preferences.getUseIAFDForActors()) {
+									IAFDParsingProfile iafdParsingProfile = new IAFDParsingProfile();
+									SearchResult[] searchResultsIAFD = iafdParsingProfile
+											.getSearchResults(iafdParsingProfile
+													.createSearchString(currentlySelectedMovieFileList
+															.get(movieNumberInList)));
+									System.out.println("neues");
+									System.out.println(searchStringData18Movie);
+									System.out.println(searchResultsIAFD);
+
+									if (searchResultsIAFD != null
+											&& searchResultsIAFD.length > 0) {
+										SearchResult searchResultFromUser = GUIMain
+												.showOptionPane(
+														searchResultsIAFD,
+														"Data18 Movie");
+										if (searchResultFromUser == null)
+											continue;
+										overrideURLIAFD = searchResultFromUser
+												.getUrlPath();
+										if (!overrideURLIAFD
+												.contains("iafd.com"))
+											overrideURLIAFD = "http://www.iafd.com/"
+													+ overrideURLIAFD;
+										System.out.println("Neue URL "
+												+ overrideURLIAFD);
+
+									}
+								}
+							} catch (IOException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+						}
+						try {
+							if (scrapeJAV)
+								javMovie = makeJavThreadsAndScrape(movieNumberInListFinal);
+							else if (scrapeData18Movie)
+								data18Movie = makeData18MovieThreadsAndScrape(
+										movieNumberInListFinal, true);
+							else if (scrapeData18WebContent) {
+								data18Movie = makeData18MovieThreadsAndScrape(
+										movieNumberInListFinal, false);
+							}
+						} catch (InterruptedException e) {
+
+						}
+						// finish up the progress monitor for the current scraping
+						makeProgress(100, "Done!"); 
+					}
+
+					return null;
+				}
+
+				@Override
+				protected void done() {
+					// Allow the user to manually pick poster from a dialog
+					// box for data18 movies
+					if (manuallyPickPoster && data18Movie != null
+							&& data18Movie.getPosters() != null
+							&& data18Movie.getPosters().length > 1) {
+						// get all unique elements from the posters and the
+						// extrafanart - my method here is probably pretty
+						// inefficient, but the lists aren't more than 100
+						// items, so no big deal
+						HashSet<Thumb> uniqueElements = new HashSet<Thumb>(
+								Arrays.asList(data18Movie.getPosters()));
+						uniqueElements.addAll(Arrays.asList(data18Movie
+								.getExtraFanart()));
+						ArrayList<Thumb> uniqueElementsList = (new ArrayList<Thumb>(
+								uniqueElements));
+						Thumb[] uniqueElementsArray = uniqueElementsList
+								.toArray(new Thumb[uniqueElementsList.size()]);
+
+						Thumb posterPicked = showArtPicker(uniqueElementsArray,
+								"Pick Poster");
+						if (posterPicked != null) {
+							// remove the item from the picked from the
+							// existing poster and put it at the front of
+							// the list
+							ArrayList<Thumb> existingPosters = new ArrayList<Thumb>(
+									Arrays.asList(currentlySelectedMovieData18Movie
+											.getPosters()));
+							existingPosters.remove(posterPicked);
+							existingPosters.add(0, posterPicked);
+							Thumb[] posterArray = new Thumb[existingPosters
+									.size()];
+							currentlySelectedMovieData18Movie
+									.setPosters(existingPosters
+											.toArray(posterArray));
+						}
+					}
+
+					// Allow the user to manually pick fanart from a dialog
+					// box
+					if (manuallyPickFanart && data18Movie != null
+							&& data18Movie.getFanart() != null
+							&& data18Movie.getFanart().length > 1) {
+						// get all unique elements from the fanart and the
+						// extrafanart - my method here is probably pretty
+						// inefficient, but the lists aren't more than 100
+						// items, so no big deal
+						HashSet<Thumb> uniqueElements = new HashSet<Thumb>(
+								Arrays.asList(data18Movie.getFanart()));
+						uniqueElements.addAll(Arrays.asList(data18Movie
+								.getExtraFanart()));
+						ArrayList<Thumb> uniqueElementsList = (new ArrayList<Thumb>(
+								uniqueElements));
+						Thumb[] uniqueElementsArray = uniqueElementsList
+								.toArray(new Thumb[uniqueElementsList.size()]);
+
+						Thumb fanartPicked = showArtPicker(uniqueElementsArray,
+								"Pick Fanart");
+						if (fanartPicked != null) {
+							// remove the item from the picked from the
+							// existing fanart and put it at the front of
+							// the list
+							ArrayList<Thumb> existingFanart = new ArrayList<Thumb>(
+									Arrays.asList(currentlySelectedMovieData18Movie
+											.getFanart()));
+							existingFanart.remove(fanartPicked);
+							existingFanart.add(0, fanartPicked);
+							Thumb[] fanartArray = new Thumb[existingFanart
+									.size()];
+							currentlySelectedMovieData18Movie
+									.setFanart(existingFanart
+											.toArray(fanartArray));
+						}
+					}
+
+					else if (manuallyPickFanart && javMovie != null) {
+						// we don't need to worry about picking out the
+						// unique elements like above since there is no
+						// duplication between fanart and extrafanart in
+						// this case
+						Thumb fanartPicked = showArtPicker(
+								ArrayUtils.addAll(javMovie.getFanart(),
+										javMovie.getExtraFanart()),
+								"Pick Fanart");
+						if (fanartPicked != null)
+							javMovie.setFanart(ArrayUtils.toArray(fanartPicked));
+					}
+
+					if (!scrapeCanceled
+							&& (movieToWriteToDiskList == null || movieToWriteToDiskList
+									.size() == 0)) {
+						System.out.println("No movie result found");
+						JOptionPane
+								.showMessageDialog(
+										frmMoviescraper,
+										"Could not find any movies that match the selected file while scraping.",
+										"No Movies Found",
+										JOptionPane.ERROR_MESSAGE, null);
+					}
+
+					clearOverrides();
+					// by calling this with the parameter of true, we'll
+					// force a refresh from the URL not just update the
+					// poster from the file on disk
+					updateAllFieldsOfFileDetailPanel(true);
+					frmMoviescraper.setCursor(Cursor.getDefaultCursor());
+					setMainGUIEnabled(true);
+				}
+
+			};
+
+			
+			worker.execute();
 		}
 
+		//Sets the scraper action's fields back to a pristine state so that
+		//leftover state from the last state is not still used
 		private void resetScrapeMovieActionCounters() {
 			scrapeCanceled = false;
 			progress = 0;
@@ -2098,11 +2157,10 @@ public class GUIMain {
 
 
 		protected void handleCancelWorker() {
-			System.err.println("Calling handleCancelWorker");
 			scrapeCanceled = true;
 			removeOldScrapedMovieReferences();
-			setMainGUIEnabled(true);
 			worker.cancel(true);
+			setMainGUIEnabled(true);
 			
 			
 		}
@@ -2213,7 +2271,6 @@ public class GUIMain {
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
-						//JOptionPane.showMessageDialog(null, ExceptionUtils.getStackTrace(e1),"Unhandled Exception",JOptionPane.ERROR_MESSAGE);
 					}
 				}
 			};
@@ -2247,7 +2304,6 @@ public class GUIMain {
 								dmmPP, overrideURLDMM, promptUserForURLWhenScraping, thisScrapeAction);
 						System.out.println("DMM scrape results: "
 								+ currentlySelectedMovieDMM);
-						//makeProgress(amountOfProgressToMakePerThread, "DMM Done");
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -2265,11 +2321,9 @@ public class GUIMain {
 
 						System.out.println("Action jav scrape results: "
 								+ currentlySelectedMovieActionJav);
-						//makeProgress(amountOfProgressToMakePerThread, "ActionJav Done");
 					} catch (IOException e1) {
 
 						e1.printStackTrace();
-						//JOptionPane.showMessageDialog(null, ExceptionUtils.getStackTrace(e1),"Unhandled Exception",JOptionPane.ERROR_MESSAGE);
 					}
 				}
 			};
@@ -2284,11 +2338,9 @@ public class GUIMain {
 
 						System.out.println("SquarePlus scrape results: "
 								+ currentlySelectedMovieSquarePlus);
-						//makeProgress(amountOfProgressToMakePerThread, "SquarePlus Done");
 					} catch (IOException e1) {
 
 						e1.printStackTrace();
-						//JOptionPane.showMessageDialog(null, ExceptionUtils.getStackTrace(e1),"Unhandled Exception",JOptionPane.ERROR_MESSAGE);
 					}
 				}
 			};
@@ -2305,11 +2357,9 @@ public class GUIMain {
 
 						System.out.println("JavLibrary scrape results: "
 								+ currentlySelectedMovieJavLibrary);
-						//makeProgress(amountOfProgressToMakePerThread, "JavLib Done");
 					} catch (IOException e1) {
 
 						e1.printStackTrace();
-						//JOptionPane.showMessageDialog(null, ExceptionUtils.getStackTrace(e1),"Unhandled Exception",JOptionPane.ERROR_MESSAGE);
 					}
 				}
 			};
@@ -2323,11 +2373,9 @@ public class GUIMain {
 
 						System.out.println("JavZoo scrape results: "
 								+ currentlySelectedMovieJavZoo);
-						//makeProgress(amountOfProgressToMakePerThread, "JavZoo Done");
 					} catch (IOException e1) {
 
 						e1.printStackTrace();
-						//JOptionPane.showMessageDialog(null, ExceptionUtils.getStackTrace(e1),"Unhandled Exception",JOptionPane.ERROR_MESSAGE);
 					}
 				}
 			};
@@ -2342,11 +2390,9 @@ public class GUIMain {
 
 						System.out.println("CaribbeancomPremium scrape results: "
 								+ currentlySelectedMovieCaribbeancomPremium);
-						//makeProgress(amountOfProgressToMakePerThread, "Carib Done");
 					} catch (IOException e1) {
 
 						e1.printStackTrace();
-						//JOptionPane.showMessageDialog(null, ExceptionUtils.getStackTrace(e1),"Unhandled Exception",JOptionPane.ERROR_MESSAGE);
 					}
 				}
 			};
@@ -2375,6 +2421,7 @@ public class GUIMain {
 				if(anyThreadWasInterrupted())
 				{
 					System.err.println("Something was interrupted");
+					cancelRunningThreads();
 					return null;
 				}
 				// wait for them to finish before updating gui
@@ -2384,38 +2431,45 @@ public class GUIMain {
 					if(anyThreadWasInterrupted())
 					{
 						System.err.println("Something was interrupted");
+						cancelRunningThreads();
 						return null;
 					}
 					scrapeQueryJavLibraryThread.join();
 					if(anyThreadWasInterrupted())
 					{
 						System.err.println("Something was interrupted");
+						cancelRunningThreads();
 						return null;
 					}
 					scrapeQueryActionJavThread.join();
 					if(anyThreadWasInterrupted())
 					{
 						System.err.println("Something was interrupted");
+						cancelRunningThreads();
 						return null;
 					}
 					scrapeQuerySquarePlusThread.join();
 					if(anyThreadWasInterrupted())
 					{
 						System.err.println("Something was interrupted");
+						cancelRunningThreads();
 						return null;
 					}
 					scrapeQueryJavZooThread.join();
 					if(anyThreadWasInterrupted())
-					{
-						System.err.println("Something was interrupted");
-						return null;
-					}
+						if(anyThreadWasInterrupted())
+						{
+							System.err.println("Something was interrupted");
+							cancelRunningThreads();
+							return null;
+						}
 					scrapeQueryCaribbeancomPremium.join();
 				}
 				
 				if(anyThreadWasInterrupted())
 				{
 					System.err.println("Something was interrupted");
+					cancelRunningThreads();
 					return null;
 				}
 				
@@ -2434,30 +2488,31 @@ public class GUIMain {
 				if(movieAmalgamated != null)
 				{
 					movieToWriteToDiskList.add(movieAmalgamated);
-				}
-			
-			
+				}	
 			return movieAmalgamated;
 		}
 		
 		private boolean anyThreadWasInterrupted() {
 			for(Thread currentThread : scrapeThreads)
 			{
-				System.out.println("CurrentThread = " + currentThread + " isInterrupted = " + currentThread.isInterrupted());
 				if(currentThread.isInterrupted())
 					return true;
 			}
+			if(progressMonitor.isCanceled())
+				return true;
 			return false;
 		}
 
 		private void cancelRunningThreads()
 		{
-			for (Thread currentThread : scrapeThreads)
-			{
-				System.err.println("Interrupting " + currentThread);
-				currentThread.interrupt();
+			if(!scrapeCanceled )
+				{
+				for (Thread currentThread : scrapeThreads)
+				{
+					currentThread.interrupt();
+				}
+				handleCancelWorker();
 			}
-			handleCancelWorker();
 		}
 
 		public int getAmountOfProgressPerSubtask() {
