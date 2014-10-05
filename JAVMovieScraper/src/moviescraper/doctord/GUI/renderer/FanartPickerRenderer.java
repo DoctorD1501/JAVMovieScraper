@@ -1,4 +1,4 @@
-package moviescraper.doctord.GUI;
+package moviescraper.doctord.GUI.renderer;
 
 import java.awt.Color;
 import java.awt.Component;

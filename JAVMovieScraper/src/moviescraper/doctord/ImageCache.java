@@ -22,7 +22,6 @@ public class ImageCache {
 		//we didn't find it, so read the Image into the cache and also return it
 		else
 		{
-			//System.out.println("Reading from " + url);
 			Image imageFromUrl = ImageIO.read(url);
 			cache.put(url, imageFromUrl);
 			return imageFromUrl;
@@ -32,5 +31,10 @@ public class ImageCache {
 	public static void removeImageFromCachce(URL url)
 	{
 		cache.remove(url);
+	}
+	
+	public static boolean isImageCached(URL url)
+	{
+		return cache.containsKey(url);
 	}
 }

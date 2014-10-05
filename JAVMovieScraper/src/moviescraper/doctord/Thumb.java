@@ -283,6 +283,15 @@ public class Thumb {
 		return thumbImage;
 	}
 	
+	/**
+	 * 
+	 * @return true if this thumb already exist in the cache and doesn't need to be downloaded again, false otherwise
+	 */
+	public boolean isCached()
+	{
+		return ImageCache.isImageCached(thumbURL);
+	}
+	
 	public Image getPreviewImage() throws IOException
 	{
 		if(previewURL == null)

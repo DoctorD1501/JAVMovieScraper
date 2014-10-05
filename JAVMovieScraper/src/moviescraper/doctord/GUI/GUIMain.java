@@ -18,7 +18,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.ListSelectionModel;
 import javax.swing.ProgressMonitor;
 import javax.swing.SwingWorker;
 
@@ -26,11 +25,12 @@ import java.awt.BorderLayout;
 
 import javax.swing.JList;
 
-import moviescraper.doctord.IconCache;
 import moviescraper.doctord.Movie;
 import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.Thumb;
 import moviescraper.doctord.XbmcXmlMovieBean;
+import moviescraper.doctord.GUI.renderer.FanartPickerRenderer;
+import moviescraper.doctord.GUI.renderer.FileRenderer;
 import moviescraper.doctord.SiteParsingProfile.ActionJavParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.Data18MovieParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.Data18WebContentParsingProfile;
@@ -106,7 +106,6 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
 
 import javax.swing.Action;
-import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -448,7 +447,7 @@ public class GUIMain {
 		fileListPanel.add(fileListPanelButtonsPanel);
 
 
-		fileDetailPanel = new FileDetailPanel(preferences);
+		fileDetailPanel = new FileDetailPanel(preferences, this);
 		JScrollPane FileDetailsScrollPane = new JScrollPane(fileDetailPanel);
 		frmMoviescraper.getContentPane().add(FileDetailsScrollPane,
 				BorderLayout.CENTER);
@@ -1030,53 +1029,54 @@ public class GUIMain {
 		// ActionJav found and SquarePlus not
 		else if (currentlySelectedMovieActionJav != null
 				&& currentlySelectedMovieSquarePlus == null) {
-			//System.out.println("ActionJav found and SquarePlus not");
+			// System.out.println("ActionJav found and SquarePlus not");
 			ArrayList<Actor> actorsToUse = (currentlySelectedMovieActionJav
 					.getActors().size() > 0 && currentlySelectedMovieActionJav
 					.getActors().size() >= currentlySelectedMovieDMM
 					.getActors().size()) ? currentlySelectedMovieActionJav
-							.getActors() : currentlySelectedMovieDMM.getActors();
-							ArrayList<Director> directorsToUse = (currentlySelectedMovieActionJav
-									.getDirectors().size() > 0) ? currentlySelectedMovieActionJav
-											.getDirectors() : currentlySelectedMovieDMM.getDirectors();
-											Thumb[] fanartToUse = currentlySelectedMovieDMM.getFanart();
-											Thumb[] extraFanartToUse = currentlySelectedMovieDMM.getExtraFanart();
-											ArrayList<Genre> genresToUse = (currentlySelectedMovieActionJav
-													.getGenres().size() > 1) ? currentlySelectedMovieActionJav
-															.getGenres() : currentlySelectedMovieDMM.getGenres();
-															ID idsToUse = currentlySelectedMovieDMM.getId();
-															MPAARating mpaaToUse = currentlySelectedMovieDMM.getMpaa();
-															OriginalTitle originalTitleToUse = currentlySelectedMovieDMM
-																	.getOriginalTitle();
-															Outline outlineToUse = currentlySelectedMovieDMM.getOutline();
-															Plot plotToUse = (currentlySelectedMovieActionJav.getPlot()
-																	.getPlot().length() > 1) ? currentlySelectedMovieActionJav
-																			.getPlot() : currentlySelectedMovieDMM.getPlot();
-																			Thumb[] postersToUse = currentlySelectedMovieDMM.getPosters();
-																			Year yearToUse = currentlySelectedMovieDMM.getYear();
-																			Votes votesToUse = currentlySelectedMovieDMM.getVotes();
-																			Top250 top250ToUse = currentlySelectedMovieDMM.getTop250();
-																			Title titleToUse = (currentlySelectedMovieActionJav.getTitle()
-																					.getTitle().length() > 1) ? currentlySelectedMovieActionJav
-																							.getTitle() : currentlySelectedMovieDMM.getTitle();
-																							Tagline taglineToUse = currentlySelectedMovieDMM.getTagline();
-																							Rating ratingToUse = currentlySelectedMovieDMM.getRating();
-																							Runtime runtimeToUse = (currentlySelectedMovieActionJav
-																									.getRuntime().getRuntime().length() > 1) ? currentlySelectedMovieActionJav
-																											.getRuntime() : currentlySelectedMovieDMM.getRuntime();
-																											Set setToUse = currentlySelectedMovieDMM.getSet();
-																											SortTitle sortTitleToUse = currentlySelectedMovieDMM.getSortTitle();
-																											Studio studioToUse = (currentlySelectedMovieActionJav.getStudio()
-																													.getStudio().length() > 1) ? currentlySelectedMovieActionJav
-																															.getStudio() : currentlySelectedMovieDMM.getStudio();
-																															Trailer trailerToUse = currentlySelectedMovieDMM.getTrailer();
-																															Movie amalgamatedMovie = new Movie(actorsToUse, directorsToUse,
-																																	fanartToUse, extraFanartToUse, genresToUse, idsToUse, mpaaToUse,
-																																	originalTitleToUse, outlineToUse, plotToUse, postersToUse,
-																																	ratingToUse, runtimeToUse, setToUse, sortTitleToUse,
-																																	studioToUse, taglineToUse, titleToUse, top250ToUse, trailerToUse,
-																																	votesToUse, yearToUse);
-																															return amalgamatedMovie;
+					.getActors() : currentlySelectedMovieDMM.getActors();
+			ArrayList<Director> directorsToUse = (currentlySelectedMovieActionJav
+					.getDirectors().size() > 0) ? currentlySelectedMovieActionJav
+					.getDirectors() : currentlySelectedMovieDMM.getDirectors();
+			Thumb[] fanartToUse = currentlySelectedMovieDMM.getFanart();
+			Thumb[] extraFanartToUse = currentlySelectedMovieDMM
+					.getExtraFanart();
+			ArrayList<Genre> genresToUse = (currentlySelectedMovieActionJav
+					.getGenres().size() > 1) ? currentlySelectedMovieActionJav
+					.getGenres() : currentlySelectedMovieDMM.getGenres();
+			ID idsToUse = currentlySelectedMovieDMM.getId();
+			MPAARating mpaaToUse = currentlySelectedMovieDMM.getMpaa();
+			OriginalTitle originalTitleToUse = currentlySelectedMovieDMM
+					.getOriginalTitle();
+			Outline outlineToUse = currentlySelectedMovieDMM.getOutline();
+			Plot plotToUse = (currentlySelectedMovieActionJav.getPlot()
+					.getPlot().length() > 1) ? currentlySelectedMovieActionJav
+					.getPlot() : currentlySelectedMovieDMM.getPlot();
+			Thumb[] postersToUse = currentlySelectedMovieDMM.getPosters();
+			Year yearToUse = currentlySelectedMovieDMM.getYear();
+			Votes votesToUse = currentlySelectedMovieDMM.getVotes();
+			Top250 top250ToUse = currentlySelectedMovieDMM.getTop250();
+			Title titleToUse = (currentlySelectedMovieActionJav.getTitle()
+					.getTitle().length() > 1) ? currentlySelectedMovieActionJav
+					.getTitle() : currentlySelectedMovieDMM.getTitle();
+			Tagline taglineToUse = currentlySelectedMovieDMM.getTagline();
+			Rating ratingToUse = currentlySelectedMovieDMM.getRating();
+			Runtime runtimeToUse = (currentlySelectedMovieActionJav
+					.getRuntime().getRuntime().length() > 1) ? currentlySelectedMovieActionJav
+					.getRuntime() : currentlySelectedMovieDMM.getRuntime();
+			Set setToUse = currentlySelectedMovieDMM.getSet();
+			SortTitle sortTitleToUse = currentlySelectedMovieDMM.getSortTitle();
+			Studio studioToUse = (currentlySelectedMovieActionJav.getStudio()
+					.getStudio().length() > 1) ? currentlySelectedMovieActionJav
+					.getStudio() : currentlySelectedMovieDMM.getStudio();
+			Trailer trailerToUse = currentlySelectedMovieDMM.getTrailer();
+			Movie amalgamatedMovie = new Movie(actorsToUse, directorsToUse,
+					fanartToUse, extraFanartToUse, genresToUse, idsToUse,
+					mpaaToUse, originalTitleToUse, outlineToUse, plotToUse,
+					postersToUse, ratingToUse, runtimeToUse, setToUse,
+					sortTitleToUse, studioToUse, taglineToUse, titleToUse,
+					top250ToUse, trailerToUse, votesToUse, yearToUse);
+			return amalgamatedMovie;
 		}
 		// Squareplus found something, actionjav did not
 		else if (currentlySelectedMovieActionJav == null
@@ -2608,47 +2608,6 @@ public class GUIMain {
 		}
 	}
 
-	class FileRenderer extends DefaultListCellRenderer {
-
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
-		private boolean pad;
-		private Border padBorder = new EmptyBorder(3, 3, 3, 3);
-
-
-		FileRenderer(boolean pad) {
-			this.pad = pad;
-		}
-
-		@Override
-		public Component getListCellRendererComponent(JList<?> list,
-				Object value, int index, boolean isSelected,
-				boolean cellHasFocus) {
-
-			Component c = super.getListCellRendererComponent(list, value,
-					index, isSelected, cellHasFocus);
-			JLabel l = (JLabel) c;
-			File f = (File) value;
-			l.setText(f.getName());
-			try {
-				l.setIcon(IconCache.getIconFromCache(f));
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			//System.out.println("Setting Icon at " + System.currentTimeMillis());
-			//l.setIcon(FileSystemView.getFileSystemView().getSystemIcon(f));
-
-			if (pad) {
-				l.setBorder(padBorder);
-			}
-
-			return l;
-		}
-	}
-
 	public class ActressListRenderer extends DefaultListCellRenderer {
 
 		/**
@@ -2694,7 +2653,7 @@ public class GUIMain {
 								File [] listFiles = currentlySelectedActorsFolderList.get(0).listFiles();
 								for(File currentFile : listFiles)
 								{
-									if(currentFile.isFile() && FilenameUtils.removeExtension(currentFile.getName()).equals(currentActorNameAsPotentialFileName)){										
+									if(currentFile.isFile() && FilenameUtils.removeExtension(currentFile.getName()).equals(currentActorNameAsPotentialFileName)){
 										return new ImageIcon(currentFile.getPath());
 									}
 								}
@@ -2840,5 +2799,22 @@ public class GUIMain {
 
 	public JFrame getFrmMoviescraper() {
 		return frmMoviescraper;
+	}
+
+	public List<File> getCurrentlySelectedActorsFolderList() {
+		return currentlySelectedActorsFolderList;
+	}
+
+	public void setCurrentlySelectedActorsFolderList(
+			List<File> currentlySelectedActorsFolderList) {
+		this.currentlySelectedActorsFolderList = currentlySelectedActorsFolderList;
+	}
+
+	public List<Movie> getMovieToWriteToDiskList() {
+		return movieToWriteToDiskList;
+	}
+
+	public void setMovieToWriteToDiskList(List<Movie> movieToWriteToDiskList) {
+		this.movieToWriteToDiskList = movieToWriteToDiskList;
 	}
 }

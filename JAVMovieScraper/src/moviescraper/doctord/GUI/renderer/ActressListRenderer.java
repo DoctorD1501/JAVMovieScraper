@@ -4,6 +4,10 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.SystemColor;
+import java.io.File;
+import java.net.MalformedURLException;
+import java.util.List;
+
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.ImageIcon;
@@ -11,6 +15,10 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.border.EmptyBorder;
 
+import org.apache.commons.io.FilenameUtils;
+
+import moviescraper.doctord.Thumb;
+import moviescraper.doctord.GUI.GUIMain;
 import moviescraper.doctord.dataitem.Actor;
 
 @SuppressWarnings("serial")
@@ -18,8 +26,10 @@ public class ActressListRenderer extends DefaultListCellRenderer {
 
 	Font font = new Font("helvitica", Font.BOLD, 12);
 
-	public ActressListRenderer() {
+	List<File> currentlySelectedActorsFolderList;
+	public ActressListRenderer(List<File> currentlySelectedActorsFolderList) {
 		setBorder(new EmptyBorder(1, 1, 1, 1));
+		this.currentlySelectedActorsFolderList = currentlySelectedActorsFolderList;
 	}
 
 	@Override
@@ -32,7 +42,7 @@ public class ActressListRenderer extends DefaultListCellRenderer {
 		JLabel label = (JLabel) super.getListCellRendererComponent(list,
 				value, index, isSelected, cellHasFocus);
 		Object listElement = list.getModel().getElementAt(index);
-		if (listElement != null && listElement instanceof Actor) {
+		if (listElement != null && listElement instanceof Actor && label.getIcon() == null) {
 			label.setIcon(getImageIconForLabelName((Actor)listElement));			
 		}
 		label.setHorizontalTextPosition(JLabel.RIGHT);
@@ -53,25 +63,24 @@ public class ActressListRenderer extends DefaultListCellRenderer {
 	
 		if (currentActor.getThumb() != null)
 		{
-			//see if we can find a local copy in the .actors folder before trying to download
-//			if(currentlySelectedActorsFolderList != null && currentlySelectedActorsFolderList.get(0).isDirectory())
-//			{
-//				String currentActorNameAsPotentialFileName = currentActor.getName().replace(' ', '_');
-//				File [] listFiles = currentlySelectedActorsFolderList.get(0).listFiles();
-//				for(File currentFile : listFiles)
-//				{
-//					if(currentFile.isFile() && FilenameUtils.removeExtension(currentFile.getName()).equals(currentActorNameAsPotentialFileName)){										
-//						return new ImageIcon(currentFile.getPath());
-//					}
-//				}
-//			}
-//
-//			else 
-//			{
+			//see if we can find a local copy in the .actors folder before trying to download, but only if the image is not already in memory
+			if(currentlySelectedActorsFolderList != null && currentlySelectedActorsFolderList.get(0).isDirectory())
+			{
+				String currentActorNameAsPotentialFileName = currentActor.getName().replace(' ', '_');
+				File [] listFiles = currentlySelectedActorsFolderList.get(0).listFiles();
+				for(File currentFile : listFiles)
+				{
+					if(currentFile.isFile() && FilenameUtils.removeExtension(currentFile.getName()).equals(currentActorNameAsPotentialFileName)){
+						return new ImageIcon(currentFile.getPath());
+					}
+				}
+			}
+
+			else 
+			{
 				return currentActor.getThumb().getImageIconThumbImage();
-//			}
+			}
 		}
-		else
-			return new ImageIcon();			
+		return new ImageIcon();			
 	}
 }

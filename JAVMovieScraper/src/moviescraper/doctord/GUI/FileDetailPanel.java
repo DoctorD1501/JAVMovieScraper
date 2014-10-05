@@ -8,8 +8,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.AbstractListModel;
 import javax.swing.BorderFactory;
@@ -69,13 +71,15 @@ public class FileDetailPanel extends JPanel {
 	MoviescraperPreferences preferences;
 
 	private ArtWorkPanel artWorkPanel;
+	
+	GUIMain gui;
 
 	/**
 	 * Create the panel.
 	 */
-	public FileDetailPanel(MoviescraperPreferences preferences) {
+	public FileDetailPanel(MoviescraperPreferences preferences, GUIMain gui) {
 		this.preferences = preferences;
-		
+		this.gui = gui;
 		JPanel fileDetailsPanel = this;
 		fileDetailsPanel.setBorder(BorderFactory.createLineBorder(Color.black));
 
@@ -301,7 +305,10 @@ public class FileDetailPanel extends JPanel {
 		fileDetailsPanel.add(lblActors, "2, 16");
 
 		actorList = new JList<Actor>(new ActorItemListModel());
-		actorList.setCellRenderer(new ActressListRenderer());
+		List<File> currentlySelectedActorsFolderList = new ArrayList<File>();
+		if(gui != null)
+			currentlySelectedActorsFolderList = gui.getCurrentlySelectedActorsFolderList();
+		actorList.setCellRenderer(new ActressListRenderer(currentlySelectedActorsFolderList));
 		actorList.setComponentPopupMenu(new FileDetailPanelPopup(new FileDetailPanelActorEditor(this)));
 		actorList.addMouseListener(new MouseAdapter() {
 
@@ -362,20 +369,6 @@ public class FileDetailPanel extends JPanel {
 		actorList.updateUI();
 		genreList.updateUI();
 		comboBoxMovieTitleText.updateUI();
-		
-		try {
-			if (currentMovie.getFanart().length > 0)
-				artWorkPanel.setNewFanart( ArtWorkPanel.resizeToFanart( currentMovie.getFanart()[0].getThumbImage() ) );
-//			else
-//				artWorkPanel.clearFanart();
-			
-			if (currentMovie.getPosters().length > 0)
-				artWorkPanel.setNewPoster( currentMovie.getPosters()[0].getThumbImage() );
-//			else
-//				artWorkPanel.clearPoster();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 
 	public Movie getCurrentMovie() {

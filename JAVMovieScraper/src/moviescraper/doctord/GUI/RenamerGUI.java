@@ -161,7 +161,7 @@ public class RenamerGUI extends JFrame {
 		contentPane.add(textFieldExample, gbc_textFieldExample);
 		textFieldExample.setColumns(10);		
 
-		fileDetailPanel = new FileDetailPanel(preferences);
+		fileDetailPanel = new FileDetailPanel(preferences, null);
 		
 		scrollPane = new JScrollPane();
 		scrollPane.setViewportView(fileDetailPanel);
