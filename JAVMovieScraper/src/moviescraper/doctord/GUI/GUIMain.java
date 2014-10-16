@@ -517,8 +517,12 @@ public class GUIMain {
 	private ImageIcon initializeImageIcon(URL url){
 		try {
 			BufferedImage iconBufferedImage = ImageIO.read(url);
-			iconBufferedImage = Scalr.resize(iconBufferedImage, Method.QUALITY, iconSizeX, iconSizeY, Scalr.OP_ANTIALIAS);
-			return new ImageIcon(iconBufferedImage);
+			if(iconBufferedImage != null)
+			{
+				iconBufferedImage = Scalr.resize(iconBufferedImage, Method.QUALITY, iconSizeX, iconSizeY, Scalr.OP_ANTIALIAS);
+				return new ImageIcon(iconBufferedImage);
+			}
+			else return new ImageIcon();
 		} catch (IOException e1) {
 			e1.printStackTrace();
 			return null;
@@ -1308,9 +1312,12 @@ public class GUIMain {
 				if (currentlySelectedPosterFileList.get(0).exists()) {
 					try {
 						BufferedImage img = ImageIO.read(currentlySelectedPosterFileList.get(0));
-						BufferedImage scaledImage = ArtWorkPanel.resizeToPoster(img);
-						artWorkPanel.setNewPoster(scaledImage);
-						posterFileUpdateOccured = true;
+						if(img != null)
+						{
+							BufferedImage scaledImage = ArtWorkPanel.resizeToPoster(img);
+							artWorkPanel.setNewPoster(scaledImage);
+							posterFileUpdateOccured = true;
+						}
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -1320,9 +1327,12 @@ public class GUIMain {
 					try {
 						//System.out.println("found the standard fanart");
 						BufferedImage img = ImageIO.read(currentlySelectedFanartFileList.get(0));
-						BufferedImage scaledImage = ArtWorkPanel.resizeToFanart(img);
-						artWorkPanel.setNewFanart(scaledImage);
-						fanartFileUpdateOccured = true;
+						if(img != null)
+						{
+							BufferedImage scaledImage = ArtWorkPanel.resizeToFanart(img);
+							artWorkPanel.setNewFanart(scaledImage);
+							fanartFileUpdateOccured = true;
+						}
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -1333,9 +1343,12 @@ public class GUIMain {
 					try {
 						//System.out.println("Reading in poster from other" + potentialOtherPosterJpg);
 						BufferedImage img = ImageIO.read(potentialOtherPosterJpg);
-						BufferedImage scaledImage = ArtWorkPanel.resizeToPoster(img);
-						artWorkPanel.setNewPoster(scaledImage);
-						posterFileUpdateOccured = true;
+						if(img != null)
+						{
+							BufferedImage scaledImage = ArtWorkPanel.resizeToPoster(img);
+							artWorkPanel.setNewPoster(scaledImage);
+							posterFileUpdateOccured = true;
+						}
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -1346,9 +1359,12 @@ public class GUIMain {
 					try {
 						//System.out.println("Reading in fanart from other" + potentialOtherFanartJpg);
 						BufferedImage img = ImageIO.read(potentialOtherFanartJpg);
-						BufferedImage scaledImage = ArtWorkPanel.resizeToFanart(img);
-						artWorkPanel.setNewFanart(scaledImage);
-						fanartFileUpdateOccured = true;
+						if(img != null)
+						{
+							BufferedImage scaledImage = ArtWorkPanel.resizeToFanart(img);
+							artWorkPanel.setNewFanart(scaledImage);
+							fanartFileUpdateOccured = true;
+						}
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -1374,11 +1390,12 @@ public class GUIMain {
 					try {
 						//System.out.println("Reading in fanart from moviename-fanart" + potentialOtherPosterJpg);
 						BufferedImage img = ImageIO.read(standardFanartJpg);
-						BufferedImage scaledImage = ArtWorkPanel.resizeToFanart(img);
-						artWorkPanel.setNewFanart(scaledImage);
-						/*lblFanartIcon.setIcon(new ImageIcon(
-								standardFanartJpg.getCanonicalPath()));*/
-						fanartFileUpdateOccured = true;
+						if(img != null)
+						{
+							BufferedImage scaledImage = ArtWorkPanel.resizeToFanart(img);
+							artWorkPanel.setNewFanart(scaledImage);
+							fanartFileUpdateOccured = true;
+						}
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();

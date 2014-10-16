@@ -156,9 +156,12 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 		Thumb[] fanart = scrapeFanart();
 		if (fanart.length > 0) {
 			try {
-				BufferedImage read = ImageIO.read( fanart[0].getThumbURL() );
-				int newWidth = (int) ((1.0 - 0.526666) * read.getWidth());
-				thumbs.add( new Thumb(fanart[0].getThumbURL().toString(), newWidth) );
+				BufferedImage read = ImageIO.read(fanart[0].getThumbURL());
+				if(read != null)
+				{
+					int newWidth = (int) ((1.0 - 0.526666) * read.getWidth());
+					thumbs.add( new Thumb(fanart[0].getThumbURL().toString(), newWidth));
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
