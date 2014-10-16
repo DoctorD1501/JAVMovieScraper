@@ -1,6 +1,7 @@
 package moviescraper.doctord;
 
 import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
@@ -23,8 +24,18 @@ public class ImageCache {
 		else
 		{
 			Image imageFromUrl = ImageIO.read(url);
+			if(imageFromUrl != null)
+			{
 			cache.put(url, imageFromUrl);
 			return imageFromUrl;
+			}
+			else
+			{
+				//we couldn't read in the image from the URL so just return a blank image
+				Image blankImage = new BufferedImage(0,0, BufferedImage.TYPE_INT_RGB);
+				cache.put(url, blankImage);
+				return blankImage;
+			}
 		}
 	}
 	
