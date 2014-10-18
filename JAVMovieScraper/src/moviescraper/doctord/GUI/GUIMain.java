@@ -1534,7 +1534,7 @@ public class GUIMain {
 						//Don't create an empty .actors folder with no actors underneath it
 						if(movieToWriteToDiskList.get(movieNumberInList).hasAtLeastOneActorThumbnail() && currentlySelectedActorsFolderList != null)
 						{
-							//File actorsFolder = new File(currentlySelectedMovieFile.getPath() + "\\.actors");
+							//File actorsFolder = new File(currentlySelectedMovieFile.getPath() + File.seperator + ".actors");
 							FileUtils.forceMkdir(currentlySelectedActorsFolderList.get(movieNumberInList));
 							//on windows this new folder should have the hidden attribute; on unix it is already "hidden" by having a . in front of the name
 							Path path = currentlySelectedActorsFolderList.get(movieNumberInList).toPath();
@@ -1546,7 +1546,7 @@ public class GUIMain {
 							for(Actor currentActor : movieToWriteToDiskList.get(movieNumberInList).getActors())
 							{
 								String currentActorToFileName = currentActor.getName().replace(' ', '_');
-								File fileNameToWrite = new File(currentlySelectedActorsFolderList.get(movieNumberInList).getPath() + "\\" + currentActorToFileName + ".jpg");
+								File fileNameToWrite = new File(currentlySelectedActorsFolderList.get(movieNumberInList).getPath() + File.separator + currentActorToFileName + ".jpg");
 								currentActor.writeImageToFile(fileNameToWrite);
 							}
 
@@ -1732,7 +1732,7 @@ public class GUIMain {
 						if (currentlySelectedMovieFileList.get(movieNumberInList).isFile() && currentlySelectedActorsFolderList != null && preferences.getDownloadActorImagesToActorFolderPreference())
 						{
 							File [] actorFilesToCopy = actorFolderFiles(movieNumberInList);
-							File actorsFolderDestDir = new File(destDir.getPath() + "\\.actors");
+							File actorsFolderDestDir = new File(destDir.getPath() + File.separator + ".actors");
 							for(File currentFile : actorFilesToCopy)
 							{
 								FileUtils.copyFileToDirectory(currentFile, actorsFolderDestDir);
@@ -2695,11 +2695,11 @@ public class GUIMain {
 		{
 			if(currentlySelectedMovieFileList.get(movieNumberInList).isDirectory())
 			{
-				currentlySelectedActorsFolderList.add(new File(currentlySelectedMovieFileList.get(movieNumberInList).getPath() + "\\.actors"));
+				currentlySelectedActorsFolderList.add(new File(currentlySelectedMovieFileList.get(movieNumberInList).getPath() + File.separator + ".actors"));
 			}
 			else if(currentlySelectedMovieFileList.get(movieNumberInList).isFile())
 			{
-				currentlySelectedActorsFolderList.add(new File(currentlySelectedDirectoryList.getPath() + "\\.actors"));
+				currentlySelectedActorsFolderList.add(new File(currentlySelectedDirectoryList.getPath() + File.separator + ".actors"));
 			}
 		}
 	}
@@ -2720,12 +2720,12 @@ public class GUIMain {
 		{
 			if(destinationDirectory != null)
 			{
-				currentlySelectedExtraFanartFolderList.add(new File(destinationDirectory.getPath() + "\\extrafanart"));
+				currentlySelectedExtraFanartFolderList.add(new File(destinationDirectory.getPath() + File.separator + "extrafanart"));
 			}	
 			else if(currentlySelectedMovieFileList.get(movieNumberInList).isDirectory())
 			{
 
-				currentlySelectedExtraFanartFolderList.add(new File(currentlySelectedMovieFileList.get(movieNumberInList).getPath() + "\\extrafanart"));
+				currentlySelectedExtraFanartFolderList.add(new File(currentlySelectedMovieFileList.get(movieNumberInList).getPath() + File.separator + "extrafanart"));
 			}
 			else
 			{
@@ -2766,7 +2766,7 @@ public class GUIMain {
 			int currentExtraFanartNumber = 1;
 			for(Thumb currentExtraFanart : movieToWriteToDiskList.get(movieNumberInList).getExtraFanart())
 			{
-				File fileNameToWrite = new File(currentlySelectedExtraFanartFolderList.get(movieNumberInList).getPath() + "\\" + "fanart" + currentExtraFanartNumber + ".jpg");
+				File fileNameToWrite = new File(currentlySelectedExtraFanartFolderList.get(movieNumberInList).getPath() + File.separator + "fanart" + currentExtraFanartNumber + ".jpg");
 
 				//no need to overwrite perfectly good extra fanart since this stuff doesn't change. this will also save time when rescraping since extra IO isn't done.
 				if(!fileNameToWrite.exists())

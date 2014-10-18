@@ -436,7 +436,7 @@ public class Movie {
 	{
 		if(nfoNamedMovieDotNfo)
 		{
-			return  file.getPath() + "\\movie.nfo";
+			return  file.getPath() + File.separator + "movie.nfo";
 		}
 		else return getTargetFilePath(file, ".nfo");
 	}
@@ -446,11 +446,11 @@ public class Movie {
 		{
 			if(file.isDirectory())
 			{
-				return  file.getPath() + "\\poster.jpg";
+				return  file.getPath() + File.separator + "poster.jpg";
 			}
 			else
 			{
-				return  file.getParent() + "\\poster.jpg";
+				return  file.getParent() + File.separator + "poster.jpg";
 			}
 		}
 		else return getTargetFilePath(file, "-poster.jpg");
@@ -460,9 +460,9 @@ public class Movie {
 		
 		if(selectedValue.isDirectory())
 		{
-			return selectedValue.getPath() + "\\folder.jpg";
+			return selectedValue.getPath() + File.separator + "folder.jpg";
 		}
-		else return selectedValue.getParent() + "\\folder.jpg";
+		else return selectedValue.getParent() + File.separator + "folder.jpg";
 	}
 	
 	public static String getFileNameOfTrailer(File selectedValue) {
@@ -474,11 +474,11 @@ public class Movie {
 		{
 			if(file.isDirectory())
 			{
-				return  file.getPath() + "\\fanart.jpg";
+				return  file.getPath() + File.separator + "fanart.jpg";
 			}
 			else
 			{
-				return  file.getParent() + "\\fanart.jpg";
+				return  file.getParent() + File.separator + "fanart.jpg";
 			}
 		}
 		else return getTargetFilePath(file, "-fanart.jpg");
@@ -532,7 +532,7 @@ public class Movie {
 					}
 				}
 				//Use the folder name as the basis for the filename created
-				return new File(file.getAbsolutePath() + "\\" + file.getName() + extension).getPath();
+				return new File(file.getAbsolutePath() + File.separator + file.getName() + extension).getPath();
 			}
 		}
 	}
