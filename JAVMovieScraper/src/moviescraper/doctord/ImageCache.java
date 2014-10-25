@@ -32,7 +32,7 @@ public class ImageCache {
 			else
 			{
 				//we couldn't read in the image from the URL so just return a blank image
-				Image blankImage = new BufferedImage(0,0, BufferedImage.TYPE_INT_RGB);
+				Image blankImage = new BufferedImage(1,1, BufferedImage.TYPE_INT_RGB);
 				cache.put(url, blankImage);
 				return blankImage;
 			}
