@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.imageio.IIOException;
 import javax.imageio.ImageIO;
 
 public class ImageCache {
@@ -23,20 +24,34 @@ public class ImageCache {
 		//we didn't find it, so read the Image into the cache and also return it
 		else
 		{
-			Image imageFromUrl = ImageIO.read(url);
-			if(imageFromUrl != null)
-			{
-			cache.put(url, imageFromUrl);
-			return imageFromUrl;
+			try{
+				Image imageFromUrl = ImageIO.read(url);
+				if(imageFromUrl != null)
+				{
+				cache.put(url, imageFromUrl);
+				return imageFromUrl;
+				}
+				else
+				{
+					//we couldn't read in the image from the URL so just return a blank image
+					Image blankImage = createBlankImage();
+					cache.put(url, blankImage);
+					return blankImage;
+				}
 			}
-			else
+			catch(IIOException e)
 			{
-				//we couldn't read in the image from the URL so just return a blank image
-				Image blankImage = new BufferedImage(1,1, BufferedImage.TYPE_INT_RGB);
+				Image blankImage = createBlankImage();
 				cache.put(url, blankImage);
 				return blankImage;
 			}
+
 		}
+	}
+	
+	private static Image createBlankImage()
+	{
+		return new BufferedImage(1,1, BufferedImage.TYPE_INT_RGB);
 	}
 	
 	public static void removeImageFromCachce(URL url)

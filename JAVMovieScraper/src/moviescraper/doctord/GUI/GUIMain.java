@@ -229,10 +229,10 @@ public class GUIMain {
 
 		preferences = new MoviescraperPreferences();
 		currentlySelectedNfoFileList = new ArrayList<File>();
-		currentlySelectedMovieFileList = new ArrayList<File>();
-		currentlySelectedPosterFileList = new ArrayList<File>();
+		setCurrentlySelectedMovieFileList(new ArrayList<File>());
+		setCurrentlySelectedPosterFileList(new ArrayList<File>());
 		currentlySelectedFolderJpgFileList = new ArrayList<File>();
-		currentlySelectedFanartFileList = new ArrayList<File>();
+		setCurrentlySelectedFanartFileList(new ArrayList<File>());
 		currentlySelectedTrailerFileList = new ArrayList<File>();
 		currentlySelectedActorsFolderList = new ArrayList<File>();
 		currentlySelectedExtraFanartFolderList = new ArrayList<File>();
@@ -745,11 +745,11 @@ public class GUIMain {
 		frmMoviescraper.setJMenuBar(menuBar);
 	}
 	protected void removeOldScrapedMovieReferences() {
-		currentlySelectedMovieDMM = null;
-		currentlySelectedMovieActionJav = null;
-		currentlySelectedMovieSquarePlus = null;
-		currentlySelectedMovieJavLibrary = null;
-		currentlySelectedMovieJavZoo = null;
+		setCurrentlySelectedMovieDMM(null);
+		setCurrentlySelectedMovieActionJav(null);
+		setCurrentlySelectedMovieSquarePlus(null);
+		setCurrentlySelectedMovieJavLibrary(null);
+		setCurrentlySelectedMovieJavZoo(null);
 		currentlySelectedMovieCaribbeancomPremium = null;
 		currentlySelectedMovieData18Movie = null;
 		if(movieToWriteToDiskList != null)
@@ -758,11 +758,11 @@ public class GUIMain {
 	}
 	protected void removeOldSelectedFileReferences(){
 		currentlySelectedNfoFileList.clear();
-		currentlySelectedMovieFileList.clear();
+		getCurrentlySelectedMovieFileList().clear();
 		currentlySelectedActorsFolderList.clear();
-		currentlySelectedPosterFileList.clear();
+		getCurrentlySelectedPosterFileList().clear();
 		currentlySelectedFolderJpgFileList.clear();
-		currentlySelectedFanartFileList.clear();
+		getCurrentlySelectedFanartFileList().clear();
 		currentlySelectedTrailerFileList.clear();
 		currentlySelectedExtraFanartFolderList.clear();
 	}
@@ -880,22 +880,22 @@ public class GUIMain {
 				if(currentlySelectedMovieActionJav != null && !currentlySelectedMovieActionJav.getId().equals(idMustBeThis)){
 					System.out.println("Discarding ActionJav scraped results for faulty match based on ID = " + currentlySelectedMovieActionJav.getId());
 					currentlySelectedMovieActionJav = null;
-					this.currentlySelectedMovieActionJav = null;
+					this.setCurrentlySelectedMovieActionJav(null);
 				}
 				if(currentlySelectedMovieSquarePlus != null && !currentlySelectedMovieSquarePlus.getId().equals(idMustBeThis)){
 					System.out.println("Discarding SquarePlus scraped results for faulty match based on ID = " + currentlySelectedMovieSquarePlus.getId());
 					currentlySelectedMovieSquarePlus = null;
-					this.currentlySelectedMovieSquarePlus = null;
+					this.setCurrentlySelectedMovieSquarePlus(null);
 				}
 				if(currentlySelectedMovieJavLibrary != null && !currentlySelectedMovieJavLibrary.getId().equals(idMustBeThis)){
 					System.out.println("Discarding Jav Library scraped results for faulty match based on ID = " + currentlySelectedMovieJavLibrary.getId());
 					currentlySelectedMovieJavLibrary = null;
-					this.currentlySelectedMovieJavLibrary = null;
+					this.setCurrentlySelectedMovieJavLibrary(null);
 				}
 				if(currentlySelectedMovieJavZoo != null && !currentlySelectedMovieJavZoo.getId().equals(idMustBeThis)){
 					System.out.println("Discarding JavZoo scraped results for faulty match based on ID = " + currentlySelectedMovieJavZoo.getId());
 					currentlySelectedMovieJavZoo = null;
-					this.currentlySelectedMovieJavZoo = null;
+					this.setCurrentlySelectedMovieJavZoo(null);
 				}
 			}
 		}
@@ -1194,15 +1194,15 @@ public class GUIMain {
 			{
 				Movie movieFromNfo = xmlMovieBean.toMovie();
 				movieToWriteToDiskList.add(movieFromNfo);
-				if (currentlySelectedPosterFileList.get(0).exists()) {
+				if (getCurrentlySelectedPosterFileList().get(0).exists()) {
 					//we don't want to resize this poster later
 					Thumb[] currentPosters = movieToWriteToDiskList.get(0).getPosters();
 					Thumb fileFromDisk;
 					if(currentPosters.length > 0 && currentPosters[0] != null && currentPosters[0].getThumbURL() != null)
-						fileFromDisk = new Thumb(currentlySelectedPosterFileList.get(0), currentPosters[0].getThumbURL().toString());
+						fileFromDisk = new Thumb(getCurrentlySelectedPosterFileList().get(0), currentPosters[0].getThumbURL().toString());
 					else
 					{
-						fileFromDisk = new Thumb(currentlySelectedPosterFileList.get(0));
+						fileFromDisk = new Thumb(getCurrentlySelectedPosterFileList().get(0));
 						currentPosters = new Thumb[1];
 					}
 					currentPosters[0] = fileFromDisk;
@@ -1250,205 +1250,18 @@ public class GUIMain {
 
 	//Update the File Detail Panel GUI so the user can see what is scraped in
 	protected void updateAllFieldsOfFileDetailPanel(boolean forceUpdatePoster) {
-		if (movieToWriteToDiskList == null || movieToWriteToDiskList.size() == 0) {
-			clearAllFieldsOfFileDetailPanel();
-		} else if (movieToWriteToDiskList != null && movieToWriteToDiskList.get(0) != null) {
-			clearAllFieldsOfFileDetailPanel();
-
-			fileDetailPanel.setCurrentMovie(movieToWriteToDiskList.get(0));
-
-			//All the titles from the various versions scraped of this movie from the different sites
-			if(movieToWriteToDiskList != null)
-				fileDetailPanel.getCurrentMovie().getAllTitles().add( movieToWriteToDiskList.get(0).getTitle() );
-			if(currentlySelectedMovieDMM != null)
-				fileDetailPanel.getCurrentMovie().getAllTitles().add( currentlySelectedMovieDMM.getTitle() );
-			if(currentlySelectedMovieJavLibrary != null)
-				fileDetailPanel.getCurrentMovie().getAllTitles().add( currentlySelectedMovieJavLibrary.getTitle() );
-			if(currentlySelectedMovieSquarePlus != null)
-				fileDetailPanel.getCurrentMovie().getAllTitles().add( currentlySelectedMovieSquarePlus.getTitle() );
-			if(currentlySelectedMovieActionJav != null)
-				fileDetailPanel.getCurrentMovie().getAllTitles().add( currentlySelectedMovieActionJav.getTitle() );
-			if(currentlySelectedMovieJavZoo != null)
-				fileDetailPanel.getCurrentMovie().getAllTitles().add( currentlySelectedMovieJavZoo.getTitle() );
-			if(fileDetailPanel.getCurrentMovie().getAllTitles().size() > 0)
-				fileDetailPanel.setTitleEditable(true);
-
-			//original title
-			fileDetailPanel.getCurrentMovie().setOriginalTitle(movieToWriteToDiskList.get(0)
-					.getOriginalTitle());
-			//ID
-			if(movieToWriteToDiskList.get(0).getId() != null)
-				fileDetailPanel.getCurrentMovie().setId(movieToWriteToDiskList.get(0).getId());
-			//Studio
-			if(movieToWriteToDiskList.get(0).getStudio() != null)
-				fileDetailPanel.getCurrentMovie().setStudio(movieToWriteToDiskList.get(0).getStudio());
-			//Year
-			if(movieToWriteToDiskList.get(0).getYear() != null)
-				fileDetailPanel.getCurrentMovie().setYear(movieToWriteToDiskList.get(0).getYear());
-			//Plot
-			if(movieToWriteToDiskList.get(0).getPlot() != null)
-				fileDetailPanel.getCurrentMovie().setPlot(movieToWriteToDiskList.get(0).getPlot());
-			//Set
-			if(movieToWriteToDiskList.get(0).getSet() != null)
-				fileDetailPanel.getCurrentMovie().setSet(movieToWriteToDiskList.get(0).getSet());
-
-			//Add in all the genres
-			fileDetailPanel.getCurrentMovie().setGenres( movieToWriteToDiskList.get(0).getGenres() );
-
-			//Actors
-			fileDetailPanel.getCurrentMovie().setActors( movieToWriteToDiskList.get(0).getActors() );
-
-			boolean posterFileUpdateOccured = false;
-			boolean fanartFileUpdateOccured = false;
-			if(!forceUpdatePoster)
-			{
-				// try to get the poster from a local file, if it exists
-				//Maybe there is a file in the directory just called folder.jpg
-				File potentialOtherPosterJpg = new File(Movie.getFileNameOfPoster(currentlySelectedMovieFileList.get(0), true));
-				File potentialOtherFanartJpg = new File(Movie.getFileNameOfFanart(currentlySelectedMovieFileList.get(0), true));
-				//the poster would be called moviename-poster.jpg
-				File standardPosterJpg = new File(Movie.getFileNameOfPoster(currentlySelectedMovieFileList.get(0), false));
-				File standardFanartJpg = new File(Movie.getFileNameOfFanart(currentlySelectedMovieFileList.get(0), false));
-				if (currentlySelectedPosterFileList.get(0).exists()) {
-					try {
-						BufferedImage img = ImageIO.read(currentlySelectedPosterFileList.get(0));
-						if(img != null)
-						{
-							BufferedImage scaledImage = ArtWorkPanel.resizeToPoster(img);
-							artWorkPanel.setNewPoster(scaledImage);
-							posterFileUpdateOccured = true;
-						}
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-				if(currentlySelectedFanartFileList.get(0).exists())
-				{
-					try {
-						//System.out.println("found the standard fanart");
-						BufferedImage img = ImageIO.read(currentlySelectedFanartFileList.get(0));
-						if(img != null)
-						{
-							BufferedImage scaledImage = ArtWorkPanel.resizeToFanart(img);
-							artWorkPanel.setNewFanart(scaledImage);
-							fanartFileUpdateOccured = true;
-						}
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-				//well we didn't find a poster file we were expecting, try to see if there is any file named poster.jpg in there
-				if(currentlySelectedMovieFileList.get(0).isDirectory() && potentialOtherPosterJpg.exists() && !posterFileUpdateOccured)
-				{
-					try {
-						//System.out.println("Reading in poster from other" + potentialOtherPosterJpg);
-						BufferedImage img = ImageIO.read(potentialOtherPosterJpg);
-						if(img != null)
-						{
-							BufferedImage scaledImage = ArtWorkPanel.resizeToPoster(img);
-							artWorkPanel.setNewPoster(scaledImage);
-							posterFileUpdateOccured = true;
-						}
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-				//well we didn't find a poster file we were expecting, try to see if there is any file named fanart.jpg in there
-				if(currentlySelectedMovieFileList.get(0).isDirectory() && potentialOtherFanartJpg.exists() && !fanartFileUpdateOccured)
-				{
-					try {
-						//System.out.println("Reading in fanart from other" + potentialOtherFanartJpg);
-						BufferedImage img = ImageIO.read(potentialOtherFanartJpg);
-						if(img != null)
-						{
-							BufferedImage scaledImage = ArtWorkPanel.resizeToFanart(img);
-							artWorkPanel.setNewFanart(scaledImage);
-							fanartFileUpdateOccured = true;
-						}
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-
-				//just in case, also check to see if one called moviename-poster.jpg is there, even if we were expecting a poster.jpg due to the preference we set
-				if(standardPosterJpg.exists() && !posterFileUpdateOccured)
-				{
-					try {
-						//System.out.println("Reading in poster from moviename-poster" + potentialOtherPosterJpg);
-						artWorkPanel.setNewPoster(new ImageIcon(
-								standardPosterJpg.getCanonicalPath()));
-						posterFileUpdateOccured = true;
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-
-				//just in case, also check to see if one called moviename-fanart.jpg is there, even if we were expecting a poster.jpg due to the preference we set
-				if(standardFanartJpg.exists() && !fanartFileUpdateOccured)
-				{
-					try {
-						//System.out.println("Reading in fanart from moviename-fanart" + potentialOtherPosterJpg);
-						BufferedImage img = ImageIO.read(standardFanartJpg);
-						if(img != null)
-						{
-							BufferedImage scaledImage = ArtWorkPanel.resizeToFanart(img);
-							artWorkPanel.setNewFanart(scaledImage);
-							fanartFileUpdateOccured = true;
-						}
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			}
-			// otherwise read it from the URL specified by the object since we couldn't find any local file
-			if (movieToWriteToDiskList.get(0).hasPoster() && !posterFileUpdateOccured) {
-				try {
-					Image posterImage = movieToWriteToDiskList.get(0).getPosters()[0]
-							.getThumbImage();
-					ImageIcon newPosterIcon = new ImageIcon(posterImage);
-					BufferedImage img = (BufferedImage) newPosterIcon.getImage();
-					BufferedImage scaledImage = ArtWorkPanel.resizeToPoster(img);
-					artWorkPanel.setNewPoster(scaledImage);
-					posterFileUpdateOccured = true;
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					JOptionPane.showMessageDialog(null, ExceptionUtils.getStackTrace(e),"Unhandled Exception",JOptionPane.ERROR_MESSAGE);
-				}
-			}
-
-			//try to read the fanart from the url since we couldn't find any local file
-			if (movieToWriteToDiskList.get(0).hasFanart() && !fanartFileUpdateOccured) {
-				System.out.println("Reading in the fanart from the url");
-				try {
-					Image fanartImage = movieToWriteToDiskList.get(0).getFanart()[0]
-							.getThumbImage();
-					ImageIcon newFanartIcon = new ImageIcon(fanartImage);
-					BufferedImage img = (BufferedImage) newFanartIcon.getImage();
-					BufferedImage scaledImage = ArtWorkPanel.resizeToFanart(img);
-					artWorkPanel.setNewFanart(scaledImage);
-					fanartImage = scaledImage;
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					JOptionPane.showMessageDialog(null, ExceptionUtils.getStackTrace(e),"Unhandled Exception",JOptionPane.ERROR_MESSAGE);
-				}
-			}
-		}
-		fileDetailPanel.updateView();
+			fileDetailPanel.updateView(forceUpdatePoster);
 	}
 
 
 
 	private class OpenFileAction implements ActionListener {
 		public void actionPerformed(ActionEvent arg0) {
-			for(int movieNumberInList = 0; movieNumberInList < currentlySelectedMovieFileList.size(); movieNumberInList++)
+			for(int movieNumberInList = 0; movieNumberInList < getCurrentlySelectedMovieFileList().size(); movieNumberInList++)
 			{
-				if (currentlySelectedMovieFileList != null) {
+				if (getCurrentlySelectedMovieFileList() != null) {
 					try {
-						Desktop.getDesktop().open(currentlySelectedMovieFileList.get(movieNumberInList));
+						Desktop.getDesktop().open(getCurrentlySelectedMovieFileList().get(movieNumberInList));
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -1464,7 +1277,7 @@ public class GUIMain {
 
 
 		public void actionPerformed(ActionEvent arg0) {
-			for(int movieNumberInList = 0; movieNumberInList < currentlySelectedMovieFileList.size(); movieNumberInList++)
+			for(int movieNumberInList = 0; movieNumberInList < getCurrentlySelectedMovieFileList().size(); movieNumberInList++)
 			{
 				try {
 					//Display a wait cursor since file IO sometimes takes a little bit of time
@@ -1474,11 +1287,11 @@ public class GUIMain {
 					if(movieToWriteToDiskList == null)
 					{
 						Movie amalgamationAutoPickMovie = amalgamateMovie(
-								currentlySelectedMovieDMM,
-								currentlySelectedMovieActionJav,
-								currentlySelectedMovieSquarePlus,
-								currentlySelectedMovieJavLibrary,
-								currentlySelectedMovieJavZoo, movieNumberInList);
+								getCurrentlySelectedMovieDMM(),
+								getCurrentlySelectedMovieActionJav(),
+								getCurrentlySelectedMovieSquarePlus(),
+								getCurrentlySelectedMovieJavLibrary(),
+								getCurrentlySelectedMovieJavZoo(), movieNumberInList);
 
 						movieToWriteToDiskList.add(amalgamationAutoPickMovie);
 					}
@@ -1493,8 +1306,8 @@ public class GUIMain {
 					{
 						if ( preferences.getRenameMovieFile() ) {
 							////TODO New Filewrite
-							System.out.println(currentlySelectedMovieFileList.get(0));
-							File oldMovieFile = currentlySelectedMovieFileList.get(movieNumberInList);
+							System.out.println(getCurrentlySelectedMovieFileList().get(0));
+							File oldMovieFile = getCurrentlySelectedMovieFileList().get(movieNumberInList);
 							Movie movie = movieToWriteToDiskList.get(movieNumberInList);
 
 							String sanitizerString = preferences.getSanitizerForFilename();
@@ -1515,20 +1328,20 @@ public class GUIMain {
 							//save without renaming movie
 							movieToWriteToDiskList.get(movieNumberInList).writeToFile(
 									currentlySelectedNfoFileList.get(movieNumberInList),
-									currentlySelectedPosterFileList.get(movieNumberInList),
-									currentlySelectedFanartFileList.get(movieNumberInList),
+									getCurrentlySelectedPosterFileList().get(movieNumberInList),
+									getCurrentlySelectedFanartFileList().get(movieNumberInList),
 									currentlySelectedFolderJpgFileList.get(movieNumberInList),
 									preferences);
 						}
 
 						//we can only output extra fanart if we're scraping a folder, because otherwise the extra fanart will get mixed in with other files
-						if(preferences.getExtraFanartScrapingEnabledPreference() && currentlySelectedMovieFileList.get(movieNumberInList).isDirectory() && currentlySelectedExtraFanartFolderList != null)
+						if(preferences.getExtraFanartScrapingEnabledPreference() && getCurrentlySelectedMovieFileList().get(movieNumberInList).isDirectory() && currentlySelectedExtraFanartFolderList != null)
 						{
 							writeExtraFanart(null, movieNumberInList);
 						}
 					}
 					//now write out the actor images if the user preference is set
-					if(preferences.getDownloadActorImagesToActorFolderPreference() && currentlySelectedMovieFileList != null && currentlySelectedDirectoryList != null)
+					if(preferences.getDownloadActorImagesToActorFolderPreference() && getCurrentlySelectedMovieFileList() != null && currentlySelectedDirectoryList != null)
 					{
 						updateActorsFolder();
 						//Don't create an empty .actors folder with no actors underneath it
@@ -1632,23 +1445,23 @@ public class GUIMain {
 					{
 						currentlySelectedNfoFileList.add(new File(Movie
 								.getFileNameOfNfo(currentSelectedFile, preferences.getNfoNamedMovieDotNfo())));
-						currentlySelectedPosterFileList.add(new File(Movie
+						getCurrentlySelectedPosterFileList().add(new File(Movie
 								.getFileNameOfPoster(currentSelectedFile, preferences.getNoMovieNameInImageFiles())));
 						currentlySelectedFolderJpgFileList.add(new File(Movie
 								.getFileNameOfFolderJpg(currentSelectedFile)));
-						currentlySelectedFanartFileList.add(new File(Movie
+						getCurrentlySelectedFanartFileList().add(new File(Movie
 								.getFileNameOfFanart(currentSelectedFile, preferences.getNoMovieNameInImageFiles())));
 						currentlySelectedTrailerFileList.add(new File(Movie.getFileNameOfTrailer(currentSelectedFile)));
 					}
 
 					debugWriter("nfos after selection: " + currentlySelectedNfoFileList);
-					debugWriter("posters after selection: " + currentlySelectedPosterFileList);
+					debugWriter("posters after selection: " + getCurrentlySelectedPosterFileList());
 					debugWriter("folderjpgs after selection: " + currentlySelectedFolderJpgFileList);
-					debugWriter("fanartfiles after selection: " + currentlySelectedFanartFileList);
+					debugWriter("fanartfiles after selection: " + getCurrentlySelectedFanartFileList());
 					debugWriter("trailer after selection: " + currentlySelectedTrailerFileList);
 
 
-					currentlySelectedMovieFileList = fileList.getSelectedValuesList();
+					setCurrentlySelectedMovieFileList(fileList.getSelectedValuesList());
 
 
 
@@ -1686,13 +1499,13 @@ public class GUIMain {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			String pathSeperator = System.getProperty("file.separator");
-			for(int movieNumberInList = 0; movieNumberInList < currentlySelectedMovieFileList.size(); movieNumberInList++)
+			for(int movieNumberInList = 0; movieNumberInList < getCurrentlySelectedMovieFileList().size(); movieNumberInList++)
 			{
 				try {
 					//set the cursor to busy as this could take more than 1 or 2 seconds while files are copied or extrafanart is downloaded from the internet
 					frmMoviescraper.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-					if (currentlySelectedMovieFileList != null
-							&& currentlySelectedMovieFileList.get(movieNumberInList).exists() && currentlySelectedMovieFileList.get(movieNumberInList).isFile()) {
+					if (getCurrentlySelectedMovieFileList() != null
+							&& getCurrentlySelectedMovieFileList().get(movieNumberInList).exists() && getCurrentlySelectedMovieFileList().get(movieNumberInList).isFile()) {
 						// we can append the movie title to resulting folder name if
 						// the movie is scraped, has an ID and generally matches the
 						// ID in the filename (assuming the file is only named the
@@ -1704,7 +1517,7 @@ public class GUIMain {
 							String possibleIDWithoutDash = possibleID.replaceFirst(
 									"-", "");
 							String fileNameComparingTo = FilenameUtils
-									.getBaseName(currentlySelectedMovieFileList.get(movieNumberInList)
+									.getBaseName(getCurrentlySelectedMovieFileList().get(movieNumberInList)
 											.getName().toUpperCase());
 							if (possibleID.equals(SiteParsingProfile.stripDiscNumber(fileNameComparingTo))
 									|| possibleIDWithoutDash
@@ -1720,16 +1533,16 @@ public class GUIMain {
 
 						}
 						File destDir = new File(
-								currentlySelectedMovieFileList.get(movieNumberInList).getParentFile()
+								getCurrentlySelectedMovieFileList().get(movieNumberInList).getParentFile()
 								.getCanonicalPath()
 								+ pathSeperator
 								+ destinationDirectoryPrefix
 								+ SiteParsingProfile.stripDiscNumber(FilenameUtils
-										.getBaseName(currentlySelectedMovieFileList.get(movieNumberInList)
+										.getBaseName(getCurrentlySelectedMovieFileList().get(movieNumberInList)
 												.getName())));
 						clearAllFieldsOfFileDetailPanel();
 						//copy over the .actor folder items to the destination folder, but only if the preference is set and the usual sanity checking is done
-						if (currentlySelectedMovieFileList.get(movieNumberInList).isFile() && currentlySelectedActorsFolderList != null && preferences.getDownloadActorImagesToActorFolderPreference())
+						if (getCurrentlySelectedMovieFileList().get(movieNumberInList).isFile() && currentlySelectedActorsFolderList != null && preferences.getDownloadActorImagesToActorFolderPreference())
 						{
 							File [] actorFilesToCopy = actorFolderFiles(movieNumberInList);
 							File actorsFolderDestDir = new File(destDir.getPath() + File.separator + ".actors");
@@ -1738,12 +1551,12 @@ public class GUIMain {
 								FileUtils.copyFileToDirectory(currentFile, actorsFolderDestDir);
 							}
 						}
-						if (currentlySelectedMovieFileList.get(movieNumberInList).exists())
+						if (getCurrentlySelectedMovieFileList().get(movieNumberInList).exists())
 						{
 							//In case of stacked movie files (Movies which are split into multiple files such AS CD1, CD2, etc) get the list of all files
 							//which are part of this movie's stack
-							File currentDirectory = currentlySelectedMovieFileList.get(movieNumberInList).getParentFile();
-							String currentlySelectedMovieFileWihoutStackSuffix = SiteParsingProfile.stripDiscNumber(FilenameUtils.removeExtension(currentlySelectedMovieFileList.get(movieNumberInList).getName()));
+							File currentDirectory = getCurrentlySelectedMovieFileList().get(movieNumberInList).getParentFile();
+							String currentlySelectedMovieFileWihoutStackSuffix = SiteParsingProfile.stripDiscNumber(FilenameUtils.removeExtension(getCurrentlySelectedMovieFileList().get(movieNumberInList).getName()));
 							if(currentDirectory != null)
 							{
 
@@ -1761,17 +1574,17 @@ public class GUIMain {
 						}
 						if (currentlySelectedNfoFileList.get(movieNumberInList).exists())
 							FileUtils.moveFileToDirectory(currentlySelectedNfoFileList.get(movieNumberInList),destDir, true);
-						if (currentlySelectedPosterFileList.get(movieNumberInList).exists()) {
+						if (getCurrentlySelectedPosterFileList().get(movieNumberInList).exists()) {
 							//if we're going to create folder.jpg file, just grab the poster file we already have and make a copy of it in the new folder
 							if(preferences.getCreateFolderJpgEnabledPreference())
 							{
 								File currentlySelectedFolderJpg = new File(Movie.getFileNameOfFolderJpg(destDir));
-								FileUtils.copyFile(currentlySelectedPosterFileList.get(movieNumberInList), currentlySelectedFolderJpg );
+								FileUtils.copyFile(getCurrentlySelectedPosterFileList().get(movieNumberInList), currentlySelectedFolderJpg );
 							}
-							FileUtils.moveFileToDirectory(currentlySelectedPosterFileList.get(movieNumberInList), destDir, true);
+							FileUtils.moveFileToDirectory(getCurrentlySelectedPosterFileList().get(movieNumberInList), destDir, true);
 						}
-						if (currentlySelectedFanartFileList.get(movieNumberInList).exists()) {
-							FileUtils.moveFileToDirectory(currentlySelectedFanartFileList.get(movieNumberInList), destDir, true);
+						if (getCurrentlySelectedFanartFileList().get(movieNumberInList).exists()) {
+							FileUtils.moveFileToDirectory(getCurrentlySelectedFanartFileList().get(movieNumberInList), destDir, true);
 						}
 
 						if(currentlySelectedTrailerFileList.get(movieNumberInList).exists())
@@ -1897,7 +1710,7 @@ public class GUIMain {
 				@Override
 				protected Void doInBackground() {
 
-					for (int movieNumberInList = 0; movieNumberInList < currentlySelectedMovieFileList
+					for (int movieNumberInList = 0; movieNumberInList < getCurrentlySelectedMovieFileList()
 							.size(); movieNumberInList++) {
 						if (this.isCancelled()) {
 							System.err.println("Found the thread was canceled");
@@ -1912,7 +1725,7 @@ public class GUIMain {
 						// time consuming
 						// scrape, so make new threads for each scraping
 						// query
-						String currentFileName = currentlySelectedMovieFileList
+						String currentFileName = getCurrentlySelectedMovieFileList()
 								.get(movieNumberInList).toString();
 
 						initializeProgressMonitor(currentFileName);
@@ -1925,12 +1738,12 @@ public class GUIMain {
 										!preferences.getScrapeInJapanese());
 								JavLibraryParsingProfile jlPP = new JavLibraryParsingProfile();
 								String searchStringDMM = dmmPP
-										.createSearchString(currentlySelectedMovieFileList
+										.createSearchString(getCurrentlySelectedMovieFileList()
 												.get(movieNumberInList));
 								SearchResult[] searchResultsDMM = dmmPP
 										.getSearchResults(searchStringDMM);
 								String searchStringJL = jlPP
-										.createSearchString(currentlySelectedMovieFileList
+										.createSearchString(getCurrentlySelectedMovieFileList()
 												.get(movieNumberInList));
 								if (searchResultsDMM != null
 										&& searchResultsDMM.length > 0) {
@@ -1976,7 +1789,7 @@ public class GUIMain {
 								else if (scrapeData18WebContent)
 									data18ParsingProfile = new Data18WebContentParsingProfile();
 								String searchStringData18Movie = data18ParsingProfile
-										.createSearchString(currentlySelectedMovieFileList
+										.createSearchString(getCurrentlySelectedMovieFileList()
 												.get(movieNumberInList));
 								SearchResult[] searchResultData18Movie = data18ParsingProfile
 										.getSearchResults(searchStringData18Movie);
@@ -1998,7 +1811,7 @@ public class GUIMain {
 									IAFDParsingProfile iafdParsingProfile = new IAFDParsingProfile();
 									SearchResult[] searchResultsIAFD = iafdParsingProfile
 											.getSearchResults(iafdParsingProfile
-													.createSearchString(currentlySelectedMovieFileList
+													.createSearchString(getCurrentlySelectedMovieFileList()
 															.get(movieNumberInList)));
 									System.out.println("neues");
 									System.out.println(searchStringData18Movie);
@@ -2268,9 +2081,9 @@ public class GUIMain {
 						else
 							data18MoviePP = new Data18WebContentParsingProfile();
 						//data18MoviePP.setExtraFanartScrapingEnabled(preferences.getExtraFanartScrapingEnabledPreference());
-						debugWriter("Scraping this file (Data18) " + currentlySelectedMovieFileList.get(currentMovieNumberInList));
+						debugWriter("Scraping this file (Data18) " + getCurrentlySelectedMovieFileList().get(currentMovieNumberInList));
 						currentlySelectedMovieData18Movie = Movie.scrapeMovie(
-								currentlySelectedMovieFileList.get(currentMovieNumberInList),
+								getCurrentlySelectedMovieFileList().get(currentMovieNumberInList),
 								data18MoviePP, overrideURLData18Movie, promptUserForURLWhenScraping, thisScrapeAction);
 
 						System.out.println("Data18 Scrape results: "
@@ -2278,7 +2091,7 @@ public class GUIMain {
 
 						if ( preferences.getUseIAFDForActors() ) {
 							Movie scrapeMovieIAFD = Movie.scrapeMovie(
-									currentlySelectedMovieFileList.get(currentMovieNumberInList),
+									getCurrentlySelectedMovieFileList().get(currentMovieNumberInList),
 									new IAFDParsingProfile(), overrideURLIAFD, promptUserForURLWhenScraping, thisScrapeAction);
 							System.out.println("IAFD Scrape results: "
 									+ scrapeMovieIAFD);
@@ -2321,11 +2134,11 @@ public class GUIMain {
 					try {
 						DmmParsingProfile dmmPP = new DmmParsingProfile(!preferences.getScrapeInJapanese());
 						dmmPP.setExtraFanartScrapingEnabled(preferences.getExtraFanartScrapingEnabledPreference());
-						currentlySelectedMovieDMM = Movie.scrapeMovie(
-								currentlySelectedMovieFileList.get(currentMovieNumberInList),
-								dmmPP, overrideURLDMM, promptUserForURLWhenScraping, thisScrapeAction);
+						setCurrentlySelectedMovieDMM(Movie.scrapeMovie(
+								getCurrentlySelectedMovieFileList().get(currentMovieNumberInList),
+								dmmPP, overrideURLDMM, promptUserForURLWhenScraping, thisScrapeAction));
 						System.out.println("DMM scrape results: "
-								+ currentlySelectedMovieDMM);
+								+ getCurrentlySelectedMovieDMM());
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -2337,12 +2150,12 @@ public class GUIMain {
 			Thread scrapeQueryActionJavThread = new Thread() {
 				public void run() {
 					try {
-						currentlySelectedMovieActionJav = Movie.scrapeMovie(
-								currentlySelectedMovieFileList.get(currentMovieNumberInList),
-								new ActionJavParsingProfile(), overrideURLDMM, false, thisScrapeAction);
+						setCurrentlySelectedMovieActionJav(Movie.scrapeMovie(
+								getCurrentlySelectedMovieFileList().get(currentMovieNumberInList),
+								new ActionJavParsingProfile(), overrideURLDMM, false, thisScrapeAction));
 
 						System.out.println("Action jav scrape results: "
-								+ currentlySelectedMovieActionJav);
+								+ getCurrentlySelectedMovieActionJav());
 					} catch (IOException e1) {
 
 						e1.printStackTrace();
@@ -2354,12 +2167,12 @@ public class GUIMain {
 			Thread scrapeQuerySquarePlusThread = new Thread() {
 				public void run() {
 					try {
-						currentlySelectedMovieSquarePlus = Movie.scrapeMovie(
-								currentlySelectedMovieFileList.get(currentMovieNumberInList),
-								new SquarePlusParsingProfile(), overrideURLDMM, false, thisScrapeAction);
+						setCurrentlySelectedMovieSquarePlus(Movie.scrapeMovie(
+								getCurrentlySelectedMovieFileList().get(currentMovieNumberInList),
+								new SquarePlusParsingProfile(), overrideURLDMM, false, thisScrapeAction));
 
 						System.out.println("SquarePlus scrape results: "
-								+ currentlySelectedMovieSquarePlus);
+								+ getCurrentlySelectedMovieSquarePlus());
 					} catch (IOException e1) {
 
 						e1.printStackTrace();
@@ -2373,12 +2186,12 @@ public class GUIMain {
 					try {
 						JavLibraryParsingProfile jlParsingProfile = new JavLibraryParsingProfile();
 						jlParsingProfile.setOverrideURLJavLibrary(overrideURLJavLibrary);
-						currentlySelectedMovieJavLibrary = Movie.scrapeMovie(
-								currentlySelectedMovieFileList.get(currentMovieNumberInList),
-								jlParsingProfile, overrideURLDMM, promptUserForURLWhenScraping, thisScrapeAction);
+						setCurrentlySelectedMovieJavLibrary(Movie.scrapeMovie(
+								getCurrentlySelectedMovieFileList().get(currentMovieNumberInList),
+								jlParsingProfile, overrideURLDMM, promptUserForURLWhenScraping, thisScrapeAction));
 
 						System.out.println("JavLibrary scrape results: "
-								+ currentlySelectedMovieJavLibrary);
+								+ getCurrentlySelectedMovieJavLibrary());
 					} catch (IOException e1) {
 
 						e1.printStackTrace();
@@ -2389,12 +2202,12 @@ public class GUIMain {
 			Thread scrapeQueryJavZooThread = new Thread() {
 				public void run() {
 					try {
-						currentlySelectedMovieJavZoo = Movie.scrapeMovie(
-								currentlySelectedMovieFileList.get(currentMovieNumberInList),
-								new JavZooParsingProfile(), overrideURLDMM, false, thisScrapeAction);
+						setCurrentlySelectedMovieJavZoo(Movie.scrapeMovie(
+								getCurrentlySelectedMovieFileList().get(currentMovieNumberInList),
+								new JavZooParsingProfile(), overrideURLDMM, false, thisScrapeAction));
 
 						System.out.println("JavZoo scrape results: "
-								+ currentlySelectedMovieJavZoo);
+								+ getCurrentlySelectedMovieJavZoo());
 					} catch (IOException e1) {
 
 						e1.printStackTrace();
@@ -2407,7 +2220,7 @@ public class GUIMain {
 				public void run() {
 					try {
 						currentlySelectedMovieCaribbeancomPremium = Movie.scrapeMovie(
-								currentlySelectedMovieFileList.get(currentMovieNumberInList),
+								getCurrentlySelectedMovieFileList().get(currentMovieNumberInList),
 								new CaribbeancomPremiumParsingProfile(), overrideURLDMM, false, thisScrapeAction);
 
 						System.out.println("CaribbeancomPremium scrape results: "
@@ -2499,13 +2312,13 @@ public class GUIMain {
 			}
 
 			if(preferences.getScrapeInJapanese())
-				movieAmalgamated = currentlySelectedMovieDMM;
+				movieAmalgamated = getCurrentlySelectedMovieDMM();
 			else{
-				movieAmalgamated = amalgamateMovie(currentlySelectedMovieDMM,
-						currentlySelectedMovieActionJav,
-						currentlySelectedMovieSquarePlus,
-						currentlySelectedMovieJavLibrary,
-						currentlySelectedMovieJavZoo, movieNumberInList);
+				movieAmalgamated = amalgamateMovie(getCurrentlySelectedMovieDMM(),
+						getCurrentlySelectedMovieActionJav(),
+						getCurrentlySelectedMovieSquarePlus(),
+						getCurrentlySelectedMovieJavLibrary(),
+						getCurrentlySelectedMovieJavZoo(), movieNumberInList);
 			}
 			//if we didn't get a result from the general jav db's, then maybe this is from a webonly type scraper
 			if(movieAmalgamated == null && currentlySelectedMovieCaribbeancomPremium != null)
@@ -2691,13 +2504,13 @@ public class GUIMain {
 	}
 
 	public void updateActorsFolder() {
-		for(int movieNumberInList = 0; movieNumberInList < currentlySelectedMovieFileList.size(); movieNumberInList++)
+		for(int movieNumberInList = 0; movieNumberInList < getCurrentlySelectedMovieFileList().size(); movieNumberInList++)
 		{
-			if(currentlySelectedMovieFileList.get(movieNumberInList).isDirectory())
+			if(getCurrentlySelectedMovieFileList().get(movieNumberInList).isDirectory())
 			{
-				currentlySelectedActorsFolderList.add(new File(currentlySelectedMovieFileList.get(movieNumberInList).getPath() + File.separator + ".actors"));
+				currentlySelectedActorsFolderList.add(new File(getCurrentlySelectedMovieFileList().get(movieNumberInList).getPath() + File.separator + ".actors"));
 			}
-			else if(currentlySelectedMovieFileList.get(movieNumberInList).isFile())
+			else if(getCurrentlySelectedMovieFileList().get(movieNumberInList).isFile())
 			{
 				currentlySelectedActorsFolderList.add(new File(currentlySelectedDirectoryList.getPath() + File.separator + ".actors"));
 			}
@@ -2716,16 +2529,16 @@ public class GUIMain {
 	}
 
 	public void updateExtraFanartFolder(File destinationDirectory){
-		for(int movieNumberInList = 0; movieNumberInList < currentlySelectedMovieFileList.size(); movieNumberInList++)
+		for(int movieNumberInList = 0; movieNumberInList < getCurrentlySelectedMovieFileList().size(); movieNumberInList++)
 		{
 			if(destinationDirectory != null)
 			{
 				currentlySelectedExtraFanartFolderList.add(new File(destinationDirectory.getPath() + File.separator + "extrafanart"));
 			}	
-			else if(currentlySelectedMovieFileList.get(movieNumberInList).isDirectory())
+			else if(getCurrentlySelectedMovieFileList().get(movieNumberInList).isDirectory())
 			{
 
-				currentlySelectedExtraFanartFolderList.add(new File(currentlySelectedMovieFileList.get(movieNumberInList).getPath() + File.separator + "extrafanart"));
+				currentlySelectedExtraFanartFolderList.add(new File(getCurrentlySelectedMovieFileList().get(movieNumberInList).getPath() + File.separator + "extrafanart"));
 			}
 			else
 			{
@@ -2807,8 +2620,8 @@ public class GUIMain {
 	}
 
 	public List<File> getCurrentFile() {
-		if (currentlySelectedMovieFileList.size() > 0)
-			return currentlySelectedMovieFileList;
+		if (getCurrentlySelectedMovieFileList().size() > 0)
+			return getCurrentlySelectedMovieFileList();
 		return null;
 	}
 
@@ -2833,5 +2646,76 @@ public class GUIMain {
 
 	public void setMovieToWriteToDiskList(List<Movie> movieToWriteToDiskList) {
 		this.movieToWriteToDiskList = movieToWriteToDiskList;
+	}
+
+	public List<File> getCurrentlySelectedMovieFileList() {
+		return currentlySelectedMovieFileList;
+	}
+
+	public void setCurrentlySelectedMovieFileList(
+			List<File> currentlySelectedMovieFileList) {
+		this.currentlySelectedMovieFileList = currentlySelectedMovieFileList;
+	}
+
+	public List<File> getCurrentlySelectedPosterFileList() {
+		return currentlySelectedPosterFileList;
+	}
+
+	public void setCurrentlySelectedPosterFileList(
+			List<File> currentlySelectedPosterFileList) {
+		this.currentlySelectedPosterFileList = currentlySelectedPosterFileList;
+	}
+
+	public List<File> getCurrentlySelectedFanartFileList() {
+		return currentlySelectedFanartFileList;
+	}
+
+	public void setCurrentlySelectedFanartFileList(
+			List<File> currentlySelectedFanartFileList) {
+		this.currentlySelectedFanartFileList = currentlySelectedFanartFileList;
+	}
+
+	public Movie getCurrentlySelectedMovieDMM() {
+		return currentlySelectedMovieDMM;
+	}
+
+	public void setCurrentlySelectedMovieDMM(Movie currentlySelectedMovieDMM) {
+		this.currentlySelectedMovieDMM = currentlySelectedMovieDMM;
+	}
+
+	public Movie getCurrentlySelectedMovieJavLibrary() {
+		return currentlySelectedMovieJavLibrary;
+	}
+
+	public void setCurrentlySelectedMovieJavLibrary(
+			Movie currentlySelectedMovieJavLibrary) {
+		this.currentlySelectedMovieJavLibrary = currentlySelectedMovieJavLibrary;
+	}
+
+	public Movie getCurrentlySelectedMovieSquarePlus() {
+		return currentlySelectedMovieSquarePlus;
+	}
+
+	public void setCurrentlySelectedMovieSquarePlus(
+			Movie currentlySelectedMovieSquarePlus) {
+		this.currentlySelectedMovieSquarePlus = currentlySelectedMovieSquarePlus;
+	}
+
+	public Movie getCurrentlySelectedMovieActionJav() {
+		return currentlySelectedMovieActionJav;
+	}
+
+	public void setCurrentlySelectedMovieActionJav(
+			Movie currentlySelectedMovieActionJav) {
+		this.currentlySelectedMovieActionJav = currentlySelectedMovieActionJav;
+	}
+
+	public Movie getCurrentlySelectedMovieJavZoo() {
+		return currentlySelectedMovieJavZoo;
+	}
+
+	public void setCurrentlySelectedMovieJavZoo(
+			Movie currentlySelectedMovieJavZoo) {
+		this.currentlySelectedMovieJavZoo = currentlySelectedMovieJavZoo;
 	}
 }

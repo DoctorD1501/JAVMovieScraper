@@ -80,7 +80,7 @@ public class SpecificParserPanel extends JPanel {
 			Movie scrapedMovie = action.scrape();
 			if(scrapedMovie != null)
 				main.movieToWriteToDiskList.add(scrapedMovie);
-			main.getFileDetailPanel().setNewMovie( scrapedMovie );
+			main.getFileDetailPanel().setNewMovie( scrapedMovie , true);
 			}
 			
 		} else {

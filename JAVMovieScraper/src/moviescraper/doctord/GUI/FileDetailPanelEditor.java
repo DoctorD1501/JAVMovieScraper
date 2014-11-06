@@ -112,7 +112,7 @@ class FileDetailPanelActorEditor extends AbstractFileDetailPanelEditGUI {
 		Movie currentMovie = fileDetailPanel.getCurrentMovie();
 		if (currentMovie != null) {
 			currentMovie.getActors().add(newActor);
-			fileDetailPanel.updateView();
+			fileDetailPanel.updateView(false);
 		}
 	}
 	
@@ -125,7 +125,7 @@ class FileDetailPanelActorEditor extends AbstractFileDetailPanelEditGUI {
 	public void deleteAction() {
 		Actor actorToRemove = fileDetailPanel.getActorList().getSelectedValue();
 		fileDetailPanel.getCurrentMovie().getActors().remove(actorToRemove);
-		fileDetailPanel.updateView();
+		fileDetailPanel.updateView(false);
 	}
 }
 
@@ -178,7 +178,7 @@ class FileDetailPanelGenreEditor extends AbstractFileDetailPanelEditGUI {
 		Movie currentMovie = fileDetailPanel.getCurrentMovie();
 		if (currentMovie != null) {
 			currentMovie.getGenres().add(new Genre(genre));
-			fileDetailPanel.updateView();
+			fileDetailPanel.updateView(false);
 		}
 	}
 
@@ -187,7 +187,7 @@ class FileDetailPanelGenreEditor extends AbstractFileDetailPanelEditGUI {
 		String genreToRemove = fileDetailPanel.getGenreList().getSelectedValue();
 		System.out.println("want to remove " + genreToRemove);
 		fileDetailPanel.getCurrentMovie().getGenres().remove(new Genre(genreToRemove));
-		fileDetailPanel.updateView();
+		fileDetailPanel.updateView(false);
 		
 	}
 }

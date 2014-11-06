@@ -200,7 +200,7 @@ public class RenamerGUI extends JFrame {
 			}
 		});
 
-		fileDetailPanel.setNewMovie(getFakeMovie());
+		fileDetailPanel.setNewMovie(getFakeMovie(), false);
 		this.setVisible(true);
 	}
 
