@@ -344,7 +344,7 @@ public class DmmParsingProfile extends SiteParsingProfile {
 		// actual url requires javascript to find.
 		// We can do some string manipulation on the thumbnail URL to get the
 		// full URL, however
-		Elements extraArtElementsSmallSize = document.select("img.mg-b6");
+		Elements extraArtElementsSmallSize = document.select("div#sample-image-block img.mg-b6");
 
 		ArrayList<Thumb> posters = new ArrayList<Thumb>(
 				1 + extraArtElementsSmallSize.size());
