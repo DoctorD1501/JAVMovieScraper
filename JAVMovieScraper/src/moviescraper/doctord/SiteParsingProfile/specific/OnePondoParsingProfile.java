@@ -1,0 +1,390 @@
+package moviescraper.doctord.SiteParsingProfile.specific;
+
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.imageio.ImageIO;
+
+import org.apache.commons.io.FilenameUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+
+import moviescraper.doctord.SearchResult;
+import moviescraper.doctord.Thumb;
+import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
+import moviescraper.doctord.dataitem.Actor;
+import moviescraper.doctord.dataitem.Director;
+import moviescraper.doctord.dataitem.Genre;
+import moviescraper.doctord.dataitem.ID;
+import moviescraper.doctord.dataitem.MPAARating;
+import moviescraper.doctord.dataitem.OriginalTitle;
+import moviescraper.doctord.dataitem.Outline;
+import moviescraper.doctord.dataitem.Plot;
+import moviescraper.doctord.dataitem.Rating;
+import moviescraper.doctord.dataitem.Runtime;
+import moviescraper.doctord.dataitem.Set;
+import moviescraper.doctord.dataitem.SortTitle;
+import moviescraper.doctord.dataitem.Studio;
+import moviescraper.doctord.dataitem.Tagline;
+import moviescraper.doctord.dataitem.Title;
+import moviescraper.doctord.dataitem.Top250;
+import moviescraper.doctord.dataitem.Trailer;
+import moviescraper.doctord.dataitem.Votes;
+import moviescraper.doctord.dataitem.Year;
+
+public class OnePondoParsingProfile extends SiteParsingProfile implements SpecificProfile {
+
+	private boolean scrapeInEnglish;
+	private String englishPage;
+	private String japanesePage;
+	
+	/**
+	 * By default the scraper scrapes in english from en.1Pondo.tv/eng
+	 */
+	public OnePondoParsingProfile()
+	{
+		scrapeInEnglish = true;
+	}
+	
+	/**
+	 * 
+	 * @param scrapeInEnglish If true, the scraper will use the english version of 1Pondo, otherwise it will use the japanese version
+	 */
+	public OnePondoParsingProfile(boolean scrapeInEnglish)
+	{
+		this.scrapeInEnglish = scrapeInEnglish;
+	}
+	
+	@Override
+	public String getParserName() {
+		return "1pondo";
+	}
+
+	@Override
+	public Title scrapeTitle() {
+		Element titleElement = document.select("title").first();
+		String id = scrapeID().getId();
+		String title = titleElement.text().trim();
+		//replace used for english title
+		title = title.replaceAll(Pattern.quote("::"), "-");
+		//replace used for japanese title
+		title = title.replaceAll(Pattern.quote(":"), "-");
+		//old scenes on the site that do no contain the actor name in the title
+		if(title.equals("1pondo.tv -"))
+			title = title + " " + id;
+		else
+			title = title + " - " + id;
+		return new Title(title);
+	}
+
+	@Override
+	public OriginalTitle scrapeOriginalTitle() {
+		//the original title is the japanese title
+		if(!scrapeInEnglish)
+			return new OriginalTitle(scrapeTitle().getTitle());
+		else
+		{
+			Document originalDocument = document;
+			try {
+				document = Jsoup.connect(japanesePage).get();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			OriginalTitle originalTitle = new OriginalTitle(scrapeTitle().getTitle());
+			document = originalDocument;
+			return originalTitle;
+		}
+	}
+
+	@Override
+	public SortTitle scrapeSortTitle() {
+		// This site has no sort title information
+		return new SortTitle("");
+	}
+
+	@Override
+	public Set scrapeSet() {
+		// This site has no set information
+		return new Set("");
+	}
+
+	@Override
+	public Rating scrapeRating() {
+		// This site has no rating information
+		return new Rating(0,"0");
+	}
+
+	@Override
+	public Year scrapeYear() {
+		//Get year from last 2 digits before the underscore in the ID of the movie
+		//Add "20" to these digits, so "14" becomes 2014, for example
+		//(this is ok because there are no scenes on 1pondo from 1999 or earlier)
+		ID movieID = scrapeID();
+		if(movieID != null)
+		{
+			return new Year("20" + movieID.getId().substring(4,6));
+		}
+		return null;
+	}
+
+	@Override
+	public Top250 scrapeTop250() {
+		//This site has no top250 information
+		return new Top250("");
+	}
+
+	@Override
+	public Votes scrapeVotes() {
+		//This site has no vote information
+		return new Votes("");
+	}
+
+	@Override
+	public Outline scrapeOutline() {
+		//This site has no outline for movies
+		return new Outline("");
+	}
+
+	@Override
+	public Plot scrapePlot() {
+		//This site has no plot for movies
+		return new Plot("");
+	}
+
+	@Override
+	public Tagline scrapeTagline() {
+		// TODO Auto-generated method stub
+		return new Tagline("");
+	}
+
+	@Override
+	public Runtime scrapeRuntime() {
+		// TODO Auto-generated method stub
+		return new Runtime("");
+	}
+
+	@Override
+	public Thumb[] scrapePosters() {
+		try {
+			ArrayList<Thumb> thumbList = new ArrayList<Thumb>();
+			String bannerURL = "http://www.1pondo.tv/moviepages/" + scrapeID().getId() + "/images/str.jpg";
+			String backgroundURLTwo = "http://www.1pondo.tv/moviepages/" + scrapeID().getId() + "/images/2.jpg";
+			String popupOneURL = "http://www.1pondo.tv/moviepages/" + scrapeID().getId() + "/images/popu/1.jpg";
+			String popupTwoURL = "http://www.1pondo.tv/moviepages/" + scrapeID().getId() + "/images/popu/2.jpg";
+			String popupThreeURL = "http://www.1pondo.tv/moviepages/" + scrapeID().getId() + "/images/popu/3.jpg";
+			String popupFourURL = "http://www.1pondo.tv/moviepages/" + scrapeID().getId() + "/images/popu.jpg";
+			if(SiteParsingProfile.fileExistsAtURL(popupOneURL))
+				thumbList.add(new Thumb(popupOneURL));
+			if(SiteParsingProfile.fileExistsAtURL(popupTwoURL))
+				thumbList.add(new Thumb(popupTwoURL));
+			if(SiteParsingProfile.fileExistsAtURL(popupThreeURL))
+				thumbList.add(new Thumb(popupThreeURL));
+			if(SiteParsingProfile.fileExistsAtURL(bannerURL))
+				thumbList.add(new Thumb(bannerURL));
+			if(SiteParsingProfile.fileExistsAtURL(backgroundURLTwo))
+				thumbList.add(new Thumb(backgroundURLTwo));
+			if(SiteParsingProfile.fileExistsAtURL(popupFourURL))
+				thumbList.add(new Thumb(popupFourURL));
+			return thumbList.toArray(new Thumb[thumbList.size()]);
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return new Thumb[0];
+	}
+
+	@Override
+	public Thumb[] scrapeFanart() {
+		try {
+			ArrayList<Thumb> thumbList = new ArrayList<Thumb>();
+			String bannerURL = "http://www.1pondo.tv/moviepages/" + scrapeID().getId() + "/images/str.jpg";
+			String backgroundURLOne = "http://www.1pondo.tv/moviepages/" + scrapeID().getId() + "/images/1.jpg";
+			String backgroundURLTwo = "http://www.1pondo.tv/moviepages/" + scrapeID().getId() + "/images/2.jpg";
+			String popupOneURL = "http://www.1pondo.tv/moviepages/" + scrapeID().getId() + "/images/popu/1.jpg";
+			String popupTwoURL = "http://www.1pondo.tv/moviepages/" + scrapeID().getId() + "/images/popu/2.jpg";
+			String popupThreeURL = "http://www.1pondo.tv/moviepages/" + scrapeID().getId() + "/images/popu/3.jpg";
+			String popupFourURL = "http://www.1pondo.tv/moviepages/" + scrapeID().getId() + "/images/popu.jpg";
+			if(SiteParsingProfile.fileExistsAtURL(bannerURL))
+				thumbList.add(new Thumb(bannerURL));
+			if(SiteParsingProfile.fileExistsAtURL(popupOneURL))
+				thumbList.add(new Thumb(popupOneURL));
+			if(SiteParsingProfile.fileExistsAtURL(popupTwoURL))
+				thumbList.add(new Thumb(popupTwoURL));
+			if(SiteParsingProfile.fileExistsAtURL(popupThreeURL))
+				thumbList.add(new Thumb(popupThreeURL));
+			//combine the two background images together to make the fanart if we are on a page that has split things into two images
+			if(SiteParsingProfile.fileExistsAtURL(backgroundURLOne) && SiteParsingProfile.fileExistsAtURL(backgroundURLTwo))
+			{
+				try {
+					BufferedImage img1 = ImageIO.read(new URL(backgroundURLOne));
+					BufferedImage img2 = ImageIO.read(new URL(backgroundURLTwo));
+					BufferedImage joinedImage = joinBufferedImage(img1, img2);
+					Thumb joinedImageThumb = new Thumb(backgroundURLTwo);
+					joinedImageThumb.setImage(joinedImage);
+					//we did an operation to join the images, so we'll need to re-encode the jpgs. set the modified flag to true
+					//so we know to do this
+					joinedImageThumb.setIsModified(true);
+					thumbList.add(joinedImageThumb);
+				} catch (IOException e) {
+					thumbList.add(new Thumb(backgroundURLTwo));
+				}
+
+
+			}
+			else if(SiteParsingProfile.fileExistsAtURL(backgroundURLTwo))
+				thumbList.add(new Thumb(backgroundURLTwo));
+			if(SiteParsingProfile.fileExistsAtURL(popupFourURL))
+				thumbList.add(new Thumb(popupFourURL));
+			return thumbList.toArray(new Thumb[thumbList.size()]);
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return new Thumb[0];
+	}
+
+	  private static BufferedImage joinBufferedImage(BufferedImage img1,BufferedImage img2) {
+
+	        //do some calculate first
+	        int offset  = 0;
+	        int wid = img1.getWidth()+img2.getWidth()+offset;
+	        int height = Math.max(img1.getHeight(),img2.getHeight())+offset;
+	        //create a new buffer and draw two image into the new image
+	        BufferedImage newImage = new BufferedImage(wid,height, BufferedImage.TYPE_INT_ARGB);
+	        Graphics2D g2 = newImage.createGraphics();
+	        Color oldColor = g2.getColor();
+	        //fill background
+	        g2.setPaint(Color.WHITE);
+	        g2.fillRect(0, 0, wid, height);
+	        //draw image
+	        g2.setColor(oldColor);
+	        g2.drawImage(img1, null, 0, 0);
+	        g2.drawImage(img2, null, img1.getWidth()+offset, 0);
+	        g2.dispose();
+	        return newImage;
+	    }
+
+	@Override
+	public Thumb[] scrapeExtraFanart() {
+		return scrapeFanart();
+	}
+
+	@Override
+	public MPAARating scrapeMPAA() {
+		return new MPAARating("XXX");
+	}
+
+	@Override
+	public ID scrapeID() {
+		//Just get the ID from the page URL by doing some string manipulation
+		String baseUri = document.baseUri();
+		if(baseUri.length() > 0 && baseUri.contains("1pondo.tv"))
+		{
+			baseUri = baseUri.replaceFirst("/index.html", "");
+			baseUri = baseUri.replaceFirst("/index.htm", "");
+			String idFromBaseUri = baseUri.substring(baseUri.lastIndexOf('/')+1);
+			return new ID(idFromBaseUri);
+		}
+		return null;
+	}
+
+	@Override
+	public ArrayList<Genre> scrapeGenres() {
+		//For now, I wasn't able to find any genres on the page
+		ArrayList<Genre> genreList = new ArrayList<Genre>();
+		return genreList;
+	}
+
+	@Override
+	public ArrayList<Actor> scrapeActors() {
+		ArrayList<Actor> actorList = new ArrayList<Actor>(1);
+		Element profileArea = document.select("div#profile-area").first();
+		if(profileArea != null)
+		{
+		String actressThumbURL = profileArea.select("img").attr("src");
+		String actressName = profileArea.select(".bgoose h2").text();
+			try {
+				actorList.add(new Actor(actressName, "", new Thumb(actressThumbURL)));
+			} catch (MalformedURLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				actorList.add(new Actor(actressName, "", null));
+			}
+		}
+		return actorList;
+	}
+
+	@Override
+	public ArrayList<Director> scrapeDirectors() {
+		//No Directors listed for this site, return an empty list
+		ArrayList<Director> directorList = new ArrayList<Director>();
+		return directorList;
+	}
+
+	@Override
+	public Studio scrapeStudio() {
+		return new Studio("1pondo");
+	}
+	
+	@Override
+	public Trailer scrapeTrailer() {
+		ID movieID = scrapeID();
+		String potentialTrailerURL = "http://smovie.1pondo.tv/moviepages/" + movieID.getId() + "/sample/sample.avi";
+		if(SiteParsingProfile.fileExistsAtURL(potentialTrailerURL))
+			return new Trailer(potentialTrailerURL);
+		else return new Trailer("");
+	}
+
+	@Override
+	public String createSearchString(File file) {
+		String fileID = findIDTagFromFile(file).toLowerCase();
+
+		if (fileID != null) {
+			englishPage = "http://en.1pondo.tv/eng/moviepages/" + fileID + "/index.htm";
+			japanesePage = "http://www.1pondo.tv/moviepages/" + fileID + "/index.html";
+			if(scrapeInEnglish)
+			{
+				return englishPage;
+			}
+			else
+			{
+				return japanesePage;
+			}
+		}
+
+		return null;
+	}
+
+	@Override
+	public SearchResult[] getSearchResults(String searchString)
+			throws IOException {
+		SearchResult searchResult = new SearchResult(searchString);
+		SearchResult[] searchResultArray = {searchResult};
+		return searchResultArray;
+	}
+	
+	public static String findIDTagFromFile(File file) {
+		return findIDTag(FilenameUtils.getName(file.getName()));
+	}
+	
+	public static String findIDTag(String fileName) {
+		Pattern pattern = Pattern.compile("[0-9]{6}_[0-9]{3}");
+		Matcher matcher = pattern.matcher(fileName);
+		if (matcher.find()) {
+			String searchString = matcher.group();
+			return searchString;
+		}
+		return null;
+	}
+
+}

@@ -1,5 +1,6 @@
 package moviescraper.doctord;
 
+import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.FilenameFilter;
@@ -399,7 +400,15 @@ public class Movie {
 			else
 				fanartToSaveToDisk = fanart[0];
 			System.out.println("saving out first fanart to " + fanartFile);
-			FileUtils.copyURLToFile(fanartToSaveToDisk.getThumbURL(), fanartFile, connectionTimeout, readTimeout);
+			
+			//can save ourself redownloading the image if it's already in memory, but we dont want to reencode the image, so only do this if it's modified
+			if(fanartToSaveToDisk.getImageIconThumbImage() != null && fanartToSaveToDisk.isModified())
+			{
+				//I'm writing this as a png instead of jpg for a bugfix workaround where colors were getting messed up
+				ImageIO.write(fanartToSaveToDisk.toBufferedImage(), "png", fanartFile);
+			}
+			//download the url and save it out to disk
+			else FileUtils.copyURLToFile(fanartToSaveToDisk.getThumbURL(), fanartFile, connectionTimeout, readTimeout);
 			}
 		}
 	}

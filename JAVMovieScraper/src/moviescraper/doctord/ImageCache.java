@@ -41,6 +41,7 @@ public class ImageCache {
 			}
 			catch(IIOException e)
 			{
+				e.printStackTrace();
 				Image blankImage = createBlankImage();
 				cache.put(url, blankImage);
 				return blankImage;

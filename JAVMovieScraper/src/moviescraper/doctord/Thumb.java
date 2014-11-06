@@ -1,6 +1,7 @@
 package moviescraper.doctord;
 
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -387,4 +388,27 @@ public class Thumb {
 		return true;
 	}
 
+	public void setIsModified(boolean value)
+	{
+		this.isImageModified = value;
+	}
+	
+	public BufferedImage toBufferedImage()
+	{
+	    if (thumbImage instanceof BufferedImage)
+	    {
+	        return (BufferedImage) thumbImage;
+	    }
+
+	    // Create a buffered image
+	    BufferedImage bimage = new BufferedImage(thumbImage.getWidth(null), thumbImage.getHeight(null), BufferedImage.TYPE_INT_RGB);
+
+	    // Draw the image on to the buffered image
+	    Graphics2D bGr = bimage.createGraphics();
+	    bGr.drawImage(thumbImage, 0, 0, null);
+	    bGr.dispose();
+
+	    // Return the buffered image
+	    return bimage;
+	}
 }

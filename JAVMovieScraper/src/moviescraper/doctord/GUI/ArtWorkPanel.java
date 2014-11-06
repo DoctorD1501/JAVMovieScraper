@@ -136,8 +136,6 @@ public class ArtWorkPanel extends JPanel {
 	}
 
 	public void updateView(boolean forceUpdatePoster, GUIMain gui) {
-		System.out.println("Updating artwork view");
-		
 		boolean posterFileUpdateOccured = false;
 		boolean fanartFileUpdateOccured = false;
 		if(!forceUpdatePoster)

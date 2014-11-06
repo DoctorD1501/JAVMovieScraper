@@ -353,7 +353,6 @@ public class FileDetailPanel extends JPanel {
 
 	//Updates the view for the current movie
 	public void updateView(boolean forcePosterUpdate) {
-		System.out.println("Calling fileDetailPanel.updateView()");
 		
 		List<Movie> movieToWriteToDiskList = gui.getMovieToWriteToDiskList();
 		
