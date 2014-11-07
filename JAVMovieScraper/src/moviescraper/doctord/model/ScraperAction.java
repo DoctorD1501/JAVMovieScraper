@@ -47,7 +47,17 @@ public class ScraperAction {
 					site += spp.getClass().getSimpleName();
 				
 				SelectionDialog selectionDialog = new SelectionDialog(results, site);
-				SearchResult searchResult = getSearchResult(selectionDialog, site);
+				SearchResult searchResult = null;
+				//If there's only one item to choose from, save the user some work and just automatically choose it
+				if(results != null && results.length == 1)
+				{
+					searchResult = results[0];
+				}
+				//otherwise, the user gets a dialog box where they can pick from the various search results
+				else
+				{
+					searchResult = getSearchResult(selectionDialog, site);
+				}
 
 				if ( searchResult != null ) {
 					Document document = downloadDocument(searchResult.getUrlPath());
