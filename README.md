@@ -1,7 +1,7 @@
 JAVMovieScraper
 ===============
 
-JAVMovieScraper is a Java Swing program to scrape English [XBMC](http://xbmc.org/) metadata for Japanese Adult Videos (JAV) found on JavLibrary.com, DMM.co.jp, and Caribbeancompr.com (Carribeancom Premium), AV Entertainment, Kin8Tengoku, Tokyo Hot, 1pondo, and American adult DVDs and web content found on Data18.com.
+JAVMovieScraper is a Java Swing program to scrape English [XBMC](http://xbmc.org/) metadata for Japanese Adult Videos (JAV) found on JavLibrary.com, DMM.co.jp, and Caribbeancompr.com (Carribeancom Premium), AV Entertainment, Kin8Tengoku, Tokyo Hot, 1pondo, HEYZO, and American adult DVDs and web content found on Data18.com.
 
 As no one site has a complete set of English metadata, the program amalgamates metadeta info from a variety of sources, including dmm.co.jp, javlibrary.com, squareplus.co.jp, and actionjav.com.
 The data is then fed through a machine translation (if original data is in Japanese) and then quality checked to sanitize it and poster elements are cropped so only the cover is shown.
@@ -32,6 +32,7 @@ When using the site specific scraper feature, your file name must contain an ID 
 * Tokyohot: The ID follows the format of n123 or n1234. In other words, a lowercase n followed by a 3 or 4 digit number. 
 * 1pondo: The ID is in the URL of the movie, right before /index.html. The first part of the ID is a 6 digit number corresponding to the release date, followed by an underscore, followed by a 3 digit number. Example: 061314_826
 * Caribbeancom Premium: The ID is in the URL of the movie, right before /index.html. The first part of the ID is a 6 digit number corresponding to the release date, followed by an underscore, followed by a 3 digit number. Example: 061314_826
+* Heyzo: The ID is a 4 digit number in the url right after /moviepages/. Example: 0123
 
 ###### What If I Use Plex?
 XBMC Metadata is compatible with [Plex](https://plex.tv/) using the [XBMCnfoMovieImporter](https://forums.plex.tv/index.php/topic/38402-metadata-agents-for-exported-xbmc-library/) from the [Unsupported Appstore Channel](https://forums.plex.tv/index.php/topic/25523-unsupported-as-in-totally-unofficial-appstore/).
