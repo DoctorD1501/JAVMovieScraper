@@ -6,6 +6,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
+
 import javax.swing.JDialog;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -13,6 +14,7 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
 import moviescraper.doctord.SearchResult;
+import moviescraper.doctord.GUI.renderer.SearchResultsRenderer;
 
 /**
  * Generating a dialog for selecting a specific element.

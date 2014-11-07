@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 import moviescraper.doctord.Thumb;
 import moviescraper.doctord.SiteParsingProfile.specific.HeyzoParsingProfile;
+import moviescraper.doctord.controller.SpecificScraperAction;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Genre;
 import moviescraper.doctord.dataitem.OriginalTitle;
@@ -16,7 +17,6 @@ import moviescraper.doctord.dataitem.Runtime;
 import moviescraper.doctord.dataitem.Title;
 import moviescraper.doctord.dataitem.Trailer;
 import moviescraper.doctord.dataitem.Year;
-import moviescraper.doctord.model.ScraperAction;
 
 import org.jsoup.nodes.Document;
 import org.junit.BeforeClass;
@@ -31,7 +31,7 @@ public class TestHeyzoParsingProfile {
 	public static void initialize() {
 		profile = new HeyzoParsingProfile( );
 		String url = profile.createSearchString(file);
-		Document document = ScraperAction.downloadDocument(url);
+		Document document = SpecificScraperAction.downloadDocument(url);
 		profile.setDocument(document);
 	}
 	

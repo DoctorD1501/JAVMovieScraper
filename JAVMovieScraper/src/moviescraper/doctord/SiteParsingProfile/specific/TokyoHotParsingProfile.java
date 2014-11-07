@@ -17,6 +17,7 @@ import org.jsoup.select.Elements;
 import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.Thumb;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
+import moviescraper.doctord.controller.SpecificScraperAction;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Director;
 import moviescraper.doctord.dataitem.Genre;
@@ -35,7 +36,6 @@ import moviescraper.doctord.dataitem.Title;
 import moviescraper.doctord.dataitem.Top250;
 import moviescraper.doctord.dataitem.Votes;
 import moviescraper.doctord.dataitem.Year;
-import moviescraper.doctord.model.ScraperAction;
 
 public class TokyoHotParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
@@ -53,7 +53,7 @@ public class TokyoHotParsingProfile extends SiteParsingProfile implements Specif
 	public void setDocument(Document document) {
 		super.setDocument(document);
 		docSite = document;
-		docImage = ScraperAction.downloadDocument(imageLink);
+		docImage = SpecificScraperAction.downloadDocument(imageLink);
 	}
 	
 	@Override

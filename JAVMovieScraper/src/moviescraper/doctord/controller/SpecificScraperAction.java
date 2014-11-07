@@ -1,4 +1,4 @@
-package moviescraper.doctord.model;
+package moviescraper.doctord.controller;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,21 +15,22 @@ import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.GUI.SelectionDialog;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.specific.SpecificProfile;
+import moviescraper.doctord.model.AbstractMovieScraper;
 
-public class ScraperAction {
+public class SpecificScraperAction {
 
 	private Collection<SiteParsingProfile> sppList;
 	private AbstractMovieScraper movieScraper;
 	private File toScrape;
 
-	public ScraperAction( SiteParsingProfile spp, AbstractMovieScraper movieScraper, File toScrape ) {
+	public SpecificScraperAction( SiteParsingProfile spp, AbstractMovieScraper movieScraper, File toScrape ) {
 		sppList = new ArrayList<>();
 		sppList.add(spp);
 		this.movieScraper = movieScraper;
 		this.toScrape = toScrape;
 	}
 	
-	public ScraperAction( Collection<SiteParsingProfile> spps, AbstractMovieScraper movieScraper, File toScrape ) {
+	public SpecificScraperAction( Collection<SiteParsingProfile> spps, AbstractMovieScraper movieScraper, File toScrape ) {
 		this.sppList = spps;
 		this.movieScraper = movieScraper;
 		this.toScrape = toScrape;

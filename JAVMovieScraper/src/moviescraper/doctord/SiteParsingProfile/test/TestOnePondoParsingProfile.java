@@ -5,9 +5,9 @@ import static org.junit.Assert.*;
 import java.io.File;
 
 import moviescraper.doctord.SiteParsingProfile.specific.OnePondoParsingProfile;
+import moviescraper.doctord.controller.SpecificScraperAction;
 import moviescraper.doctord.dataitem.ID;
 import moviescraper.doctord.dataitem.Year;
-import moviescraper.doctord.model.ScraperAction;
 
 import org.jsoup.nodes.Document;
 import org.junit.BeforeClass;
@@ -26,7 +26,7 @@ public class TestOnePondoParsingProfile {
 		profile = new OnePondoParsingProfile(scrapeInEnglish);
 		String searchString = profile.createSearchString(file);
 		System.out.println(searchString);
-		Document document = ScraperAction.downloadDocument(searchString);
+		Document document = SpecificScraperAction.downloadDocument(searchString);
 		profile.setDocument(document);
 	}
 

@@ -8,11 +8,11 @@ import java.util.ArrayList;
 
 import moviescraper.doctord.Thumb;
 import moviescraper.doctord.SiteParsingProfile.specific.Kin8tengokuParsingProfile;
+import moviescraper.doctord.controller.SpecificScraperAction;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Genre;
 import moviescraper.doctord.dataitem.Runtime;
 import moviescraper.doctord.dataitem.Year;
-import moviescraper.doctord.model.ScraperAction;
 
 import org.jsoup.nodes.Document;
 import org.junit.BeforeClass;
@@ -27,7 +27,7 @@ public class TestKin8tengokuParsingProfile {
 	public static void initialize() {
 		profile = new Kin8tengokuParsingProfile( );
 		String url = profile.createSearchString(file);
-		Document document = ScraperAction.downloadDocument(url);
+		Document document = SpecificScraperAction.downloadDocument(url);
 		profile.setDocument(document);
 	}
 	

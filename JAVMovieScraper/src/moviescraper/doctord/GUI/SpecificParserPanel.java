@@ -26,7 +26,7 @@ import moviescraper.doctord.Movie;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.specific.AvEntertainmentParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.specific.SpecificProfile;
-import moviescraper.doctord.model.ScraperAction;
+import moviescraper.doctord.controller.SpecificScraperAction;
 
 public class SpecificParserPanel extends JPanel {
 
@@ -76,7 +76,7 @@ public class SpecificParserPanel extends JPanel {
 		if (toScrape != null) {
 			for(File currentFile : toScrape)
 			{
-			ScraperAction action = new ScraperAction(spp, spp.getMovieScraper(), currentFile );
+			SpecificScraperAction action = new SpecificScraperAction(spp, spp.getMovieScraper(), currentFile );
 			Movie scrapedMovie = action.scrape();
 			if(scrapedMovie != null)
 				main.movieToWriteToDiskList.add(scrapedMovie);

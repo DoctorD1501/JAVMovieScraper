@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.Thumb;
 import moviescraper.doctord.SiteParsingProfile.specific.AvEntertainmentParsingProfile;
+import moviescraper.doctord.controller.SpecificScraperAction;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Genre;
 import moviescraper.doctord.dataitem.Plot;
@@ -17,7 +18,6 @@ import moviescraper.doctord.dataitem.Set;
 import moviescraper.doctord.dataitem.Studio;
 import moviescraper.doctord.dataitem.Title;
 import moviescraper.doctord.dataitem.Year;
-import moviescraper.doctord.model.ScraperAction;
 
 import org.jsoup.nodes.Document;
 import org.junit.BeforeClass;
@@ -31,7 +31,7 @@ public class TestAvEntertainmentParsingProfile {
 	@BeforeClass
 	public static void initialize() {
 		String url = "http://www.aventertainments.com/product_lists.aspx?product_id=81366&languageID=1&dept_id=29";
-		Document document = ScraperAction.downloadDocument(url);
+		Document document = SpecificScraperAction.downloadDocument(url);
 		profile = new AvEntertainmentParsingProfile();
 		profile.setDocument(document);
 	}

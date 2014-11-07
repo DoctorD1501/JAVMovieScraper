@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import moviescraper.doctord.Thumb;
 import moviescraper.doctord.SiteParsingProfile.IAFDParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
+import moviescraper.doctord.controller.SpecificScraperAction;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Director;
 import moviescraper.doctord.dataitem.Genre;
@@ -27,7 +28,6 @@ import moviescraper.doctord.dataitem.Top250;
 import moviescraper.doctord.dataitem.Trailer;
 import moviescraper.doctord.dataitem.Votes;
 import moviescraper.doctord.dataitem.Year;
-import moviescraper.doctord.model.ScraperAction;
 
 import org.jsoup.nodes.Document;
 import org.junit.BeforeClass;
@@ -42,7 +42,7 @@ public class TestGenericProfile {
 	public static void initialize() throws Exception {
 		profile = new IAFDParsingProfile();
 		String searchString = profile.createSearchString(file);
-		Document document = ScraperAction.downloadDocument(searchString);
+		Document document = SpecificScraperAction.downloadDocument(searchString);
 		profile.setDocument(document);
 	}
 

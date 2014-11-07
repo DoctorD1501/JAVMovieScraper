@@ -1,4 +1,4 @@
-package moviescraper.doctord.GUI;
+package moviescraper.doctord.GUI.renderer;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -11,7 +11,7 @@ import moviescraper.doctord.SearchResult;
 
 
 
-class SearchResultsRenderer extends JLabel implements ListCellRenderer<SearchResult> {
+public class SearchResultsRenderer extends JLabel implements ListCellRenderer<SearchResult> {
 	/**
 	 * 
 	 */

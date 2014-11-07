@@ -22,7 +22,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-import moviescraper.doctord.GUI.GUIMain.ScrapeMovieAction;
 import moviescraper.doctord.SiteParsingProfile.ActionJavParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.Data18MovieParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.Data18WebContentParsingProfile;
@@ -30,6 +29,7 @@ import moviescraper.doctord.SiteParsingProfile.DmmParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.IAFDParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.JavLibraryParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
+import moviescraper.doctord.controller.ScrapeMovieAction;
 import moviescraper.doctord.dataitem.*;
 import moviescraper.doctord.dataitem.Runtime;
 import moviescraper.doctord.preferences.MoviescraperPreferences;
