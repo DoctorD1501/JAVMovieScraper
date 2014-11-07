@@ -25,19 +25,21 @@ public class ImageCache {
 		else
 		{
 			try{
-				Image imageFromUrl = ImageIO.read(url);
-				if(imageFromUrl != null)
+				if(url != null)
 				{
-				cache.put(url, imageFromUrl);
-				return imageFromUrl;
+					Image imageFromUrl = ImageIO.read(url);
+					if(imageFromUrl != null)
+					{
+					cache.put(url, imageFromUrl);
+					return imageFromUrl;
+					}
 				}
-				else
-				{
+
 					//we couldn't read in the image from the URL so just return a blank image
+					
 					Image blankImage = createBlankImage();
 					cache.put(url, blankImage);
 					return blankImage;
-				}
 			}
 			catch(IIOException e)
 			{
@@ -46,7 +48,6 @@ public class ImageCache {
 				cache.put(url, blankImage);
 				return blankImage;
 			}
-
 		}
 	}
 	

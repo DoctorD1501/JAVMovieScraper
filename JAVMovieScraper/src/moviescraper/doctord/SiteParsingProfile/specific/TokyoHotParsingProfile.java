@@ -283,6 +283,7 @@ public class TokyoHotParsingProfile extends SiteParsingProfile implements Specif
 	}
 	
 	private String getSiteLink(String searchString) {
+		this.searchString = searchString;
 		return "http://cdn.www.tokyo-hot.com/e/" + searchString + "_e.html";
 	}
 

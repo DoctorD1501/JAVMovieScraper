@@ -1,5 +1,6 @@
 package moviescraper.doctord;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -40,6 +41,10 @@ public class Thumb {
 	}
 
 	public ImageIcon getImageIconThumbImage() {
+		if(thumbURL == null && imageIconThumbImage != null)
+		{
+			return imageIconThumbImage;
+		}
 		try {
 			getThumbImage();
 		} catch (IOException e) {
@@ -50,6 +55,8 @@ public class Thumb {
 	}
 	
 	public ImageIcon getPreviewImageIconThumbImage(){
+		if(previewURL == null && previewIconThumbImage != null)
+			return previewIconThumbImage;
 		try{
 			getPreviewImage();
 		}
@@ -200,20 +207,37 @@ public class Thumb {
 		needToReloadThumbImage = false;
 	}
 	
+	/**
+	 * Thumb constructor which joins the leftImage to the rightImage in one new thumb
+	 */
 	public Thumb (String leftImage, String rightImage) throws IOException {
-		BufferedImage left = (BufferedImage)ImageCache.getImageFromCache( new URL(leftImage) );
-		BufferedImage right = (BufferedImage)ImageCache.getImageFromCache( new URL(rightImage) );
-		
-		int newWidth = left.getWidth() + right.getWidth();
-		int newHeigth = left.getHeight();
-		
-		BufferedImage image = new BufferedImage(newWidth, newHeigth, BufferedImage.TYPE_3BYTE_BGR);
-		Graphics graphics = image.getGraphics();
-		graphics.drawImage(left, 0, 0, null);
-		graphics.drawImage(right, left.getWidth(), 0, right.getWidth(), right.getHeight(), null);
-		
-		graphics.dispose();
-		thumbImage = image;
+		setThumbURL(new URL(leftImage));
+		BufferedImage leftBufferedImage = (BufferedImage)ImageCache.getImageFromCache( new URL(leftImage) );
+		BufferedImage rightBufferedImage = (BufferedImage)ImageCache.getImageFromCache( new URL(rightImage) );
+		BufferedImage joinedImage = joinBufferedImage(leftBufferedImage, rightBufferedImage);
+		setImage(joinedImage);
+		this.isImageModified = true;
+	}
+	
+	private static BufferedImage joinBufferedImage(BufferedImage img1,
+			BufferedImage img2) {
+
+		int wid = img1.getWidth() + img2.getWidth();
+		int height = Math.max(img1.getHeight(), img2.getHeight());
+		// create a new buffer and draw two image into the new image
+		BufferedImage newImage = new BufferedImage(wid, height,
+				BufferedImage.TYPE_3BYTE_BGR);
+		Graphics2D g2 = newImage.createGraphics();
+		Color oldColor = g2.getColor();
+		// fill background
+		g2.setPaint(Color.WHITE);
+		g2.fillRect(0, 0, wid, height);
+		// draw image
+		g2.setColor(oldColor);
+		g2.drawImage(img1, null, 0, 0);
+		g2.drawImage(img2, null, img1.getWidth(), 0);
+		g2.dispose();
+		return newImage;
 	}
 
 	public Thumb (String url) throws MalformedURLException 
