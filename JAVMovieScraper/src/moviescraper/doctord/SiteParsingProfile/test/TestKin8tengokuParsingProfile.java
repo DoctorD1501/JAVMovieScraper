@@ -67,10 +67,10 @@ public class TestKin8tengokuParsingProfile {
 		ArrayList<Genre> genres = profile.scrapeGenres();
 		assertTrue("There should be 9 genres.", genres.size() == 9);
 		
-		assertEquals("First Genre not found", "Low Speck", genres.get(0).getGenre());
-		assertEquals("Second Genre not found", "Shaved", genres.get(1).getGenre());
-		assertEquals("Third Genre not found", "Thong", genres.get(2).getGenre());
-		assertEquals("Fourth Genre not found", "Japanese Men VS", genres.get(3).getGenre());
+		assertEquals("First Genre not found", "Low Speck", genres.get(1).getGenre());
+		assertEquals("Second Genre not found", "Shaved", genres.get(2).getGenre());
+		assertEquals("Third Genre not found", "Thong", genres.get(3).getGenre());
+		assertEquals("Fourth Genre not found", "Japanese Men VS", genres.get(4).getGenre());
 		//there are some more genres
 	}
 	
