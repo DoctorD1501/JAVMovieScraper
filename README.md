@@ -29,7 +29,7 @@ In the future I intend to add command line options.
 When using the site specific scraper feature, your file name must contain an ID number which conforms to the release ID conventions set by that site. 
 * Aventertainments: This follows the usual JAV id naming structure like ABC-123. It does a search on the site using this ID.
 * Kin8tengoku: The ID is in the URL. It is the numeric part before /pht/ and is usually 4 numeric digits. Example: 1147.
-* Tokyohot: The ID follows the format of n123 or n1234. In other words, a lowercase n followed by a 3 or 4 digit number. 
+* Tokyohot: The ID follows the format of n123 or n1234 k123/k1234. In other words, a lowercase n or k followed by a 3 or 4 digit number. 
 * 1pondo: The ID is in the URL of the movie, right before /index.html. The first part of the ID is a 6 digit number corresponding to the release date, followed by an underscore, followed by a 3 digit number. Example: 061314_826
 * Caribbeancom Premium: The ID is in the URL of the movie, right before /index.html. The first part of the ID is a 6 digit number corresponding to the release date, followed by an underscore, followed by a 3 digit number. Example: 061314_826
 * Heyzo: The ID is a 4 digit number in the url right after /moviepages/. Example: 0123

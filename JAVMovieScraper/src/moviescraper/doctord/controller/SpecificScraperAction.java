@@ -89,4 +89,13 @@ public class SpecificScraperAction {
 		return null;
 	}
 	
+	public static Document downloadDocument(SearchResult searchResult){
+		try {
+			return Jsoup.connect(searchResult.getUrlPath()).userAgent("Mozilla").ignoreHttpErrors(true).timeout(0).get();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 }
