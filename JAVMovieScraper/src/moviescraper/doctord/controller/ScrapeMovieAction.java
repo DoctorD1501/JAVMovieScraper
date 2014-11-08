@@ -520,13 +520,13 @@ public class ScrapeMovieAction extends AbstractAction {
 					System.out.println("Data18 Scrape results: "
 							+ ScrapeMovieAction.this.guiMain.getCurrentlySelectedMovieData18Movie());
 
-					if ( ScrapeMovieAction.this.guiMain.getPreferences().getUseIAFDForActors() ) {
+					if ( ScrapeMovieAction.this.guiMain.getPreferences().getUseIAFDForActors() && ScrapeMovieAction.this.guiMain.getCurrentlySelectedMovieData18Movie() != null) {
 						Movie scrapeMovieIAFD = Movie.scrapeMovie(
 								ScrapeMovieAction.this.guiMain.getCurrentlySelectedMovieFileList().get(currentMovieNumberInList),
 								new IAFDParsingProfile(), overrideURLIAFD, promptUserForURLWhenScraping, thisScrapeAction);
 						System.out.println("IAFD Scrape results: "
 								+ scrapeMovieIAFD);
-
+						
 						ScrapeMovieAction.this.guiMain.getCurrentlySelectedMovieData18Movie().setActors( scrapeMovieIAFD.getActors() );
 					}
 				} catch (IOException e1) {
@@ -539,8 +539,8 @@ public class ScrapeMovieAction extends AbstractAction {
 
 		scrapeQueryData18MovieThread.start();
 		scrapeQueryData18MovieThread.join();
-
-		this.guiMain.movieToWriteToDiskList.add(this.guiMain.getCurrentlySelectedMovieData18Movie());
+		if(this.guiMain.getCurrentlySelectedMovieData18Movie() != null)
+			this.guiMain.movieToWriteToDiskList.add(this.guiMain.getCurrentlySelectedMovieData18Movie());
 
 		return this.guiMain.getCurrentlySelectedMovieData18Movie();
 	}
