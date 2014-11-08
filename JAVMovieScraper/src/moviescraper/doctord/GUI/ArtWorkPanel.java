@@ -241,7 +241,7 @@ public class ArtWorkPanel extends JPanel {
 			}
 		}
 		// otherwise read it from the URL specified by the object since we couldn't find any local file
-		if (gui.movieToWriteToDiskList.size() > 0 && gui.movieToWriteToDiskList.get(0).hasPoster() && !posterFileUpdateOccured) {
+		if (gui.movieToWriteToDiskList.size() > 0 && gui.movieToWriteToDiskList.get(0) != null && gui.movieToWriteToDiskList.get(0).hasPoster() && !posterFileUpdateOccured) {
 			try {
 				Image posterImage = gui.movieToWriteToDiskList.get(0).getPosters()[0]
 						.getThumbImage();
@@ -258,7 +258,7 @@ public class ArtWorkPanel extends JPanel {
 		}
 
 		//try to read the fanart from the url since we couldn't find any local file
-		if (gui.movieToWriteToDiskList.size() > 0 && gui.movieToWriteToDiskList.get(0).hasFanart() && !fanartFileUpdateOccured) {
+		if (gui.movieToWriteToDiskList.size() > 0 && gui.movieToWriteToDiskList.get(0) != null && gui.movieToWriteToDiskList.get(0).hasFanart() && !fanartFileUpdateOccured) {
 			System.out.println("Reading in the fanart from the url");
 			try {
 				Image fanartImage = gui.movieToWriteToDiskList.get(0).getFanart()[0]
