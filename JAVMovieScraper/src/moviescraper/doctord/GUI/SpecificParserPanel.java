@@ -8,6 +8,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
@@ -32,7 +34,7 @@ public class SpecificParserPanel extends JPanel {
 
 	private static final long serialVersionUID = 4639300587159880348L;
 	private JComboBox<ComboItem> comboBox;
-	private Vector<ComboItem> items = new Vector<>();
+	private Vector<ComboItem> items = new Vector<ComboItem>();
 	
 	private GUIMain main;
 
@@ -44,7 +46,7 @@ public class SpecificParserPanel extends JPanel {
 		label.setAlignmentX(CENTER_ALIGNMENT);
 		add(label);
 		
-		comboBox = new JComboBox<>(items);
+		comboBox = new JComboBox<ComboItem>(items);
 		add(comboBox);
 		
 		JButton btnScrape = new JButton("Scrape");
@@ -109,6 +111,16 @@ public class SpecificParserPanel extends JPanel {
 				e.printStackTrace();
 			}
 		}
+		
+		//Make sure the scrapers in the combo box are in alphabetic order
+		Collections.sort(items, new Comparator<ComboItem>() {
+
+			@Override
+			public int compare(ComboItem arg0, ComboItem arg1) {
+				return arg0.toString().compareTo(arg1.toString());
+			}
+		});;
+		
 		if (items.size() > 0)
 			comboBox.setSelectedIndex(0);
 	}
