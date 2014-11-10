@@ -50,7 +50,7 @@ public class TestTokyoHotParsingProfile {
 	@Test
 	public void testFindGoogleLink() {
 		String searchString = parser.createSearchString(file);		
-		assertEquals("Found no Link", searchString, "n0754_iori_tsukimoto_eq");
+		assertEquals("Found no Link", searchString, "http://cdn.www.tokyo-hot.com/e/n0754_iori_tsukimoto_eq_e.html");
 	}
 	
 	@Test
