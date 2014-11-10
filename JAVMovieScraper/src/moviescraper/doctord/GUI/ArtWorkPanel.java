@@ -138,7 +138,7 @@ public class ArtWorkPanel extends JPanel {
 	public void updateView(boolean forceUpdatePoster, GUIMain gui) {
 		boolean posterFileUpdateOccured = false;
 		boolean fanartFileUpdateOccured = false;
-		if(!forceUpdatePoster)
+		if(!forceUpdatePoster && gui.getCurrentlySelectedMovieFileList().size() > 0)
 		{
 			// try to get the poster from a local file, if it exists
 			//Maybe there is a file in the directory just called folder.jpg
