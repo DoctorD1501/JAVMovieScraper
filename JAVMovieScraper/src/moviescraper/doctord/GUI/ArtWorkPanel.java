@@ -163,7 +163,6 @@ public class ArtWorkPanel extends JPanel {
 			if(gui.getCurrentlySelectedPosterFileList().get(0).exists())
 			{
 				try {
-					//System.out.println("found the standard fanart");
 					BufferedImage img = ImageIO.read(gui.getCurrentlySelectedFanartFileList().get(0));
 					if(img != null)
 					{
@@ -179,7 +178,6 @@ public class ArtWorkPanel extends JPanel {
 			if(gui.getCurrentlySelectedMovieFileList().get(0).isDirectory() && potentialOtherPosterJpg.exists() && !posterFileUpdateOccured)
 			{
 				try {
-					//System.out.println("Reading in poster from other" + potentialOtherPosterJpg);
 					BufferedImage img = ImageIO.read(potentialOtherPosterJpg);
 					if(img != null)
 					{
@@ -195,7 +193,6 @@ public class ArtWorkPanel extends JPanel {
 			if(gui.getCurrentlySelectedMovieFileList().get(0).isDirectory() && potentialOtherFanartJpg.exists() && !fanartFileUpdateOccured)
 			{
 				try {
-					//System.out.println("Reading in fanart from other" + potentialOtherFanartJpg);
 					BufferedImage img = ImageIO.read(potentialOtherFanartJpg);
 					if(img != null)
 					{
@@ -212,7 +209,6 @@ public class ArtWorkPanel extends JPanel {
 			if(standardPosterJpg.exists() && !posterFileUpdateOccured)
 			{
 				try {
-					//System.out.println("Reading in poster from moviename-poster" + potentialOtherPosterJpg);
 					this.setNewPoster(new ImageIcon(
 							standardPosterJpg.getCanonicalPath()));
 					posterFileUpdateOccured = true;
@@ -226,7 +222,6 @@ public class ArtWorkPanel extends JPanel {
 			if(standardFanartJpg.exists() && !fanartFileUpdateOccured)
 			{
 				try {
-					//System.out.println("Reading in fanart from moviename-fanart" + potentialOtherPosterJpg);
 					BufferedImage img = ImageIO.read(standardFanartJpg);
 					if(img != null)
 					{
@@ -243,7 +238,6 @@ public class ArtWorkPanel extends JPanel {
 		// otherwise read it from the URL specified by the object since we couldn't find any local file
 		if (gui.movieToWriteToDiskList.size() > 0 && gui.movieToWriteToDiskList.get(0) != null && gui.movieToWriteToDiskList.get(0).hasPoster() && !posterFileUpdateOccured) {
 			try {
-				System.out.println("Updating poster");
 				Image posterImage = gui.getFileDetailPanel().currentMovie.getPosters()[0]
 						.getThumbImage();
 				ImageIcon newPosterIcon = new ImageIcon(posterImage);
@@ -260,7 +254,6 @@ public class ArtWorkPanel extends JPanel {
 
 		//try to read the fanart from the url since we couldn't find any local file
 		if (gui.movieToWriteToDiskList.size() > 0 && gui.movieToWriteToDiskList.get(0) != null && gui.movieToWriteToDiskList.get(0).hasFanart() && !fanartFileUpdateOccured) {
-			System.out.println("Reading in the fanart from the url");
 			try {
 				Image fanartImage = gui.getFileDetailPanel().currentMovie.getFanart()[0]
 						.getThumbImage();

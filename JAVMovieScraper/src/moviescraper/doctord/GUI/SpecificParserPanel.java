@@ -74,6 +74,8 @@ public class SpecificParserPanel extends JPanel {
 	}
 
 	protected void scrape(SiteParsingProfile spp) {
+		main.setMainGUIEnabled(false);
+		main.removeOldScrapedMovieReferences();
 		List<File> toScrape = main.getCurrentFile();
 		if (toScrape != null) {
 			for(File currentFile : toScrape)
@@ -88,6 +90,7 @@ public class SpecificParserPanel extends JPanel {
 		} else {
 			JOptionPane.showMessageDialog(this, "No file selected.", "No file selected.", JOptionPane.ERROR_MESSAGE);
 		}
+		main.setMainGUIEnabled(true);
 	}
 
 	@SuppressWarnings("rawtypes")

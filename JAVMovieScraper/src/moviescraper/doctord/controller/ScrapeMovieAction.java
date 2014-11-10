@@ -445,7 +445,7 @@ public class ScrapeMovieAction extends AbstractAction {
 	}
 
 	//Selection Dialog box used to display posters and fanarts
-	public Thumb showArtPicker(Thumb [] thumbArray, String windowTitle)
+	public static Thumb showArtPicker(Thumb [] thumbArray, String windowTitle)
 	{
 		if(thumbArray.length > 0)
 		{
@@ -812,7 +812,6 @@ public class ScrapeMovieAction extends AbstractAction {
 		if (currentlySelectedMovieDMM != null)
 		{
 			ID idMustBeThis = currentlySelectedMovieDMM.getId();
-			System.out.println("Id must be this" + idMustBeThis);
 			if(idMustBeThis != null)
 			{
 				if(currentlySelectedMovieActionJav != null && !currentlySelectedMovieActionJav.getId().equals(idMustBeThis)){
