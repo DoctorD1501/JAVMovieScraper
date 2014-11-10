@@ -143,6 +143,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile{
 		//If scene is from a page that has video stills, grab the posters from the trailer link
 		ArrayList<Thumb> posters = new ArrayList<Thumb>();
 		ArrayList<Thumb> trailerImages = new ArrayList<Thumb>();
+		
 		Elements trailerImgElements = document.select("img.noborder[title=Scene Preview], img.noborder[alt=Play this video]:not(img.noborder[src*=play.png]), div#pretrailer a[href*=/trailer] img.noborder:not(img.noborder[src*=play.png])");
 		Elements videoStills = document.select("div:containsOwn(Video Stills:) ~ div img");
 		if(trailerImgElements != null && trailerImgElements.size() > 0 && (videoStills == null || videoStills.size() == 0))
@@ -197,14 +198,17 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile{
 						if(imgElement != null)
 						{
 							String mainImageUrl = imgElement.attr("src");
-							Thumb thumbToAdd = new Thumb(mainImageUrl);
-							String previewURL = mainImageUrl.substring(0,mainImageUrl.length()-6) + "th8/" + mainImageUrl.substring(mainImageUrl.length()-6,mainImageUrl.length());
-							if(!fileExistsAtURL(previewURL))
-								previewURL = mainImageUrl.substring(0,mainImageUrl.length()-6) + "thumb2/" + mainImageUrl.substring(mainImageUrl.length()-6,mainImageUrl.length());	
-							if(fileExistsAtURL(previewURL))
-								thumbToAdd.setPreviewURL(new URL(previewURL));
-							//System.out.println("previewURL : " + previewURL);
-							posters.add(thumbToAdd);
+							if(fileExistsAtURL(mainImageUrl))
+							{
+								Thumb thumbToAdd = new Thumb(mainImageUrl);
+								String previewURL = mainImageUrl.substring(0,mainImageUrl.length()-6) + "th8/" + mainImageUrl.substring(mainImageUrl.length()-6,mainImageUrl.length());
+								if(!fileExistsAtURL(previewURL))
+									previewURL = mainImageUrl.substring(0,mainImageUrl.length()-6) + "thumb2/" + mainImageUrl.substring(mainImageUrl.length()-6,mainImageUrl.length());	
+								if(fileExistsAtURL(previewURL))
+									thumbToAdd.setPreviewURL(new URL(previewURL));
+								//System.out.println("previewURL : " + previewURL);
+								posters.add(thumbToAdd);
+							}
 						}
 					}
 
@@ -214,6 +218,22 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile{
 
 			}
 		}
+		
+		//get "Official Poster"
+		Element officialPosterElement = document.select("a img[alt=poster]").first();
+		if (officialPosterElement != null) {
+			try {
+				Thumb officialPosterThumb = new Thumb(officialPosterElement.attr("src"));
+				posters.add(officialPosterThumb);
+				
+				//get the trailer images too, since items with an official poster tend to not have much else in them
+				posters.addAll(trailerImages);
+			} catch (MalformedURLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
 		scrapedPosters = posters.toArray(new Thumb[posters.size()]);
 		if(scrapedPosters != null && scrapedPosters.length > 0)
 			return scrapedPosters;
