@@ -16,6 +16,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.ProgressMonitor;
 
 import java.awt.BorderLayout;
@@ -80,6 +81,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.BoxLayout;
 
 import java.awt.Component;
+
 import javax.swing.event.ListSelectionListener;
 
 public class GUIMain {
@@ -117,6 +119,7 @@ public class GUIMain {
 	private FileDetailPanel fileDetailPanel;
 
 	private JScrollPane fileListScrollPane;
+	private JSplitPane fileListFileDetailSplitPane;
 	private JList<File> fileList;
 	private JFileChooser chooser;
 
@@ -136,6 +139,8 @@ public class GUIMain {
 	//Dimensions of various elements
 	private static final int iconSizeX = 16;
 	private static final int iconSizeY = 16;
+	private static final int defaultMainFrameX = 1024;
+	private static final int defaultMainFrameY = 768;
 
 	private final static boolean debugMessages = false;
 
@@ -195,9 +200,9 @@ public class GUIMain {
 		//set up the window that sits above the frame and can block input to this frame if needed while a dialog is open
 		frmMoviescraper.setGlassPane(frmMovieScraperBlocker);
 		frmMoviescraper.setBackground(SystemColor.window);
-		frmMoviescraper.setPreferredSize(new Dimension(1024, 768));
+		frmMoviescraper.setPreferredSize(new Dimension(defaultMainFrameX, defaultMainFrameY));
 		frmMoviescraper.setTitle("JAVMovieScraper");
-		frmMoviescraper.setBounds(100, 100, 1024, 768);
+		frmMoviescraper.setBounds(100, 100, defaultMainFrameX, defaultMainFrameY);
 		frmMoviescraper.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		//initialize the icons used in the program
@@ -242,7 +247,6 @@ public class GUIMain {
 		ImageIcon browseDirectoryIcon = initializeImageIcon(browseIconURL);
 
 		fileListPanel = new JPanel();
-		frmMoviescraper.getContentPane().add(fileListPanel, BorderLayout.WEST);
 
 		defaultHomeDirectory = getPreferences().getLastUsedDirectory();
 		setCurrentlySelectedDirectoryList(defaultHomeDirectory);
@@ -398,12 +402,15 @@ public class GUIMain {
 		fileListPanelButtonsPanel.add(btnUpDirectory);
 		fileListPanelButtonsPanel.add(btnBrowseDirectory);
 		fileListPanel.add(fileListPanelButtonsPanel);
-
+		
 
 		fileDetailPanel = new FileDetailPanel(getPreferences(), this);
-		JScrollPane FileDetailsScrollPane = new JScrollPane(fileDetailPanel);
-		frmMoviescraper.getContentPane().add(FileDetailsScrollPane,
-				BorderLayout.CENTER);
+		JScrollPane fileDetailsScrollPane = new JScrollPane(fileDetailPanel);
+		
+		fileListFileDetailSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, fileListPanel, fileDetailsScrollPane);
+		fileListPanel.setMinimumSize(new Dimension(200,50));
+		fileDetailsScrollPane.setMinimumSize(new Dimension(100,50));
+		frmMoviescraper.getContentPane().add(fileListFileDetailSplitPane, BorderLayout.CENTER);
 
 		artWorkPanel = fileDetailPanel.getArtWorkPanel();
 
