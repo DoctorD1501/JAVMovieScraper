@@ -6,7 +6,7 @@
 <entry key="lastUsedDirectory">B:\Newsgroup\test</entry>
 <entry key="writeTrailerToFile">false</entry>
 <entry key="sanitizerForFilename">[\\/:*?"&lt;&gt;|\r\n]|[ ]+$|(?&lt;=[^.])[.]+$|(?&lt;=.{250})(.+)(?=[.]\p{Alnum}{3}$)</entry>
-<entry key="renamerString">%[ID]% %TITLE% %[ACTORS]% %(YEAR)%</entry>
+<entry key="renamerString">%TITLE% %[ACTORS]% %(YEAR)% %[ID]%</entry>
 <entry key="renameMovieFile">false</entry>
 <entry key="scrapeInJapanese">false</entry>
 <entry key="extraFanartScrapingEnabled">true</entry>

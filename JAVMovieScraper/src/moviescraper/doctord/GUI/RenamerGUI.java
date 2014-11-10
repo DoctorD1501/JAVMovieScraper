@@ -201,12 +201,13 @@ public class RenamerGUI extends JFrame {
 		});
 
 		fileDetailPanel.setNewMovie(getFakeMovie(), false);
+		updateExample();
 		this.setVisible(true);
 	}
 
 	protected void updateExample() {
 		Renamer renamer = new Renamer(textFieldRenameString.getText(), textFieldSanitizerString.getText(),
-				getFakeMovie(), getFakeFile());
+				fileDetailPanel.currentMovie, getFakeFile());
 		textFieldExample.setText( renamer.getNewFileName() );
 	}
 	

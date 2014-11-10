@@ -830,7 +830,7 @@ public class GUIMain {
 
 	//Update the File Detail Panel GUI so the user can see what is scraped in
 	public void updateAllFieldsOfFileDetailPanel(boolean forceUpdatePoster) {
-			fileDetailPanel.updateView(forceUpdatePoster);
+			fileDetailPanel.updateView(forceUpdatePoster, false);
 	}
 
 

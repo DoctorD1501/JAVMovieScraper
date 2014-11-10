@@ -341,7 +341,7 @@ public class FileDetailPanel extends JPanel {
 	//Sets a new movie and updates a view
 	public void setNewMovie(Movie newMovie, boolean forcePosterUpdate) {
 		this.currentMovie = newMovie;
-		updateView(forcePosterUpdate);
+		updateView(forcePosterUpdate, true);
 	}
 	
 	public void clearView() {
@@ -351,17 +351,21 @@ public class FileDetailPanel extends JPanel {
 	}
 
 	//Updates the view for the current movie
-	public void updateView(boolean forcePosterUpdate) {
+	public void updateView(boolean forcePosterUpdate, boolean newMovieWasSet) {
 		
 		List<Movie> movieToWriteToDiskList = gui.getMovieToWriteToDiskList();
-		
+		if(newMovieWasSet && movieToWriteToDiskList.size() == 0)
+		{
+			movieToWriteToDiskList.add(currentMovie);
+		}
 		//begin
-		if (movieToWriteToDiskList == null || movieToWriteToDiskList.size() == 0) {
+		if ((movieToWriteToDiskList == null || movieToWriteToDiskList.size() == 0) && !newMovieWasSet) {
 			clearView();
 		} else if (movieToWriteToDiskList != null && movieToWriteToDiskList.get(0) != null) {
-			clearView();
-
-			this.setCurrentMovie(movieToWriteToDiskList.get(0));
+			if(!newMovieWasSet)
+				clearView();
+			if(!newMovieWasSet)
+				this.setCurrentMovie(movieToWriteToDiskList.get(0));
 
 			//All the titles from the various versions scraped of this movie from the different sites
 			if(movieToWriteToDiskList != null)
