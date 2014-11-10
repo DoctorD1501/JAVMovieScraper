@@ -1,17 +1,11 @@
 package moviescraper.doctord.SiteParsingProfile.specific;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FilenameUtils;
 import org.jsoup.Jsoup;

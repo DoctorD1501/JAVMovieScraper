@@ -25,7 +25,6 @@ import javax.swing.JList;
 import moviescraper.doctord.Movie;
 import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.Thumb;
-import moviescraper.doctord.XbmcXmlMovieBean;
 import moviescraper.doctord.GUI.renderer.FileRenderer;
 import moviescraper.doctord.controller.BrowseDirectoryAction;
 import moviescraper.doctord.controller.MoveToNewFolderAction;
@@ -38,24 +37,6 @@ import moviescraper.doctord.controller.SelectFileListAction;
 import moviescraper.doctord.controller.UpDirectoryAction;
 import moviescraper.doctord.controller.WriteFileDataAction;
 import moviescraper.doctord.dataitem.Actor;
-import moviescraper.doctord.dataitem.Director;
-import moviescraper.doctord.dataitem.Genre;
-import moviescraper.doctord.dataitem.ID;
-import moviescraper.doctord.dataitem.MPAARating;
-import moviescraper.doctord.dataitem.OriginalTitle;
-import moviescraper.doctord.dataitem.Outline;
-import moviescraper.doctord.dataitem.Plot;
-import moviescraper.doctord.dataitem.Rating;
-import moviescraper.doctord.dataitem.Runtime;
-import moviescraper.doctord.dataitem.Set;
-import moviescraper.doctord.dataitem.SortTitle;
-import moviescraper.doctord.dataitem.Studio;
-import moviescraper.doctord.dataitem.Tagline;
-import moviescraper.doctord.dataitem.Title;
-import moviescraper.doctord.dataitem.Top250;
-import moviescraper.doctord.dataitem.Trailer;
-import moviescraper.doctord.dataitem.Votes;
-import moviescraper.doctord.dataitem.Year;
 import moviescraper.doctord.preferences.MoviescraperPreferences;
 
 import java.awt.Cursor;
@@ -71,13 +52,10 @@ import javax.swing.UIManager;
 
 import java.awt.Color;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.awt.event.ActionEvent;
@@ -92,7 +70,6 @@ import javax.swing.Action;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.imgscalr.Scalr;
 import org.imgscalr.Scalr.Method;
@@ -103,9 +80,6 @@ import java.awt.image.BufferedImage;
 import javax.swing.BoxLayout;
 
 import java.awt.Component;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
 import javax.swing.event.ListSelectionListener;
 
 public class GUIMain {

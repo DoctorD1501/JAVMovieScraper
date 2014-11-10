@@ -1,15 +1,12 @@
 package moviescraper.doctord.SiteParsingProfile.test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
 import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.Thumb;
-import moviescraper.doctord.GUI.renderer.SearchResultsRenderer;
 import moviescraper.doctord.SiteParsingProfile.specific.MyTokyoHotParsingProfile;
 import moviescraper.doctord.controller.SpecificScraperAction;
 import moviescraper.doctord.dataitem.Actor;

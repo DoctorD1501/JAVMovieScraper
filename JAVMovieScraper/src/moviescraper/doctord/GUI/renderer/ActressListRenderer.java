@@ -5,7 +5,6 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.SystemColor;
 import java.io.File;
-import java.net.MalformedURLException;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -17,8 +16,6 @@ import javax.swing.border.EmptyBorder;
 
 import org.apache.commons.io.FilenameUtils;
 
-import moviescraper.doctord.Thumb;
-import moviescraper.doctord.GUI.GUIMain;
 import moviescraper.doctord.dataitem.Actor;
 
 @SuppressWarnings("serial")

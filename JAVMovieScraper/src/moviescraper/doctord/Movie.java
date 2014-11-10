@@ -1,6 +1,5 @@
 package moviescraper.doctord;
 
-import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.FilenameFilter;
@@ -22,7 +21,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-import moviescraper.doctord.SiteParsingProfile.ActionJavParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.Data18MovieParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.Data18WebContentParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.DmmParsingProfile;
