@@ -74,23 +74,29 @@ public class SpecificParserPanel extends JPanel {
 	}
 
 	protected void scrape(SiteParsingProfile spp) {
-		main.setMainGUIEnabled(false);
-		main.removeOldScrapedMovieReferences();
-		List<File> toScrape = main.getCurrentFile();
-		if (toScrape != null) {
-			for(File currentFile : toScrape)
-			{
-			SpecificScraperAction action = new SpecificScraperAction(spp, spp.getMovieScraper(), currentFile );
-			Movie scrapedMovie = action.scrape();
-			if(scrapedMovie != null)
-				main.movieToWriteToDiskList.add(scrapedMovie);
-			main.getFileDetailPanel().setNewMovie( scrapedMovie , true);
+		try
+		{
+			main.setMainGUIEnabled(false);
+			main.removeOldScrapedMovieReferences();
+			List<File> toScrape = main.getCurrentFile();
+			if (toScrape != null) {
+				for(File currentFile : toScrape)
+				{
+					SpecificScraperAction action = new SpecificScraperAction(spp, spp.getMovieScraper(), currentFile );
+					Movie scrapedMovie = action.scrape();
+					if(scrapedMovie != null)
+						main.movieToWriteToDiskList.add(scrapedMovie);
+					main.getFileDetailPanel().setNewMovie( scrapedMovie , true);
+				}
+
+			} else {
+				JOptionPane.showMessageDialog(this, "No file selected.", "No file selected.", JOptionPane.ERROR_MESSAGE);
 			}
-			
-		} else {
-			JOptionPane.showMessageDialog(this, "No file selected.", "No file selected.", JOptionPane.ERROR_MESSAGE);
 		}
-		main.setMainGUIEnabled(true);
+		finally
+		{
+			main.setMainGUIEnabled(true);
+		}
 	}
 
 	@SuppressWarnings("rawtypes")
