@@ -3,6 +3,7 @@ package moviescraper.doctord.SiteParsingProfile.specific;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -172,8 +173,14 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 			for(int i = 1; i <= 21; i++)
 			{
 				String potentialGalleryImageURL = "http://en.heyzo.com/contents/3000/" + scrapedId + "/gallery/0" + String.format("%02d",i) + ".jpg";
+				String potentialGalleryPreviewImageURL = "http://en.heyzo.com/contents/3000/" + scrapedId + "/gallery/thumbnail_0" + String.format("%02d",i) + ".jpg";
 				if(SiteParsingProfile.fileExistsAtURL(potentialGalleryImageURL))
-					thumbList.add(new Thumb(potentialGalleryImageURL));
+				{
+					Thumb thumbToAdd = new Thumb(potentialGalleryImageURL);
+					thumbToAdd.setPreviewURL(new URL(potentialGalleryPreviewImageURL));
+					thumbList.add(thumbToAdd);
+						
+				}
 			}
 			//image that is the preview of the trailer
 			Thumb trailerPreviewThumb = new Thumb("http://www.heyzo.com/contents/3000/" + scrapedId + "/images/player_thumbnail_450.jpg");

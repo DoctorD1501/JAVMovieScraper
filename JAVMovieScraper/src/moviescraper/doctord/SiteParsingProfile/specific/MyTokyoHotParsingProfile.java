@@ -3,6 +3,7 @@ package moviescraper.doctord.SiteParsingProfile.specific;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -173,8 +174,11 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 		for(Element galleryImg : photoGalleryImgs)
 		{
 			String imgLink = galleryImg.attr("abs:href");
+			Element thumbnailLink = galleryImg.select("img").first();
 			try {
 				Thumb imgThumb = new Thumb(imgLink);
+				if(thumbnailLink != null)
+					imgThumb.setPreviewURL(new URL(thumbnailLink.attr("src")));
 				posters.add(imgThumb);
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
@@ -198,13 +202,11 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 
 	@Override
 	public Thumb[] scrapeFanart() {
-		//TODO: get all the other posters on the page
 		return scrapePosters();
 	}
 
 	@Override
 	public Thumb[] scrapeExtraFanart() {
-		//TODO: get all the other posters on the page
 		return scrapePosters();
 	}
 

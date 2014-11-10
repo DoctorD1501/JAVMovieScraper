@@ -322,7 +322,10 @@ public class OnePondoParsingProfile extends SiteParsingProfile implements Specif
 
 	@Override
 	public String createSearchString(File file) {
-		String fileID = findIDTagFromFile(file).toLowerCase();
+		String fileID = findIDTagFromFile(file);
+		if(fileID == null)
+			return null;
+		fileID = fileID.toLowerCase();
 
 		if (fileID != null) {
 			englishPage = "http://en.1pondo.tv/eng/moviepages/" + fileID + "/index.htm";

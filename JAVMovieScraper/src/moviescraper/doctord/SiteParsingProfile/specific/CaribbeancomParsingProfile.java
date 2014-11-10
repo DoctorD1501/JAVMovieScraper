@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -204,10 +205,13 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements
 			for(int imageNum = 1; imageNum <=5; imageNum++)
 			{
 				String additionalImageURLTemplate = "http://www.caribbeancom.com/moviepages/" + id.getId() + "/images/l/00" + imageNum + ".jpg";
+				String additionalImageURLTemplatePreview = "http://www.caribbeancom.com/moviepages/" + id.getId() + "/images/s/00" + imageNum + ".jpg";
 				if(SiteParsingProfile.fileExistsAtURL(additionalImageURLTemplate))
 				{
 					try {
-						posters.add(new Thumb(additionalImageURLTemplate));
+						Thumb additionalThumb = new Thumb(additionalImageURLTemplate);
+						additionalThumb.setPreviewURL(new URL(additionalImageURLTemplatePreview));
+						posters.add(additionalThumb);
 					} catch (MalformedURLException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();

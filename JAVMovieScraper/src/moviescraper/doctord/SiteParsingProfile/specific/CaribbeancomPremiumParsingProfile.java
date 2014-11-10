@@ -3,7 +3,10 @@ package moviescraper.doctord.SiteParsingProfile.specific;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.text.WordUtils;
@@ -73,7 +76,7 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 	public Set scrapeSet() {
 		try {
 			//the studio is not on the english version of this page, so we need to go to the japanese one
-			Document japanesePage = getJapanesePage();
+			initializeJapanesePage();
 			if (japanesePage != null)
 			{
 				Element setElement = japanesePage.select("div.movie-info dl dt:contains(シリーズ:) ~ dd a").first();
@@ -149,21 +152,47 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 
 	@Override
 	public Thumb[] scrapePosters() {
+		
+		List<Thumb> posters = new LinkedList<Thumb>();
 		Element posterElement = document
 				.select("td.detail_main a[href*=/images/")
 				.first();
 		if(posterElement != null)
 		{
-			Thumb returnResults[] = new Thumb[1];
+			String posterPath = posterElement.attr("abs:href");
+			String previewPath = posterElement.select("img").first().attr("abs:src");
 			try {
-				returnResults[0] = new Thumb(posterElement.attr("abs:href"));
-				return returnResults;
+				Thumb posterThumb = new Thumb(posterPath);
+				posterThumb.setPreviewURL(new URL(previewPath));
+				posters.add(posterThumb);
 			} catch (MalformedURLException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
-				return new Thumb[0];
 			}
 		}
-		return new Thumb[0];
+		
+		//get the extra 3 free images they give
+		ID id = scrapeID();
+		if(id != null)
+		{
+			for(int i = 1; i <= 3; i++)
+			{
+				String currentImagePath = "http://www.caribbeancompr.com/moviepages/" + id.getId() + "/images/l/00" + i + ".jpg";
+				String currentImagePathPreview = "http://www.caribbeancompr.com/moviepages/" + id.getId() + "/images/s/00" + i + ".jpg";
+				if(fileExistsAtURL(currentImagePath))
+				{
+					try {
+						Thumb currentImage = new Thumb(currentImagePath);
+						currentImage.setPreviewURL(new URL(currentImagePathPreview));
+						posters.add(currentImage);
+					} catch (MalformedURLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+		return posters.toArray(new Thumb[posters.size()]);
 	}
 
 	@Override
@@ -242,9 +271,8 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 	@Override
 	public ArrayList<Genre> scrapeGenres() {
 		ArrayList<Genre> genresReturned = new ArrayList<Genre>();
-		Document japanesePage;
 		try {
-			japanesePage = getJapanesePage();
+			initializeJapanesePage();
 
 			Elements genreElementsInJapanese = japanesePage.select("dl.movie-info-cat dd a");
 			for(Element currentGenre : genreElementsInJapanese)
@@ -392,7 +420,7 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 	public Trailer scrapeTrailer()
 	{
 		try {
-			Document japanesePage = getJapanesePage();
+			initializeJapanesePage();
 			Element trailerElement = japanesePage.select("div.movie-download div.sb-btn a").first();
 			if(trailerElement != null)
 			{
@@ -411,7 +439,7 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 
 			try {
 				//the studio is not on the english version of this page, so we need to go to the japanese one
-				Document japanesePage = getJapanesePage();
+				initializeJapanesePage();
 				if (japanesePage != null)
 				{
 					Element studioElement = japanesePage.select("div.movie-info dl dt:contains(スタジオ:) ~ dd a").first();
@@ -443,7 +471,7 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 		return getLinksFromGoogle(searchString, "http://en.caribbeancompr.com/eng/moviepages/");
 	}
 
-	private Document getJapanesePage() throws IOException {
+	private void initializeJapanesePage() throws IOException {
 		if(japanesePage == null)
 		{
 			String urlOfCurrentPage = document.location();
@@ -454,12 +482,9 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 				if(urlOfCurrentPage.length() > 1)
 				{
 						japanesePage = Jsoup.connect(urlOfCurrentPage).userAgent("Mozilla").ignoreHttpErrors(true).timeout(0).get();
-						return japanesePage;
 				}
 			}
-			return null;
 		}
-		else return japanesePage;
 	}
 
 	@Override
