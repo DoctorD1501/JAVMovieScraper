@@ -54,7 +54,6 @@ public class DmmParsingProfile extends SiteParsingProfile {
 	public DmmParsingProfile(boolean doGoogleTranslation) {
 		this.doGoogleTranslation = doGoogleTranslation;
 		scrapeTrailers = true;
-		System.out.println("created parsing profile with translation = " + doGoogleTranslation);
 	}
 
 	public DmmParsingProfile(boolean doGoogleTranslation, boolean scrapeTrailers) {
@@ -129,7 +128,7 @@ public class DmmParsingProfile extends SiteParsingProfile {
 		// <td width="100%">2011/12/25</td>
 		try {
 			Element releaseDateElement = document
-					.select("table.mg-b20 tr td:contains(貸出開始日：) + td, table.mg-b20 tr td:contains(発売日：) + td")
+					.select("table.mg-b20 tr td:contains(貸出開始日：) + td, table.mg-b20 tr td:contains(発売日：) + td, table.mg-b20 tr td:contains(配信開始日：) + td")
 					.first();
 			String year = releaseDateElement.text().substring(0, 4);
 			return new Year(year);
@@ -162,10 +161,10 @@ public class DmmParsingProfile extends SiteParsingProfile {
 		
 		//dvd mode
 		Element plotElement = document.select("p.mg-b20").first();
-		if(plotElement == null)
+		if(plotElement == null || document.baseUri().contains("/digital/video"))
 		{
 		//video rental mode if it didnt find a match using above method
-			plotElement = document.select(".mg-b20.lh4").first();
+			plotElement = document.select("tbody .mg-b20.lh4").first();
 		}
 		if(doGoogleTranslation)
 		{
@@ -320,8 +319,10 @@ public class DmmParsingProfile extends SiteParsingProfile {
 	
 	@Override
 	public Thumb[] scrapePosters() {
-
-		return scrapePostersAndFanart(true, false);
+		//don't crop the cover for videoc elements as it is a website release and does not have dvd art
+		if(document.baseUri().contains("/digital/videoc"))
+			return scrapePostersAndFanart(false, false);
+		else return scrapePostersAndFanart(true, false);
 	}
 
 	/**
@@ -339,7 +340,7 @@ public class DmmParsingProfile extends SiteParsingProfile {
 		// the movie poster, on this site it usually has both front and back
 		// cover joined in one image
 		Element postersElement = document.select(
-				"a[href^=http://pics.dmm.co.jp][name=package-image]").first();
+				"a[href^=http://pics.dmm.co.jp][name=package-image], div#sample-video img[src*=/pics.dmm.co.jp]").first();
 		// the extra screenshots for this movie. It's just the thumbnail as the
 		// actual url requires javascript to find.
 		// We can do some string manipulation on the thumbnail URL to get the
@@ -349,6 +350,8 @@ public class DmmParsingProfile extends SiteParsingProfile {
 		ArrayList<Thumb> posters = new ArrayList<Thumb>(
 				1 + extraArtElementsSmallSize.size());
 		String posterLink = postersElement.attr("href");
+		if(posterLink == null || posterLink.length() < 1)
+			posterLink = postersElement.attr("src");
 		try {
 			// for the poster, do a crop of 52.7% of the left side of the dvd case image (which includes both cover art and back art)
 			// so we only get the cover
@@ -643,6 +646,18 @@ public class DmmParsingProfile extends SiteParsingProfile {
 				e.printStackTrace();
 			}
 		}
+		
+		//Get actors that are just a "Name" and have no page of their own (common on some web releases)
+		Elements nameOnlyActors = document.select("table.mg-b20 tr td:contains(名前：) + td");
+		for(Element currentNameOnlyActor : nameOnlyActors)
+		{
+			String actorName = currentNameOnlyActor.text().trim();
+			//for some reason, they sometimes list the age of the person after their name, so let's get rid of that
+			actorName = actorName.replaceFirst("\\([0-9]{2}\\)","");
+			if(doGoogleTranslation)
+				actorName = TranslateString.translateStringJapaneseToEnglish(actorName);
+			actorList.add(new Actor(actorName, "", null));
+		}
 
 		return actorList;
 	}
@@ -723,7 +738,7 @@ public class DmmParsingProfile extends SiteParsingProfile {
 		Elements rentalElements = searchResultsPage
 				.select("p.tmb a[href*=/rental/ppr/");
 		Elements digitalElements = searchResultsPage
-				.select("p.tmb a[href*=/digital/videoa/");
+				.select("p.tmb a[href*=/digital/videoa/], p.tmb a[href*=/digital/videoc/]");
 		
 		//get /mono/dvd links
 		for (int i = 0; i < dvdLinks.size(); i++) {
