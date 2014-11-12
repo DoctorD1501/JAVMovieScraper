@@ -594,7 +594,7 @@ public class DmmParsingProfile extends SiteParsingProfile {
 				boolean didWeManuallyOverrideActress = false;
 				if (actressNameEnglish.equals("") && doGoogleTranslation) {
 					actressNameEnglish = TranslateString
-							.translateStringJapaneseToEnglish(actressNameHiragana);
+							.translateJapanesePersonNameToRomaji(actressNameHiragana);
 				}
 				else didWeManuallyOverrideActress = true;
 
@@ -655,7 +655,7 @@ public class DmmParsingProfile extends SiteParsingProfile {
 			//for some reason, they sometimes list the age of the person after their name, so let's get rid of that
 			actorName = actorName.replaceFirst("\\([0-9]{2}\\)","");
 			if(doGoogleTranslation)
-				actorName = TranslateString.translateStringJapaneseToEnglish(actorName);
+				actorName = TranslateString.translateJapanesePersonNameToRomaji(actorName);
 			actorList.add(new Actor(actorName, "", null));
 		}
 

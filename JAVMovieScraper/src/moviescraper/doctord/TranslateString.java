@@ -6,6 +6,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.text.WordUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -14,6 +15,25 @@ public class TranslateString {
 	
 	private static final String japaneseSentenceEnders = "[。？！]";
 	private static final int maxCharsPerRequest = 100;
+	
+	/**
+	 * @param japanesePersonName - Name of the person to translate. Method works best if the name is hiragana or katakana
+	 * @return The name of person in Romaji
+	 */
+	public static String translateJapanesePersonNameToRomaji(String japanesePersonName)
+	{
+		//if we have any kanji at all in the string, we'll have to use google translate
+		for(int i = 0; i < japanesePersonName.length(); i++)
+		{
+			if(JapaneseCharacter.isKanji(japanesePersonName.charAt(i)))
+				return translateStringJapaneseToEnglish(japanesePersonName);
+		}
+		System.out.println("doing good translation");
+		String romaji = WordUtils.capitalize(JapaneseCharacter.convertToRomaji(japanesePersonName)).trim();
+		if(romaji != null)
+			return romaji;
+		else return translateStringJapaneseToEnglish(japanesePersonName);
+	}
 	
 	public static String translateStringJapaneseToEnglish(String japaneseKanjiString)
 	{
