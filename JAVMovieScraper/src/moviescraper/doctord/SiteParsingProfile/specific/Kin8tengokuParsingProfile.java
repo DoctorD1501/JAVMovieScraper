@@ -235,4 +235,9 @@ public class Kin8tengokuParsingProfile extends SiteParsingProfile implements Spe
 		return "Kin8tengoku";
 	}
 
+	@Override
+	public SiteParsingProfile newInstance() {
+		return new Kin8tengokuParsingProfile();
+	}
+
 }

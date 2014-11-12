@@ -807,4 +807,9 @@ public class DmmParsingProfile extends SiteParsingProfile {
 		return "DMM.co.jp";
 	}
 
+	@Override
+	public SiteParsingProfile newInstance() {
+		return new DmmParsingProfile(this.doGoogleTranslation);
+	}
+
 }

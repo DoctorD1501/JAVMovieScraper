@@ -123,7 +123,7 @@ public class SpecificScraperAction {
 					site += ((SpecificProfile) spp).getParserName();
 				else
 					site += spp.getClass().getSimpleName();
-				
+
 				SelectionDialog selectionDialog = new SelectionDialog(results, site);
 				SearchResult searchResult = null;
 				//If there's only one item to choose from, save the user some work and just automatically choose it

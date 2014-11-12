@@ -227,4 +227,9 @@ public class SquarePlusParsingProfile extends SiteParsingProfile {
 		return "SquarePlus";
 	}
 
+	@Override
+	public SiteParsingProfile newInstance() {
+		return new SquarePlusParsingProfile();
+	}
+
 }

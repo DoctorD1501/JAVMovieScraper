@@ -352,4 +352,9 @@ public class JavZooParsingProfile extends SiteParsingProfile {
 		return "JavZoo";
 	}
 
+	@Override
+	public SiteParsingProfile newInstance() {
+		return new JavZooParsingProfile();
+	}
+
 }

@@ -422,4 +422,9 @@ public class Data18MovieParsingProfile extends SiteParsingProfile {
 		return "Data18Movie";
 	}
 
+	@Override
+	public SiteParsingProfile newInstance() {
+		return new Data18MovieParsingProfile();
+	}
+
 }

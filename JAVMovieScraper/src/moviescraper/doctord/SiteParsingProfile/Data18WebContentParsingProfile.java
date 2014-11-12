@@ -452,4 +452,9 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile{
 	public String toString(){
 		return "Data18 Web Content";
 	}
+
+	@Override
+	public SiteParsingProfile newInstance() {
+		return new Data18WebContentParsingProfile();
+	}
 }

@@ -350,4 +350,9 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements
 		return null;
 	}
 
+	@Override
+	public SiteParsingProfile newInstance() {
+		return new CaribbeancomParsingProfile();
+	}
+
 }

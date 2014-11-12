@@ -330,4 +330,9 @@ public class ActionJavParsingProfile extends SiteParsingProfile {
 		return "ActionJav";
 	}
 
+	@Override
+	public SiteParsingProfile newInstance() {
+		return new ActionJavParsingProfile();
+	}
+
 }

@@ -491,5 +491,10 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 	public String getParserName() {
 		return "Caribbeancom Premium";
 	}
+
+	@Override
+	public SiteParsingProfile newInstance() {
+		return new CaribbeancomPremiumParsingProfile();
+	}
 	
 }

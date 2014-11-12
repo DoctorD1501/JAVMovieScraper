@@ -333,4 +333,9 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 		return null;
 	}
 
+	@Override
+	public SiteParsingProfile newInstance() {
+		return new MyTokyoHotParsingProfile();
+	}
+
 }

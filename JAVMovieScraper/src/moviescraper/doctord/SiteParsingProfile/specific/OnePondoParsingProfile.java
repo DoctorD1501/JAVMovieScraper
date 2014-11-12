@@ -365,4 +365,9 @@ public class OnePondoParsingProfile extends SiteParsingProfile implements Specif
 		return null;
 	}
 
+	@Override
+	public SiteParsingProfile newInstance() {
+		return new OnePondoParsingProfile();
+	}
+
 }

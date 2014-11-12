@@ -55,13 +55,14 @@ public class SpecificParserPanel extends JPanel {
 		btnScrape.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				//Find out the type of parser to use from the drop down box and pass it off to the scrape method
 				Object selectedItem = comboBox.getSelectedItem();
 				if (selectedItem instanceof ComboItem) {
 					SiteParsingProfile spp = ((ComboItem) selectedItem).parser;
 					if ( spp != null ) {
 						scrape(spp);
 					}
-				}
+				}	
 			}
 		});
 
@@ -81,7 +82,11 @@ public class SpecificParserPanel extends JPanel {
 			List<File> toScrape = main.getCurrentFile();
 			if (toScrape != null) {
 				for(File currentFile : toScrape)
-				{
+				{ 
+					//reset the SiteParsingProfile so we don't get leftover stuff from the last file scraped
+					//we want it to be of the same type, so we use the newInstance() method which will automatically
+					//return a new object of the type the SiteParsingProfile actually is
+					spp = spp.newInstance();
 					SpecificScraperAction action = new SpecificScraperAction(spp, spp.getMovieScraper(), currentFile );
 					Movie scrapedMovie = action.scrape();
 					if(scrapedMovie != null)

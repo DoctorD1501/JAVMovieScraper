@@ -343,4 +343,9 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 		return null;
 	}
 
+	@Override
+	public SiteParsingProfile newInstance() {
+		return new HeyzoParsingProfile(scrapeInEnglish);
+	}
+
 }

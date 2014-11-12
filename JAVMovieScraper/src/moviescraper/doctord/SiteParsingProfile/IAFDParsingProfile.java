@@ -329,4 +329,9 @@ public class IAFDParsingProfile extends SiteParsingProfile {
 		return "IAFD";
 	}
 
+	@Override
+	public SiteParsingProfile newInstance() {
+		return new IAFDParsingProfile();
+	}
+
 }

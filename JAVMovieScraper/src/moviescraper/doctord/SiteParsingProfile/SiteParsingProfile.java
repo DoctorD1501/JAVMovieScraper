@@ -224,4 +224,7 @@ public abstract class SiteParsingProfile {
 		return new GenericMovieScraper(this);
 	}
 	
+	
+	public abstract SiteParsingProfile newInstance();
+	
 }

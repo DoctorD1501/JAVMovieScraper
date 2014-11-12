@@ -337,12 +337,15 @@ public class FileDetailPanel extends JPanel {
 		//frmMoviescraper.getContentPane().add(artworkPanelScrollPane, BorderLayout.EAST);
 		fileDetailsPanel.add(artWorkPanel,"6,2,1,18");
 	}
+	/**
+	 * Sets a new movie and updates a view
+	 * @param newMovie the movie this fileDetailPanel will show
+	 * @param forcePosterUpdate whether to force a redownload from the poster defined in the Thumb url
+	 */
 	
-	//Sets a new movie and updates a view
 	public void setNewMovie(Movie newMovie, boolean forcePosterUpdate) {
-		System.out.println("Force poster update = " + forcePosterUpdate);
 		System.out.println("Setting new movie: " + newMovie);
-		this.currentMovie = newMovie;
+		setCurrentMovie(newMovie);
 		updateView(forcePosterUpdate, true);
 	}
 	
@@ -371,7 +374,7 @@ public class FileDetailPanel extends JPanel {
 
 			//All the titles from the various versions scraped of this movie from the different sites
 			if(movieToWriteToDiskList != null)
-				this.getCurrentMovie().getAllTitles().add( movieToWriteToDiskList.get(0).getTitle() );
+				this.getCurrentMovie().getAllTitles().add( getCurrentMovie().getTitle() );
 			if(gui.getCurrentlySelectedMovieDMM() != null)
 				this.getCurrentMovie().getAllTitles().add( gui.getCurrentlySelectedMovieDMM().getTitle() );
 			if(gui.getCurrentlySelectedMovieJavLibrary() != null)
@@ -384,31 +387,6 @@ public class FileDetailPanel extends JPanel {
 				this.getCurrentMovie().getAllTitles().add( gui.getCurrentlySelectedMovieJavZoo().getTitle() );
 			if(this.getCurrentMovie().getAllTitles().size() > 0)
 				this.setTitleEditable(true);
-
-			//original title
-			this.getCurrentMovie().setOriginalTitle(movieToWriteToDiskList.get(0)
-					.getOriginalTitle());
-			//ID
-			if(movieToWriteToDiskList.get(0).getId() != null)
-				this.getCurrentMovie().setId(movieToWriteToDiskList.get(0).getId());
-			//Studio
-			if(movieToWriteToDiskList.get(0).getStudio() != null)
-				this.getCurrentMovie().setStudio(movieToWriteToDiskList.get(0).getStudio());
-			//Year
-			if(movieToWriteToDiskList.get(0).getYear() != null)
-				this.getCurrentMovie().setYear(movieToWriteToDiskList.get(0).getYear());
-			//Plot
-			if(movieToWriteToDiskList.get(0).getPlot() != null)
-				this.getCurrentMovie().setPlot(movieToWriteToDiskList.get(0).getPlot());
-			//Set
-			if(movieToWriteToDiskList.get(0).getSet() != null)
-				this.getCurrentMovie().setSet(movieToWriteToDiskList.get(0).getSet());
-
-			//Add in all the genres
-			this.getCurrentMovie().setGenres( movieToWriteToDiskList.get(0).getGenres() );
-
-			//Actors
-			this.getCurrentMovie().setActors( movieToWriteToDiskList.get(0).getActors() );
 		//end
 		}
 		comboBoxMovieTitleText.setModel( new TitleListModel() );

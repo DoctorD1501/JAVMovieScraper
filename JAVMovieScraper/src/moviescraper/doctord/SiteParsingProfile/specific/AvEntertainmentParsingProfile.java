@@ -326,4 +326,9 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 		return "AV Entertainment";
 	}
 
+	@Override
+	public SiteParsingProfile newInstance() {
+		return new AvEntertainmentParsingProfile();
+	}
+
 }

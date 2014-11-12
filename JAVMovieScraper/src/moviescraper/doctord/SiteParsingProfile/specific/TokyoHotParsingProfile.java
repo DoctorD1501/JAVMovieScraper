@@ -291,4 +291,9 @@ public class TokyoHotParsingProfile extends SiteParsingProfile implements Specif
 	public String getParserName() {
 		return "Tokyo Hot";
 	}
+
+	@Override
+	public SiteParsingProfile newInstance() {
+		return new TokyoHotParsingProfile();
+	}
 }

@@ -504,6 +504,11 @@ public class JavLibraryParsingProfile extends SiteParsingProfile {
 		return "JavLibrary";
 	}
 
+	@Override
+	public SiteParsingProfile newInstance() {
+		return new JavLibraryParsingProfile();
+	}
+
 
 }
 
