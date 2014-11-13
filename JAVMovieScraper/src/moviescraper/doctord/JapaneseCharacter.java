@@ -209,36 +209,6 @@ public class JapaneseCharacter {
 	private static String lookupRomaji(char c) {
 		return romaji[c - 0x3041];
 	}
-
-	/**
-	 * @author Maik Vlcek (https://gist.github.com/mediavrog)
-	 * @see <a href="https://gist.github.com/mediavrog/6b13669533ac20d5ba0f"> https://gist.github.com/mediavrog/6b13669533ac20d5ba0f </a>
-	 * @param input
-	 * @return
-	 */
-	public static String convertKana(String input) {
-		if (input == null || input.length() == 0)
-			return "";
-
-		StringBuilder out = new StringBuilder();
-		char ch = input.charAt(0);
-
-		if (JapaneseCharacter.isHiragana(ch)) { // convert to hiragana to
-												// katakana
-			for (int i = 0; i < input.length(); i++) {
-				out.append(JapaneseCharacter.toKatakana(input.charAt(i)));
-			}
-		} else if (JapaneseCharacter.isKatakana(ch)) { // convert to katakana to
-														// hiragana
-			for (int i = 0; i < input.length(); i++) {
-				out.append(JapaneseCharacter.toHiragana(input.charAt(i)));
-			}
-		} else { // do nothing if neither
-			return input;
-		}
-
-		return out.toString();
-	}
 	
 	public static String convertToRomaji(String input)
 	{
