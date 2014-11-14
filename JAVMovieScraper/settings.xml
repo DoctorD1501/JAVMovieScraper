@@ -8,7 +8,7 @@
 <entry key="sanitizerForFilename">[\\/:*?"&lt;&gt;|\r\n]|[ ]+$|(?&lt;=[^.])[.]+$|(?&lt;=.{250})(.+)(?=[.]\p{Alnum}{3}$)</entry>
 <entry key="renamerString">%TITLE% %[ACTORS]% %(YEAR)% %[ID]%</entry>
 <entry key="renameMovieFile">false</entry>
-<entry key="scrapeInJapanese">false</entry>
+<entry key="scrapeInJapanese">true</entry>
 <entry key="extraFanartScrapingEnabled">true</entry>
 <entry key="createFolderJpg">true</entry>
 </properties>

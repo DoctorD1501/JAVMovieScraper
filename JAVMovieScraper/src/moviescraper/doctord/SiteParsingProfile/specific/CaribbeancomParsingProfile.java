@@ -19,6 +19,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import moviescraper.doctord.Language;
 import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.Thumb;
 import moviescraper.doctord.TranslateString;
@@ -72,6 +73,7 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements
 	public Title scrapeTitle() {
 		Document documentToUse = document;
 		Element titleElement = documentToUse.select("title").first();
+		//for now, we're always going to use the japanese page, as the below variable is always true
 		if(useTranslationOfJapanesePageForEnglishMetadata)
 		{
 			initializeJapaneseDocument();
@@ -81,7 +83,9 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements
 		
 		if(titleElement != null)
 		{
-			if(useTranslationOfJapanesePageForEnglishMetadata)
+			//We only sometimes do the translation of the japanese page, however
+			
+			if(getScrapingLanguage() == Language.ENGLISH)
 			{
 				return new Title(WordUtils.capitalize(TranslateString.translateStringJapaneseToEnglish(titleElement.text())));
 			}
@@ -154,7 +158,7 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements
 		Element plotElement = japaneseDocument.select("div.movie-comment p").first();
 		if(plotElement != null && plotElement.text().length() > 0)
 		{
-			if(useTranslationOfJapanesePageForEnglishMetadata)
+			if(getScrapingLanguage() == Language.ENGLISH)
 				return new Plot(TranslateString.translateStringJapaneseToEnglish(plotElement.text()));
 			else return new Plot(plotElement.text());
 		}
@@ -264,7 +268,12 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements
 		{
 			for(Element currentGenre : genres){
 				if(currentGenre.text().trim().length() > 0)
-					genreList.add(new Genre(TranslateString.translateStringJapaneseToEnglish(currentGenre.text().trim())));
+				{
+					String genreText = currentGenre.text(); //right now it's in Japanese since only the Japanese page has info on the genres
+					if(getScrapingLanguage() == Language.ENGLISH)
+						genreText = TranslateString.translateStringJapaneseToEnglish(currentGenre.text().trim());
+					genreList.add(new Genre(genreText));
+				}
 			}
 		}
 		return genreList;
@@ -273,8 +282,10 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements
 	@Override
 	public ArrayList<Actor> scrapeActors() {
 		ArrayList<Actor> actorList = new ArrayList<Actor>();
+		initializeJapaneseDocument();
 		Element actorEnglishSearchElement = document.select("table.info_table tbody tr td.property:contains(Starring:) ~ td a").first();
-		if(actorEnglishSearchElement != null)
+		Elements japaneseActors = japaneseDocument.select("div.movie-info dl dt:contains(出演:) ~ dd a");
+		if(actorEnglishSearchElement != null && getScrapingLanguage() == Language.ENGLISH)
 		{
 			
 			String hrefText = actorEnglishSearchElement.attr("href");
@@ -292,6 +303,14 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements
 				e.printStackTrace();
 			}
 			
+		}
+		else if(japaneseActors != null && getScrapingLanguage() == Language.JAPANESE)
+		{
+			for(Element japaneseActor : japaneseActors)
+			{
+				String actorName = japaneseActor.text();
+				actorList.add(new Actor(actorName,"",null));
+			}
 		}
 		return actorList;
 	}

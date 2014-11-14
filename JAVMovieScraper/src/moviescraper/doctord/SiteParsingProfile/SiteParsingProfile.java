@@ -17,6 +17,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import moviescraper.doctord.Language;
 import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.Thumb;
 import moviescraper.doctord.dataitem.Actor;
@@ -39,10 +40,11 @@ import moviescraper.doctord.dataitem.Votes;
 import moviescraper.doctord.dataitem.Year;
 import moviescraper.doctord.model.AbstractMovieScraper;
 import moviescraper.doctord.model.GenericMovieScraper;
+import moviescraper.doctord.preferences.MoviescraperPreferences;
 
 public abstract class SiteParsingProfile {
 	
-	public enum Language { ENGLISH, JAPANESE }
+	protected Language scrapingLanguage;
 
 	public Document document; // the base page to start parsing from
 	
@@ -69,9 +71,12 @@ public abstract class SiteParsingProfile {
 	public SiteParsingProfile(Document document) {
 		this.document = document;
 		overrideURLDMM = null;
+		scrapingLanguage = Language.ENGLISH;
 	}
 	
-	public SiteParsingProfile(){}
+	public SiteParsingProfile(){
+		scrapingLanguage = Language.ENGLISH;
+	}
 
 	public Document getDocument() {
 		return document;
@@ -226,5 +231,21 @@ public abstract class SiteParsingProfile {
 	
 	
 	public abstract SiteParsingProfile newInstance();
+
+	public Language getScrapingLanguage() {
+		return scrapingLanguage;
+	}
+
+	public void setScrapingLanguage(Language scrapingLanguage) {
+		this.scrapingLanguage = scrapingLanguage;
+	}
+	
+	public void setScrapingLanguage(MoviescraperPreferences preferences)
+	{
+		if(preferences.getScrapeInJapanese())
+			scrapingLanguage = Language.JAPANESE;
+		else
+			scrapingLanguage = Language.ENGLISH;
+	}
 	
 }

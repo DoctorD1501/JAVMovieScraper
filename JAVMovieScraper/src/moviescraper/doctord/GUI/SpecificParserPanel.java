@@ -87,6 +87,7 @@ public class SpecificParserPanel extends JPanel {
 					//we want it to be of the same type, so we use the newInstance() method which will automatically
 					//return a new object of the type the SiteParsingProfile actually is
 					spp = spp.newInstance();
+					spp.setScrapingLanguage(main.getPreferences());
 					SpecificScraperAction action = new SpecificScraperAction(spp, spp.getMovieScraper(), currentFile );
 					Movie scrapedMovie = action.scrape();
 					if(scrapedMovie != null)

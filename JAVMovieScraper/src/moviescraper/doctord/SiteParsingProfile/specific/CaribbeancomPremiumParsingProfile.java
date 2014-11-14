@@ -15,6 +15,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import moviescraper.doctord.Language;
 import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.Thumb;
 import moviescraper.doctord.TranslateString;
@@ -41,30 +42,30 @@ import moviescraper.doctord.dataitem.Year;
 
 public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implements SpecificProfile {
 	
-	private Document japanesePage;
+	private Document japaneseDocument;
 
 	@Override
 	public Title scrapeTitle() {
-		Element titleElement = document
-				.select("title")
-				.first();
-		if(titleElement == null)
-			return new Title("");
-		String titleElementText = WordUtils.capitalize(titleElement.text());
+		String japaneseTitle = getJapaneseTitleText();
+		if(getScrapingLanguage() == Language.ENGLISH && japaneseTitle.length() > 0)
+			return new Title(WordUtils.capitalize(TranslateString.translateStringJapaneseToEnglish(japaneseTitle)));
+		else return new Title(japaneseTitle);
+	}
+	
+	private String getJapaneseTitleText(){
+		initializeJapaneseDocument();
+		Element titleElement = japaneseDocument.select("div.video-detail span h1").first();
 		
-		//we want to add a space before the first parenthesis to make the title look a bit better
-		if(titleElementText.contains("("))
+		if(titleElement != null)
 		{
-			int indexOfFirstLeftParen = titleElementText.indexOf('(');
-			titleElementText = titleElementText.substring(0,indexOfFirstLeftParen) + " " + titleElementText.substring(indexOfFirstLeftParen);
+			return titleElement.text();
 		}
-		
-		return new Title(titleElementText);
+		return "";		
 	}
 
 	@Override
 	public OriginalTitle scrapeOriginalTitle() {
-		return new OriginalTitle("");
+		return new OriginalTitle(getJapaneseTitleText());
 	}
 
 	@Override
@@ -74,23 +75,20 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 
 	@Override
 	public Set scrapeSet() {
-		try {
-			//the studio is not on the english version of this page, so we need to go to the japanese one
-			initializeJapanesePage();
-			if (japanesePage != null)
+		//the studio is not on the english version of this page, so we need to go to the japanese one
+		initializeJapaneseDocument();
+		if (japaneseDocument != null)
+		{
+			Element setElement = japaneseDocument.select("div.movie-info dl dt:contains(シリーズ:) ~ dd a").first();
+			if(setElement != null)
 			{
-				Element setElement = japanesePage.select("div.movie-info dl dt:contains(シリーズ:) ~ dd a").first();
-				if(setElement != null)
-				{
-					String setElementTranslatedText = TranslateString.translateStringJapaneseToEnglish(setElement.text().trim());
-					if(setElementTranslatedText != null && setElementTranslatedText.length() > 0)
-						return new Set(setElementTranslatedText);
-				}
-				
+				String setElementTranslatedText = setElement.text().trim();
+				if(getScrapingLanguage() == Language.ENGLISH)
+					setElementTranslatedText = TranslateString.translateStringJapaneseToEnglish(setElement.text().trim());
+				if(setElementTranslatedText != null && setElementTranslatedText.length() > 0)
+					return new Set(setElementTranslatedText);
 			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
 		}
 
 		return new Set("");
@@ -134,7 +132,14 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 
 	@Override
 	public Plot scrapePlot() {
-		//This type of info doesn't exist on this site
+		initializeJapaneseDocument();
+		Element plotElement = japaneseDocument.select("div.movie-comment p").first();
+		if(plotElement != null && plotElement.text().length() > 0)
+		{
+			if(getScrapingLanguage() == Language.ENGLISH)
+				return new Plot(TranslateString.translateStringJapaneseToEnglish(plotElement.text()));
+			else return new Plot(plotElement.text());
+		}
 		return new Plot("");
 	}
 
@@ -271,11 +276,12 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 	@Override
 	public ArrayList<Genre> scrapeGenres() {
 		ArrayList<Genre> genresReturned = new ArrayList<Genre>();
-		try {
-			initializeJapanesePage();
+		initializeJapaneseDocument();
 
-			Elements genreElementsInJapanese = japanesePage.select("dl.movie-info-cat dd a");
-			for(Element currentGenre : genreElementsInJapanese)
+		Elements genreElementsInJapanese = japaneseDocument.select("dl.movie-info-cat dd a");
+		for(Element currentGenre : genreElementsInJapanese)
+		{
+			if(getScrapingLanguage() == Language.ENGLISH)
 			{
 				//the genre is coded as a specific webpage number. we can call our helper function to translate a number
 				//like 1_1.html into the actual english genre this represents
@@ -289,10 +295,10 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 						genresReturned.add(new Genre(englishGenreName));
 				}
 			}
-		}
-		catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			else if(getScrapingLanguage() == Language.JAPANESE)
+			{
+				genresReturned.add(new Genre(currentGenre.text().trim()));
+			}
 		}
 		return genresReturned;
 	}
@@ -375,12 +381,14 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 	@Override
 	public ArrayList<Actor> scrapeActors() {
 		ArrayList<Actor> actorList = new ArrayList<Actor>();
+		initializeJapaneseDocument();
 		Element actorElement = document
 				.select("tr td:contains(Starring:) ~ td a")
 				.first();
+		Elements japaneseActors = japaneseDocument.select("div.movie-info dl dt:contains(出演:) ~ dd a");
 		String urlOfCurrentPage = document.location();
 		String actorThumbURL = null;
-		if(actorElement != null)
+		if(actorElement != null &&getScrapingLanguage() == Language.ENGLISH)
 		{
 			String actorName = WordUtils.capitalize(actorElement.attr("title"));
 			//get the actor thumbnail associated with this page
@@ -409,6 +417,24 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 				actorList.add(new Actor(actorName,"",null));
 			}
 		}
+		else if(japaneseActors != null && getScrapingLanguage() == Language.JAPANESE)
+		{
+			if(urlOfCurrentPage != null && urlOfCurrentPage.contains("moviepages"))
+			{
+				urlOfCurrentPage = urlOfCurrentPage.replaceFirst(Pattern.quote("http://en.caribbeancompr.com/eng/moviepages/"), "http://www.caribbeancompr.com/moviepages/");
+				actorThumbURL = urlOfCurrentPage.replaceFirst(Pattern.quote("/index.html"), "/images/n.jpg");
+			}
+			for(Element japaneseActor : japaneseActors)
+			{
+				String actorName = japaneseActor.text();
+				try {
+					actorList.add(new Actor(actorName,"",new Thumb(actorThumbURL)));
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
+					actorList.add(new Actor(actorName,"",null));
+				}
+			}
+		}
 		return actorList;
 	}
 
@@ -419,41 +445,33 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 	@Override
 	public Trailer scrapeTrailer()
 	{
-		try {
-			initializeJapanesePage();
-			Element trailerElement = japanesePage.select("div.movie-download div.sb-btn a").first();
-			if(trailerElement != null)
-			{
-				String trailerLink = trailerElement.attr("href");
-				if(trailerLink != null && trailerLink.length() > 0)
-					return new Trailer(trailerLink);
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		initializeJapaneseDocument();
+		Element trailerElement = japaneseDocument.select("div.movie-download div.sb-btn a").first();
+		if(trailerElement != null)
+		{
+			String trailerLink = trailerElement.attr("href");
+			if(trailerLink != null && trailerLink.length() > 0)
+				return new Trailer(trailerLink);
 		}
 		return new Trailer("");
 	}
 	@Override
 	public Studio scrapeStudio() {
 
-			try {
-				//the studio is not on the english version of this page, so we need to go to the japanese one
-				initializeJapanesePage();
-				if (japanesePage != null)
+			//the studio is not on the english version of this page, so we need to go to the japanese one
+			initializeJapaneseDocument();
+			if (japaneseDocument != null)
+			{
+				Element studioElement = japaneseDocument.select("div.movie-info dl dt:contains(スタジオ:) ~ dd a").first();
+				if(studioElement != null)
 				{
-					Element studioElement = japanesePage.select("div.movie-info dl dt:contains(スタジオ:) ~ dd a").first();
-					if(studioElement != null)
-					{
-						String studioElementTranslatedText = TranslateString.translateStringJapaneseToEnglish(studioElement.text().trim());
-						if(studioElementTranslatedText != null && studioElementTranslatedText.length() > 0)
-							return new Studio(studioElementTranslatedText);
-					}
-					
+					String studioElementText = studioElement.text().trim();
+					if(getScrapingLanguage() == Language.ENGLISH)
+							TranslateString.translateStringJapaneseToEnglish(studioElement.text().trim());
+					if(studioElementText != null && studioElementText.length() > 0)
+						return new Studio(studioElementText);
 				}
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				
 			}
 
 		return new Studio("");
@@ -471,8 +489,8 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 		return getLinksFromGoogle(searchString, "http://en.caribbeancompr.com/eng/moviepages/");
 	}
 
-	private void initializeJapanesePage() throws IOException {
-		if(japanesePage == null)
+	private void initializeJapaneseDocument() {
+		if(japaneseDocument == null)
 		{
 			String urlOfCurrentPage = document.location();
 			if(urlOfCurrentPage != null && urlOfCurrentPage.contains("moviepages"))
@@ -481,7 +499,12 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 				urlOfCurrentPage = urlOfCurrentPage.replaceFirst(Pattern.quote("http://en.caribbeancompr.com/eng/"), "http://www.caribbeancompr.com/");
 				if(urlOfCurrentPage.length() > 1)
 				{
-						japanesePage = Jsoup.connect(urlOfCurrentPage).userAgent("Mozilla").ignoreHttpErrors(true).timeout(0).get();
+						try {
+							japaneseDocument = Jsoup.connect(urlOfCurrentPage).userAgent("Mozilla").ignoreHttpErrors(true).timeout(0).get();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 				}
 			}
 		}
