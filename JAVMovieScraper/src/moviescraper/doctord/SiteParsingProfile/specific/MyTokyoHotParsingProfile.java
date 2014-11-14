@@ -9,11 +9,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.text.WordUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import moviescraper.doctord.Language;
 import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.Thumb;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
@@ -45,7 +47,7 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 	
 	@Override
 	public String getParserName() {
-		return "MyTokyoHot";
+		return "My Tokyo-Hot";
 	}
 	
 	/**
@@ -62,7 +64,14 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 
 	@Override
 	public Title scrapeTitle() {
-		Element titleElement = document.select("div.pagetitle").first();
+		Element titleElement = null;
+		if(getScrapingLanguage() == Language.ENGLISH)
+			titleElement = document.select("div.pagetitle").first();
+		else if(getScrapingLanguage() == Language.JAPANESE)
+		{
+			initializeJapaneseDocument();
+			titleElement = japaneseDocument.select("div.pagetitle").first();
+		}
 		if(titleElement != null)
 		{
 			return new Title(titleElement.text().trim());
@@ -124,7 +133,14 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 
 	@Override
 	public Plot scrapePlot() {
-		Element plotElement = document.select("div.contents div.sentence").first();
+		Element plotElement = null;
+		if(getScrapingLanguage() == Language.ENGLISH)
+			plotElement = document.select("div.contents div.sentence").first();
+		else if(getScrapingLanguage() == Language.JAPANESE)
+		{
+			initializeJapaneseDocument();
+			plotElement = japaneseDocument.select("div.contents div.sentence").first();
+		}
 		if(plotElement != null)
 			return new Plot(plotElement.text().trim());
 		else return new Plot("");
@@ -226,10 +242,20 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 	@Override
 	public ArrayList<Genre> scrapeGenres() {
 		ArrayList<Genre> genreList = new ArrayList<Genre>();
-		Elements genreElements = document.select("dl.info dt:contains(Category) + dd a, dl.info dt:contains(カテゴリ) + dd a");
-		for(Element currentGenre : genreElements)
+		Elements genreElements = null;
+		if(getScrapingLanguage() == Language.ENGLISH)
+			genreElements = document.select("dl.info dt:contains(Category) + dd a, dl.info dt:contains(カテゴリ) + dd a");
+		else if(getScrapingLanguage() == Language.JAPANESE)
 		{
-			genreList.add(new Genre(currentGenre.text().trim()));
+			initializeJapaneseDocument();
+			genreElements = japaneseDocument.select("dl.info dt:contains(Category) + dd a, dl.info dt:contains(カテゴリ) + dd a");
+		}
+		if(genreElements != null)
+		{
+			for(Element currentGenre : genreElements)
+			{
+				genreList.add(new Genre(WordUtils.capitalize(currentGenre.text().trim())));
+			}
 		}
 		return genreList;
 	}
@@ -237,27 +263,37 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 	@Override
 	public ArrayList<Actor> scrapeActors() {
 		ArrayList<Actor> actorList = new ArrayList<Actor>();
-		Elements actressElements = document.select("dl.info dt:contains(Actress) + dd a, dl.info dt:contains(出演者) + dd a");
-		for(Element currentActress : actressElements)
+		Elements actressElements = null;
+		if(getScrapingLanguage() == Language.ENGLISH)
+			actressElements = document.select("dl.info dt:contains(Actress) + dd a, dl.info dt:contains(出演者) + dd a");
+		else if(getScrapingLanguage() == Language.JAPANESE)
 		{
-			String name = currentActress.text();
-			String href = currentActress.attr("href");
-			href = href.replaceAll(Pattern.quote("/cast/"), "");
-			href = href.replaceAll("/", "");
-			//now href is just the numerical number of this actor
-			String thumbnailLink = "http://my.cdn.tokyo-hot.com/media/cast/" + href + "/thumbnail.jpg";
-			if(SiteParsingProfile.fileExistsAtURL(thumbnailLink))
+			initializeJapaneseDocument();
+			actressElements = japaneseDocument.select("dl.info dt:contains(Actress) + dd a, dl.info dt:contains(出演者) + dd a");
+		}
+		if(actressElements != null)
+		{
+			for(Element currentActress : actressElements)
 			{
-				try {
-					actorList.add(new Actor(name, "", new Thumb(thumbnailLink)));
-				} catch (MalformedURLException e) {
-					e.printStackTrace();
+				String name = currentActress.text();
+				String href = currentActress.attr("href");
+				href = href.replaceAll(Pattern.quote("/cast/"), "");
+				href = href.replaceAll("/", "");
+				//now href is just the numerical number of this actor
+				String thumbnailLink = "http://my.cdn.tokyo-hot.com/media/cast/" + href + "/thumbnail.jpg";
+				if(SiteParsingProfile.fileExistsAtURL(thumbnailLink))
+				{
+					try {
+						actorList.add(new Actor(name, "", new Thumb(thumbnailLink)));
+					} catch (MalformedURLException e) {
+						e.printStackTrace();
+						actorList.add(new Actor(name, "", null));
+					}
+				}
+				else
+				{
 					actorList.add(new Actor(name, "", null));
 				}
-			}
-			else
-			{
-				actorList.add(new Actor(name, "", null));
 			}
 		}
 		return actorList;
