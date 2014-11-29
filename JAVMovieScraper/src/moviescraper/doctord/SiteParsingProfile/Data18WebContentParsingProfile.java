@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 
 import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.Thumb;
+import moviescraper.doctord.ReleaseRenamer.WebReleaseRenamer;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Director;
 import moviescraper.doctord.dataitem.Genre;
@@ -43,7 +44,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile{
 	Thumb[] scrapedPosters;
 	@Override
 	public Title scrapeTitle() {
-		Element titleElement = document.select("div#centered.main2 div div h1.h1big").first();
+		Element titleElement = document.select("div#centered.main2 div div h1.h1big, div#centered.main2 div h1").first();
 		if(titleElement != null)
 			return new Title(titleElement.text());
 		else return new Title("");
@@ -274,7 +275,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile{
 	public ArrayList<Genre> scrapeGenres() {
 		ArrayList<Genre> genreList = new ArrayList<Genre>();
 		//Elements genreElements = document.select("span.gensmall ~ a");
-		Elements genreElements = document.select("div.gen12 div:contains(Categories) a");
+		Elements genreElements = document.select("div.p8 div div div:contains(Categories) a");
 		if (genreElements != null)
 		{
 			for(Element currentGenreElement : genreElements)

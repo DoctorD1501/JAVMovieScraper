@@ -263,7 +263,7 @@ public class Data18MovieParsingProfile extends SiteParsingProfile {
 	public ArrayList<Genre> scrapeGenres() {
 		ArrayList<Genre> genreList = new ArrayList<Genre>();
 		//Elements genreElements = document.select("span.gensmall ~ a");
-		Elements genreElements = document.select("div.gen12:contains(Categories:) a");
+		Elements genreElements = document.select("div.gen12:contains(Categories:) a, div.p8 div:contains(Categories:) a");
 		//alternate version data18 sometimes uses with "Categories" perhaps?
 		/*if(genreElements == null || genreElements.size() == 0)
 		{
