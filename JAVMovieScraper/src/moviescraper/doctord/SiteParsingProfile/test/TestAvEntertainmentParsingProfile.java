@@ -50,7 +50,7 @@ public class TestAvEntertainmentParsingProfile {
 		ArrayList<Actor> scrapeActors = profile.scrapeActors();
 		assertTrue("There should be 1 Actor", scrapeActors.size() == 1);
 		assertEquals("Wrong actor name", "Yume Mizuki", scrapeActors.get(0).getName());
-		assertEquals("Wrong actor picture", "http://imgs02.aventertainments.com/ActressImage/LargeImage/mizuki_yume.jpg", scrapeActors.get(0).getThumb().getThumbURL().toString());
+		assertEquals("Wrong actor picture", "http://imgs.aventertainments.com/ActressImage/LargeImage/mizuki_yume.jpg", scrapeActors.get(0).getThumb().getThumbURL().toString());
 	}
 	
 	@Test

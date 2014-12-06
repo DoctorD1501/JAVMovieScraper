@@ -57,7 +57,7 @@ public class TestCaribbeancomParsingProfile {
 		//this assumes translation is done. if this test fails, it could be because translation is not done or the web
 		//based translation service has changed how they do translation, so try to just see if the title is close to
 		//this one and adjust as needed to fix the test case
-		assertEquals("Wrong title", "CA Orgy ~ Comfortable Intercourse Space ~", title.getTitle());
+		assertEquals("Wrong title", "CA Orgy Party ~ Comfortable Intercourse Space ~", title.getTitle());
 	}
 	
 	@Test

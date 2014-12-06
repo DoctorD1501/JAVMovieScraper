@@ -70,7 +70,7 @@ public class TestHeyzoParsingProfile {
 	@Test public void testRating(){
 		Rating rating = profile.scrapeRating();
 		System.out.println("rating = " + rating);
-		assertEquals("Wrong rating", "7.4", rating.getRatingOutOfTen());
+		assertEquals("Wrong rating", "7.2", rating.getRatingOutOfTen());
 	}
 	
 	@Test public void testYear(){
