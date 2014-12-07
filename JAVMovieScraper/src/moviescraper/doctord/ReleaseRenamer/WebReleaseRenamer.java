@@ -56,10 +56,10 @@ public class WebReleaseRenamer extends ReleaseRenamer {
 			{
 				abbreviation = abbreviation.replace("\"","");
 				//System.out.println("abbreviation = " + abbreviation.trim().toLowerCase());
-				if(cleanFileName.startsWith(abbreviation.trim().toLowerCase()) && abbreviation.trim().length() > 0)
+				if(cleanFileName.startsWith(abbreviation.trim().toLowerCase() + " ") && abbreviation.trim().length() > 0)
 				{
 					//System.out.println("Found match = " + abbreviation.trim().toLowerCase());
-					cleanFileName = cleanFileName.replaceFirst(Pattern.quote(abbreviation.trim().toLowerCase()), fullSiteName);
+					cleanFileName = cleanFileName.replaceFirst(Pattern.quote(abbreviation.trim().toLowerCase() + " "), fullSiteName + " ");
 					doneReplacingabbreviation = true;
 					break; //just assume we want to only replace one abbreviaton
 				}
