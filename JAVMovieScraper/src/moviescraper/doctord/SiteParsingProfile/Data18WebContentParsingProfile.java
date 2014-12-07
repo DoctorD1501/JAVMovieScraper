@@ -4,10 +4,13 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.Locale;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import moviescraper.doctord.SearchResult;
@@ -452,14 +455,66 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile{
 		return "Data18 Web Content";
 	}
 	public SearchResult[] getData18LinksFromGoogle(String fileName){
-		SearchResult[] googleResults = getLinksFromGoogle(fileName, "data18.com/content/");
+		String replacedDateNumbersWithWordsFileName = replaceFilenameNumericalDateWithWords(fileName);
+		if(!replacedDateNumbersWithWordsFileName.equals(fileName))
+			System.out.println("Searching google with date replaced file name: " + replacedDateNumbersWithWordsFileName);
+		SearchResult[] googleResults = getLinksFromGoogle(replacedDateNumbersWithWordsFileName, "data18.com/content/");
 		googleResults = removeInvalidGoogleResults(googleResults);
 		if(googleResults == null || googleResults.length == 0)
 		{
-			googleResults = getLinksFromGoogle(fileName.replaceAll("[0-9]", ""), "data18.com/content/");
+			googleResults = getLinksFromGoogle(replacedDateNumbersWithWordsFileName.replaceAll("[0-9]", ""), "data18.com/content/");
 			googleResults = removeInvalidGoogleResults(googleResults);
 		}
 		return googleResults;
+	}
+	
+	/**
+	 * Data 18 search work better on google if we search using the date
+	 * However, most file releases have the date in numerical format (i.e. 2014-05-26 or 14.05.26)
+	 * which causes problems with the google search. this function will convert the month to the english month name
+	 * and the year to the 4 digit year if it was in 2 digit format (it's assumed the year is 20XX)
+	 * @param fileName
+	 * @return the fileName with the year and month replaced
+	 */
+	private String replaceFilenameNumericalDateWithWords(String fileName)
+	{
+		String newFileName = fileName;
+		String patternString = "\\D*([0-9]{2,4})[ \\._-]*([0-9]{1,2})[ \\._-]*([0-9]{1,2}).*";
+		Pattern pattern = Pattern.compile(patternString);
+		Matcher matcher = pattern.matcher(fileName);
+		if(matcher.matches())
+		{
+			StringBuilder fileNameBuilder = new StringBuilder(fileName);
+			
+			//the year was only the 2 digits, we want it to be 4 digits, so put "20" in front of the year
+			boolean replacedYear = false;
+			if(matcher.group(2).length() == 2)
+			{
+				int yearIndexBegin = matcher.start(1);
+				int yearIndexEnd = matcher.end(1);
+				fileNameBuilder.replace(yearIndexBegin, yearIndexEnd, "20" + matcher.group(1));
+				replacedYear = true;
+			}
+			int monthIndexBegin = matcher.start(2);
+			int monthIndexEnd = matcher.end(2);
+			if(replacedYear)
+			{
+				monthIndexBegin += 2;
+				monthIndexEnd += 2;
+			}
+			
+			//Data18 google search works better with the month name spelled out
+			fileNameBuilder.replace(monthIndexBegin, monthIndexEnd, formatMonth(matcher.group(2)));
+			newFileName = fileNameBuilder.toString();
+		}
+		return newFileName;
+	}
+	
+	public String formatMonth(String monthString) {
+		int month = Integer.parseInt(monthString);
+	    DateFormatSymbols symbols = new DateFormatSymbols(Locale.ENGLISH);
+	    String[] monthNames = symbols.getMonths();
+	    return monthNames[month - 1];
 	}
 	
 	/**
