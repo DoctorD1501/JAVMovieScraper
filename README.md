@@ -1,7 +1,7 @@
 JAVMovieScraper
 ===============
 
-JAVMovieScraper is a Java Swing program to scrape English [XBMC](http://xbmc.org/) metadata for Japanese Adult Videos (JAV) found on JavLibrary.com, DMM.co.jp, and Caribbeancompr.com (Carribeancom Premium), AV Entertainment, Kin8Tengoku, Tokyo Hot, 1pondo, HEYZO, and American adult DVDs and web content found on Data18.com.
+JAVMovieScraper is a Java Swing program to scrape English [XBMC](http://xbmc.org/) and [Kodi](http://kodi.tv/) metadata for Japanese Adult Videos (JAV) found on JavLibrary.com, DMM.co.jp, and Caribbeancompr.com (Carribeancom Premium), AV Entertainment, Kin8Tengoku, Tokyo Hot, 1pondo, HEYZO, and American adult DVDs and web content found on Data18.com.
 
 As no one site has a complete set of English metadata, the program amalgamates metadeta info from a variety of sources, including dmm.co.jp, javlibrary.com, squareplus.co.jp, and actionjav.com.
 The data is then fed through a machine translation (if original data is in Japanese) and then quality checked to sanitize it and poster elements are cropped so only the cover is shown.
@@ -33,6 +33,11 @@ When using the site specific scraper feature, your file name must contain an ID 
 * 1pondo: The ID is in the URL of the movie, right before /index.html. The first part of the ID is a 6 digit number corresponding to the release date, followed by an underscore, followed by a 3 digit number. Example: 061314_826
 * Caribbeancom Premium: The ID is in the URL of the movie, right before /index.html. The first part of the ID is a 6 digit number corresponding to the release date, followed by an underscore, followed by a 3 digit number. Example: 061314_826
 * Heyzo: The ID is a 4 digit number in the url right after /moviepages/. Example: 0123
+
+###### File Name Cleanup Feature
+This attempts to rename a file to make it more likely a match will be found with the Data18 Web Content Scraper. This is done by replacing website abbreviations ([list here](https://raw.githubusercontent.com/DoctorD1501/JAVMovieScraper/master/JAVMovieScraper/src/moviescraper/doctord/ReleaseRenamer/SiteNameAbbreviations.csv)) at the beginning of the file name with the full site name. It will also remove [words from the file](https://raw.githubusercontent.com/DoctorD1501/JAVMovieScraper/master/JAVMovieScraper/src/moviescraper/doctord/ReleaseRenamer/WordsToRemove.csv) that interfere with scraping and replace underscores and periods in the filename with spaces.
+The [list of site name abbreviations](https://raw.githubusercontent.com/DoctorD1501/JAVMovieScraper/master/JAVMovieScraper/src/moviescraper/doctord/ReleaseRenamer/SiteNameAbbreviations.csv) still needs more work. Please consider contributing to this list if you use this feature and would like to see it work better! Note that the list of abbreviations usually contains a short 2-4 letter abbreviation as the second entry in the list. This is the abbreviation used in the scene release of the file.
+Eventually when this feature is working a little better, I plan to make this a command line option so that it can be invoked in post processing scripts run on file download completion. This will allow you to hopefully someday automatically rename, scrape and move your file upon download completion!
 
 ###### What If I Use Plex?
 XBMC Metadata is compatible with [Plex](https://plex.tv/) using the [XBMCnfoMovieImporter](https://forums.plex.tv/index.php/topic/38402-metadata-agents-for-exported-xbmc-library/) from the [Unsupported Appstore Channel](https://forums.plex.tv/index.php/topic/25523-unsupported-as-in-totally-unofficial-appstore/).
