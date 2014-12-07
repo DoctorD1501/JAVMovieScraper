@@ -13,10 +13,10 @@ import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.lang3.text.WordUtils;
 
 public class WebReleaseRenamer extends ReleaseRenamer {
-	
+
 	private List<CSVRecord> removeTheseWords;
 	private List<CSVRecord> replaceFirstInstanceOfTheseWords;
-	
+
 	public WebReleaseRenamer() throws IOException
 	{
 		removeTheseWords = readWordsToRemoveFromCSV();
@@ -35,7 +35,7 @@ public class WebReleaseRenamer extends ReleaseRenamer {
 		{
 			cleanFileName = cleanFileName.replaceFirst(wordsToRemove.get(0), "");
 		}
-		
+
 		/* 
 		 * often times files are released with abbreviations in their name which 
 		 * messes up doing google searches on them, so we'll do a substitution to get the full name
@@ -66,20 +66,20 @@ public class WebReleaseRenamer extends ReleaseRenamer {
 				break;
 			//System.out.println(siteNameReplacement);
 		}
-//Fix up the case - not needed for search but it just looks better :)
-cleanFileName = WordUtils.capitalize(cleanFileName);
+		//Fix up the case - not needed for search but it just looks better :)
+		cleanFileName = WordUtils.capitalize(cleanFileName);
 		return cleanFileName;
 	}
-	
+
 	public List<CSVRecord> readWordsToRemoveFromCSV() throws IOException
 	{
 		return readFromCSVFile("WordsToRemove.csv");
 	}
-	
+
 	public List<CSVRecord> readSiteNamesToReplaceFromCSV() throws IOException{
 		return readFromCSVFile("SiteNameAbbreviations.csv");
 	}
-	
+
 	public List<CSVRecord> readFromCSVFile(String filePath) throws IOException
 	{
 		URL url = getClass().getResource(filePath);

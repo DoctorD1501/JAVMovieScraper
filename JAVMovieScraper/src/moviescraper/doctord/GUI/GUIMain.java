@@ -491,9 +491,9 @@ public class GUIMain {
 		openCurrentlySelectedFileButton.setIcon(openIcon);
 		fileOperationsButtons.add(openCurrentlySelectedFileButton);
 		
-		JButton fileNameCleanupButton = new JButton("File Name Cleanup");
+		JButton fileNameCleanupButton = new JButton("File Name Cleanup (Experimental Feature)");
 		fileNameCleanupButton
-				.setToolTipText("Attempts to rename a file of a web content release before scraping so that it is more likely to find a match.");
+				.setToolTipText("Attempts to rename a file of a web content release before scraping so that it is more likely to find a match. I'm still working on adding more site abbreviations, so this feature is experimental for now.");
 		fileNameCleanupButton.setIcon(fixFileNameIcon);
 		fileNameCleanupButton.addActionListener(new FileNameCleanupAction(this));
 		fileOperationsButtons.add(fileNameCleanupButton);
