@@ -3,6 +3,8 @@ package moviescraper.doctord.ReleaseRenamer;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -73,20 +75,24 @@ public class WebReleaseRenamer extends ReleaseRenamer {
 
 	public List<CSVRecord> readWordsToRemoveFromCSV() throws IOException
 	{
-		return readFromCSVFile("WordsToRemove.csv");
+		return readFromCSVFile("/moviescraper/doctord/ReleaseRenamer/WordsToRemove.csv");
 	}
 
 	public List<CSVRecord> readSiteNamesToReplaceFromCSV() throws IOException{
-		return readFromCSVFile("SiteNameAbbreviations.csv");
+		return readFromCSVFile("/moviescraper/doctord/ReleaseRenamer/SiteNameAbbreviations.csv");
 	}
 
 	public List<CSVRecord> readFromCSVFile(String filePath) throws IOException
 	{
-		URL url = getClass().getResource(filePath);
-		File file = new File(url.getPath());
-		FileReader fileReader = new FileReader(file);
+		//URL url = getClass().getResource(filePath);
+		//System.out.println("filePath = " + filePath);
+		InputStream inputStream = getClass().getResourceAsStream(filePath);
+		//System.out.println("inputStream = " + inputStream);
+		//System.out.println("URL in fixer = " + url);
+		//File file = new File(url.getPath());
+		//FileReader fileReader = new FileReader(file);
 		CSVFormat format = CSVFormat.RFC4180.withDelimiter(',').withCommentMarker('#');
-		CSVParser parser = new CSVParser(fileReader, format);
+		CSVParser parser = new CSVParser(new InputStreamReader(inputStream), format);
 		List<CSVRecord> csvRecords = parser.getRecords();
 		parser.close();
 		return csvRecords;
