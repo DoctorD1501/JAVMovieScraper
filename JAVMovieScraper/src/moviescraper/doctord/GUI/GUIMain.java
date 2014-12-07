@@ -792,35 +792,42 @@ public class GUIMain {
 	}
 
 	public void updateFileListModel(File currentlySelectedDirectory, boolean keepSelectionsAndReferences) {
-		File [] filesToList = showFileListSorted(currentlySelectedDirectory);
-		List<File> selectValuesListBeforeUpdate = getFileList().getSelectedValuesList();
+		try{
+			getFrmMoviescraper().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+			File [] filesToList = showFileListSorted(currentlySelectedDirectory);
+			List<File> selectValuesListBeforeUpdate = getFileList().getSelectedValuesList();
 
-		//We don't want to fire the listeners events when reselecting the items because this 
-		//will cause us additional IO that is not needed as the program rereads the nfo.
-		//To avoid this, we can save out the old listener, remove it, select the items and then add it back
-		ListSelectionListener[] fileListSelectionListener = null;
-		if(keepSelectionsAndReferences)
-		{
-			fileListSelectionListener = getFileList().getListSelectionListeners();
-			getFileList().removeListSelectionListener(getFileList().getListSelectionListeners()[0]);;
+			//We don't want to fire the listeners events when reselecting the items because this 
+			//will cause us additional IO that is not needed as the program rereads the nfo.
+			//To avoid this, we can save out the old listener, remove it, select the items and then add it back
+			ListSelectionListener[] fileListSelectionListener = null;
+			if(keepSelectionsAndReferences)
+			{
+				fileListSelectionListener = getFileList().getListSelectionListeners();
+				getFileList().removeListSelectionListener(getFileList().getListSelectionListeners()[0]);;
+			}
+			listModelFiles.removeAllElements();
+			for (File file : filesToList) {
+				listModelFiles.addElement(file);
+			}
+			if(!keepSelectionsAndReferences)
+			{
+				removeOldScrapedMovieReferences();
+				removeOldSelectedFileReferences();
+			}
+			//select the old values we had before we updated the list
+			for(File currentValueToSelect : selectValuesListBeforeUpdate)
+			{
+				getFileList().setSelectedValue(currentValueToSelect, false);
+			}
+			if(keepSelectionsAndReferences && fileListSelectionListener != null)
+			{
+				getFileList().addListSelectionListener(fileListSelectionListener[0]);
+			}
 		}
-		listModelFiles.removeAllElements();
-		for (File file : filesToList) {
-			listModelFiles.addElement(file);
-		}
-		if(!keepSelectionsAndReferences)
+		finally
 		{
-			removeOldScrapedMovieReferences();
-			removeOldSelectedFileReferences();
-		}
-		//select the old values we had before we updated the list
-		for(File currentValueToSelect : selectValuesListBeforeUpdate)
-		{
-			getFileList().setSelectedValue(currentValueToSelect, false);
-		}
-		if(keepSelectionsAndReferences && fileListSelectionListener != null)
-		{
-			getFileList().addListSelectionListener(fileListSelectionListener[0]);
+			getFrmMoviescraper().setCursor(Cursor.getDefaultCursor());
 		}
 	}
 
