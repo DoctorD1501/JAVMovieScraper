@@ -35,7 +35,7 @@ public class WebReleaseRenamer extends ReleaseRenamer {
 		 */
 		for(CSVRecord wordsToRemove : removeTheseWords)
 		{
-			cleanFileName = cleanFileName.replaceFirst(wordsToRemove.get(0), "");
+			cleanFileName = cleanFileName.replaceFirst(wordsToRemove.get(0).toLowerCase(), "");
 		}
 
 		/* 
@@ -54,7 +54,8 @@ public class WebReleaseRenamer extends ReleaseRenamer {
 			//WebReleaseRenamer.System.out.println("FullSiteName = " + fullSiteName);
 			for(String abbreviation : siteNameReplacement)
 			{
-				//System.out.println("abbreviation = " + abbreviation);
+				abbreviation = abbreviation.replace("\"","");
+				//System.out.println("abbreviation = " + abbreviation.trim().toLowerCase());
 				if(cleanFileName.startsWith(abbreviation.trim().toLowerCase()) && abbreviation.trim().length() > 0)
 				{
 					//System.out.println("Found match = " + abbreviation.trim().toLowerCase());
@@ -84,13 +85,7 @@ public class WebReleaseRenamer extends ReleaseRenamer {
 
 	public List<CSVRecord> readFromCSVFile(String filePath) throws IOException
 	{
-		//URL url = getClass().getResource(filePath);
-		//System.out.println("filePath = " + filePath);
 		InputStream inputStream = getClass().getResourceAsStream(filePath);
-		//System.out.println("inputStream = " + inputStream);
-		//System.out.println("URL in fixer = " + url);
-		//File file = new File(url.getPath());
-		//FileReader fileReader = new FileReader(file);
 		CSVFormat format = CSVFormat.RFC4180.withDelimiter(',').withCommentMarker('#');
 		CSVParser parser = new CSVParser(new InputStreamReader(inputStream), format);
 		List<CSVRecord> csvRecords = parser.getRecords();
