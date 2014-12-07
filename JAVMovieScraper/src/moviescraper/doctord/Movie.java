@@ -649,11 +649,14 @@ public class Movie {
 		}
 		else //no movie match found
 		{
-			scrapeMovieAction.makeProgress(amountOfProgressToMakeEachTick, siteToParseFrom.toString() + " scraped movie from page - nothing found");
+			if(scrapeMovieAction != null)
+			{
+				scrapeMovieAction.makeProgress(amountOfProgressToMakeEachTick, siteToParseFrom.toString() + " scraped movie from page - nothing found");
+			}
 			return null;
 		}
 	}
-	
+
 	//Version that does not allow us to update GUI while scraping
 	public static Movie scrapeMovie(File movieFile, SiteParsingProfile siteToParseFrom, String urlToScrapeFromDMM, boolean useURLtoScrapeFrom) throws IOException{
 		return scrapeMovie(movieFile, siteToParseFrom, urlToScrapeFromDMM, useURLtoScrapeFrom, null);
