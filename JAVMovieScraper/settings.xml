@@ -3,7 +3,7 @@
 <properties>
 <comment/>
 <entry key="useIAFDForActors">false</entry>
-<entry key="lastUsedDirectory">B:\Newsgroup\test</entry>
+<entry key="lastUsedDirectory">B:\Newsgroup\test\!RenameTown</entry>
 <entry key="writeTrailerToFile">false</entry>
 <entry key="sanitizerForFilename">[\\/:*?"&lt;&gt;|\r\n]|[ ]+$|(?&lt;=[^.])[.]+$|(?&lt;=.{250})(.+)(?=[.]\p{Alnum}{3}$)</entry>
 <entry key="renamerString">%TITLE% %[ACTORS]% %(YEAR)% %[ID]%</entry>

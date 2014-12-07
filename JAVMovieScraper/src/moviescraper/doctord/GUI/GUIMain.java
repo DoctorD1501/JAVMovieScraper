@@ -28,6 +28,7 @@ import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.Thumb;
 import moviescraper.doctord.GUI.renderer.FileRenderer;
 import moviescraper.doctord.controller.BrowseDirectoryAction;
+import moviescraper.doctord.controller.FileNameCleanupAction;
 import moviescraper.doctord.controller.MoveToNewFolderAction;
 import moviescraper.doctord.controller.OpenFileAction;
 import moviescraper.doctord.controller.ScrapeMovieAction;
@@ -214,6 +215,7 @@ public class GUIMain {
 		URL fileFolderIconURL = frmMoviescraper.getClass().getResource("/res/FileFolderIcon.png");
 		URL upIconURL = frmMoviescraper.getClass().getResource("/res/UpIcon.png");
 		URL browseIconURL = frmMoviescraper.getClass().getResource("/res/BrowseDirectoryIcon.png");
+		URL fixFileNameIconURL = frmMoviescraper.getClass().getResource("/res/FixFileNameIcon.png");
 
 		//Used for icon in the title bar
 		Image programIcon = null;
@@ -245,6 +247,10 @@ public class GUIMain {
 
 		//browse directory icon
 		ImageIcon browseDirectoryIcon = initializeImageIcon(browseIconURL);
+		
+		//Fix file name icon
+		
+		ImageIcon fixFileNameIcon = initializeImageIcon(fixFileNameIconURL);
 
 		fileListPanel = new JPanel();
 
@@ -452,6 +458,7 @@ public class GUIMain {
 		scrapeButtons.add(btnScrapeSelectMovieData18WebContent);
 
 		JButton btnWriteFileData = new JButton("Write File Data");
+		btnWriteFileData.setToolTipText("Write out the .nfo file to disk");
 		if(saveIcon != null)
 			btnWriteFileData.setIcon(saveIcon);
 		btnWriteFileData.addActionListener(new WriteFileDataAction(this));
@@ -459,14 +466,23 @@ public class GUIMain {
 
 		JButton btnMoveFileToFolder = new JButton("Move file to folder");
 		btnMoveFileToFolder.setAction(moveToNewFolder);
+		btnMoveFileToFolder.setToolTipText("Create a folder for the file and put the file and any associated files in that new folder.");
 		btnMoveFileToFolder.setIcon(moveToFolderIcon);
 		fileOperationsButtons.add(btnMoveFileToFolder);
 
 		JButton openCurrentlySelectedFileButton = new JButton(
 				"Open File");
+		openCurrentlySelectedFileButton.setToolTipText("Open the currently selected file with the system default program for it");
 		openCurrentlySelectedFileButton.addActionListener(new OpenFileAction(this));
 		openCurrentlySelectedFileButton.setIcon(openIcon);
 		fileOperationsButtons.add(openCurrentlySelectedFileButton);
+		
+		JButton fileNameCleanupButton = new JButton("File Name Cleanup");
+		fileNameCleanupButton
+				.setToolTipText("Attempts to rename a file of a web content release before scraping so that it is more likely to find a match.");
+		fileNameCleanupButton.setIcon(fixFileNameIcon);
+		fileNameCleanupButton.addActionListener(new FileNameCleanupAction(this));
+		fileOperationsButtons.add(fileNameCleanupButton);
 
 		buttonsPanel.add(scrapeButtons);
 		buttonsPanel.add(fileOperationsButtons);
