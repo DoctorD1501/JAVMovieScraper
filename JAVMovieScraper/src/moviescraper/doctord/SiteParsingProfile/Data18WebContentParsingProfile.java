@@ -149,7 +149,6 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile{
 		Elements videoStills = document.select("div:containsOwn(Video Stills:) ~ div img");
 		if(trailerImgElements != null && trailerImgElements.size() > 0 && (videoStills == null || videoStills.size() == 0))
 		{
-			System.out.println("poster 1");
 			//add the trailer image
 			try {
 				for(Element currentTrailerElement: trailerImgElements)
@@ -275,7 +274,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile{
 	public ArrayList<Genre> scrapeGenres() {
 		ArrayList<Genre> genreList = new ArrayList<Genre>();
 		//Elements genreElements = document.select("span.gensmall ~ a");
-		Elements genreElements = document.select("div.p8 div div div:contains(Categories) a");
+		Elements genreElements = document.select("div.p8 div div div:contains(Categories) a, div.gen12 div:contains(Categories) a");
 		if (genreElements != null)
 		{
 			for(Element currentGenreElement : genreElements)
