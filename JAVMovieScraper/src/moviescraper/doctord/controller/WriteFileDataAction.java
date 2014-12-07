@@ -114,7 +114,11 @@ public class WriteFileDataAction implements ActionListener {
 						Path path = this.guiMain.getCurrentlySelectedActorsFolderList().get(movieNumberInList).toPath();
 						Boolean hidden = (Boolean) Files.getAttribute(path, "dos:hidden", LinkOption.NOFOLLOW_LINKS);
 						if (hidden != null && !hidden) {
-							Files.setAttribute(path, "dos:hidden", Boolean.TRUE, LinkOption.NOFOLLOW_LINKS);
+							//if statement needed for Linux checking .actors hidden flag when .actors is a symlink
+							if(!Files.isHidden(path))
+							{
+								Files.setAttribute(path, "dos:hidden", Boolean.TRUE, LinkOption.NOFOLLOW_LINKS);
+							}
 						}
 
 						for(Actor currentActor : this.guiMain.movieToWriteToDiskList.get(movieNumberInList).getActors())
