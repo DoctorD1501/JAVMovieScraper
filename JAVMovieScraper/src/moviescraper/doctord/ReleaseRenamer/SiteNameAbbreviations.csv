@@ -1,3 +1,9 @@
+#How to read this file:
+#This is a comment and will be ignored since it starts with "#"
+#A comment above a list of entries is the network name
+#On a given line the first entry is the text that will be returned if any comma separated entries after that entry on that line are found at the start of the file name
+#a lowercase abbreviation (typically the second entry on each line, if it's known) is the same used as the release name on usenet alt.binaries.erotica
+
 #Bang Bros
 "Assparade", ap
 "Back Room Milf", BackRoomMilf, "Backroom Milf"
@@ -73,6 +79,7 @@
 "Teens Like It Big", tlib, TeensLikeItBig
 "Zz Series", zzs, ZzSeries
 
+
 #MyXXXPass
 "1000 Facials", 1kf, "1000Facials", "OneThousandFacials"
 "1st Interracial", "1stInterracial", "First Interracial"
@@ -124,3 +131,35 @@
 "Neighbor Affair", naf, NeighborAffair
 "Seduced By A Cougar", sbac, SeducedByACougar
 "Socal Coeds", SocalCoeds
+"Wives on Vacation", wov, "WivesOnVacation"
+
+#Reality Kings
+"40inchplus", "40 Inch Plus"
+"8th Street Latinas", 8thsl, "8thStreetLatinas"
+"Big Naturals", bin, "BigNaturals"
+"Big Tits Boss", btb, "BigTitsBoss"
+"Bikini Crashers", "BikiniCrashers"
+"Captain Stabbin", cas, "CaptainStabbin"
+"CFNM Secret", cfnms, "CFNMSecret"
+"Cum Fiesta", cuf, "CumFiesta"
+"Euro Sex Parties", esp, "EuroSexParties"
+"First Time Auditions", fta, "FirstTimeAuditions"
+"Flower Tucci Official Site", "FlowerTucciOfficialSite"
+"Hot Bush", hotbush, "HotBush"
+"In The Vip", inthevip, "InTheVip"
+"Mike In Brazil", mib, "MikeInBrazil"
+"Mikes Apartment", map, "Mike's Apartment", "MikesApartment", "Mike'sApartment"
+"Milf Hunter", mih, "MilfHunter"
+"Milf Next Door", mnd, "MilfNextDoor"
+"Moms Bang Teens", mbt, "MomsBangTeens"
+"Money Talks", moneytalks, "MoneyTalks"
+"Monster Curves", muc, "MonsterCurves"
+"Pure18", p18, "Pure 18"
+"Round And Brown", rab, "RoundAndBrown"
+"Saturday Night Latinas", "SaturdayNightLatinas"
+"See My Wife", "SeeMyWife"
+"Street Blowjobs", sbj, "StreetBlowjobs"
+"Teens Love Huge Cocks", tlhc, "TeensLoveHugeCocks"
+"Vipcrew", "VIP Crew", "Vip Crew"
+"We Live Together", wlt, "WeLiveTogether"
+ 
