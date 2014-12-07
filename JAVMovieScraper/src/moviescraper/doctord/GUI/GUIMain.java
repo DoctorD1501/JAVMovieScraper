@@ -17,6 +17,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.KeyStroke;
 import javax.swing.ProgressMonitor;
 
 import java.awt.BorderLayout;
@@ -31,6 +32,7 @@ import moviescraper.doctord.controller.BrowseDirectoryAction;
 import moviescraper.doctord.controller.FileNameCleanupAction;
 import moviescraper.doctord.controller.MoveToNewFolderAction;
 import moviescraper.doctord.controller.OpenFileAction;
+import moviescraper.doctord.controller.RefreshDirectoryAction;
 import moviescraper.doctord.controller.ScrapeMovieAction;
 import moviescraper.doctord.controller.ScrapeMovieActionAutomatic;
 import moviescraper.doctord.controller.ScrapeMovieActionData18Movie;
@@ -44,6 +46,7 @@ import moviescraper.doctord.preferences.MoviescraperPreferences;
 import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.Dimension;
+import java.awt.Event;
 import java.awt.Image;
 
 import javax.swing.JButton;
@@ -215,6 +218,7 @@ public class GUIMain {
 		URL fileFolderIconURL = frmMoviescraper.getClass().getResource("/res/FileFolderIcon.png");
 		URL upIconURL = frmMoviescraper.getClass().getResource("/res/UpIcon.png");
 		URL browseIconURL = frmMoviescraper.getClass().getResource("/res/BrowseDirectoryIcon.png");
+		URL refreshIconURL = frmMoviescraper.getClass().getResource("/res/RefreshIcon.png");
 		URL fixFileNameIconURL = frmMoviescraper.getClass().getResource("/res/FixFileNameIcon.png");
 
 		//Used for icon in the title bar
@@ -248,8 +252,10 @@ public class GUIMain {
 		//browse directory icon
 		ImageIcon browseDirectoryIcon = initializeImageIcon(browseIconURL);
 		
-		//Fix file name icon
+		//refresh directory icon
+		ImageIcon refreshDirectoryIcon = initializeImageIcon(refreshIconURL); 
 		
+		//Fix file name icon
 		ImageIcon fixFileNameIcon = initializeImageIcon(fixFileNameIconURL);
 
 		fileListPanel = new JPanel();
@@ -400,10 +406,18 @@ public class GUIMain {
 		btnUpDirectory.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 		//Button to bring up a file chooser so the user can browse and pick what directory they want to view
-		JButton btnBrowseDirectory = new JButton("Browse Directory");
+		JButton btnBrowseDirectory = new JButton("Browse");
 		btnBrowseDirectory.addActionListener(new BrowseDirectoryAction(this));
 		btnBrowseDirectory.setIcon(browseDirectoryIcon);
 		btnBrowseDirectory.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		//Button to refresh the current directory
+		JButton btnRefreshDirectory = new JButton();
+		btnRefreshDirectory.addActionListener(new RefreshDirectoryAction(this));
+		btnRefreshDirectory.setIcon(refreshDirectoryIcon);
+		btnRefreshDirectory.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+		fileListPanelButtonsPanel.add(btnRefreshDirectory);
 
 		fileListPanelButtonsPanel.add(btnUpDirectory);
 		fileListPanelButtonsPanel.add(btnBrowseDirectory);
@@ -713,9 +727,43 @@ public class GUIMain {
 		});
 		renameMenu.add(renameSettings);
 
+		// File menu
 
+		JMenu fileMenu = new JMenu("File");
+		fileMenu.setMnemonic(KeyEvent.VK_F);
+		fileMenu.getAccessibleContext().setAccessibleDescription(
+				"File actions for JAVMovieScraper");
+
+		JMenuItem browseDirectory = new JMenuItem("Browse directory...");
+		browseDirectory.setMnemonic(KeyEvent.VK_B);
+		browseDirectory.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B,
+				Event.CTRL_MASK));
+		browseDirectory.addActionListener(new BrowseDirectoryAction(this));
+		fileMenu.add(browseDirectory);
+
+		JMenuItem refreshDirectory = new JMenuItem("Refresh");
+		refreshDirectory.setMnemonic(KeyEvent.VK_R);
+		refreshDirectory.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R,
+				Event.CTRL_MASK));
+		refreshDirectory.addActionListener(new RefreshDirectoryAction(this));
+		fileMenu.add(refreshDirectory);
+
+		fileMenu.addSeparator();
+
+		JMenuItem exit = new JMenuItem("Exit");
+		exit.setMnemonic(KeyEvent.VK_E);
+		exit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q,
+				Event.CTRL_MASK));
+		exit.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				System.exit(0);
+			}
+		});
+		fileMenu.add(exit);
 
 		//add the various menus together
+		menuBar.add(fileMenu);
 		menuBar.add(preferenceMenu);
 		menuBar.add(renameMenu);
 		frmMoviescraper.setJMenuBar(menuBar);
