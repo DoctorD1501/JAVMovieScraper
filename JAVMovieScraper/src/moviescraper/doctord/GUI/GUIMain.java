@@ -734,22 +734,33 @@ public class GUIMain {
 		fileMenu.getAccessibleContext().setAccessibleDescription(
 				"File actions for JAVMovieScraper");
 
+		//Browse directory file menu
 		JMenuItem browseDirectory = new JMenuItem("Browse directory...");
 		browseDirectory.setMnemonic(KeyEvent.VK_B);
 		browseDirectory.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B,
 				Event.CTRL_MASK));
 		browseDirectory.addActionListener(new BrowseDirectoryAction(this));
 		fileMenu.add(browseDirectory);
-
+		
+		//Refresh file menu
 		JMenuItem refreshDirectory = new JMenuItem("Refresh");
 		refreshDirectory.setMnemonic(KeyEvent.VK_R);
 		refreshDirectory.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R,
 				Event.CTRL_MASK));
 		refreshDirectory.addActionListener(new RefreshDirectoryAction(this));
 		fileMenu.add(refreshDirectory);
+		
+		//Open file menu
+		JMenuItem openFile = new JMenuItem("Open");
+		openFile.setMnemonic(KeyEvent.VK_O);
+		openFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,
+				Event.CTRL_MASK));
+		openFile.addActionListener(new OpenFileAction(this));
+		fileMenu.add(openFile);
 
 		fileMenu.addSeparator();
-
+		
+		//Exit file menu
 		JMenuItem exit = new JMenuItem("Exit");
 		exit.setMnemonic(KeyEvent.VK_E);
 		exit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q,
