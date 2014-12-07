@@ -19,6 +19,7 @@ import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 
+import moviescraper.doctord.Language;
 import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.Thumb;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
@@ -71,7 +72,7 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 
 	@Override
 	public Set scrapeSet() {
-		String set = getMovieData("Series");
+		String set = getMovieData("Series","シリーズ");
 		return new Set(set);
 	}
 
@@ -88,12 +89,15 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 		for (Element element : elements) {
 			if (element.childNodeSize() >= 3) {
 				Node childNode = element.childNode(2);
-				if ( childNode instanceof TextNode && element.childNode(1).childNode(0).toString().startsWith("Release Date")) {
-					
+				if (childNode instanceof TextNode
+						&& (element.childNode(1).childNode(0).toString()
+								.startsWith("Release Date") || element
+								.childNode(1).childNode(0).toString()
+								.startsWith("発売日"))) {
 					String data = element.childNode(2).toString();
 					Pattern pattern = Pattern.compile("\\d{4}");
 					Matcher matcher = pattern.matcher(data);
-					if ( matcher.find() ) {
+					if (matcher.find()) {
 						year = matcher.group();
 						break;
 					}
@@ -131,16 +135,20 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 	@Override
 	public Runtime scrapeRuntime() {
 		String runtime = "";
-		
+
 		Elements elements = document.select("div[id=titlebox] ul li");
 		for (Element element : elements) {
 			if (element.childNodeSize() == 3) {
 				Node childNode = element.childNode(2);
-				if ( childNode instanceof TextNode && element.childNode(1).childNode(0).toString().startsWith("Playing time")) {
+				if (childNode instanceof TextNode
+						&& (element.childNode(1).childNode(0).toString()
+								.startsWith("Playing time") || element
+								.childNode(1).childNode(0).toString()
+								.startsWith("収録時間"))) {
 					String data = element.childNode(2).toString();
 					Pattern pattern = Pattern.compile("\\d+");
 					Matcher matcher = pattern.matcher(data);
-					if ( matcher.find() ) {
+					if (matcher.find()) {
 						runtime = matcher.group();
 						break;
 					}
@@ -259,17 +267,17 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 
 	@Override
 	public Studio scrapeStudio() {
-		String studio = getMovieData("Studio");
+		String studio = getMovieData("Studio", "スタジオ");
 		return new Studio( studio );
 	}
 	
-	private String getMovieData(String category) {
+	private String getMovieData(String category, String japaneseWordForCategory) {
 		Elements elements = document.select("div[id=titlebox] ul li");
 		for (Element element : elements) {
 			Element span = element.select("span").first();
 			if (span != null) {
 				String cat = span.childNode(0).toString();
-				if (cat.startsWith(category)) {
+				if (cat.startsWith(category) || cat.startsWith(japaneseWordForCategory)) {
 					Element first = element.select("a").first();
 					String text = first.childNode(0).toString();
 					return text;
@@ -312,12 +320,18 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 	}
 
 	private String getSearchString(String id) {
-		return "http://www.aventertainments.com/search_Products.aspx?languageID=1&dept_id=29&keyword="
+		String languageID = "1";
+		if(getScrapingLanguage() == Language.JAPANESE)
+			languageID = "2";
+		return "http://www.aventertainments.com/search_Products.aspx?languageID="+ languageID + "&dept_id=29&keyword="
 				+ id + "&searchby=item_no";
 	}
 	
 	private String getSearchStringPPV(String id) {
-		return "http://www.aventertainments.com/ppv/ppv_searchproducts.aspx?languageID=1&VODTypeID=1&keyword="
+		String languageID = "1";
+		if(getScrapingLanguage() == Language.JAPANESE)
+			languageID = "2";
+		return "http://www.aventertainments.com/ppv/ppv_searchproducts.aspx?languageID=" + languageID + "&VODTypeID=1&keyword="
 				+ id + "&searchby=item_no";
 	}
 
