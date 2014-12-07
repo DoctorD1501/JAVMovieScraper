@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.regex.Pattern;
 
 import moviescraper.doctord.SearchResult;
@@ -420,9 +423,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile{
 			if(movieSearchResultElements == null || movieSearchResultElements.size() == 0)
 			{
 				this.useSiteSearch = false;
-				SearchResult[] googleResults = getLinksFromGoogle(fileName, "data18.com/content/");
-				if(googleResults == null || googleResults.length == 0)
-					googleResults = getLinksFromGoogle(fileName.replaceAll("[0-9]", ""), "data18.com/content/");
+				SearchResult[] googleResults = getData18LinksFromGoogle(fileName);
 				return googleResults;
 			}
 			else
@@ -443,16 +444,45 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile{
 		else
 		{
 			this.useSiteSearch = false;
-			SearchResult[] googleResults = getLinksFromGoogle(searchString, "data18.com/content/");
-			if(googleResults == null || googleResults.length == 0)
-				googleResults = getLinksFromGoogle(fileName.replaceAll("[0-9]", ""), "data18.com/content/");
+			SearchResult[] googleResults = getData18LinksFromGoogle(fileName);
 			return googleResults;
 		}
 	}
 	public String toString(){
 		return "Data18 Web Content";
 	}
-
+	public SearchResult[] getData18LinksFromGoogle(String fileName){
+		SearchResult[] googleResults = getLinksFromGoogle(fileName, "data18.com/content/");
+		googleResults = removeInvalidGoogleResults(googleResults);
+		if(googleResults == null || googleResults.length == 0)
+		{
+			googleResults = getLinksFromGoogle(fileName.replaceAll("[0-9]", ""), "data18.com/content/");
+			googleResults = removeInvalidGoogleResults(googleResults);
+		}
+		return googleResults;
+	}
+	
+	/**
+	 * Removes links from google that do not point to actual web content
+	 * @param googleResults
+	 * @return
+	 */
+	public SearchResult[] removeInvalidGoogleResults(SearchResult [] googleResults)
+	{
+		LinkedList<SearchResult> modifiedSearchResultList = new LinkedList<SearchResult>();
+		for(int i = 0; i < googleResults.length; i++)
+		{
+			//System.out.println("initial goog results = " + googleResults[i].getUrlPath());
+			if(googleResults[i].getUrlPath().matches("http://www.data18.com/content/\\d+/?"))
+			{
+				//System.out.println("match = " + googleResults[i]);
+				modifiedSearchResultList.add(googleResults[i]);
+			}
+		}
+		return modifiedSearchResultList.toArray(new SearchResult[modifiedSearchResultList.size()]);
+	}
+	
+	
 	@Override
 	public SiteParsingProfile newInstance() {
 		return new Data18WebContentParsingProfile();
