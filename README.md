@@ -26,13 +26,14 @@ This program is in alpha. Please submit bugs and feature requests here on github
 ###### Command Line Options
 This program now supports command line options. Starting the program without any command line option will load the graphical user interface version of the program. I'm adding more command line options over time - right now there's really just the command line option for file name cleanup.
 <p>
-usage: JAVMovieScraper<br>
- **-filenamecleanup &#60;file&#62;**   Use given file argument(s) for file name<br>
-                                   cleanup process which will rename the file by<br>
-                                   expanding abbreviations and removing words<br>
-                                   which cause google scrapes to fail<br><br>
- **-help**                             display this message<br>
-</p> 
+Usage:
+<br>                                                  
+| Command                          | Effect                                                                                                                                                              |
+| ---------------------------------| ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| -filenamecleanup &#60;file&#62;  | Use given file argument(s) for file name cleanup process which will rename the file by expanding abbreviations and removing words which cause google scrapes to fail|
+| -help                            | display list of command line options                                                                                                                                |
+<br>
+</p>
 <p>
  Example command to run filenamecleanup on two different files:
 <br>
