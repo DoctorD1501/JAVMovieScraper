@@ -14,7 +14,7 @@ This program is in alpha. Please submit bugs and feature requests here on github
 
 1. Make sure you have the Java JRE installed. You will need at least Java version 7. Java can be downloaded here: https://www.java.com/en/download/index.jsp
 2. Either compile the source yourself or download and run the precompiled JAR from here: http://www.mediafire.com/download/pm3d2yl49qa99fe/JAVMovieScraper.jar
-3. Initially, the program will load your home directory in the file pane on the left. Click the "Browse Directory" button below this file list and point it to the directory where your movie file you wish to scrape is.
+3. Double click the jar file. Initially, the program will load your home directory in the file pane on the left. Click the "Browse Directory" button below this file list and point it to the directory where your movie file you wish to scrape is.
 4. Select the movie file or folder the movie is in (if the folder is named the same as the movie) in the list of files. You can select multiple files by holding the control or shift keys to do batch scraping. Your movie file MUST have the JAV ID as the last word within the filename, not including stacked file indicators such as DISC1 or CD1. The JAV ID (or Caribbeancom Release ID) can be optionally surrounded by brackets or parenthesis and can contain a dash before the numerical part. Examples of OK file names for JAV DVD Movies: My Movie - ABC-123, My Movie - [ABC123] CD1, ABC-123, (ABC-123), For American movies, the filename must be the name of the movie, optionally followed by the year in parenthesis e.g. MovieName (2014). For web releases, a google search is done on the entire file name, so it's more flexible, but it works best if you include the name of the episode and at least one of the actors in your file name. See the section below for more file naming conventions for the site specific scraper.
 5. Click either the "Scrape JAV" button or the "Scrape JAV (Automatic)" button on the bottom part of the program for Japanese content or the "Scrape Data18 Movie" for adult DVDs or the "Scrape Data18 WebContent" for content downloaded from websites or split scenes. For Japanese movies, "Scrape JAV (Automatic)" will work 99% of the time, but if you get the wrong result when scraping, try using "Scrape" instead to manually specify which URL to use when scraping dmm.co.jp and javlibrary. It's also worth trying "Scrape" if actor images are not appearing since perhaps JAVLibrary and DMM were scraping two different movies.
 6. After a little while, the metadata for the movie will appear in the editor pane. You can select one of the several titles found using the drop down list, or edit the entry by typing in your own text. For now, there is no way to edit the genres or actors.
@@ -23,7 +23,21 @@ This program is in alpha. Please submit bugs and feature requests here on github
 9. It's worth checking out the preferences menu to customize what info gets written and how it is named.
 
 
-In the future I intend to add command line options.
+###### Command Line Options
+This program now supports command line options. Starting the program without any command line option will load the graphical user interface version of the program. I'm adding more command line options over time - right now there's really just the command line option for file name cleanup.
+<p>
+usage: JAVMovieScraper<br>
+ -filenamecleanup <file>   Use given file argument(s) for file name<br>
+                           cleanup process which will rename the file by<br>
+                           expanding abbreviations and removing words<br>
+                           which cause google scrapes to fail<br>
+ -help                     display this message<br>
+</p> 
+<p>
+ Example command to run filenamecleanup on two different files:
+<br>
+java -jar JAVMovieScraper.jar -filenamecleanup "C:\myfile1.mp4" "C:\myfile2.mp4"
+</p>
 
 ###### Site Specific File Name Conventions
 When using the site specific scraper feature, your file name must contain an ID number which conforms to the release ID conventions set by that site. 
@@ -37,7 +51,7 @@ When using the site specific scraper feature, your file name must contain an ID 
 ###### File Name Cleanup Feature
 This attempts to rename a file to make it more likely a match will be found with the Data18 Web Content Scraper. This is done by replacing website abbreviations ([current list here - more to be added soon](https://raw.githubusercontent.com/DoctorD1501/JAVMovieScraper/master/JAVMovieScraper/src/moviescraper/doctord/ReleaseRenamer/SiteNameAbbreviations.csv)) at the beginning of the file name with the full site name. It will also remove [words from the file](https://raw.githubusercontent.com/DoctorD1501/JAVMovieScraper/master/JAVMovieScraper/src/moviescraper/doctord/ReleaseRenamer/WordsToRemove.csv) that interfere with scraping and replace underscores and periods in the filename with spaces.
 The [list of site name abbreviations](https://raw.githubusercontent.com/DoctorD1501/JAVMovieScraper/master/JAVMovieScraper/src/moviescraper/doctord/ReleaseRenamer/SiteNameAbbreviations.csv) still needs more work. Please consider contributing to this list if you use this feature and would like to see it work better! Note that the list of abbreviations usually contains a short 2-4 letter abbreviation as the second entry in the list. This is the abbreviation used in the scene release of the file.
-Eventually when this feature is working a little better, I plan to make this a command line option so that it can be invoked in post processing scripts run on file download completion. This will allow you to hopefully someday automatically rename, scrape and move your file upon download completion!
+
 
 ###### What If I Use Plex?
 XBMC Metadata is compatible with [Plex](https://plex.tv/) using the [XBMCnfoMovieImporter](https://forums.plex.tv/index.php/topic/38402-metadata-agents-for-exported-xbmc-library/) from the [Unsupported Appstore Channel](https://forums.plex.tv/index.php/topic/25523-unsupported-as-in-totally-unofficial-appstore/).
