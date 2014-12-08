@@ -27,11 +27,10 @@ This program is in alpha. Please submit bugs and feature requests here on github
 This program now supports command line options. Starting the program without any command line option will load the graphical user interface version of the program. I'm adding more command line options over time - right now there's really just the command line option for file name cleanup.
 <p>
 Usage:
-<br>                                                  
-| Command                          | Effect                                                                                                                                                              |
-| ---------------------------------| ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| -filenamecleanup &#60;file&#62;  | Use given file argument(s) for file name cleanup process which will rename the file by expanding abbreviations and removing words which cause google scrapes to fail|
-| -help                            | display list of command line options                                                                                                                                |
+<br>                                                                                                                                                                                                       
+<b> -filenamecleanup &#60;file&#62; </b>   Use given file argument(s) for file name cleanup process which will rename the file by expanding abbreviations and removing words which cause google scrapes to fail 
+<br>
+<b>-help</b>                               display list of command line options                                                                                                                                  
 <br>
 </p>
 <p>
