@@ -181,10 +181,8 @@ public class ScrapeMovieAction extends AbstractAction {
 								SearchResult searchResultFromUser = GUIMain
 										.showOptionPane(searchResultsDMM,
 												"dmm.co.jp");
-								if (searchResultFromUser == null)
-									continue;
-								overrideURLDMM = searchResultFromUser
-										.getUrlPath();
+								if (searchResultFromUser != null)
+									overrideURLDMM = searchResultFromUser.getUrlPath();
 
 							}
 							// don't read from jav library if we're
@@ -199,12 +197,13 @@ public class ScrapeMovieAction extends AbstractAction {
 											.showOptionPane(
 													searchResultsJavLibStrings,
 													"javlibrary.com");
-									if (searchResultFromUser == null)
-										continue;
-									overrideURLJavLibrary = searchResultFromUser
-											.getUrlPath();
+									if (searchResultFromUser != null)
+										overrideURLJavLibrary = searchResultFromUser.getUrlPath();
 								}
 							}
+							//if we hit cancel twice while scraping, just go on to the next movie and don't scrape
+							if (overrideURLDMM == null && overrideURLJavLibrary == null)
+								continue;
 						} catch (IOException e2) {
 							// TODO Auto-generated catch block
 							e2.printStackTrace();
