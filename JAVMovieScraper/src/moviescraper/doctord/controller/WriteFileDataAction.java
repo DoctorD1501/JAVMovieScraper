@@ -112,11 +112,11 @@ public class WriteFileDataAction implements ActionListener {
 						FileUtils.forceMkdir(this.guiMain.getCurrentlySelectedActorsFolderList().get(movieNumberInList));
 						//on windows this new folder should have the hidden attribute; on unix it is already "hidden" by having a . in front of the name
 						Path path = this.guiMain.getCurrentlySelectedActorsFolderList().get(movieNumberInList).toPath();
-						Boolean hidden = (Boolean) Files.getAttribute(path, "dos:hidden", LinkOption.NOFOLLOW_LINKS);
-						if (hidden != null && !hidden) {
-							//if statement needed for Linux checking .actors hidden flag when .actors is a symlink
-							if(!Files.isHidden(path))
-							{
+						 //if statement needed for Linux checking .actors hidden flag when .actors is a symlink
+						if(!Files.isHidden(path))
+						{
+							Boolean hidden = (Boolean) Files.getAttribute(path, "dos:hidden", LinkOption.NOFOLLOW_LINKS);
+							if (hidden != null && !hidden) {
 								Files.setAttribute(path, "dos:hidden", Boolean.TRUE, LinkOption.NOFOLLOW_LINKS);
 							}
 						}
