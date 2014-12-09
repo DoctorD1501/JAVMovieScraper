@@ -789,17 +789,17 @@ public class GUIMain {
 		setCurrentlySelectedMovieData18Movie(null);
 		if(movieToWriteToDiskList != null)
 			movieToWriteToDiskList.clear();
-
 	}
 	public void removeOldSelectedFileReferences(){
 		getCurrentlySelectedNfoFileList().clear();
 		getCurrentlySelectedMovieFileList().clear();
-		currentlySelectedActorsFolderList.clear();
+		getCurrentlySelectedActorsFolderList().clear();
 		getCurrentlySelectedPosterFileList().clear();
 		getCurrentlySelectedFolderJpgFileList().clear();
 		getCurrentlySelectedFanartFileList().clear();
 		getCurrentlySelectedTrailerFileList().clear();
 		getCurrentlySelectedExtraFanartFolderList().clear();
+		getMovieToWriteToDiskList().clear();
 	}
 
 	public void updateFileListModel(File currentlySelectedDirectory, boolean keepSelectionsAndReferences) {

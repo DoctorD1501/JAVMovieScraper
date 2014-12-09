@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
@@ -39,10 +40,11 @@ public class SelectFileListAction implements ListSelectionListener {
 				this.guiMain.removeOldSelectedFileReferences();
 
 			} else {
-				this.guiMain.removeOldSelectedFileReferences();
+				//totally new selection
+				//if(guiMain.getFileList().getSelectedValuesList().size() == 1)
+					this.guiMain.removeOldSelectedFileReferences();
 
-				// Item is selected
-				//File selectedValue = fileList.getSelectedValue();
+				
 				for(File currentSelectedFile : this.guiMain.getFileList().getSelectedValuesList())
 				{
 					this.guiMain.getCurrentlySelectedNfoFileList().add(new File(Movie
@@ -71,16 +73,33 @@ public class SelectFileListAction implements ListSelectionListener {
 				this.guiMain.updateExtraFanartFolder(null);
 
 				// clean up old scraped movie results from previous selection
-				this.guiMain.removeOldScrapedMovieReferences();
+				//this.guiMain.removeOldScrapedMovieReferences();
 
-				if (this.guiMain.getCurrentlySelectedNfoFileList().get(0).exists()) {
-					readMovieFromNfoFile(this.guiMain.getCurrentlySelectedNfoFileList().get(0));
+				//this method is rather ineffecient - it has to reread the entire list's nfo every time
+				//instead of just reading ones it doesn't already have!
+				boolean readInAnInfo = false;
+				for(File currentSelectedFile : this.guiMain.getFileList().getSelectedValuesList())
+				{
+					File potentialNfoFile = new File(Movie.getFileNameOfNfo(currentSelectedFile, this.guiMain.getPreferences().getNfoNamedMovieDotNfo()));
+					List<File> nfoList = guiMain.getCurrentlySelectedNfoFileList();
+					int potentialIndex = nfoList.indexOf(potentialNfoFile);
+					if(potentialIndex != -1)
+					{
+						if (nfoList.get(potentialIndex).exists()) {
+							readMovieFromNfoFile(guiMain.getCurrentlySelectedNfoFileList().get(potentialIndex));
+							readInAnInfo = true;
+						}
+					}
+
 				}
-				//if no nfo file for file or directory, we want to just update the gui
-				else
+				if(!readInAnInfo)
 				{
 					this.guiMain.updateAllFieldsOfFileDetailPanel(false);
 				}
+				this.guiMain.debugWriter("currentlySelectedMovieFileList: " + guiMain.getCurrentlySelectedMovieFileList());
+				this.guiMain.debugWriter("movieToWriteToDiskList: " + guiMain.movieToWriteToDiskList.size());
+				
+
 			}
 		}
 	}

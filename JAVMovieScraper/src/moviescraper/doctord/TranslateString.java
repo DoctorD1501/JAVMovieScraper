@@ -28,7 +28,6 @@ public class TranslateString {
 			if(JapaneseCharacter.isKanji(japanesePersonName.charAt(i)))
 				return translateStringJapaneseToEnglish(japanesePersonName);
 		}
-		System.out.println("doing good translation");
 		String romaji = WordUtils.capitalize(JapaneseCharacter.convertToRomaji(japanesePersonName)).trim();
 		if(romaji != null)
 			return romaji;

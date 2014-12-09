@@ -66,8 +66,6 @@ public class WriteFileDataAction implements ActionListener {
 				if(this.guiMain.movieToWriteToDiskList != null)
 				{
 					if ( this.guiMain.getPreferences().getRenameMovieFile() ) {
-						////TODO New Filewrite
-						System.out.println(this.guiMain.getCurrentlySelectedMovieFileList().get(0));
 						File oldMovieFile = this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList);
 						Movie movie = this.guiMain.movieToWriteToDiskList.get(movieNumberInList);
 

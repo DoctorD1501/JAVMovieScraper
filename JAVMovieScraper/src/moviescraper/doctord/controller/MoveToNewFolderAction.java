@@ -36,7 +36,8 @@ public class MoveToNewFolderAction extends AbstractAction {
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		String pathSeperator = System.getProperty("file.separator");
-		for(int movieNumberInList = 0; movieNumberInList < this.guiMain.getCurrentlySelectedMovieFileList().size(); movieNumberInList++)
+		int moviesToMove = guiMain.getCurrentlySelectedMovieFileList().size();
+		for(int movieNumberInList = 0; movieNumberInList < moviesToMove; movieNumberInList++)
 		{
 			try {
 				//set the cursor to busy as this could take more than 1 or 2 seconds while files are copied or extrafanart is downloaded from the internet
@@ -49,6 +50,7 @@ public class MoveToNewFolderAction extends AbstractAction {
 					// ID of the movie)
 					String destinationDirectoryPrefix = "";
 					if (this.guiMain.movieToWriteToDiskList != null && this.guiMain.movieToWriteToDiskList.size() > 0) {
+						
 						String possibleID = this.guiMain.movieToWriteToDiskList.get(movieNumberInList).getId().getId()
 								.toUpperCase();
 						String possibleIDWithoutDash = possibleID.replaceFirst(
@@ -137,9 +139,7 @@ public class MoveToNewFolderAction extends AbstractAction {
 					}
 
 
-					// remove all the old references so we aren't tempted to
-					// reuse them when updating the GUI
-					this.guiMain.updateFileListModel(this.guiMain.getCurrentlySelectedDirectoryList(), false);
+
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -147,9 +147,15 @@ public class MoveToNewFolderAction extends AbstractAction {
 			}
 			finally
 			{
+
 				this.guiMain.getFrmMoviescraper().setCursor(Cursor.getDefaultCursor());
 			}
 		}
+		// remove all the old references so we aren't tempted to
+		// reuse them when updating the GUI
+		guiMain.removeOldScrapedMovieReferences();
+		guiMain.removeOldSelectedFileReferences();
+		this.guiMain.updateFileListModel(this.guiMain.getCurrentlySelectedDirectoryList(), false);
 	}
 
 }
