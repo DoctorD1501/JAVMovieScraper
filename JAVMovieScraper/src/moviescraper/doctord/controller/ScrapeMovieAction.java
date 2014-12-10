@@ -281,7 +281,7 @@ public class ScrapeMovieAction extends AbstractAction {
 									movieNumberInListFinal, false);
 						}
 					} catch (InterruptedException e) {
-
+						e.printStackTrace();
 					}
 					// finish up the progress monitor for the current scraping
 					makeProgress(100, "Done!"); 
@@ -808,27 +808,40 @@ public class ScrapeMovieAction extends AbstractAction {
 
 		//Assuming we have a DMM movie, any of the other movies must contain the same ID as the DMM movie
 		//if they aren't the same ID, discard them
-		if (currentlySelectedMovieDMM != null)
+		//note that sometimes the DMM ID has some weird stuff in front of it
+		//so we just want to check if our target ID is contained at the end of the ID
+		if (currentlySelectedMovieDMM != null && currentlySelectedMovieDMM.getId() != null)
 		{
-			ID idMustBeThis = currentlySelectedMovieDMM.getId();
-			if(idMustBeThis != null)
+			//we don't want to worry about dashes messing up our checks because sometimes sites are not consistent with the dash in the ID
+			String dmmIDString = null, actionJavIDString = null, squarePlusIDString = null,javLibraryIDString = null, javZooIDString = null;
+			dmmIDString = currentlySelectedMovieDMM.getId().getId().replace("-","");
+			if(currentlySelectedMovieActionJav != null)
+				actionJavIDString = currentlySelectedMovieActionJav.getId().getId().replace("-","");
+			if(currentlySelectedMovieSquarePlus != null)
+				squarePlusIDString = currentlySelectedMovieSquarePlus.getId().getId().replace("-","");
+			if(currentlySelectedMovieJavLibrary != null)
+				javLibraryIDString = currentlySelectedMovieJavLibrary.getId().getId().replace("-","");
+			if(currentlySelectedMovieJavZoo != null)
+				javZooIDString = currentlySelectedMovieJavZoo.getId().getId().replace("-","");
+			
+			if(dmmIDString != null)
 			{
-				if(currentlySelectedMovieActionJav != null && !currentlySelectedMovieActionJav.getId().equals(idMustBeThis)){
+				if(currentlySelectedMovieActionJav != null && actionJavIDString != null && !dmmIDString.endsWith(actionJavIDString)){
 					System.out.println("Discarding ActionJav scraped results for faulty match based on ID = " + currentlySelectedMovieActionJav.getId());
 					currentlySelectedMovieActionJav = null;
 					guiMain.setCurrentlySelectedMovieActionJav(null);
 				}
-				if(currentlySelectedMovieSquarePlus != null && !currentlySelectedMovieSquarePlus.getId().equals(idMustBeThis)){
+				if(currentlySelectedMovieSquarePlus != null && squarePlusIDString != null && !dmmIDString.endsWith(squarePlusIDString)){
 					System.out.println("Discarding SquarePlus scraped results for faulty match based on ID = " + currentlySelectedMovieSquarePlus.getId());
 					currentlySelectedMovieSquarePlus = null;
 					guiMain.setCurrentlySelectedMovieSquarePlus(null);
 				}
-				if(currentlySelectedMovieJavLibrary != null && !currentlySelectedMovieJavLibrary.getId().equals(idMustBeThis)){
+				if(currentlySelectedMovieJavLibrary != null && javLibraryIDString != null && !dmmIDString.endsWith(javLibraryIDString)){
 					System.out.println("Discarding Jav Library scraped results for faulty match based on ID = " + currentlySelectedMovieJavLibrary.getId());
 					currentlySelectedMovieJavLibrary = null;
 					guiMain.setCurrentlySelectedMovieJavLibrary(null);
 				}
-				if(currentlySelectedMovieJavZoo != null && !currentlySelectedMovieJavZoo.getId().equals(idMustBeThis)){
+				if(currentlySelectedMovieJavZoo != null && javZooIDString != null && !dmmIDString.endsWith(javZooIDString)){
 					System.out.println("Discarding JavZoo scraped results for faulty match based on ID = " + currentlySelectedMovieJavZoo.getId());
 					currentlySelectedMovieJavZoo = null;
 					guiMain.setCurrentlySelectedMovieJavZoo(null);
