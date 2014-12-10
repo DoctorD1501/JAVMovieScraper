@@ -58,9 +58,9 @@ public class MoveToNewFolderAction extends AbstractAction {
 						String fileNameComparingTo = FilenameUtils
 								.getBaseName(this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList)
 										.getName().toUpperCase());
-						if (possibleID.equals(SiteParsingProfile.stripDiscNumber(fileNameComparingTo))
+						if (possibleID.endsWith(SiteParsingProfile.stripDiscNumber(fileNameComparingTo))
 								|| possibleIDWithoutDash
-								.equals(SiteParsingProfile.stripDiscNumber(fileNameComparingTo))) {
+								.endsWith(SiteParsingProfile.stripDiscNumber(fileNameComparingTo))) {
 							destinationDirectoryPrefix = this.guiMain.movieToWriteToDiskList.get(movieNumberInList)
 									.getTitle().getTitle() + " - ";
 							// replace illegal characters in the movie filename
