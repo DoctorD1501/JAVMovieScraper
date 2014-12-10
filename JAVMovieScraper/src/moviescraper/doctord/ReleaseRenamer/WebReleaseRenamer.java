@@ -69,8 +69,8 @@ public class WebReleaseRenamer extends ReleaseRenamer {
 				break;
 			//System.out.println(siteNameReplacement);
 		}
-		//Fix up the case - not needed for search but it just looks better :)
-		cleanFileName = WordUtils.capitalize(cleanFileName);
+		//Fix up the case and trim it - not needed for search but it just looks better :)
+		cleanFileName = WordUtils.capitalize(cleanFileName).trim();
 		return cleanFileName;
 	}
 
