@@ -9,8 +9,10 @@ import java.lang.reflect.Field;
 import java.util.InvalidPropertiesFormatException;
 import java.util.Properties;
 
+import org.apache.commons.lang3.SystemUtils;
+
 public class MoviescraperPreferences {
-	
+
 	Properties programPreferences;
 	private static final String fileNameOfPreferences = "settings.xml";
 	//for the property names, it's important (because of reflection) that the values be kept the same as the variable names
@@ -30,6 +32,16 @@ public class MoviescraperPreferences {
 	private static final String renamerString = "renamerString";
 	private static final String renameMovieFile = "renameMovieFile";
 	private static final String scrapeInJapanese = "scrapeInJapanese";
+	
+	/*
+	 * useContentBasedTypeIcons:
+	 * Use icons in res/mime instead of system icons. 
+	 * Needed for linux as system icons only show two types of icons otherwise (files and folders)
+	 * There's no menu option for this preference, but you can manually modify the settings file yourself to enable it
+	 * this option is also automatically enabled on linux
+	 */
+	
+	private static final String useContentBasedTypeIcons = "useContentBasedTypeIcons";
 
 	public MoviescraperPreferences()
 	{
@@ -52,7 +64,7 @@ public class MoviescraperPreferences {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void savePreferences(){
 		try {
 			programPreferences.storeToXML(new FileOutputStream(fileNameOfPreferences), "");
@@ -64,7 +76,7 @@ public class MoviescraperPreferences {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public File getLastUsedDirectory(){
 		String lastUsedDir = programPreferences.getProperty(lastUsedDirectory);
 		if(lastUsedDir != null)
@@ -76,27 +88,27 @@ public class MoviescraperPreferences {
 		}
 		else return new File(System.getProperty("user.home"));
 	}
-	
+
 	public void setLastUsedDirectory(File lastUsedDirectoryFile){
 		programPreferences.setProperty(lastUsedDirectory, lastUsedDirectoryFile.getPath());
 		savePreferences();
 	}
-	
+
 	public void setOverWriteFanartAndPostersPreference(boolean preferenceValue){
 		setBooleanValue(overwriteFanartAndPosters, preferenceValue);
 	}
-	
+
 	public boolean getOverWriteFanartAndPostersPreference()
 	{
 		return getBooleanValue(overwriteFanartAndPosters, true);
 	}
-	
+
 	public void setWriteFanartAndPostersPreference(boolean preferenceValue){
 		setBooleanValue(writeFanartAndPosters, preferenceValue);
 	}
-	
 
-	
+
+
 	private void setBooleanValue(String preferenceName, boolean preferenceValue) {
 		Field fieldToUse;
 		try {
@@ -112,7 +124,7 @@ public class MoviescraperPreferences {
 		}
 
 	}
-	
+
 	private boolean getBooleanValue(String preferenceName, boolean defaultValue)
 	{
 		Field fieldToUse;
@@ -132,13 +144,13 @@ public class MoviescraperPreferences {
 		}
 		return defaultValue;
 	}
-	
-	
+
+
 	public void setDownloadActorImagesToActorFolderPreference(boolean preferenceValue)
 	{
 		setBooleanValue(downloadActorImagesToActorFolder, preferenceValue);
 	}
-	
+
 	public boolean getDownloadActorImagesToActorFolderPreference()
 	{
 		return getBooleanValue(downloadActorImagesToActorFolder, true);
@@ -159,84 +171,96 @@ public class MoviescraperPreferences {
 	public boolean getExtraFanartScrapingEnabledPreference() {
 		return getBooleanValue(extraFanartScrapingEnabled, false);
 	}
-	
+
 	public void setExtraFanartScrapingEnabledPreference(boolean preferenceValue){
 		setBooleanValue(extraFanartScrapingEnabled, preferenceValue);
 	}
 
 	public void setCreateFolderJpgEnabledPreference(boolean preferenceValue) {
 		setBooleanValue(createFolderJpg, preferenceValue);
-		
+
 	}
 
 	public boolean getCreateFolderJpgEnabledPreference() {
 		return getBooleanValue(createFolderJpg, false);
 	}
-	
+
 	public boolean getNoMovieNameInImageFiles(){
 		return getBooleanValue(noMovieNameInImageFiles, false);
 	}
-	
+
 	public void setNoMovieNameInImageFiles(boolean preferenceValue){
 		setBooleanValue(noMovieNameInImageFiles, preferenceValue);
 	}
-	
+
 	public boolean getWriteTrailerToFile(){
 		return getBooleanValue(writeTrailerToFile, false);
 	}
-	
+
 	public void setWriteTrailerToFile(boolean preferenceValue){
 		setBooleanValue(writeTrailerToFile, preferenceValue);
 	}
-	
+
 	public boolean getNfoNamedMovieDotNfo(){
 		return getBooleanValue(nfoNamedMovieDotNfo, false);
 	}
-	
+
 	public void setNfoNamedMovieDotNfo(boolean preferenceValue){
 		setBooleanValue(nfoNamedMovieDotNfo, preferenceValue);
 	}
-	
+
 	public boolean getUseIAFDForActors() {
 		return getBooleanValue(useIAFDForActors, false);
 	}
-	
+
 	public void setUseIAFDForActors(boolean preferenceValue) {
 		setBooleanValue(useIAFDForActors, preferenceValue);
 	}
-	
+
 	public String getSanitizerForFilename() {
 		return programPreferences.getProperty(sanitizerForFilename, "[\\\\/:*?\"<>|\\r\\n]|[ ]+$|(?<=[^.])[.]+$|(?<=.{250})(.+)(?=[.]\\p{Alnum}{3}$)");
 	}
-	
+
 	public void setSanitizerForFilename(String preferenceValue) {
 		programPreferences.setProperty(sanitizerForFilename, preferenceValue);
 	}
-	
+
 	public String getRenamerString() {
 		return programPreferences.getProperty(renamerString, "%TITLE% %[ACTORS]% %(YEAR)% %[ID]%");
 	}
-	
+
 	public void setRenamerString(String preferenceValue) {
 		programPreferences.setProperty(renamerString, preferenceValue);
 		savePreferences();
 	}
-	
+
 	public boolean getRenameMovieFile() {
 		return getBooleanValue(renameMovieFile, false);
 	}
-	
+
 	public void setRenameMovieFile(boolean preferenceValue) {
 		setBooleanValue(renameMovieFile, preferenceValue);
 		savePreferences();
 	}
-	
+
 	public boolean getScrapeInJapanese(){
 		return getBooleanValue(scrapeInJapanese, false);
 	}
-	
+
 	public void setScrapeInJapanese(boolean preferenceValue){
 		setBooleanValue(scrapeInJapanese, preferenceValue);
+	}
+
+	public boolean getUseContentBasedTypeIcons() {
+
+		// if we're on linux we want the content based icons as default        
+		boolean defaultValue = SystemUtils.IS_OS_LINUX;
+
+		return getBooleanValue(useContentBasedTypeIcons, defaultValue);
+	}
+
+	public void setUseContentBasedTypeIcons(boolean preferenceValue) {
+		setBooleanValue(useContentBasedTypeIcons, preferenceValue);    
 	}
 
 }

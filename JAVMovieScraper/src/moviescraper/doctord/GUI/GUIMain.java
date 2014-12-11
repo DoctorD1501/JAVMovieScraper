@@ -24,6 +24,7 @@ import java.awt.BorderLayout;
 
 import javax.swing.JList;
 
+import moviescraper.doctord.IconCache;
 import moviescraper.doctord.Movie;
 import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.Thumb;
@@ -208,6 +209,10 @@ public class GUIMain {
 		frmMoviescraper.setTitle("JAVMovieScraper");
 		frmMoviescraper.setBounds(100, 100, defaultMainFrameX, defaultMainFrameY);
 		frmMoviescraper.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		//create tree view icon provider
+		IconCache.setIconProvider(getPreferences().getUseContentBasedTypeIcons() ? IconCache.IconProviderType.CONTENT
+						: IconCache.IconProviderType.SYSTEM);
 
 		//initialize the icons used in the program
 		URL programIconURL = frmMoviescraper.getClass().getResource("/res/AppIcon.png");
