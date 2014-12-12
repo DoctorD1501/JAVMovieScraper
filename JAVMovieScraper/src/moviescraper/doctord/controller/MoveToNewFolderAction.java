@@ -135,7 +135,7 @@ public class MoveToNewFolderAction extends AbstractAction {
 
 					if(this.guiMain.getPreferences().getExtraFanartScrapingEnabledPreference())
 					{
-						this.guiMain.writeExtraFanart(destDir, movieNumberInList);
+						this.guiMain.movieToWriteToDiskList.get(movieNumberInList).writeExtraFanart(destDir);
 					}
 
 

@@ -4,6 +4,9 @@ import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -302,8 +305,28 @@ public class Movie {
 	public String toXML() {
 		return title.toXML();
 	}
+	public void writeExtraFanart(File directoryMovieIsIn) throws IOException
+	{
+		if(directoryMovieIsIn != null && directoryMovieIsIn.exists() && directoryMovieIsIn.isDirectory())
+		{
+			File extraFanartFolder = new File(directoryMovieIsIn.getPath() + File.separator + "extrafanart");
+			FileUtils.forceMkdir(extraFanartFolder);
+			int currentExtraFanartNumber = 1;
+			for(Thumb currentExtraFanart : this.getExtraFanart())
+			{
+				File fileNameToWrite = new File(extraFanartFolder.getPath() + File.separator + "fanart" + currentExtraFanartNumber + ".jpg");
 
-	public void writeToFile(File nfofile, File posterFile, File fanartFile, File currentlySelectedFolderJpgFile, MoviescraperPreferences preferences) throws IOException {
+				//no need to overwrite perfectly good extra fanart since this stuff doesn't change. this will also save time when rescraping since extra IO isn't done.
+				if(!fileNameToWrite.exists())
+				{
+					System.out.println("Writing extrafanart to " + fileNameToWrite);
+					currentExtraFanart.writeImageToFile(fileNameToWrite);
+				}
+				currentExtraFanartNumber++;
+			}
+		}
+	}
+	public void writeToFile(File nfoFile, File posterFile, File fanartFile, File currentlySelectedFolderJpgFile, File targetFolderForExtraFanartFolderAndActorFolder, File trailerFile, MoviescraperPreferences preferences) throws IOException {
 		// Output the movie to XML using XStream and a proxy class to
 		// translate things to a format that xbmc expects
 
@@ -313,7 +336,7 @@ public class Movie {
 				+ "\n" + xml;
 		System.out.println("Xml I am writing to file: \n" + xml);
 
-		FileUtils.writeStringToFile(nfofile, xml,
+		FileUtils.writeStringToFile(nfoFile, xml,
 				org.apache.commons.lang3.CharEncoding.UTF_8);
 		
 		Thumb posterToSaveToDisk = posters[0];
@@ -376,14 +399,6 @@ public class Movie {
 				}
 				writer.dispose();
 			}
-			//else
-			//{
-				//System.out.println("In Else");
-				//if(writePoster)
-					//FileUtils.copyURLToFile(posterToSaveToDisk.getThumbURL(), fanartFile, connectionTimeout, readTimeout);
-				//if(createFolderJpgEnabledPreference)
-					//FileUtils.copyURLToFile(posterToSaveToDisk.getThumbURL(), currentlySelectedFolderJpgFile, connectionTimeout, readTimeout);
-			//}
 		}
 		
 		// save the first fanart out
@@ -407,6 +422,63 @@ public class Movie {
 			//download the url and save it out to disk
 			else FileUtils.copyURLToFile(fanartToSaveToDisk.getThumbURL(), fanartFile, connectionTimeout, readTimeout);
 			}
+		}
+		
+		//write out the extrafanart, if the preference for it is set
+		if(targetFolderForExtraFanartFolderAndActorFolder != null && preferences.getExtraFanartScrapingEnabledPreference())
+		{
+			System.out.println("Starting write of extra fanart into " + targetFolderForExtraFanartFolderAndActorFolder);
+			writeExtraFanart(targetFolderForExtraFanartFolderAndActorFolder); 
+		}
+		
+		//write the .actor images, if the preference for it is set
+		if(preferences.getDownloadActorImagesToActorFolderPreference() && targetFolderForExtraFanartFolderAndActorFolder != null)
+		{
+			System.out.println("Writing .actor images into " + targetFolderForExtraFanartFolderAndActorFolder);
+			writeActorImagesToFolder(targetFolderForExtraFanartFolderAndActorFolder);
+		}
+		
+		//write out the trailer, if the preference for it is set
+		Trailer trailerToWrite = getTrailer();
+		if(preferences.getWriteTrailerToFile() && trailerToWrite != null && trailerToWrite.getTrailer().length() > 0)
+		{
+			trailerToWrite.writeTrailerToFile(trailerFile);
+		}
+	}
+	
+	public void writeActorImagesToFolder(File targetFolder) throws IOException
+	{
+		File actorFolder = null;
+		if(targetFolder.isDirectory())
+		{
+			actorFolder = new File( targetFolder + File.separator + ".actors");
+		}
+		else if(targetFolder.isFile())
+		{
+			actorFolder = new File(targetFolder.getParent() + File.separator + ".actors");
+		}
+		//Don't create an empty .actors folder with no actors underneath it
+		if(this.hasAtLeastOneActorThumbnail() && targetFolder != null && actorFolder != null)
+		{
+			FileUtils.forceMkdir(actorFolder);
+			//on windows this new folder should have the hidden attribute; on unix it is already "hidden" by having a . in front of the name
+			Path path = actorFolder.toPath();
+			 //if statement needed for Linux checking .actors hidden flag when .actors is a symlink
+			if(!Files.isHidden(path))
+			{
+				Boolean hidden = (Boolean) Files.getAttribute(path, "dos:hidden", LinkOption.NOFOLLOW_LINKS);
+				if (hidden != null && !hidden) {
+					Files.setAttribute(path, "dos:hidden", Boolean.TRUE, LinkOption.NOFOLLOW_LINKS);
+				}
+			}
+
+			for(Actor currentActor : this.getActors())
+			{
+				String currentActorToFileName = currentActor.getName().replace(' ', '_');
+				File fileNameToWrite = new File(actorFolder.getPath() + File.separator + currentActorToFileName + ".jpg");
+				currentActor.writeImageToFile(fileNameToWrite);
+			}
+
 		}
 	}
 
@@ -469,6 +541,19 @@ public class Movie {
 			return selectedValue.getPath() + File.separator + "folder.jpg";
 		}
 		else return selectedValue.getParent() + File.separator + "folder.jpg";
+	}
+	
+	public static String getFileNameOfExtraFanartFolderName(File selectedValue)
+	{
+		if(selectedValue != null && selectedValue.isDirectory())
+		{
+			return selectedValue.getPath();
+		}
+		else if(selectedValue != null && selectedValue.isFile())
+		{
+			return selectedValue.getParent();
+		}
+		else return null;
 	}
 	
 	public static String getFileNameOfTrailer(File selectedValue) {

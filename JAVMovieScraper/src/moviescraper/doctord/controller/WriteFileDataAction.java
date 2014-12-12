@@ -5,19 +5,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
-import java.nio.file.Path;
-
 import javax.swing.JOptionPane;
 
 import moviescraper.doctord.Movie;
 import moviescraper.doctord.GUI.GUIMain;
-import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Trailer;
 import moviescraper.doctord.model.Renamer;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 public class WriteFileDataAction implements ActionListener {
@@ -82,6 +76,8 @@ public class WriteFileDataAction implements ActionListener {
 								new File( Movie.getFileNameOfPoster(newMovieFile, this.guiMain.getPreferences().getNoMovieNameInImageFiles()) ),
 								new File( Movie.getFileNameOfFanart(newMovieFile, this.guiMain.getPreferences().getNoMovieNameInImageFiles())),
 								new File( Movie.getFileNameOfFolderJpg(newMovieFile) ),
+								new File(Movie.getFileNameOfExtraFanartFolderName(newMovieFile)),
+								new File(Movie.getFileNameOfTrailer(newMovieFile)),
 								this.guiMain.getPreferences());							
 					} else {
 						//save without renaming movie
@@ -90,57 +86,23 @@ public class WriteFileDataAction implements ActionListener {
 								this.guiMain.getCurrentlySelectedPosterFileList().get(movieNumberInList),
 								this.guiMain.getCurrentlySelectedFanartFileList().get(movieNumberInList),
 								this.guiMain.getCurrentlySelectedFolderJpgFileList().get(movieNumberInList),
+								new File(Movie.getFileNameOfExtraFanartFolderName(this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList))),
+								new File(Movie.getFileNameOfTrailer(this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList))),
 								this.guiMain.getPreferences());
 					}
 
 					//we can only output extra fanart if we're scraping a folder, because otherwise the extra fanart will get mixed in with other files
-					if(this.guiMain.getPreferences().getExtraFanartScrapingEnabledPreference() && this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList).isDirectory() && this.guiMain.getCurrentlySelectedExtraFanartFolderList() != null)
+					if(this.guiMain.getPreferences().getExtraFanartScrapingEnabledPreference() && this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList).isDirectory())
 					{
-						this.guiMain.writeExtraFanart(null, movieNumberInList);
+						this.guiMain.movieToWriteToDiskList.get(movieNumberInList).writeExtraFanart(this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList));
 					}
 				}
 				//now write out the actor images if the user preference is set
 				if(this.guiMain.getPreferences().getDownloadActorImagesToActorFolderPreference() && this.guiMain.getCurrentlySelectedMovieFileList() != null && this.guiMain.getCurrentlySelectedDirectoryList() != null)
 				{
-					this.guiMain.updateActorsFolder();
-					//Don't create an empty .actors folder with no actors underneath it
-					if(this.guiMain.movieToWriteToDiskList.get(movieNumberInList).hasAtLeastOneActorThumbnail() && this.guiMain.getCurrentlySelectedActorsFolderList() != null)
-					{
-						//File actorsFolder = new File(currentlySelectedMovieFile.getPath() + File.seperator + ".actors");
-						FileUtils.forceMkdir(this.guiMain.getCurrentlySelectedActorsFolderList().get(movieNumberInList));
-						//on windows this new folder should have the hidden attribute; on unix it is already "hidden" by having a . in front of the name
-						Path path = this.guiMain.getCurrentlySelectedActorsFolderList().get(movieNumberInList).toPath();
-						 //if statement needed for Linux checking .actors hidden flag when .actors is a symlink
-						if(!Files.isHidden(path))
-						{
-							Boolean hidden = (Boolean) Files.getAttribute(path, "dos:hidden", LinkOption.NOFOLLOW_LINKS);
-							if (hidden != null && !hidden) {
-								Files.setAttribute(path, "dos:hidden", Boolean.TRUE, LinkOption.NOFOLLOW_LINKS);
-							}
-						}
-
-						for(Actor currentActor : this.guiMain.movieToWriteToDiskList.get(movieNumberInList).getActors())
-						{
-							String currentActorToFileName = currentActor.getName().replace(' ', '_');
-							File fileNameToWrite = new File(this.guiMain.getCurrentlySelectedActorsFolderList().get(movieNumberInList).getPath() + File.separator + currentActorToFileName + ".jpg");
-							currentActor.writeImageToFile(fileNameToWrite);
-						}
-
-					}
-
+					this.guiMain.movieToWriteToDiskList.get(movieNumberInList).writeActorImagesToFolder(this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList));
 				}
 
-				//write out the trailer to disk, if the preference for it is enabled
-				Trailer trailerToWrite = this.guiMain.movieToWriteToDiskList.get(movieNumberInList).getTrailer();
-				if(this.guiMain.getPreferences().getWriteTrailerToFile() && trailerToWrite != null && trailerToWrite.getTrailer().length() > 0)
-				{
-					//don't rewrite a file if it already exists since a trailer requires downloading from the web. this is a slow operation!
-					if(!this.guiMain.getCurrentlySelectedTrailerFileList().get(movieNumberInList).exists())
-					{
-						System.out.println("Starting write of " + trailerToWrite.getTrailer() + " into file " + this.guiMain.getCurrentlySelectedTrailerFileList().get(movieNumberInList));
-						trailerToWrite.writeTrailerToFile(this.guiMain.getCurrentlySelectedTrailerFileList().get(movieNumberInList));
-					}
-				}
 				System.out.println("Finished writing a movie file");
 
 			} catch (IOException e) {

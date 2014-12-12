@@ -14,6 +14,19 @@ import org.apache.commons.cli.ParseException;
 
 import moviescraper.doctord.GUI.GUIMain;
 import moviescraper.doctord.ReleaseRenamer.WebReleaseRenamer;
+import moviescraper.doctord.SiteParsingProfile.Data18MovieParsingProfile;
+import moviescraper.doctord.SiteParsingProfile.Data18WebContentParsingProfile;
+import moviescraper.doctord.SiteParsingProfile.DmmParsingProfile;
+import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
+import moviescraper.doctord.SiteParsingProfile.specific.AvEntertainmentParsingProfile;
+import moviescraper.doctord.SiteParsingProfile.specific.CaribbeancomParsingProfile;
+import moviescraper.doctord.SiteParsingProfile.specific.CaribbeancomPremiumParsingProfile;
+import moviescraper.doctord.SiteParsingProfile.specific.HeyzoParsingProfile;
+import moviescraper.doctord.SiteParsingProfile.specific.Kin8tengokuParsingProfile;
+import moviescraper.doctord.SiteParsingProfile.specific.MyTokyoHotParsingProfile;
+import moviescraper.doctord.SiteParsingProfile.specific.OnePondoParsingProfile;
+import moviescraper.doctord.SiteParsingProfile.specific.TokyoHotParsingProfile;
+import moviescraper.doctord.preferences.MoviescraperPreferences;
 
 public class Main {
 
@@ -25,6 +38,7 @@ public class Main {
 		}
 		else
 		{
+			
 			//set up the options
 			Options options = new Options();
 			
@@ -34,12 +48,22 @@ public class Main {
 			//set up -filenamecleanup option
 			@SuppressWarnings("static-access") //Needed until apache commons cli v1.3 which fixes this design flaw
 			
-			Option filenamecleanup = OptionBuilder.withArgName( "file" )
+			Option filenamecleanup = OptionBuilder.withArgName( "FilePath" )
                     .hasArgs(Option.UNLIMITED_VALUES)
                     .withDescription(  "Use given file argument(s) for file name cleanup process which will rename the file by expanding abbreviations and removing words which cause google scrapes to fail" )
                     .create( "filenamecleanup" );
+			
+			@SuppressWarnings("static-access")
+			Option scrape = OptionBuilder.withArgName("ScraperName FilePath")
+                    .hasArgs(2)
+                    .withDescription(  "Scrapes and writes metadata of the file located at <FilePath> with type of scraper specified by <ScraperName>.\n" +
+                    					"Valid ScraperNames are: \n" +
+                    					"data18webcontent , data18, 1pondo, aventertainment, caribbeancom, caribbeancompremium, heyzo, kin8tengoku, mytokyohot, tokyohot .\n" + 
+                    					"Any settings.xml file preference values will be taken into account when scraping.")
+                    .create( "scrape" );
 
 			options.addOption(filenamecleanup);
+			options.addOption(scrape);
 			
 			CommandLineParser parser = new BasicParser();
 			try {
@@ -53,6 +77,11 @@ public class Main {
 				else if(line.hasOption("filenamecleanup"))
 				{
 					runFileNameCleanup(line.getOptionValues("filenamecleanup"));
+				}
+				//-scrape
+				else if(line.hasOption("scrape"))
+				{
+					runScrape(line.getOptionValues("scrape"));
 				}
 					
 				
@@ -96,6 +125,125 @@ public class Main {
 				}
 			}
 		}
+	}
+	
+	private static void runScrape(String [] optionValues)
+	{
+		if(optionValues != null && optionValues.length == 2)
+		{
+			String scraperName = optionValues[0];
+			String fileName = optionValues[1];
+			
+			System.out.println("Scraping with scraper = " + scraperName);
+			System.out.println("Filename =  " + fileName);
+			File scrapeTarget = new File(fileName);
+			if(scrapeTarget.exists())
+			{
+				SiteParsingProfile parsingProfile = returnParsingProfileFromCommandLineOption(scraperName);
+				if(parsingProfile != null)
+				{
+					System.out.println("Parsing with parsing profile = " + parsingProfile.getClass());
+					try {
+						Movie scrapedMovie = Movie.scrapeMovie(scrapeTarget, parsingProfile, "", false);
+						//write out the metadata to disk if we got a hit
+						if(scrapedMovie != null)
+						{
+							System.out.println("Movie scraped as" + scrapedMovie);
+							
+							writeMovieToFile(scrapedMovie, scrapeTarget);
+							
+							System.out.println("All files written!");
+						}
+						else
+						{
+							System.err.println("No movie found");
+						}
+						
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				else
+				{
+					System.err.println("Unsupported parsing profile passed in");
+				}
+			}
+			else
+			{
+				System.err.println("File " + fileName + "does not exist");
+			}
+		}
+		else
+		{
+			System.err.println("you need to pass a valid scraper and file name");
+		}
+	}
+	
+	private static void writeMovieToFile(Movie scrapedMovie, File scrapeTarget)
+	{
+		MoviescraperPreferences preferences = new MoviescraperPreferences();
+
+		
+		File nfoFile = new File(Movie
+				.getFileNameOfNfo(scrapeTarget, preferences.getNfoNamedMovieDotNfo()));
+		File posterFile = new File(Movie
+				.getFileNameOfPoster(scrapeTarget, preferences.getNoMovieNameInImageFiles()));
+		File fanartFile = new File(Movie
+				.getFileNameOfFanart(scrapeTarget, preferences.getNoMovieNameInImageFiles()));
+		File currentlySelectedFolderJpgFile = new File(Movie
+				.getFileNameOfFolderJpg(scrapeTarget));
+		File extraFanartFolder = new File(Movie.getFileNameOfExtraFanartFolderName(scrapeTarget));
+		
+		File trailerFile = new File(Movie.getFileNameOfTrailer(scrapeTarget));
+		
+		try {
+			scrapedMovie.writeToFile(nfoFile, posterFile, fanartFile, currentlySelectedFolderJpgFile, extraFanartFolder, trailerFile, preferences);
+			
+			//TODO: write out trailers, actor images
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	private static SiteParsingProfile returnParsingProfileFromCommandLineOption(String scraperName){
+		SiteParsingProfile parsingProfile = null;
+		switch(scraperName)
+		{
+			case "data18webcontent":
+				parsingProfile = new Data18WebContentParsingProfile();
+				break;
+			case "data18":
+				parsingProfile = new Data18MovieParsingProfile();
+				break;
+			case "1pondo":
+				parsingProfile = new OnePondoParsingProfile();
+				break;
+			case "aventertainment":
+				parsingProfile = new AvEntertainmentParsingProfile();
+				break;
+			case "caribbeancom":
+				parsingProfile = new CaribbeancomParsingProfile();
+				break;
+			case "caribbeancompremium":
+				parsingProfile = new CaribbeancomPremiumParsingProfile();
+				break;
+			case "heyzo":
+				parsingProfile = new HeyzoParsingProfile();
+				break;
+			case "kin8tengoku":
+				parsingProfile = new Kin8tengokuParsingProfile();
+				break;
+			case "mytokyohot":
+				parsingProfile = new MyTokyoHotParsingProfile();
+				break;
+			case "tokyohot":
+				parsingProfile = new TokyoHotParsingProfile();
+				break;
+		}
+		return parsingProfile;
+		
 	}
 
 }

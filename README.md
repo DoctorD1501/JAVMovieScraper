@@ -24,29 +24,36 @@ This program is in alpha. Please submit bugs and feature requests here on github
 
 
 ###### Command Line Options
-This program now supports command line options. Starting the program without any command line option will load the graphical user interface version of the program. I'm adding more command line options over time - right now there's really just the command line option for file name cleanup.
+This program now supports command line options. Starting the program without any command line option will load the graphical user interface version of the program. I'm still actively working on the command line options to make sure all scrapers are accounted for and any settings.xml values are taken into account.
 <p>
 Usage:
 <br>                                                                                                                                                                                                       
-<b> -filenamecleanup &#60;file&#62; </b>   Use given file argument(s) for file name cleanup process which will rename the file by expanding abbreviations and removing words which cause google scrapes to fail 
+<b> -filenamecleanup &#60;FilePath&#62; </b>   Use given file argument(s) for file name cleanup process which will rename the file by expanding abbreviations and removing words which cause google scrapes to fail 
 <br>
-<b>-help</b>                               display list of command line options                                                                                                                                  
+<b> -help</b>                               display list of command line options                                                                                                                                  
 <br>
+<b> -scrape &#60;ScraperName FilePath&#62;</b> Scrapes and writes metadata of the file located at &#60;FilePath&#62; with type of scraper specified by &#60;ScraperName&#62;. Valid ScraperNames are: data18webcontent, data18, 1pondo, aventertainment, caribbeancom, caribbeancompremium, heyzo, kin8tengoku, mytokyohot, tokyohot. Any settings.xml file preference values will be taken into account when scraping.
 </p>
 <p>
- Example command to run filenamecleanup on two different files:
+Example command to run filenamecleanup on two different files:
 <br>
 java -jar JAVMovieScraper.jar -filenamecleanup "C:\myfile1.mp4" "C:\myfile2.mp4"
+<br>
+Example command to scrape and write metadata info of a file located at "C:\myfile1.mp4" with the data18webcontent scraper:
+<br>
+java -jar JAVMovieScraper.jar -scrape data18webcontent "C:\myfile1.mp4"
+<br>
+If you're having trouble getting matches with -scrape data18webcontent, try to first run -filenamecleanup on the file and then run -scrape on the file.
 </p>
 
 ###### Site Specific File Name Conventions
 When using the site specific scraper feature, your file name must contain an ID number which conforms to the release ID conventions set by that site. 
-* Aventertainments: This follows the usual JAV id naming structure like ABC-123. It does a search on the site using this ID.
-* Kin8tengoku: The ID is in the URL. It is the numeric part before /pht/ and is usually 4 numeric digits. Example: 1147.
-* Tokyohot: The ID follows the format of n123 or n1234 k123/k1234. In other words, a lowercase n or k followed by a 3 or 4 digit number. 
-* 1pondo: The ID is in the URL of the movie, right before /index.html. The first part of the ID is a 6 digit number corresponding to the release date, followed by an underscore, followed by a 3 digit number. Example: 061314_826
-* Caribbeancom Premium: The ID is in the URL of the movie, right before /index.html. The first part of the ID is a 6 digit number corresponding to the release date, followed by an underscore, followed by a 3 digit number. Example: 061314_826
-* Heyzo: The ID is a 4 digit number in the url right after /moviepages/. Example: 0123
+* Aventertainments: This follows the usual JAV id naming structure like ABC-123. It does a search on the site using this ID.<br>
+* Kin8tengoku: The ID is in the URL. It is the numeric part before /pht/ and is usually 4 numeric digits. Example: 1147.<br>
+* Tokyohot: The ID follows the format of n123 or n1234 k123/k1234. In other words, a lowercase n or k followed by a 3 or 4 digit number.<br> 
+* 1pondo: The ID is in the URL of the movie, right before /index.html. The first part of the ID is a 6 digit number corresponding to the release date, followed by an underscore, followed by a 3 digit number. Example: 061314_826<br>
+* Caribbeancom Premium: The ID is in the URL of the movie, right before /index.html. The first part of the ID is a 6 digit number corresponding to the release date, followed by an underscore, followed by a 3 digit number. Example: 061314_826<br>
+* Heyzo: The ID is a 4 digit number in the url right after /moviepages/. Example: 0123<br>
 
 ###### File Name Cleanup Feature
 This attempts to rename a file to make it more likely a match will be found with the Data18 Web Content Scraper. This is done by replacing website abbreviations ([current list here - more to be added soon](https://raw.githubusercontent.com/DoctorD1501/JAVMovieScraper/master/JAVMovieScraper/src/moviescraper/doctord/ReleaseRenamer/SiteNameAbbreviations.csv)) at the beginning of the file name with the full site name. It will also remove [words from the file](https://raw.githubusercontent.com/DoctorD1501/JAVMovieScraper/master/JAVMovieScraper/src/moviescraper/doctord/ReleaseRenamer/WordsToRemove.csv) that interfere with scraping and replace underscores and periods in the filename with spaces.

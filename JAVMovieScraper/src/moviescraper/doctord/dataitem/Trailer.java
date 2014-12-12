@@ -30,8 +30,12 @@ public class Trailer extends MovieDataItem {
 	}
 	
 	public void writeTrailerToFile(File fileNameToWrite) throws IOException {
-		if(getTrailer() != null && getTrailer().length() > 0)
+		//we don't want to rewrite trailer if the file already exists since that can retrigger a pointlessly long download
+		if(getTrailer() != null && getTrailer().length() > 0 && !fileNameToWrite.exists())
+		{
+			System.out.println("Writing trailer" + this.toString() + " into file " + fileNameToWrite);
 			FileUtils.copyURLToFile(new URL(getTrailer()), fileNameToWrite, connectionTimeout, readTimeout);
+		}
 	}
 	
 	@Override

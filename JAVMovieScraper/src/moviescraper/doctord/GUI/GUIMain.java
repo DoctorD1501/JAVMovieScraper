@@ -27,7 +27,6 @@ import javax.swing.JList;
 import moviescraper.doctord.IconCache;
 import moviescraper.doctord.Movie;
 import moviescraper.doctord.SearchResult;
-import moviescraper.doctord.Thumb;
 import moviescraper.doctord.GUI.renderer.FileRenderer;
 import moviescraper.doctord.controller.BrowseDirectoryAction;
 import moviescraper.doctord.controller.FileNameCleanupAction;
@@ -74,7 +73,6 @@ import java.awt.event.MouseListener;
 
 import javax.swing.Action;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.imgscalr.Scalr;
@@ -98,8 +96,7 @@ public class GUIMain {
 	private List<File> currentlySelectedFanartFileList;
 	private List<File> currentlySelectedTrailerFileList;
 	private List<File> currentlySelectedMovieFileList;
-	List<File> currentlySelectedActorsFolderList;
-	private List<File> currentlySelectedExtraFanartFolderList;
+	private List<File> currentlySelectedActorsFolderList;
 	private File currentlySelectedDirectoryList;
 	private File defaultHomeDirectory;
 	private MoviescraperPreferences preferences;
@@ -198,7 +195,6 @@ public class GUIMain {
 		setCurrentlySelectedFanartFileList(new ArrayList<File>());
 		setCurrentlySelectedTrailerFileList(new ArrayList<File>());
 		currentlySelectedActorsFolderList = new ArrayList<File>();
-		setCurrentlySelectedExtraFanartFolderList(new ArrayList<File>());
 		movieToWriteToDiskList = new ArrayList<Movie>();
 		frmMoviescraper = new JFrame();
 		frmMovieScraperBlocker = new WindowBlocker();
@@ -803,7 +799,6 @@ public class GUIMain {
 		getCurrentlySelectedFolderJpgFileList().clear();
 		getCurrentlySelectedFanartFileList().clear();
 		getCurrentlySelectedTrailerFileList().clear();
-		getCurrentlySelectedExtraFanartFolderList().clear();
 		getMovieToWriteToDiskList().clear();
 	}
 
@@ -982,25 +977,6 @@ public class GUIMain {
 			frmMovieScraperBlocker.block();
 	}
 
-	public void updateExtraFanartFolder(File destinationDirectory){
-		for(int movieNumberInList = 0; movieNumberInList < getCurrentlySelectedMovieFileList().size(); movieNumberInList++)
-		{
-			if(destinationDirectory != null)
-			{
-				getCurrentlySelectedExtraFanartFolderList().add(new File(destinationDirectory.getPath() + File.separator + "extrafanart"));
-			}	
-			else if(getCurrentlySelectedMovieFileList().get(movieNumberInList).isDirectory())
-			{
-
-				getCurrentlySelectedExtraFanartFolderList().add(new File(getCurrentlySelectedMovieFileList().get(movieNumberInList).getPath() + File.separator + "extrafanart"));
-			}
-			else
-			{
-				//do nothing for now. this may be a bug with selecting folders and files at the same time, so i may need to revist this later
-				//currentlySelectedExtraFanartFolderList = null;
-			}
-		}
-	}
 
 	public File[] actorFolderFiles(int movieNumberInList) {
 		ArrayList<File> actorFiles = new ArrayList<File>();
@@ -1025,7 +1001,7 @@ public class GUIMain {
 		return actorFiles.toArray(new File[actorFiles.size()]);
 	}
 
-	public void writeExtraFanart(File destinationDirectory, int movieNumberInList) throws IOException {
+	/*public void writeExtraFanart(File destinationDirectory, int movieNumberInList) throws IOException {
 		updateExtraFanartFolder(destinationDirectory);
 		if(movieToWriteToDiskList != null && movieToWriteToDiskList.size() > 0 && movieToWriteToDiskList.get(movieNumberInList).getExtraFanart() != null && movieToWriteToDiskList.get(movieNumberInList).getExtraFanart().length > 0)
 		{
@@ -1044,7 +1020,7 @@ public class GUIMain {
 				currentExtraFanartNumber++;
 			}
 		}
-	}
+	}*/
 
 	public FileDetailPanel getFileDetailPanel() {
 		return fileDetailPanel;
@@ -1202,14 +1178,6 @@ public class GUIMain {
 		this.currentlySelectedTrailerFileList = currentlySelectedTrailerFileList;
 	}
 
-	public List<File> getCurrentlySelectedExtraFanartFolderList() {
-		return currentlySelectedExtraFanartFolderList;
-	}
-
-	public void setCurrentlySelectedExtraFanartFolderList(
-			List<File> currentlySelectedExtraFanartFolderList) {
-		this.currentlySelectedExtraFanartFolderList = currentlySelectedExtraFanartFolderList;
-	}
 
 	public JList<File> getFileList() {
 		return fileList;

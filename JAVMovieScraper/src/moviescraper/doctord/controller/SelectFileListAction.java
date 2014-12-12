@@ -70,7 +70,6 @@ public class SelectFileListAction implements ListSelectionListener {
 
 
 				this.guiMain.updateActorsFolder();
-				this.guiMain.updateExtraFanartFolder(null);
 
 				// clean up old scraped movie results from previous selection
 				//this.guiMain.removeOldScrapedMovieReferences();

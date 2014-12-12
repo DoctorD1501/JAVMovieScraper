@@ -6,8 +6,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -15,7 +13,6 @@ import java.util.regex.Pattern;
 
 import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.Thumb;
-import moviescraper.doctord.ReleaseRenamer.WebReleaseRenamer;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Director;
 import moviescraper.doctord.dataitem.Genre;
