@@ -328,16 +328,22 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile{
 						{
 							try {
 								actorThumbnail = actorThumbnail.replaceFirst(Pattern.quote("/60/"), "/120/");
-								actorList.add(new Actor(actorName, null, new Thumb(actorThumbnail)));
+								Actor actorToAdd = new Actor(actorName, null, new Thumb(actorThumbnail));
+								if(!actorList.contains(actorToAdd))
+									actorList.add(actorToAdd);
 							} catch (MalformedURLException e) {
-								actorList.add(new Actor(actorName, null, null));
+								Actor actorToAdd = new Actor(actorName, null, null);
+								if(!actorList.contains(actorToAdd))
+									actorList.add(actorToAdd);
 								e.printStackTrace();
 							}
 						}
 						//add the actor with no thumbnail
 						else
 						{
-							actorList.add(new Actor(actorName, null, null));
+							Actor actorToAdd = new Actor(actorName, null, null);
+							if(!actorList.contains(actorToAdd))
+								actorList.add(new Actor(actorName, null, null));
 						}
 					} catch (IOException e) {
 						e.printStackTrace();
@@ -353,7 +359,9 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile{
 		    for (Element element : otherActors) {
 		        String actorName = element.attr("alt");
 		        actorName = element.childNode(0).toString();
-		        actorList.add(new Actor(actorName, null, null));
+		        Actor actorToAdd = new Actor(actorName, null, null);
+				if(!actorList.contains(actorToAdd))
+					actorList.add(new Actor(actorName, null, null));
 		    }
 		}
 		return actorList;
