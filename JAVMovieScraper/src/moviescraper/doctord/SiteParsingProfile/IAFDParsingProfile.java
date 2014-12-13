@@ -43,7 +43,7 @@ public class IAFDParsingProfile extends SiteParsingProfile {
 
 	@Override
 	public Title scrapeTitle() {
-		Element titleElement = document.select("div#centered.main2 div div h1.h1big").first();
+		Element titleElement = document.select("div#centered.main2 div div h1.h1big, div#movieinfo div#moviedata h2").first();
 		if(titleElement != null)
 			return new Title(titleElement.text());
 		else return new Title("");
@@ -127,6 +127,11 @@ public class IAFDParsingProfile extends SiteParsingProfile {
 		{
 			String runtimeElementText = runtimeElement.text().replaceFirst(Pattern.quote("Length:"), "").replaceFirst(Pattern.quote(" min."), "").trim();
 			return new Runtime(runtimeElementText);
+		}
+		Element minutesElement = document.select("div#movieinfo div#moviedata div.middle dt:contains(Minutes) ~ dd").first();
+		if(minutesElement != null)
+		{
+			return new Runtime(minutesElement.text());
 		}
 		//System.out.println("runtime " + runtimeElement.text());
 		else return new Runtime("");
