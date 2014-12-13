@@ -307,7 +307,7 @@ public class Movie {
 	}
 	public void writeExtraFanart(File directoryMovieIsIn) throws IOException
 	{
-		if(directoryMovieIsIn != null && directoryMovieIsIn.exists() && directoryMovieIsIn.isDirectory())
+		if(directoryMovieIsIn != null && directoryMovieIsIn.exists() && directoryMovieIsIn.isDirectory() && getExtraFanart().length > 0)
 		{
 			File extraFanartFolder = new File(directoryMovieIsIn.getPath() + File.separator + "extrafanart");
 			FileUtils.forceMkdir(extraFanartFolder);
@@ -339,7 +339,10 @@ public class Movie {
 		FileUtils.writeStringToFile(nfoFile, xml,
 				org.apache.commons.lang3.CharEncoding.UTF_8);
 		
-		Thumb posterToSaveToDisk = posters[0];
+		Thumb posterToSaveToDisk = null;
+		if(posters != null && posters.length > 0)
+			posterToSaveToDisk = posters[0];
+		
 
 		
 		
