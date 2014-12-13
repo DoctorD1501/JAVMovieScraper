@@ -61,19 +61,30 @@ public class Renamer {
 		String movieStudio = movie.getStudio().getStudio();
 		String movieGenres = combineGenreList(movie.getGenres());
 		String newName = renameString;
-		
-		
-		
-		newName = newName.replaceAll(ID, movieID);
-		newName = newName.replaceAll(TITLE, movieTitle);
-		newName = newName.replaceAll(ACTORS, movieActors);
-		newName = newName.replaceAll(YEAR, movieYear);
-		newName = newName.replaceAll(ORIGINALTITLE, movieOriginalTitle);
-		newName = newName.replaceAll(SET, movieSet);
-		newName = newName.replaceAll(STUDIO, movieStudio);
-		newName = newName.replaceAll(GENRES, movieGenres);
+				
+		newName = renameReplaceAll(newName, ID, movieID);
+		newName = renameReplaceAll(newName, TITLE, movieTitle);
+		newName = renameReplaceAll(newName, ACTORS, movieActors);
+		newName = renameReplaceAll(newName, YEAR, movieYear);
+		newName = renameReplaceAll(newName, ORIGINALTITLE, movieOriginalTitle);
+		newName = renameReplaceAll(newName, SET, movieSet);
+		newName = renameReplaceAll(newName, STUDIO, movieStudio);
+		newName = renameReplaceAll(newName, GENRES, movieGenres);
 
-		return newName;
+		return newName.trim();
+	}
+	
+	private String renameReplaceAll(String replacementString, String tagName, String movieContentOfTag)
+	{
+		String replacedString = replacementString;
+		if(replacedString.contains(tagName))
+			replacedString = replacedString.replaceAll(tagName, movieContentOfTag);
+		
+		if(movieContentOfTag == null || movieContentOfTag.trim().equals(""))
+		{
+			replacedString = replacedString.replaceAll("\\[\\]|\\(\\)", "");
+		}
+		return replacedString;
 	}
 	
 	private String combineActorList(List<Actor> actors) {
