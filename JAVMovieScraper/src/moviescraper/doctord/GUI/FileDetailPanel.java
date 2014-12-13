@@ -519,5 +519,10 @@ public class FileDetailPanel extends JPanel {
 		this.currentMovie = currentMovie;
 	}
 	
+	public void hideArtworkPanel()
+	{
+		artWorkPanel.setVisible(false);
+	}
+	
 }
 

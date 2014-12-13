@@ -9,6 +9,7 @@ import org.apache.commons.io.FilenameUtils;
 
 import moviescraper.doctord.Movie;
 import moviescraper.doctord.dataitem.Actor;
+import moviescraper.doctord.dataitem.Genre;
 
 public class Renamer {
 
@@ -21,11 +22,16 @@ public class Renamer {
 	private String filename;
 	private String path;
 
-	private final static Pattern ID = Pattern.compile("%.?ID.?%");
-	private final static Pattern TITLE = Pattern.compile("%.?TITLE.?%");
-	private final static Pattern ACTORS = Pattern.compile("%.?ACTORS.?%");
-	private final static Pattern YEAR = Pattern.compile("%.?YEAR.?%");
-
+	private final static String ID = "<ID>";
+	private final static String TITLE = "<TITLE>";
+	private final static String ACTORS = "<ACTORS>";
+	private final static String YEAR = "<YEAR>";
+	private final static String ORIGINALTITLE = "<ORIGINALTITLE>";
+	private final static String SET = "<SET>";
+	private final static String STUDIO = "<STUDIO>";
+	private final static String GENRES = "<GENRES>";
+	private final static String[] availableRenameTags = {ID, TITLE, ACTORS, GENRES, SET, STUDIO, YEAR, ORIGINALTITLE};
+	
 	public Renamer(String renameString, String sanitizer, Movie toRename, File oldFile) {
 		this.renameString = renameString;
 		this.sanitizer = sanitizer;
@@ -48,23 +54,29 @@ public class Renamer {
 		String movieID = movie.getId().getId();
 		String movieTitle = movie.getTitle().getTitle();
 		List<Actor> movieActorsList = movie.getActors();
-		String movieActors = combineList(movieActorsList);
+		String movieActors = combineActorList(movieActorsList);
 		String movieYear = movie.getYear().getYear();
-		
+		String movieOriginalTitle = movie.getOriginalTitle().getOriginalTitle();
+		String movieSet = movie.getSet().getSet();
+		String movieStudio = movie.getStudio().getStudio();
+		String movieGenres = combineGenreList(movie.getGenres());
 		String newName = renameString;
 		
-		movieTitle = substring( movieTitle, 60);
-		movieActors = substring( movieActors, 60);
 		
-		newName = replace(ID, newName, movieID);
-		newName = replace(TITLE, newName, movieTitle);
-		newName = replace(ACTORS, newName, movieActors);
-		newName = replace(YEAR, newName, movieYear);
 		
+		newName = newName.replaceAll(ID, movieID);
+		newName = newName.replaceAll(TITLE, movieTitle);
+		newName = newName.replaceAll(ACTORS, movieActors);
+		newName = newName.replaceAll(YEAR, movieYear);
+		newName = newName.replaceAll(ORIGINALTITLE, movieOriginalTitle);
+		newName = newName.replaceAll(SET, movieSet);
+		newName = newName.replaceAll(STUDIO, movieStudio);
+		newName = newName.replaceAll(GENRES, movieGenres);
+
 		return newName;
 	}
 	
-	private String combineList(List<Actor> actors) {
+	private String combineActorList(List<Actor> actors) {
 		String actorsString = "";
 		for (int i = 0; i < movie.getActors().size(); i++) {
 			actorsString += movie.getActors().get(i).getName();
@@ -72,6 +84,16 @@ public class Renamer {
 				actorsString += ", ";
 		}
 		return actorsString;
+	}
+	
+	private String combineGenreList(List<Genre> genres) {
+		String genresString = "";
+		for (int i = 0; i < movie.getGenres().size(); i++) {
+			genresString += movie.getGenres().get(i).getGenre();
+			if (i + 1 < movie.getGenres().size())
+				genresString += ", ";
+		}
+		return genresString;
 	}
 	
 	private String getAppendix() {
@@ -95,15 +117,21 @@ public class Renamer {
 		return fileName;
 	}
 	
-	private String getMatch(Pattern pattern, String toMatch) {
-		Matcher matcher = pattern.matcher(toMatch);
-		if (matcher.find()) {
-			return matcher.group();
+	public static String getAvailableTags()
+	{
+		String tags = "";
+		for (String tag : availableRenameTags)
+		{
+			tags= tags + " " + tag;
 		}
-		return "";
+		System.out.println("tags = " + tags);
+		return tags.trim();
 	}
 	
-	private String replace(Pattern pattern, String string, String replacement) {
+	//This code was used by the old buggy method and is no longer used
+	
+	
+	/*private String replace(Pattern pattern, String string, String replacement) {
 		String match = getMatch(pattern, string);
 		String prefix = getPrefix(match, pattern.pattern());
 		String suffix = getSuffix(match, pattern.pattern());
@@ -145,5 +173,14 @@ public class Renamer {
 			return string.substring(0, maxLength);
 		return string;
 	}
+	
+		Matcher matcher = pattern.matcher(toMatch);
+		if (matcher.find()) {
+			return matcher.group();
+		}
+		return "";
+	}
+	
+	*/
 	
 }

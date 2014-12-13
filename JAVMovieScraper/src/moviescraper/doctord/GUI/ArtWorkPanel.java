@@ -238,13 +238,16 @@ public class ArtWorkPanel extends JPanel {
 		// otherwise read it from the URL specified by the object since we couldn't find any local file
 		if (gui.movieToWriteToDiskList.size() > 0 && gui.movieToWriteToDiskList.get(0) != null && gui.movieToWriteToDiskList.get(0).hasPoster() && !posterFileUpdateOccured) {
 			try {
-				Image posterImage = gui.getFileDetailPanel().currentMovie.getPosters()[0]
-						.getThumbImage();
-				ImageIcon newPosterIcon = new ImageIcon(posterImage);
-				BufferedImage img = (BufferedImage) newPosterIcon.getImage();
-				BufferedImage scaledImage = ArtWorkPanel.resizeToPoster(img);
-				this.setNewPoster(scaledImage);
-				posterFileUpdateOccured = true;
+				if(gui.getFileDetailPanel().currentMovie.getPosters().length > 0 )
+				{
+					Image posterImage = gui.getFileDetailPanel().currentMovie.getPosters()[0]
+							.getThumbImage();
+					ImageIcon newPosterIcon = new ImageIcon(posterImage);
+					BufferedImage img = (BufferedImage) newPosterIcon.getImage();
+					BufferedImage scaledImage = ArtWorkPanel.resizeToPoster(img);
+					this.setNewPoster(scaledImage);
+					posterFileUpdateOccured = true;
+				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -255,13 +258,16 @@ public class ArtWorkPanel extends JPanel {
 		//try to read the fanart from the url since we couldn't find any local file
 		if (gui.movieToWriteToDiskList.size() > 0 && gui.movieToWriteToDiskList.get(0) != null && gui.movieToWriteToDiskList.get(0).hasFanart() && !fanartFileUpdateOccured) {
 			try {
-				Image fanartImage = gui.getFileDetailPanel().currentMovie.getFanart()[0]
-						.getThumbImage();
-				ImageIcon newFanartIcon = new ImageIcon(fanartImage);
-				BufferedImage img = (BufferedImage) newFanartIcon.getImage();
-				BufferedImage scaledImage = ArtWorkPanel.resizeToFanart(img);
-				this.setNewFanart(scaledImage);
-				fanartImage = scaledImage;
+				if(gui.getFileDetailPanel().currentMovie.getFanart().length > 0)
+				{
+					Image fanartImage = gui.getFileDetailPanel().currentMovie.getFanart()[0]
+							.getThumbImage();
+					ImageIcon newFanartIcon = new ImageIcon(fanartImage);
+					BufferedImage img = (BufferedImage) newFanartIcon.getImage();
+					BufferedImage scaledImage = ArtWorkPanel.resizeToFanart(img);
+					this.setNewFanart(scaledImage);
+					fanartImage = scaledImage;
+				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

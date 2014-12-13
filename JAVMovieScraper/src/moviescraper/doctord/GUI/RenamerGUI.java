@@ -64,7 +64,9 @@ public class RenamerGUI extends JFrame {
 	private JLabel lblExample;
 	private JTextField textFieldExample;
 	private JScrollPane scrollPane;
-
+	
+	Movie sampleMovie;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -72,7 +74,7 @@ public class RenamerGUI extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					RenamerGUI frame = new RenamerGUI(new MoviescraperPreferences());
+					RenamerGUI frame = new RenamerGUI(new MoviescraperPreferences(),null);
 					frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -84,9 +86,11 @@ public class RenamerGUI extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public RenamerGUI(final MoviescraperPreferences preferences) {
+	public RenamerGUI(final MoviescraperPreferences preferences, Movie sampleMovie) {
+		System.out.println("calling constr with sampleMovie = " + sampleMovie);
+		this.sampleMovie = sampleMovie;
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 800, 600);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -94,10 +98,10 @@ public class RenamerGUI extends JFrame {
 		gbl_contentPane.columnWidths = new int[]{0, 0, 0};
 		gbl_contentPane.rowHeights = new int[]{0, 0, 0, 0, 0};
 		gbl_contentPane.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
-		gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 0.0, 1.0, 0.0};
+		gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 1.0, 0.0};
 		contentPane.setLayout(gbl_contentPane);
 		
-		JLabel lblRenamestring = new JLabel("RenameString :");
+		JLabel lblRenamestring = new JLabel("Rename String:");
 		GridBagConstraints gbc_lblRenamestring = new GridBagConstraints();
 		gbc_lblRenamestring.insets = new Insets(0, 0, 5, 5);
 		gbc_lblRenamestring.anchor = GridBagConstraints.EAST;
@@ -120,12 +124,30 @@ public class RenamerGUI extends JFrame {
 			}
 		});
 		
-		JLabel lblSanitizerString = new JLabel("Sanitizer String :");
+		JLabel lblAvailableString = new JLabel("Available Tags For Rename String:");
+		GridBagConstraints gbc_lblavailablestring = new GridBagConstraints();
+		gbc_lblavailablestring.insets = new Insets(0, 0, 5, 5);
+		gbc_lblavailablestring.anchor = GridBagConstraints.EAST;
+		gbc_lblavailablestring.gridx = 0;
+		gbc_lblavailablestring.gridy = 1;
+		contentPane.add(lblAvailableString, gbc_lblavailablestring);
+		
+		JTextField availbleTagsTextField = new JTextField(Renamer.getAvailableTags());
+		availbleTagsTextField.setEditable(false);
+		GridBagConstraints gbc_textFieldRenameStringTwo = new GridBagConstraints();
+		gbc_textFieldRenameStringTwo.insets = new Insets(0, 0, 5, 0);
+		gbc_textFieldRenameStringTwo.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textFieldRenameStringTwo.gridx = 1;
+		gbc_textFieldRenameStringTwo.gridy = 1;
+		contentPane.add(availbleTagsTextField, gbc_textFieldRenameStringTwo);
+		availbleTagsTextField.setColumns(10);
+		
+		JLabel lblSanitizerString = new JLabel("Sanitizer String:");
 		GridBagConstraints gbc_lblSanitizerString = new GridBagConstraints();
 		gbc_lblSanitizerString.insets = new Insets(0, 0, 5, 5);
 		gbc_lblSanitizerString.anchor = GridBagConstraints.EAST;
 		gbc_lblSanitizerString.gridx = 0;
-		gbc_lblSanitizerString.gridy = 1;
+		gbc_lblSanitizerString.gridy = 2;
 		contentPane.add(lblSanitizerString, gbc_lblSanitizerString);
 		
 		textFieldSanitizerString = new JTextField(preferences.getSanitizerForFilename());
@@ -133,7 +155,7 @@ public class RenamerGUI extends JFrame {
 		gbc_textFieldSanitizerString.insets = new Insets(0, 0, 5, 0);
 		gbc_textFieldSanitizerString.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textFieldSanitizerString.gridx = 1;
-		gbc_textFieldSanitizerString.gridy = 1;
+		gbc_textFieldSanitizerString.gridy = 2;
 		contentPane.add(textFieldSanitizerString, gbc_textFieldSanitizerString);
 		textFieldSanitizerString.setColumns(10);
 		textFieldSanitizerString.addKeyListener(new KeyAdapter() {
@@ -148,7 +170,7 @@ public class RenamerGUI extends JFrame {
 		gbc_lblExample.anchor = GridBagConstraints.EAST;
 		gbc_lblExample.insets = new Insets(0, 0, 5, 5);
 		gbc_lblExample.gridx = 0;
-		gbc_lblExample.gridy = 2;
+		gbc_lblExample.gridy = 3;
 		contentPane.add(lblExample, gbc_lblExample);
 		
 		textFieldExample = new JTextField();
@@ -157,11 +179,12 @@ public class RenamerGUI extends JFrame {
 		gbc_textFieldExample.insets = new Insets(0, 0, 5, 0);
 		gbc_textFieldExample.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textFieldExample.gridx = 1;
-		gbc_textFieldExample.gridy = 2;
+		gbc_textFieldExample.gridy = 3;
 		contentPane.add(textFieldExample, gbc_textFieldExample);
 		textFieldExample.setColumns(10);		
 
 		fileDetailPanel = new FileDetailPanel(preferences, new GUIMain());
+		fileDetailPanel.hideArtworkPanel();
 		
 		scrollPane = new JScrollPane();
 		scrollPane.setViewportView(fileDetailPanel);
@@ -170,14 +193,14 @@ public class RenamerGUI extends JFrame {
 		gbc_scrollPane.gridwidth = 3;
 		gbc_scrollPane.fill = GridBagConstraints.BOTH;
 		gbc_scrollPane.gridx = 0;
-		gbc_scrollPane.gridy = 3;
+		gbc_scrollPane.gridy = 4;
 		contentPane.add(scrollPane, gbc_scrollPane);
 		
 		panel = new JPanel();
 		GridBagConstraints gbc_panel = new GridBagConstraints();
 		gbc_panel.gridwidth = 2;
 		gbc_panel.gridx = 0;
-		gbc_panel.gridy = 4;
+		gbc_panel.gridy = 5;
 		contentPane.add(panel, gbc_panel);
 		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 		
@@ -216,6 +239,11 @@ public class RenamerGUI extends JFrame {
 	}
 
 	private Movie getFakeMovie() {
+		
+		if(sampleMovie != null)
+			return sampleMovie;
+		
+		
 		Actor actorA = new Actor("Actor A", null, null);
 		Actor actorB = new Actor("Actor B", null, null);
 		ArrayList<Actor> actors = new ArrayList<Actor>(5);
@@ -234,7 +262,7 @@ public class RenamerGUI extends JFrame {
 		Collections.addAll(genres, genreA, genreB);
 		
 		ID id = new ID("ABC-123");
-		MPAARating mpaa = new MPAARating("R-15");
+		MPAARating mpaa = new MPAARating("PG-13");
 		OriginalTitle originalTitle = new OriginalTitle("Original Title");
 		Outline outline = new Outline("Outline");
 		Plot plot = new Plot("Plot");
@@ -243,10 +271,10 @@ public class RenamerGUI extends JFrame {
 		Rating rating = new Rating(6.0, "Rating");
 		Runtime runtime = new Runtime("60 min");
 		Set set = new Set("Set");
-		SortTitle sortTitle= new SortTitle("Title");
+		SortTitle sortTitle= new SortTitle("SortTitle");
 		Studio studio = new Studio("Studio");
 		Tagline tagline = new Tagline("Tagline");
-		Title title = new Title("Title");
+		Title title = new Title("MovieTitle");
 		Top250 top250 = new Top250("Top250");
 		Trailer trailer = new Trailer(null);
 		Votes votes = new Votes("Votes");

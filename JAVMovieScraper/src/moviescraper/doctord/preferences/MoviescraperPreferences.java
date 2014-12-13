@@ -226,7 +226,7 @@ public class MoviescraperPreferences {
 	}
 
 	public String getRenamerString() {
-		return programPreferences.getProperty(renamerString, "%TITLE% %[ACTORS]% %(YEAR)% %[ID]%");
+		return programPreferences.getProperty(renamerString, "<TITLE> [<ACTORS>] (<YEAR>) [<ID>]");
 	}
 
 	public void setRenamerString(String preferenceValue) {

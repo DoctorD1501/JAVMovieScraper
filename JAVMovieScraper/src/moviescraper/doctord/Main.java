@@ -12,11 +12,14 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+import com.sun.org.apache.bcel.internal.generic.IADD;
+
 import moviescraper.doctord.GUI.GUIMain;
 import moviescraper.doctord.ReleaseRenamer.WebReleaseRenamer;
 import moviescraper.doctord.SiteParsingProfile.Data18MovieParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.Data18WebContentParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.DmmParsingProfile;
+import moviescraper.doctord.SiteParsingProfile.IAFDParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.specific.AvEntertainmentParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.specific.CaribbeancomParsingProfile;
@@ -58,7 +61,7 @@ public class Main {
                     .hasArgs(2)
                     .withDescription(  "Scrapes and writes metadata of the file located at <FilePath> with type of scraper specified by <ScraperName>.\n" +
                     					"Valid ScraperNames are: \n" +
-                    					"data18webcontent , data18, 1pondo, aventertainment, caribbeancom, caribbeancompremium, heyzo, kin8tengoku, mytokyohot, tokyohot .\n" + 
+                    					"data18webcontent , data18, iafd, 1pondo, aventertainment, caribbeancom, caribbeancompremium, heyzo, kin8tengoku, mytokyohot, tokyohot .\n" + 
                     					"Any settings.xml file preference values will be taken into account when scraping.")
                     .create( "scrape" );
 
@@ -240,6 +243,9 @@ public class Main {
 				break;
 			case "tokyohot":
 				parsingProfile = new TokyoHotParsingProfile();
+				break;
+			case "iafd":
+				parsingProfile = new IAFDParsingProfile();
 				break;
 		}
 		return parsingProfile;

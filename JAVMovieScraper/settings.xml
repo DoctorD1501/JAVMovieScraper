@@ -3,13 +3,14 @@
 <properties>
 <comment/>
 <entry key="useIAFDForActors">false</entry>
+<entry key="useContentBasedTypeIcons">true</entry>
 <entry key="lastUsedDirectory">B:\Newsgroup\testmove</entry>
 <entry key="writeTrailerToFile">true</entry>
 <entry key="sanitizerForFilename">[\\/:*?"&lt;&gt;|\r\n]|[ ]+$|(?&lt;=[^.])[.]+$|(?&lt;=.{250})(.+)(?=[.]\p{Alnum}{3}$)</entry>
-<entry key="renamerString">%TITLE% %[ACTORS]% %(YEAR)% %[ID]%</entry>
+<entry key="renamerString">&lt;TITLE&gt; [&lt;ACTORS&gt;] (&lt;YEAR&gt;) [&lt;ID&gt;]  (&lt;GENRES&gt;)</entry>
 <entry key="renameMovieFile">false</entry>
 <entry key="scrapeInJapanese">false</entry>
 <entry key="extraFanartScrapingEnabled">true</entry>
 <entry key="createFolderJpg">false</entry>
-<entry key="downloadActorImagesToActorFolder">false</entry>
+<entry key="downloadActorImagesToActorFolder">true</entry>
 </properties>

@@ -723,7 +723,10 @@ public class GUIMain {
 		renameSettings.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				new RenamerGUI(getPreferences());
+				Movie currentSelectedMovie = null;
+				if(getMovieToWriteToDiskList().size() > 0)
+					currentSelectedMovie = getMovieToWriteToDiskList().get(0);
+				new RenamerGUI(getPreferences(), currentSelectedMovie);
 			}
 		});
 		renameMenu.add(renameSettings);
