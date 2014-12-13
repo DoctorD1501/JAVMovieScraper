@@ -57,9 +57,13 @@ public class IconCache {
 			if (iconType.isDirectory())
 				return FileSystemView.getFileSystemView().getSystemIcon(iconType);
 
-			// don't probe content type for files without extension as this icon will be cached for all of them
+			// don't probe content type for files without extension as this icon will be cached for all of them,
+			// skip dot files too (.hidden files on Linux)
 
-			if (FilenameUtils.getExtension(iconType.getName()) != "")
+			String name = FilenameUtils.getName(iconType.getName());
+			String ext  = FilenameUtils.getExtension(iconType.getName());
+
+			if (ext != "" && !name.startsWith("."))
 			{
 				// determine content type
 
@@ -119,7 +123,11 @@ public class IconCache {
 	public static Icon getIconFromCache(File iconType) throws IOException
 	{
 		// use "." as key for folders so we don't get a cached folder icon for files without extension or vice versa
-		String key = iconType.isDirectory() ? "." : FilenameUtils.getExtension(iconType.getName());
+		// use "" as key for dot files (hidden files on Linux), to prevent getting a cache entry per file
+
+		String name = FilenameUtils.getName(iconType.getName());
+		String ext  = FilenameUtils.getExtension(iconType.getName());
+		String key  = iconType.isDirectory() ? "." : name.startsWith(".") ? "" : ext;
 
 		//Cache already contains the item, so just return it
 		if(cache.containsKey(key))
