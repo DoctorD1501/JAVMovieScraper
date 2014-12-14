@@ -13,8 +13,8 @@ This program is in alpha. Please submit bugs and feature requests here on github
 ###### Usage
 
 1. Make sure you have the Java JRE installed. You will need at least Java version 7. Java can be downloaded here: https://www.java.com/en/download/index.jsp
-2. Either compile the source yourself or download and run the precompiled JAR from here: http://www.mediafire.com/download/pm3d2yl49qa99fe/JAVMovieScraper.jar
-3. Double click the jar file. Initially, the program will load your home directory in the file pane on the left. Click the "Browse Directory" button below this file list and point it to the directory where your movie file you wish to scrape is.
+2. Either download the newest development build JAR from here: [http://www.mediafire.com/download/pm3d2yl49qa99fe/JAVMovieScraper.jar](http://www.mediafire.com/download/pm3d2yl49qa99fe/JAVMovieScraper.jar) or grab one of the stabler releases from the [release page](https://github.com/DoctorD1501/JAVMovieScraper/releases).
+3. Double click the jar file or to run from program from the commandline, see the section below. Initially, the program will load your home directory in the file pane on the left. Click the "Browse Directory" button below this file list and point it to the directory where your movie file you wish to scrape is.
 4. Select the movie file or folder the movie is in (if the folder is named the same as the movie) in the list of files. You can select multiple files by holding the control or shift keys to do batch scraping. Your movie file MUST have the JAV ID as the last word within the filename, not including stacked file indicators such as DISC1 or CD1. The JAV ID (or Caribbeancom Release ID) can be optionally surrounded by brackets or parenthesis and can contain a dash before the numerical part. Examples of OK file names for JAV DVD Movies: My Movie - ABC-123, My Movie - [ABC123] CD1, ABC-123, (ABC-123), For American movies, the filename must be the name of the movie, optionally followed by the year in parenthesis e.g. MovieName (2014). For web releases, a google search is done on the entire file name, so it's more flexible, but it works best if you include the name of the episode and at least one of the actors in your file name. See the section below for more file naming conventions for the site specific scraper.
 5. Click either the "Scrape JAV" button or the "Scrape JAV (Automatic)" button on the bottom part of the program for Japanese content or the "Scrape Data18 Movie" for adult DVDs or the "Scrape Data18 WebContent" for content downloaded from websites or split scenes. For Japanese movies, "Scrape JAV (Automatic)" will work 99% of the time, but if you get the wrong result when scraping, try using "Scrape" instead to manually specify which URL to use when scraping dmm.co.jp and javlibrary. It's also worth trying "Scrape" if actor images are not appearing since perhaps JAVLibrary and DMM were scraping two different movies.
 6. After a little while, the metadata for the movie will appear in the editor pane. You can select one of the several titles found using the drop down list, or edit the entry by typing in your own text. You can right click genres or actors to get a menu to add or deletes these items.
@@ -39,11 +39,23 @@ Usage:
 <p>
 Example command to run filenamecleanup on two different files:
 <br>
-java -jar JAVMovieScraper.jar -filenamecleanup "C:\myfile1.mp4" "C:\myfile2.mp4"
+<b>java -jar JAVMovieScraper.jar -filenamecleanup "C:\myfile1.mp4" "C:\myfile2.mp4"</b>
+<br>
 <br>
 Example command to scrape and write metadata info of a file located at "C:\myfile1.mp4" with the data18webcontent scraper:
 <br>
-java -jar JAVMovieScraper.jar -scrape data18webcontent "C:\myfile1.mp4"
+<b>java -jar JAVMovieScraper.jar -scrape data18webcontent "C:\myfile1.mp4"</b>
+<br>
+<br>
+Example command to rename a file "C:\myfile1.mp4" which also has a "C:\myfile1.nfo" in the same directory:
+<br>
+<b>java -jar JAVMovieScraper.jar -rename "C:\myfile1.mp4"</b>
+<br>
+<br>
+Example command to rename a directory located at "C:\Movie (2014)" which has a nfo file contained within the directory called "C:\Movie (2014)\Movie (2014).nfo"
+<br>
+<b>java -jar JAVMovieScraper.jar -rename "C:\Movie (2014)"</b>
+<br>
 <br>
 If you're having trouble getting matches with -scrape data18webcontent, try to first run -filenamecleanup on the file and then run -scrape on the file.
 </p>
