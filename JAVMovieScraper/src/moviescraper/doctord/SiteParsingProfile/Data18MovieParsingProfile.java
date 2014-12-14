@@ -15,6 +15,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import moviescraper.doctord.Movie;
 import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.Thumb;
 import moviescraper.doctord.dataitem.Actor;
@@ -354,7 +355,7 @@ public class Data18MovieParsingProfile extends SiteParsingProfile {
 	public String createSearchString(File file) {
 		String fileBaseName;
 		if(file.isFile())
-			fileBaseName = FilenameUtils.getBaseName(file.getName());
+			fileBaseName = FilenameUtils.getBaseName(Movie.getUnstackedMovieName(file));
 		else
 			fileBaseName = file.getName();
 		fileName = fileBaseName;
@@ -387,6 +388,7 @@ public class Data18MovieParsingProfile extends SiteParsingProfile {
 	@Override
 	public SearchResult[] getSearchResults(String searchString)
 			throws IOException {
+		System.out.println(searchString);
 		if(useSiteSearch)
 		{
 			ArrayList<SearchResult> linksList = new ArrayList<SearchResult>();
