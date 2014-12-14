@@ -6,6 +6,12 @@ import java.io.FilenameFilter;
 import org.apache.commons.io.FilenameUtils;
 
 public class MovieFilenameFilter implements FilenameFilter {
+	
+	public static final String[] acceptedMovieExtensions = { "avi", "mpeg",
+			"mpg", "wmv", "asf", "flv", "mkv", "mka", "mov", "qt", "mp4",
+			"m4v", "m4a", "aac", "nut", "ogg", "ogm", "rmvb", "rm", "ram",
+			"ra", "3gp", "vivo", "pva", "nuv", "nsa", "fli", "flc", "dvr-ms",
+			"wtv", "iso", "vob" };
 
 	@Override
 	public boolean accept(File dir, String name) {
@@ -16,12 +22,10 @@ public class MovieFilenameFilter implements FilenameFilter {
 	
 	private boolean allowedSuffix(String suffix)
 	{
-		switch (suffix.toLowerCase())
+		for(String currentSuffix : acceptedMovieExtensions)
 		{
-		case "avi": case "mpeg": case "mpg": case "wmv": case "asf": case "flv": case "mkv": case "mka": case "mov": case "qt": case "mp4": case"m4v": 
-		case "m4a": case "aac": case "nut": case "ogg": case "ogm": case "rmvb": case "rm": case "ram": case "ra": case "3gp": 
-		case "vivo": case "pva": case "nuv": case "nsa": case "fli": case "flc": case "dvr-ms": case "wtv": case "iso": case "vob":
-			return true;
+			if(suffix.toLowerCase().equals(currentSuffix))
+				return true;
 		}
 		return false;
 	}

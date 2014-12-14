@@ -2,6 +2,8 @@ package moviescraper.doctord;
 
 import java.awt.image.RenderedImage;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -20,10 +22,12 @@ import javax.imageio.stream.FileImageOutputStream;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import sun.org.mozilla.javascript.internal.ast.TryStatement;
 import moviescraper.doctord.SiteParsingProfile.Data18MovieParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.Data18WebContentParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.DmmParsingProfile;
@@ -126,6 +130,47 @@ public class Movie {
 		actors = siteToScrapeFrom.scrapeActors();
 		genres = siteToScrapeFrom.scrapeGenres();
 		directors = siteToScrapeFrom.scrapeDirectors();
+	}
+	
+	/**
+	 * Create a movie by reading in a values from a nfo file created by previously scraping the movie and then writing the metadata out to the file
+	 * @param nfoFile
+	 * @throws IOException 
+	 */
+	public static Movie createMovieFromNfo(File nfoFile) throws IOException
+	{
+		Movie movieFromNfo = null;
+		FileInputStream fisTargetFile = null;
+		try {
+			fisTargetFile = new FileInputStream(nfoFile);
+			String targetFileStr = IOUtils.toString(fisTargetFile, "UTF-8");
+			//Sometimes there's some junk before the prolog tag. Do a workaround to remove that junk.
+			//This really isn't the cleanest way to do this, but it'll work for now
+			//check first to make sure the string even contains <?xml so we don't loop through an invalid file needlessly
+			if(targetFileStr.contains("<?xml"))
+			{
+				while(targetFileStr.length() > 0 && !targetFileStr.startsWith("<?xml"))
+				{
+					if(targetFileStr.length() > 1)
+					{
+						targetFileStr = targetFileStr.substring(1,targetFileStr.length());
+					}
+					else break;
+				}
+			}
+			XbmcXmlMovieBean xmlMovieBean = XbmcXmlMovieBean.makeFromXML(targetFileStr);
+			fisTargetFile.close();
+			if(xmlMovieBean != null)
+			{
+				
+				movieFromNfo = xmlMovieBean.toMovie();
+			}
+			return movieFromNfo;
+		}
+		finally
+		{
+			fisTargetFile.close();
+		}
 	}
 
 	public ArrayList<Actor> getActors() {
@@ -560,7 +605,30 @@ public class Movie {
 	}
 	
 	public static String getFileNameOfTrailer(File selectedValue) {
+		//sometimes the trailer has a different extension 
+		//than the movie so we will try to brute force a find by trying all movie name extensions
+		for (String extension : MovieFilenameFilter.acceptedMovieExtensions)
+		{
+			String potentialTrailer = tryToFindActualTrailerHelper(selectedValue, "." + extension);
+			if(potentialTrailer != null)
+				return potentialTrailer;
+		}
 		return getTargetFilePath(selectedValue, "-trailer.mp4");
+	}
+	
+	/**
+	 * Checks for the given file a trailer file exists for it for the given file name extension
+	 * @param selectedValue - base file name of movie or nfo
+	 * @param extension - the file name extension we are checking
+	 * @return - the path to the file if it found the trailer, otherwise null
+	 */
+	private static String tryToFindActualTrailerHelper(File selectedValue, String extension)
+	{
+		String potentialPath = getTargetFilePath(selectedValue, "-trailer" + extension);
+		File trailerCandidate = new File(potentialPath);
+		if(trailerCandidate.exists())
+			return potentialPath; 
+		return null;
 	}
 	
 	public static String getFileNameOfFanart(File file, boolean getNoMovieNameInImageFiles) {

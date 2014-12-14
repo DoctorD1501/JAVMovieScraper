@@ -12,13 +12,10 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-import com.sun.org.apache.bcel.internal.generic.IADD;
-
 import moviescraper.doctord.GUI.GUIMain;
 import moviescraper.doctord.ReleaseRenamer.WebReleaseRenamer;
 import moviescraper.doctord.SiteParsingProfile.Data18MovieParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.Data18WebContentParsingProfile;
-import moviescraper.doctord.SiteParsingProfile.DmmParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.IAFDParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.specific.AvEntertainmentParsingProfile;
@@ -29,6 +26,7 @@ import moviescraper.doctord.SiteParsingProfile.specific.Kin8tengokuParsingProfil
 import moviescraper.doctord.SiteParsingProfile.specific.MyTokyoHotParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.specific.OnePondoParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.specific.TokyoHotParsingProfile;
+import moviescraper.doctord.model.Renamer;
 import moviescraper.doctord.preferences.MoviescraperPreferences;
 
 public class Main {
@@ -64,9 +62,16 @@ public class Main {
                     					"data18webcontent , data18, iafd, 1pondo, aventertainment, caribbeancom, caribbeancompremium, heyzo, kin8tengoku, mytokyohot, tokyohot .\n" + 
                     					"Any settings.xml file preference values will be taken into account when scraping.")
                     .create( "scrape" );
+			
+			@SuppressWarnings("static-access")
+			Option rename = OptionBuilder.withArgName("FilePath")
+                    .hasArgs(Option.UNLIMITED_VALUES)
+                    .withDescription("renames the file argument(s) and any associated metadata files if the file argument has a valid movie nfo using the file name format from settings.xml")
+                    .create( "rename" );
 
 			options.addOption(filenamecleanup);
 			options.addOption(scrape);
+			options.addOption(rename);
 			
 			CommandLineParser parser = new BasicParser();
 			try {
@@ -86,6 +91,10 @@ public class Main {
 				{
 					runScrape(line.getOptionValues("scrape"));
 				}
+				else if(line.hasOption("rename"))
+				{
+					runRename(line.getOptionValues("rename"));
+				}
 					
 				
 			} catch (ParseException exp) {
@@ -97,6 +106,29 @@ public class Main {
 
 	}
 	
+	private static void runRename(String[] optionValues) {
+		for(String fileName : optionValues)
+		{
+			File currentFile = new File(fileName);
+			if(!currentFile.exists())
+			{
+				System.err.println(currentFile + " does not exist.");
+			}
+			else
+			{
+				System.out.println("Trying to rename " + currentFile);
+				MoviescraperPreferences preferences = new MoviescraperPreferences();
+				try {
+					Renamer.rename(currentFile, preferences);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		
+	}
+
 	private static void printHelpMessage(Options options)
 	{
 		// automatically generate the help statement

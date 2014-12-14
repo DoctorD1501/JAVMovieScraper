@@ -388,7 +388,7 @@ public class Data18MovieParsingProfile extends SiteParsingProfile {
 	@Override
 	public SearchResult[] getSearchResults(String searchString)
 			throws IOException {
-		System.out.println(searchString);
+		System.out.println("Trying to scrape with URL = " + searchString);
 		if(useSiteSearch)
 		{
 			ArrayList<SearchResult> linksList = new ArrayList<SearchResult>();
