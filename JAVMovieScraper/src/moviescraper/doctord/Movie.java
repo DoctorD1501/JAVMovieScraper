@@ -381,6 +381,7 @@ public class Movie {
 				+ "\n" + xml;
 		System.out.println("Xml I am writing to file: \n" + xml);
 
+		nfoFile.delete();
 		FileUtils.writeStringToFile(nfoFile, xml,
 				org.apache.commons.lang3.CharEncoding.UTF_8);
 		
