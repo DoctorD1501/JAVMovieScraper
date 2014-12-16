@@ -34,7 +34,7 @@ public class WebReleaseRenamer extends ReleaseRenamer {
 		{
 			cleanFileName = cleanFileName.replaceFirst(wordsToRemove.get(0).toLowerCase(), "");
 		}
-
+		cleanFileName = cleanFileName.trim();
 		/* 
 		 * often times files are released with abbreviations in their name which 
 		 * messes up doing google searches on them, so we'll do a substitution to get the full name

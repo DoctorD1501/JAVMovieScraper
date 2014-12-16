@@ -164,6 +164,7 @@ public class Main {
 	
 	private static void runScrape(String [] optionValues)
 	{
+		boolean useFileNameCleanup = false;
 		if(optionValues != null && optionValues.length == 2)
 		{
 			String scraperName = optionValues[0];
@@ -177,9 +178,20 @@ public class Main {
 				SiteParsingProfile parsingProfile = returnParsingProfileFromCommandLineOption(scraperName);
 				if(parsingProfile != null)
 				{
+					if(parsingProfile.getClass() == Data18WebContentParsingProfile.class)
+					{
+						useFileNameCleanup = true;
+					}
 					System.out.println("Parsing with parsing profile = " + parsingProfile.getClass());
 					try {
-						Movie scrapedMovie = Movie.scrapeMovie(scrapeTarget, parsingProfile, "", false);
+						File scrapeTargetToUse = scrapeTarget;
+						if(useFileNameCleanup)
+						{
+							WebReleaseRenamer renamer = new WebReleaseRenamer();
+							scrapeTargetToUse = renamer.newFileName(scrapeTarget);
+							System.out.println("passing in " + scrapeTargetToUse + " as the name"); 
+						}
+						Movie scrapedMovie = Movie.scrapeMovie(scrapeTargetToUse, parsingProfile, "", false);
 						//write out the metadata to disk if we got a hit
 						if(scrapedMovie != null)
 						{
