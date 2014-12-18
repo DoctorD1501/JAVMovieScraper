@@ -133,7 +133,7 @@ public class MoveToNewFolderAction extends AbstractAction {
 
 					//if we are supposed to write the extrafanart, make sure to write that too
 
-					if(this.guiMain.getPreferences().getExtraFanartScrapingEnabledPreference())
+					if(this.guiMain.getPreferences().getExtraFanartScrapingEnabledPreference() && guiMain.movieToWriteToDiskList.size() > movieNumberInList)
 					{
 						this.guiMain.movieToWriteToDiskList.get(movieNumberInList).writeExtraFanart(destDir);
 					}
