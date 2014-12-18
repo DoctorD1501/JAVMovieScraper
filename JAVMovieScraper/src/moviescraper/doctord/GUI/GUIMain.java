@@ -18,7 +18,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.KeyStroke;
-import javax.swing.ProgressMonitor;
 
 import java.awt.BorderLayout;
 
@@ -1191,6 +1190,8 @@ public class GUIMain {
 	}
 
 	public ProgressMonitor getProgressMonitor() {
+		if (progressMonitor == null)
+			progressMonitor = new ProgressMonitor(frmMoviescraper);
 		return progressMonitor;
 	}
 

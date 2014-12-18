@@ -109,16 +109,13 @@ public class ScrapeMovieAction extends AbstractAction {
 			if(amount + progress <= 100)
 			{
 				progress += amount;
-				//firePropertyChange("progress", oldProgress, progress);
-				this.guiMain.getProgressMonitor().setProgress(progress);
-				this.guiMain.getProgressMonitor().setNote("Completed " + progress + "% -  " + note);
 			}
 			else
 			{
 				progress = 100;
-				this.guiMain.getProgressMonitor().setNote("Completed " + progress + " %: " + note);
-				this.guiMain.getProgressMonitor().setProgress(progress);
 			}
+			
+			this.guiMain.getProgressMonitor().update(progress, note);
 		}
 	}
 
@@ -159,7 +156,7 @@ public class ScrapeMovieAction extends AbstractAction {
 					String currentFileName = ScrapeMovieAction.this.guiMain.getCurrentlySelectedMovieFileList()
 							.get(movieNumberInList).toString();
 
-					initializeProgressMonitor(currentFileName);
+					initializeProgressMonitor(currentFileName, movieNumberInList, ScrapeMovieAction.this.guiMain.getCurrentlySelectedMovieFileList().size());
 
 					if (promptUserForURLWhenScraping && scrapeJAV) {
 						// bring up some dialog boxes so the user can
@@ -292,6 +289,8 @@ public class ScrapeMovieAction extends AbstractAction {
 
 			@Override
 			protected void done() {
+				
+				 guiMain.getProgressMonitor().stop();
 				// Allow the user to manually pick poster from a dialog
 				// box for data18 movies
 				if (manuallyPickPoster && data18Movie != null
@@ -424,14 +423,16 @@ public class ScrapeMovieAction extends AbstractAction {
 
 	}
 
-	private void initializeProgressMonitor(String fileName) {
-		this.guiMain.setProgressMonitor(new ProgressMonitor(this.guiMain.getFrmMoviescraper(),
-				"Scraping Movie: " + fileName,
-				"Completed 0%", 0, 100));
-		this.guiMain.getProgressMonitor().setMillisToDecideToPopup(0);
-		this.guiMain.getProgressMonitor().setMillisToPopup(0);
+	private void initializeProgressMonitor(String fileName, int currentIndex, int totalItems) {
+		String text;
+
+		if (totalItems == 1)
+			text = "Scraping Movie: " + fileName;
+		else
+			text = String.format("Scraping Movie %d of %d: %s", currentIndex + 1, totalItems, fileName);
+
+		this.guiMain.getProgressMonitor().start(text);
 		progress = 0;
-		this.guiMain.getProgressMonitor().setProgress(0);
 
 	}
 

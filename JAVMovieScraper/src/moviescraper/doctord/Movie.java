@@ -3,7 +3,6 @@ package moviescraper.doctord;
 import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -27,7 +26,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-import sun.org.mozilla.javascript.internal.ast.TryStatement;
 import moviescraper.doctord.SiteParsingProfile.Data18MovieParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.Data18WebContentParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.DmmParsingProfile;
