@@ -6,19 +6,15 @@ import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
-import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.KeyStroke;
-
 import java.awt.BorderLayout;
 
 import javax.swing.JList;
@@ -45,7 +41,6 @@ import moviescraper.doctord.preferences.MoviescraperPreferences;
 import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.Dimension;
-import java.awt.Event;
 import java.awt.Image;
 
 import javax.swing.JButton;
@@ -62,9 +57,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.awt.event.ActionEvent;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -77,7 +69,6 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.imgscalr.Scalr;
 import org.imgscalr.Scalr.Method;
 
-import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 
 import javax.swing.BoxLayout;
@@ -124,7 +115,6 @@ public class GUIMain {
 	private JList<File> fileList;
 	private JFileChooser chooser;
 
-	private ArtWorkPanel artWorkPanel;
 
 	private ProgressMonitor progressMonitor;
 
@@ -257,7 +247,88 @@ public class GUIMain {
 		
 		//Fix file name icon
 		ImageIcon fixFileNameIcon = initializeImageIcon(fixFileNameIconURL);
+		
+		//Set up the file list panel - the panel where the user picks what file to scrape
+		setUpFileListPanel(upIcon, browseDirectoryIcon, refreshDirectoryIcon);
 
+		JPanel southPanel = new JPanel();
+		southPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+		southPanel.setLayout(new BoxLayout(southPanel, BoxLayout.X_AXIS));
+		frmMoviescraper.getContentPane().add(southPanel, BorderLayout.SOUTH);
+
+		JComponent parserPanel = new SpecificParserPanel(this);
+		parserPanel.setPreferredSize(new Dimension(200,50));
+		southPanel.add(parserPanel);
+
+		JPanel buttonsPanel = new JPanel();
+		buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.PAGE_AXIS));
+		JPanel scrapeButtons = new JPanel();
+		JPanel fileOperationsButtons = new JPanel();
+		southPanel.add(buttonsPanel);
+
+		JButton btnScrapeSelectMovieJAV = new JButton("Scrape JAV");
+		btnScrapeSelectMovieJAV.setAction(new ScrapeMovieAction(this));
+		btnScrapeSelectMovieJAV.setIcon(japanIcon);
+		scrapeButtons.add(btnScrapeSelectMovieJAV);
+
+		JButton btnScrapeSelectMovieJAVAutomatic = new JButton("Scrape JAV (Automatic)");
+		btnScrapeSelectMovieJAVAutomatic.setAction(new ScrapeMovieActionAutomatic(this));
+		btnScrapeSelectMovieJAVAutomatic.setIcon(japanIcon);
+		scrapeButtons.add(btnScrapeSelectMovieJAVAutomatic);
+
+		JButton btnScrapeSelectMovieData18Movie = new JButton("Scrape Data18 Movie");
+		btnScrapeSelectMovieData18Movie.setAction(new ScrapeMovieActionData18Movie(this));
+		if(data18Icon != null)
+			btnScrapeSelectMovieData18Movie.setIcon(data18Icon);
+		scrapeButtons.add(btnScrapeSelectMovieData18Movie);
+
+		JButton btnScrapeSelectMovieData18WebContent = new JButton("Scrape Data18 Web Content");
+		btnScrapeSelectMovieData18WebContent.setAction(new ScrapeMovieActionData18WebContent(this));
+		if(data18Icon != null)
+			btnScrapeSelectMovieData18WebContent.setIcon(data18Icon);
+		scrapeButtons.add(btnScrapeSelectMovieData18WebContent);
+
+		JButton btnWriteFileData = new JButton("Write File Data");
+		btnWriteFileData.setToolTipText("Write out the .nfo file to disk");
+		if(saveIcon != null)
+			btnWriteFileData.setIcon(saveIcon);
+		btnWriteFileData.addActionListener(new WriteFileDataAction(this));
+		fileOperationsButtons.add(btnWriteFileData);
+
+		JButton btnMoveFileToFolder = new JButton("Move file to folder");
+		btnMoveFileToFolder.setAction(moveToNewFolder);
+		btnMoveFileToFolder.setToolTipText("Create a folder for the file and put the file and any associated files in that new folder.");
+		btnMoveFileToFolder.setIcon(moveToFolderIcon);
+		fileOperationsButtons.add(btnMoveFileToFolder);
+
+		JButton openCurrentlySelectedFileButton = new JButton(
+				"Open File");
+		openCurrentlySelectedFileButton.setToolTipText("Open the currently selected file with the system default program for it");
+		openCurrentlySelectedFileButton.addActionListener(new OpenFileAction(this));
+		openCurrentlySelectedFileButton.setIcon(openIcon);
+		fileOperationsButtons.add(openCurrentlySelectedFileButton);
+		
+		JButton fileNameCleanupButton = new JButton("File Name Cleanup (Experimental Feature)");
+		fileNameCleanupButton
+				.setToolTipText("Attempts to rename a file of a web content release before scraping so that it is more likely to find a match. I'm still working on adding more site abbreviations, so this feature is experimental for now.");
+		fileNameCleanupButton.setIcon(fixFileNameIcon);
+		fileNameCleanupButton.addActionListener(new FileNameCleanupAction(this));
+		fileOperationsButtons.add(fileNameCleanupButton);
+
+		buttonsPanel.add(scrapeButtons);
+		buttonsPanel.add(fileOperationsButtons);
+		
+		//add in the menu bar
+		frmMoviescraper.setJMenuBar(new GUIMainMenuBar(this));
+	}
+
+	/**
+	 * @param upIcon
+	 * @param browseDirectoryIcon
+	 * @param refreshDirectoryIcon
+	 */
+	private void setUpFileListPanel(ImageIcon upIcon,
+			ImageIcon browseDirectoryIcon, ImageIcon refreshDirectoryIcon) {
 		fileListPanel = new JPanel();
 
 		defaultHomeDirectory = getPreferences().getLastUsedDirectory();
@@ -397,8 +468,6 @@ public class GUIMain {
 		fileListPanelButtonsPanel.setAlignmentY(Component.BOTTOM_ALIGNMENT);
 		fileListPanelButtonsPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-		//		fileListPanelButtonsPanel.setMaximumSize(new Dimension(200,200));
-
 		//Button to go up a directory for the current directory
 		JButton btnUpDirectory = new JButton();
 		btnUpDirectory.addActionListener(new UpDirectoryAction(this));
@@ -431,79 +500,6 @@ public class GUIMain {
 		fileListPanel.setMinimumSize(new Dimension(200,50));
 		fileDetailsScrollPane.setMinimumSize(new Dimension(100,50));
 		frmMoviescraper.getContentPane().add(fileListFileDetailSplitPane, BorderLayout.CENTER);
-
-		artWorkPanel = fileDetailPanel.getArtWorkPanel();
-
-		JPanel southPanel = new JPanel();
-		southPanel.setBorder(BorderFactory.createLineBorder(Color.black));
-		southPanel.setLayout(new BoxLayout(southPanel, BoxLayout.X_AXIS));
-		frmMoviescraper.getContentPane().add(southPanel, BorderLayout.SOUTH);
-
-		JComponent parserPanel = new SpecificParserPanel(this);
-		parserPanel.setPreferredSize(new Dimension(200,50));
-		southPanel.add(parserPanel);
-
-		JPanel buttonsPanel = new JPanel();
-		buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.PAGE_AXIS));
-		JPanel scrapeButtons = new JPanel();
-		JPanel fileOperationsButtons = new JPanel();
-		southPanel.add(buttonsPanel);
-
-		JButton btnScrapeSelectMovieJAV = new JButton("Scrape JAV");
-		btnScrapeSelectMovieJAV.setAction(new ScrapeMovieAction(this));
-		btnScrapeSelectMovieJAV.setIcon(japanIcon);
-		scrapeButtons.add(btnScrapeSelectMovieJAV);
-
-		JButton btnScrapeSelectMovieJAVAutomatic = new JButton("Scrape JAV (Automatic)");
-		btnScrapeSelectMovieJAVAutomatic.setAction(new ScrapeMovieActionAutomatic(this));
-		btnScrapeSelectMovieJAVAutomatic.setIcon(japanIcon);
-		scrapeButtons.add(btnScrapeSelectMovieJAVAutomatic);
-
-		JButton btnScrapeSelectMovieData18Movie = new JButton("Scrape Data18 Movie");
-		btnScrapeSelectMovieData18Movie.setAction(new ScrapeMovieActionData18Movie(this));
-		if(data18Icon != null)
-			btnScrapeSelectMovieData18Movie.setIcon(data18Icon);
-		scrapeButtons.add(btnScrapeSelectMovieData18Movie);
-
-		JButton btnScrapeSelectMovieData18WebContent = new JButton("Scrape Data18 Web Content");
-		btnScrapeSelectMovieData18WebContent.setAction(new ScrapeMovieActionData18WebContent(this));
-		if(data18Icon != null)
-			btnScrapeSelectMovieData18WebContent.setIcon(data18Icon);
-		scrapeButtons.add(btnScrapeSelectMovieData18WebContent);
-
-		JButton btnWriteFileData = new JButton("Write File Data");
-		btnWriteFileData.setToolTipText("Write out the .nfo file to disk");
-		if(saveIcon != null)
-			btnWriteFileData.setIcon(saveIcon);
-		btnWriteFileData.addActionListener(new WriteFileDataAction(this));
-		fileOperationsButtons.add(btnWriteFileData);
-
-		JButton btnMoveFileToFolder = new JButton("Move file to folder");
-		btnMoveFileToFolder.setAction(moveToNewFolder);
-		btnMoveFileToFolder.setToolTipText("Create a folder for the file and put the file and any associated files in that new folder.");
-		btnMoveFileToFolder.setIcon(moveToFolderIcon);
-		fileOperationsButtons.add(btnMoveFileToFolder);
-
-		JButton openCurrentlySelectedFileButton = new JButton(
-				"Open File");
-		openCurrentlySelectedFileButton.setToolTipText("Open the currently selected file with the system default program for it");
-		openCurrentlySelectedFileButton.addActionListener(new OpenFileAction(this));
-		openCurrentlySelectedFileButton.setIcon(openIcon);
-		fileOperationsButtons.add(openCurrentlySelectedFileButton);
-		
-		JButton fileNameCleanupButton = new JButton("File Name Cleanup (Experimental Feature)");
-		fileNameCleanupButton
-				.setToolTipText("Attempts to rename a file of a web content release before scraping so that it is more likely to find a match. I'm still working on adding more site abbreviations, so this feature is experimental for now.");
-		fileNameCleanupButton.setIcon(fixFileNameIcon);
-		fileNameCleanupButton.addActionListener(new FileNameCleanupAction(this));
-		fileOperationsButtons.add(fileNameCleanupButton);
-
-		buttonsPanel.add(scrapeButtons);
-		buttonsPanel.add(fileOperationsButtons);
-		
-		//add in the menu bar
-		
-		frmMoviescraper.setJMenuBar(new GUIMainMenuBar(this));
 	}
 
 	private ImageIcon initializeImageIcon(URL url){
@@ -742,26 +738,7 @@ public class GUIMain {
 		return actorFiles.toArray(new File[actorFiles.size()]);
 	}
 
-	/*public void writeExtraFanart(File destinationDirectory, int movieNumberInList) throws IOException {
-		updateExtraFanartFolder(destinationDirectory);
-		if(movieToWriteToDiskList != null && movieToWriteToDiskList.size() > 0 && movieToWriteToDiskList.get(movieNumberInList).getExtraFanart() != null && movieToWriteToDiskList.get(movieNumberInList).getExtraFanart().length > 0)
-		{
-			FileUtils.forceMkdir(getCurrentlySelectedExtraFanartFolderList().get(movieNumberInList));
-			int currentExtraFanartNumber = 1;
-			for(Thumb currentExtraFanart : movieToWriteToDiskList.get(movieNumberInList).getExtraFanart())
-			{
-				File fileNameToWrite = new File(getCurrentlySelectedExtraFanartFolderList().get(movieNumberInList).getPath() + File.separator + "fanart" + currentExtraFanartNumber + ".jpg");
 
-				//no need to overwrite perfectly good extra fanart since this stuff doesn't change. this will also save time when rescraping since extra IO isn't done.
-				if(!fileNameToWrite.exists())
-				{
-					System.out.println("Writing extrafanart to " + fileNameToWrite);
-					currentExtraFanart.writeImageToFile(fileNameToWrite);
-				}
-				currentExtraFanartNumber++;
-			}
-		}
-	}*/
 
 	public FileDetailPanel getFileDetailPanel() {
 		return fileDetailPanel;
