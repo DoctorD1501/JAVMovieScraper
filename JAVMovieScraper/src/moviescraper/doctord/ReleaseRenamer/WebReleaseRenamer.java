@@ -30,9 +30,12 @@ public class WebReleaseRenamer extends ReleaseRenamer {
 		 * remove things from the filename which are usually not part of the 
 		 * scene / movie name such as par2, xvid, divx, etc
 		 */
+		cleanFileName += " "; //add a space at the end so we our regex works in the next step for the last word
 		for(CSVRecord wordsToRemove : removeTheseWords)
 		{
-			cleanFileName = cleanFileName.replaceFirst(wordsToRemove.get(0).toLowerCase(), "");
+			//putting spaces in front of it so we only get an actual word, not parts of a word
+			String wordToRemove = wordsToRemove.get(0).toLowerCase();
+			cleanFileName = cleanFileName.replaceFirst("\\b"+wordToRemove+"\\b", "");
 		}
 		cleanFileName = cleanFileName.trim();
 		/* 
