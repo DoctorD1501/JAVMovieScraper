@@ -262,5 +262,9 @@ public class MoviescraperPreferences {
 	public void setUseContentBasedTypeIcons(boolean preferenceValue) {
 		setBooleanValue(useContentBasedTypeIcons, preferenceValue);    
 	}
+	
+	public String toString(){
+		return programPreferences.toString();
+	}
 
 }

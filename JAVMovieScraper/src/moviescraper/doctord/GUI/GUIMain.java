@@ -333,8 +333,7 @@ public class GUIMain {
 
 		defaultHomeDirectory = getPreferences().getLastUsedDirectory();
 		setCurrentlySelectedDirectoryList(defaultHomeDirectory);
-		FileList fl = new FileList();
-
+		
 		listModelFiles = new DefaultListModel<File>();
 		setFileList(new JList<File>(listModelFiles));
 
@@ -454,6 +453,7 @@ public class GUIMain {
 		});
 
 		getFileList().addListSelectionListener(new SelectFileListAction(this));
+		FileList fl = new FileList();
 		fileListScrollPane = fl.getGui(
 				showFileListSorted(getCurrentlySelectedDirectoryList()), listModelFiles,
 				true);

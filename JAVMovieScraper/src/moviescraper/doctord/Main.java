@@ -118,6 +118,8 @@ public class Main {
 			{
 				System.out.println("Trying to rename " + currentFile);
 				MoviescraperPreferences preferences = new MoviescraperPreferences();
+				System.out.println("Renaming with these preferences:");
+				System.out.println(preferences);
 				try {
 					Renamer.rename(currentFile, preferences);
 				} catch (IOException e) {

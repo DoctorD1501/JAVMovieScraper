@@ -47,6 +47,8 @@ public class Renamer {
 	public String getNewFileName() {
 		
 		extension = FilenameUtils.getExtension(oldFile.toString());
+		if(oldFile.isDirectory())
+			extension = "";
 		filename = FilenameUtils.getBaseName(oldFile.toString());
 		path = FilenameUtils.getFullPath(oldFile.toString());
 		String dot = ".";
