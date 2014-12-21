@@ -33,7 +33,7 @@ public class Trailer extends MovieDataItem {
 		//we don't want to rewrite trailer if the file already exists since that can retrigger a pointlessly long download
 		if(getTrailer() != null && getTrailer().length() > 0 && !fileNameToWrite.exists())
 		{
-			System.out.println("Writing trailer" + this.toString() + " into file " + fileNameToWrite);
+			System.out.println("Writing trailer: " + this.toString() + " into file " + fileNameToWrite);
 			FileUtils.copyURLToFile(new URL(getTrailer()), fileNameToWrite, connectionTimeout, readTimeout);
 		}
 	}

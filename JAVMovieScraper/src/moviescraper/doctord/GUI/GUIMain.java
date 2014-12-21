@@ -114,6 +114,8 @@ public class GUIMain {
 	private JSplitPane fileListFileDetailSplitPane;
 	private JList<File> fileList;
 	private JFileChooser chooser;
+	
+	private MessageConsolePanel messageConsolePanel;
 
 
 	private ProgressMonitor progressMonitor;
@@ -175,7 +177,7 @@ public class GUIMain {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-
+		
 		setPreferences(new MoviescraperPreferences());
 		setCurrentlySelectedNfoFileList(new ArrayList<File>());
 		setCurrentlySelectedMovieFileList(new ArrayList<File>());
@@ -194,6 +196,8 @@ public class GUIMain {
 		frmMoviescraper.setTitle("JAVMovieScraper");
 		frmMoviescraper.setBounds(100, 100, defaultMainFrameX, defaultMainFrameY);
 		frmMoviescraper.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		
 
 		//create tree view icon provider
 		IconCache.setIconProvider(getPreferences().getUseContentBasedTypeIcons() ? IconCache.IconProviderType.CONTENT
@@ -250,21 +254,30 @@ public class GUIMain {
 		
 		//Set up the file list panel - the panel where the user picks what file to scrape
 		setUpFileListPanel(upIcon, browseDirectoryIcon, refreshDirectoryIcon);
-
-		JPanel southPanel = new JPanel();
-		southPanel.setBorder(BorderFactory.createLineBorder(Color.black));
-		southPanel.setLayout(new BoxLayout(southPanel, BoxLayout.X_AXIS));
-		frmMoviescraper.getContentPane().add(southPanel, BorderLayout.SOUTH);
-
+		
+		
+		//Set up the bottom panel - area for message panel, buttons, and specific parser panel
+		JPanel bottomPanel = new JPanel(new BorderLayout());
+		JPanel bottomPanelMainArea = new JPanel();
+		bottomPanel.add(bottomPanelMainArea, BorderLayout.SOUTH);
+		bottomPanelMainArea.setBorder(BorderFactory.createLineBorder(Color.black));
+		bottomPanelMainArea.setLayout(new BoxLayout(bottomPanelMainArea, BoxLayout.X_AXIS));
+		frmMoviescraper.getContentPane().add(bottomPanel, BorderLayout.SOUTH);
+		
+		//Console message area
+		messageConsolePanel = new MessageConsolePanel();
+		messageConsolePanel.setVisible(false);
+		bottomPanel.add(messageConsolePanel, BorderLayout.NORTH);
+		
 		JComponent parserPanel = new SpecificParserPanel(this);
 		parserPanel.setPreferredSize(new Dimension(200,50));
-		southPanel.add(parserPanel);
+		bottomPanelMainArea.add(parserPanel);
 
 		JPanel buttonsPanel = new JPanel();
 		buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.PAGE_AXIS));
 		JPanel scrapeButtons = new JPanel();
 		JPanel fileOperationsButtons = new JPanel();
-		southPanel.add(buttonsPanel);
+		bottomPanelMainArea.add(buttonsPanel);
 
 		JButton btnScrapeSelectMovieJAV = new JButton("Scrape JAV");
 		btnScrapeSelectMovieJAV.setAction(new ScrapeMovieAction(this));
@@ -317,6 +330,8 @@ public class GUIMain {
 
 		buttonsPanel.add(scrapeButtons);
 		buttonsPanel.add(fileOperationsButtons);
+		
+		//End setting up the bottom panel
 		
 		//add in the menu bar
 		frmMoviescraper.setJMenuBar(new GUIMainMenuBar(this));
@@ -931,5 +946,13 @@ public class GUIMain {
 	public void setCurrentlySelectedMovieData18Movie(
 			Movie currentlySelectedMovieData18Movie) {
 		this.currentlySelectedMovieData18Movie = currentlySelectedMovieData18Movie;
+	}
+	
+	public void showMessageConsolePanel(){
+		messageConsolePanel.setVisible(true);
+	}
+	
+	public void hideMessageConsolePanel(){
+		messageConsolePanel.setVisible(false);
 	}
 }

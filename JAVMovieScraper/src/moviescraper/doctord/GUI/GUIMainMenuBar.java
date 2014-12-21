@@ -21,6 +21,10 @@ import moviescraper.doctord.preferences.MoviescraperPreferences;
 
 public class GUIMainMenuBar extends JMenuBar{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JMenu preferenceMenu;
 	private MoviescraperPreferences preferences;
 	private GUIMain guiMain;
@@ -38,8 +42,8 @@ public class GUIMainMenuBar extends JMenuBar{
 		
 
 		//Set up the preferences menu
-		preferenceMenu = new JMenu("Preferences");
-		preferenceMenu.setMnemonic(KeyEvent.VK_P);
+		preferenceMenu = new JMenu("Scraping Preferences");
+		preferenceMenu.setMnemonic(KeyEvent.VK_S);
 		preferenceMenu.getAccessibleContext().setAccessibleDescription(
 				"Preferences for JAVMovieScraper");
 
@@ -199,6 +203,7 @@ public class GUIMainMenuBar extends JMenuBar{
 
 		//Checkbox for renaming Movie file
 		JCheckBoxMenuItem renameMovieFile = new JCheckBoxMenuItem("Rename Movie File");
+		
 		renameMovieFile.setState(getPreferences().getRenameMovieFile());
 		renameMovieFile.addItemListener(new ItemListener() {
 
@@ -232,7 +237,7 @@ public class GUIMainMenuBar extends JMenuBar{
 		preferenceMenu.add(scrapeInJapanese);
 
 		JMenu renameMenu = new JMenu("Rename Settings");
-
+		renameMenu.setMnemonic(KeyEvent.VK_R);
 		JMenuItem renameSettings = new JMenuItem("Rename Settings");
 		renameSettings.addActionListener(new ActionListener() {
 			@Override
@@ -290,11 +295,39 @@ public class GUIMainMenuBar extends JMenuBar{
 			}
 		});
 		fileMenu.add(exit);
+		
+		JMenu consoleMenu = new JMenu("Console Output");
+		consoleMenu.setMnemonic(KeyEvent.VK_C);
+		JMenuItem consoleInSeperateWindowMenuItem = new JMenuItem("View Console Output In Seperate Window");
+		consoleInSeperateWindowMenuItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new MessageConsoleGUI();
+			}
+		});
+		
+		
+		JCheckBoxMenuItem consolePanelMenuItem = new JCheckBoxMenuItem("Show Console Panel In Main Window");
+		consolePanelMenuItem.setState(false);
+		consolePanelMenuItem.addItemListener(new ItemListener() {
+
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				if(e.getStateChange() == ItemEvent.SELECTED)
+					guiMain.showMessageConsolePanel();
+				else if(e.getStateChange() == ItemEvent.DESELECTED)
+					guiMain.hideMessageConsolePanel();	
+			}
+		});
+		
+		consoleMenu.add(consolePanelMenuItem);
+		consoleMenu.add(consoleInSeperateWindowMenuItem);
 
 		//add the various menus together
 		this.add(fileMenu);
 		this.add(preferenceMenu);
 		this.add(renameMenu);
+		this.add(consoleMenu);
 	}
 	
 	private MoviescraperPreferences getPreferences(){
