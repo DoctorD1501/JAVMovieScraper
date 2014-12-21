@@ -41,6 +41,12 @@ public class ImageCache {
 					cache.put(url, blankImage);
 					return blankImage;
 			}
+			catch (OutOfMemoryError e) {
+                System.out.println("We ran out of memory..clearing the cache. It was size " + cache.size() 
+                		+ " before the clear");
+                cache.clear();
+                return ImageIO.read(url);
+            }
 			catch(IIOException e)
 			{
 				e.printStackTrace();
