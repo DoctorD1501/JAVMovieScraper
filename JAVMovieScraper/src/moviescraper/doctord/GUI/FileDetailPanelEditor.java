@@ -112,7 +112,7 @@ class FileDetailPanelActorEditor extends AbstractFileDetailPanelEditGUI {
 		Movie currentMovie = fileDetailPanel.getCurrentMovie();
 		if (currentMovie != null) {
 			currentMovie.getActors().add(newActor);
-			fileDetailPanel.updateView(false, false);
+			fileDetailPanel.updateView(true, true);
 		}
 	}
 	
