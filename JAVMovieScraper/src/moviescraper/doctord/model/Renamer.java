@@ -26,6 +26,7 @@ public class Renamer {
 	private String extension;
 	private String filename;
 	private String path;
+	private static final int maxFileNameLength = 250;
 
 	private final static String ID = "<ID>";
 	private final static String TITLE = "<TITLE>";
@@ -75,12 +76,19 @@ public class Renamer {
 				
 		newName = renameReplaceAll(newName, ID, movieID);
 		newName = renameReplaceAll(newName, TITLE, movieTitle);
-		newName = renameReplaceAll(newName, ACTORS, movieActors);
 		newName = renameReplaceAll(newName, YEAR, movieYear);
 		newName = renameReplaceAll(newName, ORIGINALTITLE, movieOriginalTitle);
 		newName = renameReplaceAll(newName, SET, movieSet);
 		newName = renameReplaceAll(newName, STUDIO, movieStudio);
 		newName = renameReplaceAll(newName, GENRES, movieGenres);
+		
+		//we need to watch out when renaming a file that a large number of actors doesn't create
+		//a movie name that is too long
+		String potentialNameWithActors =  renameReplaceAll(newName, ACTORS, movieActors);
+		if(potentialNameWithActors.length() < maxFileNameLength )
+			newName = potentialNameWithActors;
+		else
+			newName = renameReplaceAll(newName, ACTORS, "");
 
 		return newName.trim();
 	}
