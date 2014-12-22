@@ -95,9 +95,11 @@ public abstract class SiteParsingProfile {
 	public static String findIDTagFromFile(File file)
 	{
 		String fileNameNoExtension;
-		if(file.isFile())
-			fileNameNoExtension = FilenameUtils.removeExtension(file.getName());
-		else fileNameNoExtension = file.getName();
+		if(file.isDirectory())
+		{
+			fileNameNoExtension = file.getName();
+		}
+		else fileNameNoExtension = FilenameUtils.removeExtension(file.getName());
 		String fileNameNoExtensionNoDiscNumber = stripDiscNumber(fileNameNoExtension);
 		String[] splitFileName = fileNameNoExtensionNoDiscNumber.split(" ");
 		String lastWord = splitFileName[splitFileName.length-1];
