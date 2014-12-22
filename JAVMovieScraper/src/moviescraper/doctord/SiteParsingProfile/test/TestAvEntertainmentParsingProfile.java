@@ -93,7 +93,7 @@ public class TestAvEntertainmentParsingProfile {
 		Thumb[] posters = profile.scrapePosters();
 		assertTrue("Wrong count of posters", posters.length == 1);
 		assertEquals("Wrong poster", "http://imgs.aventertainments.com/new/bigcover/DVD1PT-154.jpg", posters[0].getThumbURL().toString());
-		TestTokyoHotParsingProfile.showImage("posters", posters[0].getThumbImage());
+		TestGenericProfile.showImage("posters", posters[0].getThumbImage());
 	}
 	
 	@Test
@@ -102,7 +102,7 @@ public class TestAvEntertainmentParsingProfile {
 		assertTrue("There should be 1 Fanart.", fanart.length == 1);
 		
 		assertEquals("Wrong Fanart", "http://imgs.aventertainments.com/new/bigcover/DVD1PT-154.jpg", fanart[0].getThumbURL().toString());
-		TestTokyoHotParsingProfile.showImage("Fanart", fanart[0].getThumbImage());
+		TestGenericProfile.showImage("Fanart", fanart[0].getThumbImage());
 	}
 	
 	@Test

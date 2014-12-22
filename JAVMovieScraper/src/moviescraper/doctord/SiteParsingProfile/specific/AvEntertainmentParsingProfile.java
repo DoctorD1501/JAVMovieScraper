@@ -62,12 +62,12 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 
 	@Override
 	public OriginalTitle scrapeOriginalTitle() {
-		return new OriginalTitle("");
+		return OriginalTitle.BLANK_ORIGINALTITLE;
 	}
 
 	@Override
 	public SortTitle scrapeSortTitle() {
-		return new SortTitle("");
+		return SortTitle.BLANK_SORTTITLE;
 	}
 
 	@Override
@@ -109,27 +109,27 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 
 	@Override
 	public Top250 scrapeTop250() {
-		return new Top250("");
+		return Top250.BLANK_TOP250;
 	}
 
 	@Override
 	public Votes scrapeVotes() {
-		return new Votes("");
+		return Votes.BLANK_VOTES;
 	}
 
 	@Override
 	public Outline scrapeOutline() {
-		return new Outline("");
+		return Outline.BLANK_OUTLINE;
 	}
 
 	@Override
 	public Plot scrapePlot() {
-		return new Plot("");
+		return Plot.BLANK_PLOT;
 	}
 
 	@Override
 	public Tagline scrapeTagline() {
-		return new Tagline("");
+		return Tagline.BLANK_TAGLINE;
 	}
 
 	@Override
@@ -207,7 +207,7 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 
 	@Override
 	public MPAARating scrapeMPAA() {
-		return new MPAARating("XXX");
+		return MPAARating.RATING_XXX;
 	}
 
 	@Override

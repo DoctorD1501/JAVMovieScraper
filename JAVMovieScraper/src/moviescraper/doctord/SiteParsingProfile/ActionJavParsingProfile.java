@@ -56,20 +56,20 @@ public class ActionJavParsingProfile extends SiteParsingProfile {
 	public OriginalTitle scrapeOriginalTitle() {
 		// ActionJav doesn't have the Japanese title, so we don't want to return
 		// anything but a blank text element
-		return new OriginalTitle("");
+		return OriginalTitle.BLANK_ORIGINALTITLE;
 	}
 
 	@Override
 	public SortTitle scrapeSortTitle() {
 		// we don't need any special sort title - that's usually something the
 		// user provides
-		return new SortTitle("");
+		return SortTitle.BLANK_SORTTITLE;
 	}
 
 	@Override
 	public Set scrapeSet() {
 		// ActionJav doesn't have any set information
-		return new Set("");
+		return Set.BLANK_SET;
 
 	}
 
@@ -100,7 +100,7 @@ public class ActionJavParsingProfile extends SiteParsingProfile {
 	@Override
 	public Top250 scrapeTop250() {
 		// This type of info doesn't exist on ActionJav
-		return new Top250("");
+		return Top250.BLANK_TOP250;
 	}
 
 	@Override
@@ -115,7 +115,7 @@ public class ActionJavParsingProfile extends SiteParsingProfile {
 
 	@Override
 	public Outline scrapeOutline() {
-		return new Outline("");
+		return Outline.BLANK_OUTLINE;
 	}
 
 	@Override
@@ -128,12 +128,12 @@ public class ActionJavParsingProfile extends SiteParsingProfile {
 		if (plotElement != null)
 			return new Plot(plotElement.text().toString());
 		else
-			return new Plot("");
+			return Plot.BLANK_PLOT;
 	}
 
 	@Override
 	public Tagline scrapeTagline() {
-		return new Tagline("");
+		return Tagline.BLANK_TAGLINE;
 	}
 
 	@Override
@@ -186,7 +186,7 @@ public class ActionJavParsingProfile extends SiteParsingProfile {
 		if (totalRuntime != 0) {
 			return new Runtime(Integer.toString(totalRuntime));
 		} else
-			return new Runtime("");
+			return Runtime.BLANK_RUNTIME;
 	}
 
 	@Override
@@ -229,7 +229,7 @@ public class ActionJavParsingProfile extends SiteParsingProfile {
 
 	@Override
 	public MPAARating scrapeMPAA() {
-		return new MPAARating("XXX");
+		return MPAARating.RATING_XXX;
 	}
 
 	@Override
@@ -245,7 +245,7 @@ public class ActionJavParsingProfile extends SiteParsingProfile {
 			idElementText = idElementText.substring(0,firstNumberIndex) + "-" + idElementText.substring(firstNumberIndex);
 			return new ID(idElementText);
 		}
-		else return new ID("");
+		else return ID.BLANK_ID;
 	}
 
 	@Override

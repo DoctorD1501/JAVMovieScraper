@@ -9,6 +9,7 @@ import org.apache.commons.io.FileUtils;
 public class Trailer extends MovieDataItem {
 
 	private String trailer;
+	public static final Trailer BLANK_TRAILER = new Trailer("");
 
 	public String getTrailer() {
 		return trailer;

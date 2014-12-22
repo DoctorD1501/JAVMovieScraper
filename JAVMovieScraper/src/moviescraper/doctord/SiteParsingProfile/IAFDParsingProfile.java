@@ -51,13 +51,13 @@ public class IAFDParsingProfile extends SiteParsingProfile {
 
 	@Override
 	public OriginalTitle scrapeOriginalTitle() {
-		return new OriginalTitle("");
+		return OriginalTitle.BLANK_ORIGINALTITLE;
 	}
 
 	@Override
 	public SortTitle scrapeSortTitle() {
 		// TODO Auto-generated method stub
-		return new SortTitle("");
+		return SortTitle.BLANK_SORTTITLE;
 	}
 
 	@Override
@@ -65,13 +65,13 @@ public class IAFDParsingProfile extends SiteParsingProfile {
 		Element setElement = document.select("div div.p8 div p a[href*=/series/]").first();
 		if(setElement != null)
 			return new Set(setElement.text());
-		else return new Set("");
+		else return Set.BLANK_SET;
 	}
 
 	@Override
 	public Rating scrapeRating() {
 		// TODO Auto-generated method stub
-		return new Rating(0, "");
+		return Rating.BLANK_RATING;
 	}
 
 	@Override
@@ -85,25 +85,25 @@ public class IAFDParsingProfile extends SiteParsingProfile {
 		{
 			return new Year(releaseDateText);
 		}
-		else return new Year("");
+		else return Year.BLANK_YEAR;
 	}
 
 	@Override
 	public Top250 scrapeTop250() {
 		// TODO Auto-generated method stub
-		return new Top250("");
+		return Top250.BLANK_TOP250;
 	}
 
 	@Override
 	public Votes scrapeVotes() {
 		// TODO Auto-generated method stub
-		return new Votes("");
+		return Votes.BLANK_VOTES;
 	}
 
 	@Override
 	public Outline scrapeOutline() {
 		// TODO Auto-generated method stub
-		return new Outline("");
+		return Outline.BLANK_OUTLINE;
 	}
 
 	@Override
@@ -111,13 +111,13 @@ public class IAFDParsingProfile extends SiteParsingProfile {
 		Element plotElement = document.select("div.gen12 b:contains(Description:) ~ p").first();
 		if(plotElement != null)
 			return new Plot(plotElement.text());
-		return new Plot("");
+		return Plot.BLANK_PLOT;
 	}
 
 	@Override
 	public Tagline scrapeTagline() {
 		// TODO Auto-generated method stub
-		return new Tagline("");
+		return Tagline.BLANK_TAGLINE;
 	}
 
 	@Override
@@ -134,7 +134,7 @@ public class IAFDParsingProfile extends SiteParsingProfile {
 			return new Runtime(minutesElement.text());
 		}
 		//System.out.println("runtime " + runtimeElement.text());
-		else return new Runtime("");
+		else return Runtime.BLANK_RUNTIME;
 	}
 
 	@Override
@@ -168,13 +168,12 @@ public class IAFDParsingProfile extends SiteParsingProfile {
 	@Override
 	public MPAARating scrapeMPAA() {
 		// TODO Auto-generated method stub
-		return new MPAARating("XXX");
+		return MPAARating.RATING_XXX;
 	}
 
 	@Override
 	public ID scrapeID() {
-		// TODO Auto-generated method stub
-		return new ID("");
+		return ID.BLANK_ID;
 	}
 
 	@Override
@@ -256,7 +255,7 @@ public class IAFDParsingProfile extends SiteParsingProfile {
 			if(studioText != null && studioText.length() > 0)
 				return new Studio(studioText);
 		}
-		return new Studio("");
+		return Studio.BLANK_STUDIO;
 	}
 
 	@Override

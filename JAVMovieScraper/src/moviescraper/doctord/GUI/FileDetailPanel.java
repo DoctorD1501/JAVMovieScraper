@@ -425,20 +425,20 @@ public class FileDetailPanel extends JPanel {
 		
 		ID id = new ID("");
 		MPAARating mpaa = new MPAARating("");
-		OriginalTitle originalTitle = new OriginalTitle("");
-		Outline outline = new Outline("");
-		Plot plot = new Plot("");
-		Rating rating = new Rating(0.0, "");
-		Runtime runtime = new Runtime("");
-		Set set = new Set("");
-		SortTitle sortTitle= new SortTitle("");
-		Studio studio = new Studio("");
-		Tagline tagline = new Tagline("");
+		OriginalTitle originalTitle = OriginalTitle.BLANK_ORIGINALTITLE;
+		Outline outline = Outline.BLANK_OUTLINE;
+		Plot plot = Plot.BLANK_PLOT;
+		Rating rating = Rating.BLANK_RATING;
+		Runtime runtime = Runtime.BLANK_RUNTIME;
+		Set set = Set.BLANK_SET;
+		SortTitle sortTitle= SortTitle.BLANK_SORTTITLE;
+		Studio studio = Studio.BLANK_STUDIO;
+		Tagline tagline = Tagline.BLANK_TAGLINE;
 		Title title = new Title("");
-		Top250 top250 = new Top250("");
+		Top250 top250 = Top250.BLANK_TOP250;
 		Trailer trailer = new Trailer(null);
-		Votes votes = new Votes("");
-		Year year = new Year("");
+		Votes votes = Votes.BLANK_VOTES;
+		Year year = Year.BLANK_YEAR;
 		
 		return new Movie(actors, directors, fanart, extraFanart, genres, id, mpaa, originalTitle, outline, plot, posters, rating, runtime, set, sortTitle, studio, tagline, title, top250, trailer, votes, year);
 	}

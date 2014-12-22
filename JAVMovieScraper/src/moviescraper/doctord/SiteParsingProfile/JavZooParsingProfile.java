@@ -66,14 +66,14 @@ public class JavZooParsingProfile extends SiteParsingProfile {
 	@Override
 	public OriginalTitle scrapeOriginalTitle() {
 		//JavZoo doesn't have the original title when scraping in english
-		return new OriginalTitle("");
+		return OriginalTitle.BLANK_ORIGINALTITLE;
 	}
 
 	@Override
 	public SortTitle scrapeSortTitle() {
 		// we don't need any special sort title - that's usually something the
 		// user provides
-		return new SortTitle("");
+		return SortTitle.BLANK_SORTTITLE;
 	}
 
 	@Override
@@ -83,13 +83,13 @@ public class JavZooParsingProfile extends SiteParsingProfile {
 		{
 			return new Set(setElement.text().trim());
 		}
-		else return new Set("");
+		else return Set.BLANK_SET;
 	}
 
 	@Override
 	public Rating scrapeRating() {
 		// this site does not have ratings, so just return some default values
-		return new Rating(0, "0");
+		return Rating.BLANK_RATING;
 	}
 
 	@Override
@@ -104,41 +104,41 @@ public class JavZooParsingProfile extends SiteParsingProfile {
 			catch(StringIndexOutOfBoundsException e)
 			{
 				//the site didn't have a release date, even though it had a row where it should be, so return an empty year
-				return new Year("");
+				return Year.BLANK_YEAR;
 			}
 			return new Year(yearText);
 		}
-		else return new Year("");
+		else return Year.BLANK_YEAR;
 	}
 
 	@Override
 	public Top250 scrapeTop250() {
 		// This type of info doesn't exist on JavZoo
-		return new Top250("");
+		return Top250.BLANK_TOP250;
 	}
 
 	@Override
 	public Votes scrapeVotes() {
 		//This type of info doesn't exist on JavZoo
-		return new Votes("");
+		return Votes.BLANK_VOTES;
 	}
 
 	@Override
 	public Outline scrapeOutline() {
 		//This type of info doesn't exist on JavZoo
-		return new Outline("");
+		return Outline.BLANK_OUTLINE;
 	}
 
 	@Override
 	public Plot scrapePlot() {
 		//This type of info doesn't exist on JavZoo
-		return new Plot("");
+		return Plot.BLANK_PLOT;
 	}
 
 	@Override
 	public Tagline scrapeTagline() {
 		//This type of info doesn't exist on JavZoo
-		return new Tagline("");
+		return Tagline.BLANK_TAGLINE;
 	}
 
 	@Override
@@ -154,7 +154,7 @@ public class JavZooParsingProfile extends SiteParsingProfile {
 				return new Runtime(lengthText);
 			}
 		}
-		return new Runtime("");	
+		return Runtime.BLANK_RUNTIME;	
 	}
 
 	@Override
@@ -194,7 +194,7 @@ public class JavZooParsingProfile extends SiteParsingProfile {
 
 	@Override
 	public MPAARating scrapeMPAA() {
-		return new MPAARating("XXX");
+		return MPAARating.RATING_XXX;
 	}
 
 	@Override
@@ -206,7 +206,7 @@ public class JavZooParsingProfile extends SiteParsingProfile {
 			idText = idText.replaceFirst(Pattern.quote("ID: "), "");
 			return new ID(idText);
 		}
-		else return new ID("");
+		else return ID.BLANK_ID;
 	}
 
 	@Override
@@ -279,7 +279,7 @@ public class JavZooParsingProfile extends SiteParsingProfile {
 			studioText = studioText.replaceFirst(Pattern.quote("Studio: "), "");
 			return new Studio(studioText);
 		}
-		else return new Studio("");
+		else return Studio.BLANK_STUDIO;
 	}
 
 	@Override

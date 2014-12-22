@@ -3,6 +3,7 @@ package moviescraper.doctord.dataitem;
 public class Studio extends MovieDataItem {
 
 	private String studio;
+	public static final Studio BLANK_STUDIO = new Studio("");
 
 	public String getStudio() {
 		return studio;

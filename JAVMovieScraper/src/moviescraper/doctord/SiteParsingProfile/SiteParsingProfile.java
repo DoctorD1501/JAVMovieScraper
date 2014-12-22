@@ -9,6 +9,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.FilenameUtils;
@@ -166,7 +167,7 @@ public abstract class SiteParsingProfile {
 	public  abstract String createSearchString(File file);
 	
 	public Trailer scrapeTrailer() {
-		return new Trailer("");
+		return Trailer.BLANK_TRAILER;
 	}
 	
 	public abstract SearchResult[] getSearchResults(String searchString) throws IOException;
@@ -180,7 +181,7 @@ public abstract class SiteParsingProfile {
 	    	String encodingScheme = "UTF-8";
 	    	String queryToEncode = "site:" + site + " " + searchQuery;
 	    	String encodedSearchQuery = URLEncoder.encode(queryToEncode, encodingScheme);
-	        doc = Jsoup.connect("https://www.google.com/search?q="+encodedSearchQuery).userAgent("Mozilla").ignoreHttpErrors(true).timeout(0).get();
+	        doc = Jsoup.connect("https://www.google.com/search?q="+encodedSearchQuery).userAgent(getRandomUserAgent()).referrer("http://www.google.com").ignoreHttpErrors(true).timeout(0).get();
 	        Elements sorryLink = doc.select("form[action=CaptchaRedirect] input");
 	        Map<String, String> captchaData = new HashMap<>();
 	        for (Element element : sorryLink) {
@@ -197,6 +198,7 @@ public abstract class SiteParsingProfile {
 	            String href = hrefs.attr("href");
 	            href = URLDecoder.decode(href, encodingScheme);
 	            href = href.replaceFirst(Pattern.quote("/url?q="), "");
+	            href = href.replaceFirst(Pattern.quote("http://www.google.com/url?url="),"");
 	            //remove some junk referrer stuff
 	            int startIndexToRemove = href.indexOf("&sa=");
 	            if (startIndexToRemove > -1)
@@ -248,6 +250,24 @@ public abstract class SiteParsingProfile {
 			scrapingLanguage = Language.JAPANESE;
 		else
 			scrapingLanguage = Language.ENGLISH;
+	}
+	
+	/**
+	 * Maybe we are less likely to get blocked on google if we don't always use the same user agent when searching,
+	 * so this method is designed to pick a random one from a list of valid user agent strings
+	 * @return a random user agent string that can be passed to .userAgent() when calling Jsoup.connect
+	 */
+	public String getRandomUserAgent()
+	{
+		String[] userAgent = {"Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6",
+				"Mozilla/5.0 (Windows NT 6.3; rv:36.0) Gecko/20100101 Firefox/36.0",
+				"Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36",
+				"Opera/9.80 (Windows NT 6.0) Presto/2.12.388 Version/12.14",
+				"Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.0) Opera 12.14",
+				"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.75.14 (KHTML, like Gecko) Version/7.0.3 Safari/7046A194A",
+				"Mozilla/5.0 (Windows; U; Windows NT 6.1; tr-TR) AppleWebKit/533.20.25 (KHTML, like Gecko) Version/5.0.4 Safari/533.20.27",
+				"Mozilla/5.0 (Windows; U; Windows NT 5.0; en-en) AppleWebKit/533.16 (KHTML, like Gecko) Version/4.1 Safari/533.16"};
+		return userAgent[new Random().nextInt(userAgent.length)];
 	}
 	
 }

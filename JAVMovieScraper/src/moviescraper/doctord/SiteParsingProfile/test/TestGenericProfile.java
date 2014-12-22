@@ -2,9 +2,15 @@ package moviescraper.doctord.SiteParsingProfile.test;
 
 import static org.junit.Assert.*;
 
+import java.awt.EventQueue;
+import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 
 import moviescraper.doctord.Thumb;
 import moviescraper.doctord.SiteParsingProfile.IAFDParsingProfile;
@@ -72,7 +78,7 @@ public class TestGenericProfile {
 		Thumb[] fanart = profile.scrapeFanart();
 		assertTrue("There should be 1 Fanart.", fanart.length == 1);
 		
-		TestTokyoHotParsingProfile.showImage("Fanart", fanart[0].getThumbImage());
+		showImage("Fanart", fanart[0].getThumbImage());
 	}
 
 	@Test
@@ -188,5 +194,27 @@ public class TestGenericProfile {
 	public void testYear() {
 		Year year = profile.scrapeYear();
 		assertEquals("Wrong Year", "2014", year.getYear());
+	}
+	
+	public static void showImage(final String title, final Image image) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					JFrame jFrame = new JFrame(title);
+					jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+					jFrame.add( new JLabel(new ImageIcon(image)) );
+					jFrame.pack();
+					jFrame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

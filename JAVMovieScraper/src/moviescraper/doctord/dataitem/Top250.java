@@ -5,6 +5,7 @@ package moviescraper.doctord.dataitem;
 public class Top250 extends MovieDataItem {
 	
 	private String top250;
+	public static final Top250 BLANK_TOP250 = new Top250("");
 
 	public String getTop250() {
 		return top250;

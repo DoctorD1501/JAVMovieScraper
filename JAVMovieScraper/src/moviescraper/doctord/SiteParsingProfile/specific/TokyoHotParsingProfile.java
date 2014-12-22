@@ -66,12 +66,12 @@ public class TokyoHotParsingProfile extends SiteParsingProfile implements Specif
 
 	@Override
 	public OriginalTitle scrapeOriginalTitle() {
-		return new OriginalTitle("");
+		return OriginalTitle.BLANK_ORIGINALTITLE;
 	}
 
 	@Override
 	public SortTitle scrapeSortTitle() {
-		return new SortTitle("");
+		return SortTitle.BLANK_SORTTITLE;
 	}
 
 	@Override
@@ -100,17 +100,17 @@ public class TokyoHotParsingProfile extends SiteParsingProfile implements Specif
 
 	@Override
 	public Top250 scrapeTop250() {
-		return new Top250("");
+		return Top250.BLANK_TOP250;
 	}
 
 	@Override
 	public Votes scrapeVotes() {
-		return new Votes("");
+		return Votes.BLANK_VOTES;
 	}
 
 	@Override
 	public Outline scrapeOutline() {
-		return new Outline("");
+		return Outline.BLANK_OUTLINE;
 	}
 
 	@Override
@@ -120,12 +120,12 @@ public class TokyoHotParsingProfile extends SiteParsingProfile implements Specif
 			String ownText = elements.get(0).childNode(0).childNode(0).toString().trim();
 			return new Plot(ownText);
 		}
-		return new Plot("");
+		return Plot.BLANK_PLOT;
 	}
 
 	@Override
 	public Tagline scrapeTagline() {
-		return new Tagline("");
+		return Tagline.BLANK_TAGLINE;
 	}
 
 	@Override
@@ -182,7 +182,7 @@ public class TokyoHotParsingProfile extends SiteParsingProfile implements Specif
 
 	@Override
 	public MPAARating scrapeMPAA() {
-		return new MPAARating("XXX");
+		return MPAARating.RATING_XXX;
 	}
 
 	@Override

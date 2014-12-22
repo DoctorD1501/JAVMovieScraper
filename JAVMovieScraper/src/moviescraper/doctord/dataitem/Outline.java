@@ -3,6 +3,7 @@ package moviescraper.doctord.dataitem;
 public class Outline extends MovieDataItem {
 
 	private String outline;
+	public static final Outline BLANK_OUTLINE = new Outline("");
 
 	public String getOutline() {
 		return outline;

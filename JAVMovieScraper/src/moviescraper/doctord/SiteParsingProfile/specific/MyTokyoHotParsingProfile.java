@@ -87,17 +87,17 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 		{
 			return new OriginalTitle(originalTitleElement.text().trim());
 		}
-		return new OriginalTitle("");
+		return OriginalTitle.BLANK_ORIGINALTITLE;
 	}
 
 	@Override
 	public SortTitle scrapeSortTitle() {
-		return new SortTitle("");
+		return SortTitle.BLANK_SORTTITLE;
 	}
 
 	@Override
 	public Set scrapeSet() {
-		return new Set("");
+		return Set.BLANK_SET;
 	}
 
 	@Override
@@ -113,22 +113,22 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 			String yearText = releaseDateElement.text().substring(0, 4);
 			return new Year(yearText);
 		}
-		return new Year("");
+		return Year.BLANK_YEAR;
 	}
 
 	@Override
 	public Top250 scrapeTop250() {
-		return new Top250("");
+		return Top250.BLANK_TOP250;
 	}
 
 	@Override
 	public Votes scrapeVotes() {
-		return new Votes("");
+		return Votes.BLANK_VOTES;
 	}
 
 	@Override
 	public Outline scrapeOutline() {
-		return new Outline("");
+		return Outline.BLANK_OUTLINE;
 	}
 
 	@Override
@@ -143,12 +143,12 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 		}
 		if(plotElement != null)
 			return new Plot(plotElement.text().trim());
-		else return new Plot("");
+		else return Plot.BLANK_PLOT;
 	}
 
 	@Override
 	public Tagline scrapeTagline() {
-		return new Tagline("");
+		return Tagline.BLANK_TAGLINE;
 	}
 
 	@Override
@@ -167,7 +167,7 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 				return new Runtime(new Integer(totalMinutes).toString());
 			}
 		}
-		return new Runtime("");
+		return Runtime.BLANK_RUNTIME;
 	}
 
 	@Override
@@ -213,7 +213,7 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 			String trailerSrc = trailer.attr("src");
 			return new Trailer(trailerSrc);
 		}
-		return new Trailer("");
+		return Trailer.BLANK_TRAILER;
 	}
 
 	@Override
@@ -228,7 +228,7 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 
 	@Override
 	public MPAARating scrapeMPAA() {
-		return new MPAARating("XXX");
+		return MPAARating.RATING_XXX;
 	}
 
 	@Override

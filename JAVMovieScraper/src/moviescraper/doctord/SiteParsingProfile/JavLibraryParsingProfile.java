@@ -98,20 +98,20 @@ public class JavLibraryParsingProfile extends SiteParsingProfile {
 	@Override
 	public OriginalTitle scrapeOriginalTitle() {
 		//Does not have original japanese title, so don't return anything
-		return new OriginalTitle("");
+		return OriginalTitle.BLANK_ORIGINALTITLE;
 	}
 
 	@Override
 	public SortTitle scrapeSortTitle() {
 		// we don't need any special sort title - that's usually something the
 		// user provides
-		return new SortTitle("");
+		return SortTitle.BLANK_SORTTITLE;
 	}
 
 	@Override
 	public Set scrapeSet() {
 		// Site doesn't have any set information
-		return new Set("");
+		return Set.BLANK_SET;
 
 	}
 
@@ -131,7 +131,7 @@ public class JavLibraryParsingProfile extends SiteParsingProfile {
 			}
 			return new Rating(10,ratingText);
 		}
-		else return new Rating(0,""); //No rating found on the page
+		else return Rating.BLANK_RATING; //No rating found on the page
 	}
 
 	@Override
@@ -146,33 +146,33 @@ public class JavLibraryParsingProfile extends SiteParsingProfile {
 			dateText = dateText.trim().substring(0,4);
 			return new Year(dateText);
 		}
-		else return new Year("");
+		else return Year.BLANK_YEAR;
 	}
 
 	@Override
 	public Top250 scrapeTop250() {
 		// This type of info doesn't exist on JavLibrary
-		return new Top250("");
+		return Top250.BLANK_TOP250;
 	}
 
 	@Override
 	public Votes scrapeVotes() {
-		return new Votes("");
+		return Votes.BLANK_VOTES;
 	}
 
 	@Override
 	public Outline scrapeOutline() {
-		return new Outline("");
+		return Outline.BLANK_OUTLINE;
 	}
 
 	@Override
 	public Plot scrapePlot() {
-		return new Plot("");
+		return Plot.BLANK_PLOT;
 	}
 
 	@Override
 	public Tagline scrapeTagline() {
-		return new Tagline("");
+		return Tagline.BLANK_TAGLINE;
 	}
 
 	@Override
@@ -225,7 +225,7 @@ public class JavLibraryParsingProfile extends SiteParsingProfile {
 
 	@Override
 	public MPAARating scrapeMPAA() {
-		return new MPAARating("XXX");
+		return MPAARating.RATING_XXX;
 	}
 
 	@Override
@@ -238,7 +238,7 @@ public class JavLibraryParsingProfile extends SiteParsingProfile {
 		{
 			return new ID(idText);
 		}
-		else return new ID("");
+		else return ID.BLANK_ID;
 	}
 
 	@Override
@@ -415,7 +415,7 @@ public class JavLibraryParsingProfile extends SiteParsingProfile {
 		{
 			return new Studio(studioElement.text().trim());
 		}
-		else return new Studio("");
+		else return Studio.BLANK_STUDIO;
 	}
 
 	@Override

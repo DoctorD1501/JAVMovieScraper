@@ -55,13 +55,13 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile{
 
 	@Override
 	public OriginalTitle scrapeOriginalTitle() {
-		return new OriginalTitle("");
+		return OriginalTitle.BLANK_ORIGINALTITLE;
 	}
 
 	@Override
 	public SortTitle scrapeSortTitle() {
 		// TODO Auto-generated method stub
-		return new SortTitle("");
+		return SortTitle.BLANK_SORTTITLE;
 	}
 
 	@Override
@@ -77,13 +77,13 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile{
 		Element setElement = document.select("div.main.gre1 div#centered.main2 div.dloc a").last();
 		if(setElement != null)
 			return new Set(setElement.text());
-		else return new Set("");
+		else return Set.BLANK_SET;
 	}
 
 	@Override
 	public Rating scrapeRating() {
-		// TODO Auto-generated method stub
-		return new Rating(0, "");
+		// this site doesn't have ratings
+		return Rating.BLANK_RATING;
 	}
 
 	@Override
@@ -102,25 +102,25 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile{
 				return new Year(releaseDateText);
 			}
 		}
-		return new Year("");
+		return Year.BLANK_YEAR;
 	}
 
 	@Override
 	public Top250 scrapeTop250() {
 		// TODO Auto-generated method stub
-		return new Top250("");
+		return Top250.BLANK_TOP250;
 	}
 
 	@Override
 	public Votes scrapeVotes() {
 		// TODO Auto-generated method stub
-		return new Votes("");
+		return Votes.BLANK_VOTES;
 	}
 
 	@Override
 	public Outline scrapeOutline() {
 		// TODO Auto-generated method stub
-		return new Outline("");
+		return Outline.BLANK_OUTLINE;
 	}
 
 	@Override
@@ -128,18 +128,18 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile{
 		Element plotElement = document.select("div.gen12 p:contains(Story:)").first();
 		if(plotElement != null)
 			return new Plot(plotElement.ownText());
-		return new Plot("");
+		return Plot.BLANK_PLOT;
 	}
 
 	@Override
 	public Tagline scrapeTagline() {
 		// TODO Auto-generated method stub
-		return new Tagline("");
+		return Tagline.BLANK_TAGLINE;
 	}
 
 	@Override
 	public Runtime scrapeRuntime() {
-		return new Runtime("");
+		return Runtime.BLANK_RUNTIME;
 	}
 
 	@Override
@@ -264,13 +264,12 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile{
 	@Override
 	public MPAARating scrapeMPAA() {
 		// TODO Auto-generated method stub
-		return new MPAARating("XXX");
+		return MPAARating.RATING_XXX;
 	}
 
 	@Override
 	public ID scrapeID() {
-		// TODO Auto-generated method stub
-		return new ID("");
+		return ID.BLANK_ID;
 	}
 
 	@Override
@@ -379,7 +378,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile{
 			if(studioText != null && studioText.length() > 0)
 				return new Studio(studioText);
 		}
-		return new Studio("");
+		return Studio.BLANK_STUDIO;
 	}
 
 	@Override

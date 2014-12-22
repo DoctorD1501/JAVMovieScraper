@@ -1,6 +1,9 @@
 package moviescraper.doctord.dataitem;
 
 public class SortTitle extends MovieDataItem {
+	
+	private String sortTitle;
+	public static final SortTitle BLANK_SORTTITLE = new SortTitle("");
 
 	@Override
 	public String toString() {
@@ -16,8 +19,6 @@ public class SortTitle extends MovieDataItem {
 			this.sortTitle = sanitizeString(sortTitle);
 		else sortTitle = "";
 	}
-
-	private String sortTitle;
 
 	public SortTitle(String sortTitle) {
 		setSortTitle(sortTitle);

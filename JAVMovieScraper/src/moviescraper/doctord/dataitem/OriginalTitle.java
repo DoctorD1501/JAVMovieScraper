@@ -2,6 +2,7 @@ package moviescraper.doctord.dataitem;
 
 public class OriginalTitle extends MovieDataItem {
 	private String originalTitle;
+	public static final OriginalTitle BLANK_ORIGINALTITLE = new OriginalTitle("");
 
 	public String getOriginalTitle() {
 		return originalTitle;

@@ -70,7 +70,7 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 
 	@Override
 	public SortTitle scrapeSortTitle() {
-		return new SortTitle("");
+		return SortTitle.BLANK_SORTTITLE;
 	}
 
 	@Override
@@ -91,7 +91,7 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 			
 		}
 
-		return new Set("");
+		return Set.BLANK_SET;
 	}
 
 	@Override
@@ -109,25 +109,25 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 		{
 			return new Year(yearElement.text().substring(0,4));
 		}
-		else return new Year("");
+		else return Year.BLANK_YEAR;
 	}
 
 	@Override
 	public Top250 scrapeTop250() {
 		// This type of info doesn't exist on this site
-		return new Top250("");
+		return Top250.BLANK_TOP250;
 	}
 
 	@Override
 	public Votes scrapeVotes() {
 		// This type of info doesn't exist on this site
-		return new Votes("");
+		return Votes.BLANK_VOTES;
 	}
 
 	@Override
 	public Outline scrapeOutline() {
 		// This type of info doesn't exist on this site
-		return new Outline("");
+		return Outline.BLANK_OUTLINE;
 	}
 
 	@Override
@@ -140,19 +140,19 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 				return new Plot(TranslateString.translateStringJapaneseToEnglish(plotElement.text()));
 			else return new Plot(plotElement.text());
 		}
-		return new Plot("");
+		return Plot.BLANK_PLOT;
 	}
 
 	@Override
 	public Tagline scrapeTagline() {
 		//This type of info doesn't exist on this site
-		return new Tagline("");
+		return Tagline.BLANK_TAGLINE;
 	}
 
 	@Override
 	public Runtime scrapeRuntime() {
 		//This type of info doesn't exist on this site
-		return new Runtime("");
+		return Runtime.BLANK_RUNTIME;
 	}
 
 	@Override
@@ -258,7 +258,7 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 
 	@Override
 	public MPAARating scrapeMPAA() {
-		return new MPAARating("XXX");
+		return MPAARating.RATING_XXX;
 	}
 
 	@Override
@@ -453,7 +453,7 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 			if(trailerLink != null && trailerLink.length() > 0)
 				return new Trailer(trailerLink);
 		}
-		return new Trailer("");
+		return Trailer.BLANK_TRAILER;
 	}
 	@Override
 	public Studio scrapeStudio() {
@@ -474,7 +474,7 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 				
 			}
 
-		return new Studio("");
+		return Studio.BLANK_STUDIO;
 	}
 
 	@Override

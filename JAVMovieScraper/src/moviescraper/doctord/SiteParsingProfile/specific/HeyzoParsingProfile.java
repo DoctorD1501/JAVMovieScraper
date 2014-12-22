@@ -87,12 +87,12 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 
 	@Override
 	public SortTitle scrapeSortTitle() {
-		return new SortTitle("");
+		return SortTitle.BLANK_SORTTITLE;
 	}
 
 	@Override
 	public Set scrapeSet() {
-		return new Set("");
+		return Set.BLANK_SET;
 	}
 
 	@Override
@@ -119,32 +119,32 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 			}
 			
 		}
-		return new Year("");
+		return Year.BLANK_YEAR;
 	}
 
 	@Override
 	public Top250 scrapeTop250() {
-		return new Top250("");
+		return Top250.BLANK_TOP250;
 	}
 
 	@Override
 	public Votes scrapeVotes() {
-		return new Votes("");
+		return Votes.BLANK_VOTES;
 	}
 
 	@Override
 	public Outline scrapeOutline() {
-		return new Outline("");
+		return Outline.BLANK_OUTLINE;
 	}
 
 	@Override
 	public Plot scrapePlot() {
-		return new Plot("");
+		return Plot.BLANK_PLOT;
 	}
 
 	@Override
 	public Tagline scrapeTagline() {
-		return new Tagline("");
+		return Tagline.BLANK_TAGLINE;
 	}
 
 	@Override
@@ -161,7 +161,7 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 				return new Runtime(new Integer(totalMinutes).toString());
 			}
 		}
-		return new Runtime("");
+		return Runtime.BLANK_RUNTIME;
 	}
 
 	@Override
@@ -199,7 +199,7 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 		String trailerURL = "http://sample.heyzo.com/contents/3000/" + scrapedId + "/heyzo_hd_0194_sample.mp4";
 		if(SiteParsingProfile.fileExistsAtURL(trailerURL))
 			return new Trailer(trailerURL);
-		return new Trailer("");
+		return Trailer.BLANK_TRAILER;
 	}
 	
 	@Override
@@ -214,7 +214,7 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 
 	@Override
 	public MPAARating scrapeMPAA() {
-		return new MPAARating("XXX");
+		return MPAARating.RATING_XXX;
 	}
 
 	@Override

@@ -100,17 +100,17 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements
 		Element titleElement = japaneseDocument.select("span.movie-title h1").first();
 		if(titleElement != null)
 			return new OriginalTitle(titleElement.text());
-		return new OriginalTitle("");
+		return OriginalTitle.BLANK_ORIGINALTITLE;
 	}
 
 	@Override
 	public SortTitle scrapeSortTitle() {
-		return new SortTitle("");
+		return SortTitle.BLANK_SORTTITLE;
 	}
 
 	@Override
 	public Set scrapeSet() {
-		return new Set("");
+		return Set.BLANK_SET;
 	}
 
 	@Override
@@ -133,23 +133,23 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements
 		{
 			return new Year(releaseDate.text().substring(0,4));
 		}
-		return new Year("");
+		return Year.BLANK_YEAR;
 	}
 
 	@Override
 	public Top250 scrapeTop250() {
 		// TODO Auto-generated method stub
-		return new Top250("");
+		return Top250.BLANK_TOP250;
 	}
 
 	@Override
 	public Votes scrapeVotes() {
-		return new Votes("");
+		return Votes.BLANK_VOTES;
 	}
 
 	@Override
 	public Outline scrapeOutline() {
-		return new Outline("");
+		return Outline.BLANK_OUTLINE;
 	}
 
 	@Override
@@ -162,12 +162,12 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements
 				return new Plot(TranslateString.translateStringJapaneseToEnglish(plotElement.text()));
 			else return new Plot(plotElement.text());
 		}
-		return new Plot("");
+		return Plot.BLANK_PLOT;
 	}
 
 	@Override
 	public Tagline scrapeTagline() {
-		return new Tagline("");
+		return Tagline.BLANK_TAGLINE;
 	}
 
 	@Override
@@ -187,7 +187,7 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements
 				return new Runtime(new Integer(totalMinutes).toString());
 			}
 		}
-		return new Runtime("");
+		return Runtime.BLANK_RUNTIME;
 	}
 
 	@Override
@@ -243,7 +243,7 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements
 
 	@Override
 	public MPAARating scrapeMPAA() {
-		return new MPAARating("XXX");
+		return MPAARating.RATING_XXX;
 	}
 
 	@Override
@@ -336,7 +336,7 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements
 				return new Trailer(trailerPath);
 		}
 		
-		return new Trailer("");
+		return Trailer.BLANK_TRAILER;
 	}
 
 	@Override

@@ -62,63 +62,63 @@ public class SquarePlusParsingProfile extends SiteParsingProfile {
 	@Override
 	public OriginalTitle scrapeOriginalTitle() {
 		//Does not have original japanese title, so don't return anything
-		return new OriginalTitle("");
+		return OriginalTitle.BLANK_ORIGINALTITLE;
 	}
 
 	@Override
 	public SortTitle scrapeSortTitle() {
 		// we don't need any special sort title - that's usually something the
 		// user provides
-		return new SortTitle("");
+		return SortTitle.BLANK_SORTTITLE;
 	}
 
 	@Override
 	public Set scrapeSet() {
 		// Site doesn't have any set information
-		return new Set("");
+		return Set.BLANK_SET;
 
 	}
 
 	@Override
 	public Rating scrapeRating() {
 		//site doesn't have a rating
-		return new Rating(0,"");
+		return Rating.BLANK_RATING;
 	}
 
 	@Override
 	public Year scrapeYear() {
-		return new Year("");
+		return Year.BLANK_YEAR;
 	}
 
 	@Override
 	public Top250 scrapeTop250() {
 		// This type of info doesn't exist on ActionJav
-		return new Top250("");
+		return Top250.BLANK_TOP250;
 	}
 
 	@Override
 	public Votes scrapeVotes() {
-		return new Votes("");
+		return Votes.BLANK_VOTES;
 	}
 
 	@Override
 	public Outline scrapeOutline() {
-		return new Outline("");
+		return Outline.BLANK_OUTLINE;
 	}
 
 	@Override
 	public Plot scrapePlot() {
-			return new Plot("");
+			return Plot.BLANK_PLOT;
 	}
 
 	@Override
 	public Tagline scrapeTagline() {
-		return new Tagline("");
+		return Tagline.BLANK_TAGLINE;
 	}
 
 	@Override
 	public Runtime scrapeRuntime() {
-			return new Runtime("");
+			return Runtime.BLANK_RUNTIME;
 	}
 
 	@Override
@@ -134,7 +134,7 @@ public class SquarePlusParsingProfile extends SiteParsingProfile {
 	@Override
 	public MPAARating scrapeMPAA() {
 		// It's always XXX content on ActionJav! ;)
-		return new MPAARating("XXX");
+		return MPAARating.RATING_XXX;
 	}
 
 	@Override
@@ -150,7 +150,7 @@ public class SquarePlusParsingProfile extends SiteParsingProfile {
 			return new ID(idElementText);
 		}
 		//maybe some titles don't have ID numbers on squareplus or we got some other error
-		else return new ID("");
+		else return ID.BLANK_ID;
 	}
 
 	@Override
@@ -171,7 +171,7 @@ public class SquarePlusParsingProfile extends SiteParsingProfile {
 
 	@Override
 	public Studio scrapeStudio() {
-		return new Studio("");
+		return Studio.BLANK_STUDIO;
 	}
 
 	@Override

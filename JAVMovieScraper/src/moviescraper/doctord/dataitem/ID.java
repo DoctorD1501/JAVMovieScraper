@@ -5,6 +5,8 @@ package moviescraper.doctord.dataitem;
 public class ID extends MovieDataItem {
 	
 	private String id;
+	
+	public static final ID BLANK_ID = new ID("");
 
 	public String getId() {
 		return id;

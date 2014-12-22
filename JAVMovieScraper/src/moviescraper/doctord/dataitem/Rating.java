@@ -9,6 +9,8 @@ public class Rating extends MovieDataItem {
 	
 	private double maxRating;
 	private String rating;
+	//use this rating when trying to create a movie that doesn't write out a rating to the XML
+	public static final Rating BLANK_RATING = new Rating(0,"");
 
 	public double getMaxRating() {
 		return maxRating;

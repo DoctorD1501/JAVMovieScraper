@@ -5,6 +5,7 @@ package moviescraper.doctord.dataitem;
 public class Year extends MovieDataItem {
 	
 	private String year;
+	public static final Year BLANK_YEAR = new Year("");
 
 	public String getYear() {
 		return year;

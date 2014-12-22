@@ -3,6 +3,7 @@ package moviescraper.doctord.dataitem;
 public class Runtime extends MovieDataItem {
 
 	private String runtime;
+	public static final Runtime BLANK_RUNTIME = new Runtime("");
 
 	@Override
 	public String toString() {

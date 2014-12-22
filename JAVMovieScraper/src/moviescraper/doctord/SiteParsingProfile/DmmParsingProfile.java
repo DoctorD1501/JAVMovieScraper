@@ -3,6 +3,8 @@ package moviescraper.doctord.SiteParsingProfile;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 
 import moviescraper.doctord.SearchResult;
@@ -93,7 +95,7 @@ public class DmmParsingProfile extends SiteParsingProfile {
 	public SortTitle scrapeSortTitle() {
 		// we don't need any special sort title - that's usually something the
 		// user provides
-		return new SortTitle("");
+		return SortTitle.BLANK_SORTTITLE;
 	}
 
 	@Override
@@ -101,7 +103,7 @@ public class DmmParsingProfile extends SiteParsingProfile {
 		Element setElement = document.select(
 				"table.mg-b20 tr td a[href*=article=series/id=]").first();
 		if (setElement == null)
-			return new Set("");
+			return Set.BLANK_SET;
 		else if (doGoogleTranslation)
 		{
 			return new Set(
@@ -118,7 +120,7 @@ public class DmmParsingProfile extends SiteParsingProfile {
 		if (ratingElement != null)
 			return new Rating(dmmMaxRating, ratingElement.text());
 		else
-			return new Rating(10, "");
+			return Rating.BLANK_RATING;
 	}
 
 	@Override
@@ -141,19 +143,19 @@ public class DmmParsingProfile extends SiteParsingProfile {
 	@Override
 	public Top250 scrapeTop250() {
 		// This type of info doesn't exist on DMM
-		return new Top250("");
+		return Top250.BLANK_TOP250;
 	}
 
 	@Override
 	public Votes scrapeVotes() {
 		// TODO Auto-generated method stub
-		return new Votes("");
+		return Votes.BLANK_VOTES;
 	}
 
 	@Override
 	public Outline scrapeOutline() {
 		// TODO Auto-generated method stub
-		return new Outline("");
+		return Outline.BLANK_OUTLINE;
 	}
 
 	@Override
@@ -177,7 +179,7 @@ public class DmmParsingProfile extends SiteParsingProfile {
 
 	@Override
 	public Tagline scrapeTagline() {
-		return new Tagline("");
+		return Tagline.BLANK_TAGLINE;
 	}
 
 	@Override
@@ -250,7 +252,7 @@ public class DmmParsingProfile extends SiteParsingProfile {
 			}
 			System.err.println("I expected to find a trailer and did not at " + document.location());
 		}		
-		return new Trailer("");
+		return Trailer.BLANK_TRAILER;
 	}
 	
 	private ArrayList<String> constructTrailerURLs(String cid, String movieExtension)
@@ -353,10 +355,11 @@ public class DmmParsingProfile extends SiteParsingProfile {
 		if(posterLink == null || posterLink.length() < 1)
 			posterLink = postersElement.attr("src");
 		try {
-			// for the poster, do a crop of 52.7% of the left side of the dvd case image (which includes both cover art and back art)
+			// for the poster, do a crop of the the right side of the dvd case image 
+			//(which includes both cover art and back art)
 			// so we only get the cover
 			if (doCrop && !scrapingExtraFanart)
-				//posters.add(new Thumb(posterLink, 52.7, 0, 0, 0));
+				//use javCropCoverRoutine version of the new Thumb constructor to handle the cropping
 				posters.add(new Thumb(posterLink, true));
 			else if (!scrapingExtraFanart)
 				posters.add(new Thumb(posterLink));
@@ -396,7 +399,7 @@ public class DmmParsingProfile extends SiteParsingProfile {
 
 	@Override
 	public MPAARating scrapeMPAA() {
-		return new MPAARating("XXX");
+		return MPAARating.RATING_XXX;
 	}
 
 	@Override
@@ -423,7 +426,7 @@ public class DmmParsingProfile extends SiteParsingProfile {
 			return new ID(idElementText);
 		}
 		//This page didn't have an ID, so just put in a empty one
-		else return new ID("");
+		else return ID.BLANK_ID;
 	}
 
 	@Override
@@ -690,7 +693,7 @@ public class DmmParsingProfile extends SiteParsingProfile {
 							.text()));
 			else return new Studio(studioElement.text());
 		}
-		else return new Studio("");
+		else return Studio.BLANK_STUDIO;
 	}
 
 	@Override
@@ -771,6 +774,7 @@ public class DmmParsingProfile extends SiteParsingProfile {
 		//get /digital/videoa links
 		for (int i = 0; i < digitalElements.size(); i++) {
 			String currentLink = digitalElements.get(i).attr("href");
+			System.out.println("currentLink = " + currentLink);
 			Element imageLinkElement = digitalElements.get(i).select("img").first();
 			if(imageLinkElement != null)
 			{
@@ -795,6 +799,20 @@ public class DmmParsingProfile extends SiteParsingProfile {
 
 		return searchResults.toArray(new SearchResult[searchResults.size()]);
 	}
+	
+	public SearchResult[] getSearchResultsWithoutDVDLinks(String dmmSearchString) throws IOException {
+		SearchResult[] allSearchResult = getSearchResults(dmmSearchString);
+		List<SearchResult> filteredSearchResults = new LinkedList<SearchResult>();
+		for(SearchResult currentSR : allSearchResult)
+		{
+			System.out.println("current SR = " + currentSR.getUrlPath());
+			if(!currentSR.getUrlPath().contains("/mono/dvd/"))
+				filteredSearchResults.add(currentSR);
+		}
+		
+		return filteredSearchResults.toArray(new SearchResult[filteredSearchResults.size()]);
+		
+	}
 
 	@Override
 	public Thumb[] scrapeExtraFanart() {
@@ -811,5 +829,7 @@ public class DmmParsingProfile extends SiteParsingProfile {
 	public SiteParsingProfile newInstance() {
 		return new DmmParsingProfile(this.doGoogleTranslation);
 	}
+
+
 
 }

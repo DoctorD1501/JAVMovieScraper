@@ -3,6 +3,7 @@ package moviescraper.doctord.dataitem;
 public class Set extends MovieDataItem {
 
 	private String set;
+	public static final Set BLANK_SET = new Set("");
 
 	public String getSet() {
 		return set;

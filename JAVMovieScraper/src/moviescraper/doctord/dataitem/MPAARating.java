@@ -5,6 +5,8 @@ package moviescraper.doctord.dataitem;
 public class MPAARating extends MovieDataItem {
 	
 	private String MPAARating;
+	
+	public static final MPAARating RATING_XXX = new MPAARating("XXX");
 
 	public MPAARating(String MPAARating) {
 		setMPAARating(MPAARating);

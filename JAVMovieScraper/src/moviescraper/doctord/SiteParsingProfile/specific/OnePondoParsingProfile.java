@@ -103,13 +103,13 @@ public class OnePondoParsingProfile extends SiteParsingProfile implements Specif
 	@Override
 	public SortTitle scrapeSortTitle() {
 		// This site has no sort title information
-		return new SortTitle("");
+		return SortTitle.BLANK_SORTTITLE;
 	}
 
 	@Override
 	public Set scrapeSet() {
 		// This site has no set information
-		return new Set("");
+		return Set.BLANK_SET;
 	}
 
 	@Override
@@ -134,37 +134,37 @@ public class OnePondoParsingProfile extends SiteParsingProfile implements Specif
 	@Override
 	public Top250 scrapeTop250() {
 		//This site has no top250 information
-		return new Top250("");
+		return Top250.BLANK_TOP250;
 	}
 
 	@Override
 	public Votes scrapeVotes() {
 		//This site has no vote information
-		return new Votes("");
+		return Votes.BLANK_VOTES;
 	}
 
 	@Override
 	public Outline scrapeOutline() {
 		//This site has no outline for movies
-		return new Outline("");
+		return Outline.BLANK_OUTLINE;
 	}
 
 	@Override
 	public Plot scrapePlot() {
 		//This site has no plot for movies
-		return new Plot("");
+		return Plot.BLANK_PLOT;
 	}
 
 	@Override
 	public Tagline scrapeTagline() {
 		// TODO Auto-generated method stub
-		return new Tagline("");
+		return Tagline.BLANK_TAGLINE;
 	}
 
 	@Override
 	public Runtime scrapeRuntime() {
 		// TODO Auto-generated method stub
-		return new Runtime("");
+		return Runtime.BLANK_RUNTIME;
 	}
 
 	@Override
@@ -256,7 +256,7 @@ public class OnePondoParsingProfile extends SiteParsingProfile implements Specif
 
 	@Override
 	public MPAARating scrapeMPAA() {
-		return new MPAARating("XXX");
+		return MPAARating.RATING_XXX;
 	}
 
 	@Override
@@ -317,7 +317,7 @@ public class OnePondoParsingProfile extends SiteParsingProfile implements Specif
 		String potentialTrailerURL = "http://smovie.1pondo.tv/moviepages/" + movieID.getId() + "/sample/sample.avi";
 		if(SiteParsingProfile.fileExistsAtURL(potentialTrailerURL))
 			return new Trailer(potentialTrailerURL);
-		else return new Trailer("");
+		else return Trailer.BLANK_TRAILER;
 	}
 
 	@Override

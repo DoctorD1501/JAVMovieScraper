@@ -3,6 +3,7 @@ package moviescraper.doctord.dataitem;
 public class Votes extends MovieDataItem {
 
 	private String votes;
+	public static final Votes BLANK_VOTES = new Votes("");
 
 	public String getVotes() {
 		return votes;
