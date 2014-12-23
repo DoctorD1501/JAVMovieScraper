@@ -375,10 +375,24 @@ public class FileDetailPanel extends JPanel {
 			//All the titles from the various versions scraped of this movie from the different sites
 			if(movieToWriteToDiskList != null)
 				this.getCurrentMovie().getAllTitles().add( getCurrentMovie().getTitle() );
+			if(gui.getCurrentlySelectedMovieR18() != null)
+				this.getCurrentMovie().getAllTitles().add( gui.getCurrentlySelectedMovieR18().getTitle() );
 			if(gui.getCurrentlySelectedMovieDMM() != null)
 				this.getCurrentMovie().getAllTitles().add( gui.getCurrentlySelectedMovieDMM().getTitle() );
 			if(gui.getCurrentlySelectedMovieJavLibrary() != null)
-				this.getCurrentMovie().getAllTitles().add( gui.getCurrentlySelectedMovieJavLibrary().getTitle() );
+			{
+				//we might have replaced JavLib's title during amalgamation, so let's get the original one
+				//before this happens in the drop down title list
+				if(gui.getOriginalJavLibraryMovieTitleBeforeAmalgamate() != null && 
+						gui.getOriginalJavLibraryMovieTitleBeforeAmalgamate().length() > 0)
+				{
+					this.getCurrentMovie().getAllTitles().add(new Title(gui.getOriginalJavLibraryMovieTitleBeforeAmalgamate()));
+				}
+				else
+				{
+					this.getCurrentMovie().getAllTitles().add( gui.getCurrentlySelectedMovieJavLibrary().getTitle() );
+				}
+			}
 			if(gui.getCurrentlySelectedMovieSquarePlus() != null)
 				this.getCurrentMovie().getAllTitles().add( gui.getCurrentlySelectedMovieSquarePlus().getTitle() );
 			if(gui.getCurrentlySelectedMovieActionJav() != null)

@@ -610,5 +610,10 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 	public SiteParsingProfile newInstance() {
 		return new R18ParsingProfile();
 	}
+	
+	@Override
+	public String toString(){
+		return "R18.com";
+	}
 
 }

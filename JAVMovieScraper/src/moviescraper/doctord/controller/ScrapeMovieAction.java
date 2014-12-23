@@ -36,6 +36,7 @@ import moviescraper.doctord.SiteParsingProfile.JavZooParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.SquarePlusParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.specific.CaribbeancomPremiumParsingProfile;
+import moviescraper.doctord.SiteParsingProfile.specific.R18ParsingProfile;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Director;
 import moviescraper.doctord.dataitem.Genre;
@@ -629,7 +630,8 @@ public class ScrapeMovieAction extends AbstractAction {
 				}
 			}
 		};
-
+		
+		//Scrape Javzoo for currently selected movie
 		Thread scrapeQueryJavZooThread = new Thread() {
 			public void run() {
 				try {
@@ -645,24 +647,26 @@ public class ScrapeMovieAction extends AbstractAction {
 				}
 			}
 		};
-
-
-		Thread scrapeQueryCaribbeancomPremium = new Thread() {
+		
+		//Scrape R18 for currently selected movie
+		Thread scrapeQueryR18Thread = new Thread() {
 			public void run() {
 				try {
-					ScrapeMovieAction.this.guiMain
-							.setCurrentlySelectedMovieCaribbeancomPremium(Movie.scrapeMovie(
-									ScrapeMovieAction.this.guiMain.getCurrentlySelectedMovieFileList().get(currentMovieNumberInList),
-									new CaribbeancomPremiumParsingProfile(), overrideURLDMM, false, thisScrapeAction));
+					ScrapeMovieAction.this.guiMain.setCurrentlySelectedMovieR18(Movie.scrapeMovie(
+							ScrapeMovieAction.this.guiMain.getCurrentlySelectedMovieFileList().get(currentMovieNumberInList),
+							new R18ParsingProfile(), overrideURLDMM, false, thisScrapeAction));
 
-					System.out.println("CaribbeancomPremium scrape results: "
-							+ ScrapeMovieAction.this.guiMain.getCurrentlySelectedMovieCaribbeancomPremium());
+					System.out.println("R18 scrape results: "
+							+ ScrapeMovieAction.this.guiMain.getCurrentlySelectedMovieR18());
 				} catch (IOException e1) {
 
 					e1.printStackTrace();
 				}
 			}
 		};
+
+
+
 
 		scrapeThreads = new ArrayList<Thread>(numberOfThreads);
 		scrapeThreads.add(scrapeQueryDMMThread);
@@ -672,7 +676,7 @@ public class ScrapeMovieAction extends AbstractAction {
 			scrapeThreads.add(scrapeQuerySquarePlusThread);
 			scrapeThreads.add(scrapeQueryJavLibraryThread);
 			scrapeThreads.add(scrapeQueryJavZooThread);
-			scrapeThreads.add(scrapeQueryCaribbeancomPremium);
+			scrapeThreads.add(scrapeQueryR18Thread);
 		}
 
 
@@ -685,7 +689,7 @@ public class ScrapeMovieAction extends AbstractAction {
 			scrapeQuerySquarePlusThread.start();
 			scrapeQueryJavLibraryThread.start();
 			scrapeQueryJavZooThread.start();
-			scrapeQueryCaribbeancomPremium.start();
+			scrapeQueryR18Thread.start();
 		}
 
 		if(anyThreadWasInterrupted())
@@ -733,7 +737,16 @@ public class ScrapeMovieAction extends AbstractAction {
 					cancelRunningThreads();
 					return null;
 				}
-			scrapeQueryCaribbeancomPremium.join();
+			
+			scrapeQueryR18Thread.join();
+			if(anyThreadWasInterrupted())
+				if(anyThreadWasInterrupted())
+				{
+					System.err.println("Something was interrupted");
+					cancelRunningThreads();
+					return null;
+				}
+			
 		}
 
 		if(anyThreadWasInterrupted())
@@ -750,7 +763,9 @@ public class ScrapeMovieAction extends AbstractAction {
 					this.guiMain.getCurrentlySelectedMovieActionJav(),
 					this.guiMain.getCurrentlySelectedMovieSquarePlus(),
 					this.guiMain.getCurrentlySelectedMovieJavLibrary(),
-					this.guiMain.getCurrentlySelectedMovieJavZoo(), movieNumberInList);
+					this.guiMain.getCurrentlySelectedMovieJavZoo(),
+					this.guiMain.getCurrentlySelectedMovieR18(),
+					movieNumberInList);
 		}
 		//if we didn't get a result from the general jav db's, then maybe this is from a webonly type scraper
 		if(movieAmalgamated == null && this.guiMain.getCurrentlySelectedMovieCaribbeancomPremium() != null)
@@ -805,6 +820,7 @@ public class ScrapeMovieAction extends AbstractAction {
 			Movie currentlySelectedMovieSquarePlus,
 			Movie currentlySelectedMovieJavLibrary,
 			Movie currentlySelectedMovieJavZoo,
+			Movie currentlySelectedMovieR18,
 			int movieNumberInList) {
 
 		//Assuming we have a DMM movie, any of the other movies must contain the same ID as the DMM movie
@@ -814,7 +830,7 @@ public class ScrapeMovieAction extends AbstractAction {
 		if (currentlySelectedMovieDMM != null && currentlySelectedMovieDMM.getId() != null)
 		{
 			//we don't want to worry about dashes messing up our checks because sometimes sites are not consistent with the dash in the ID
-			String dmmIDString = null, actionJavIDString = null, squarePlusIDString = null,javLibraryIDString = null, javZooIDString = null;
+			String dmmIDString = null, actionJavIDString = null, squarePlusIDString = null,javLibraryIDString = null, javZooIDString = null, r18IDString = null;
 			dmmIDString = currentlySelectedMovieDMM.getId().getId().replace("-","");
 			if(currentlySelectedMovieActionJav != null)
 				actionJavIDString = currentlySelectedMovieActionJav.getId().getId().replace("-","");
@@ -824,6 +840,8 @@ public class ScrapeMovieAction extends AbstractAction {
 				javLibraryIDString = currentlySelectedMovieJavLibrary.getId().getId().replace("-","");
 			if(currentlySelectedMovieJavZoo != null)
 				javZooIDString = currentlySelectedMovieJavZoo.getId().getId().replace("-","");
+			if(currentlySelectedMovieR18 != null)
+				r18IDString = currentlySelectedMovieR18.getId().getId().replace("-", "");
 			
 			if(dmmIDString != null)
 			{
@@ -847,6 +865,12 @@ public class ScrapeMovieAction extends AbstractAction {
 					currentlySelectedMovieJavZoo = null;
 					guiMain.setCurrentlySelectedMovieJavZoo(null);
 				}
+				if(currentlySelectedMovieR18 != null && r18IDString != null && (dmmIDString.endsWith(r18IDString) == false && r18IDString.startsWith(dmmIDString) == false))
+				{
+					System.out.println("Discarding R18 scraped results for faulty match based on ID = " + currentlySelectedMovieR18.getId());
+					currentlySelectedMovieR18 = null;
+					guiMain.setCurrentlySelectedMovieR18(null);
+				}
 			}
 		}
 
@@ -864,46 +888,94 @@ public class ScrapeMovieAction extends AbstractAction {
 			return guiMain.movieToWriteToDiskList.get(movieNumberInList);
 		} else if (currentlySelectedMovieJavLibrary != null
 				&& currentlySelectedMovieDMM != null
-				&& (currentlySelectedMovieActionJav != null || currentlySelectedMovieSquarePlus != null || currentlySelectedMovieJavZoo != null)) {
+				&& (currentlySelectedMovieR18 != null || currentlySelectedMovieActionJav != null || currentlySelectedMovieSquarePlus != null || currentlySelectedMovieJavZoo != null)) {
+			
+			//DMM always has some kind of plot and JavLib always has none, so this is a good 
+			//fallback value for plot if it doesn't get replaced below
 			currentlySelectedMovieJavLibrary.setPlot(currentlySelectedMovieDMM
 					.getPlot());
-			currentlySelectedMovieJavLibrary
-			.setOriginalTitle(currentlySelectedMovieDMM
-					.getOriginalTitle());
+			
+			//R18 has the absolute best title information
+			if(currentlySelectedMovieR18 != null && currentlySelectedMovieR18.getTitle().getTitle().length() > 0)
+				currentlySelectedMovieJavLibrary.setTitle(currentlySelectedMovieR18.getTitle());
+			
+			if(currentlySelectedMovieR18 != null && currentlySelectedMovieR18.getPlot().getPlot().length() > 0)
+			{
+				//R18 has the best plot data for english
+				currentlySelectedMovieJavLibrary.setPlot(currentlySelectedMovieR18.getPlot());
+			}
+			
+			//R18 has the best studio data for english
+			if(currentlySelectedMovieR18 != null && currentlySelectedMovieR18.getStudio().getStudio().length() > 0)
+			{
+				currentlySelectedMovieJavLibrary.setStudio(currentlySelectedMovieR18.getStudio());
+			}
+			
+			//R18 has the best director info in english, if it's there
+			if(currentlySelectedMovieR18 != null && currentlySelectedMovieR18.getDirectors().size() > 0)
+			{
+				currentlySelectedMovieJavLibrary.setDirectors(currentlySelectedMovieR18.getDirectors());
+			}
+			
+			//DMM has the absolute best information on the title in japanese
+			currentlySelectedMovieJavLibrary.setOriginalTitle(currentlySelectedMovieDMM.getOriginalTitle());
+			
+			//DMM has pretty good set info, even though it's machine translated. It might get replaced below though
 			currentlySelectedMovieJavLibrary.setSet(currentlySelectedMovieDMM.getSet());
-			// grabbing the things from ActionJav which tend to be high quality
-			// info
-			if (currentlySelectedMovieActionJav != null
+			
+			boolean grabbedR18Set = false;
+			if(currentlySelectedMovieR18 != null && currentlySelectedMovieR18.getSet().getSet().length() > 0)
+			{
+				//R18 has the best set data for english
+				currentlySelectedMovieJavLibrary.setSet(currentlySelectedMovieR18.getSet());
+				grabbedR18Set = true;
+			}
+			
+			boolean grabbedR18Actors = false;
+			//If JavLib didn't have actors and R18 did, grab R18's
+			if(currentlySelectedMovieJavLibrary.getActors().size() == 0
+					&& currentlySelectedMovieR18 != null
+					&& currentlySelectedMovieR18.getActors().size() > 0)
+			{
+				currentlySelectedMovieJavLibrary.setActors(currentlySelectedMovieR18.getActors());
+				grabbedR18Actors = true;
+			}
+			
+			// grabbing the things from ActionJav which tend to be high quality info
+			
+			//set the plot from actionjav only if R18 didn't have one already
+			if ((currentlySelectedMovieR18 == null || currentlySelectedMovieR18.getPlot().getPlot().length() == 0)
+					&& currentlySelectedMovieActionJav != null
 					&& currentlySelectedMovieActionJav.getPlot() != null
 					&& currentlySelectedMovieActionJav.getPlot().getPlot()
 					.length() > 1 && currentlySelectedMovieActionJav.getId().getId().equals(currentlySelectedMovieJavLibrary.getId().getId()))
 				currentlySelectedMovieJavLibrary
 				.setPlot(currentlySelectedMovieActionJav.getPlot());
-			/*if (currentlySelectedMovieSquarePlus != null
-					&& currentlySelectedMovieSquarePlus.getTitle() != null
-					&& currentlySelectedMovieSquarePlus.getTitle().getTitle()
-							.length() > 1)
-				currentlySelectedMovieJavLibrary
-						.setTitle(currentlySelectedMovieSquarePlus.getTitle());*/
-			/*if (currentlySelectedMovieActionJav != null
-					&& currentlySelectedMovieActionJav.getTitle() != null
-					&& currentlySelectedMovieActionJav.getTitle().getTitle()
-							.length() > 1)
-				currentlySelectedMovieJavLibrary
-						.setTitle(currentlySelectedMovieActionJav.getTitle());*/
+			
+			//get action jav actors if both JavLib and R18 didn't have any
 			if (currentlySelectedMovieJavLibrary.getActors().size() == 0
 					&& currentlySelectedMovieActionJav != null
-					&& currentlySelectedMovieActionJav.getActors().size() > 0)
-				currentlySelectedMovieJavLibrary
-				.setActors(currentlySelectedMovieActionJav.getActors());
+					&& currentlySelectedMovieActionJav.getActors().size() > 0
+					&& !grabbedR18Actors)
+			{
+				currentlySelectedMovieJavLibrary.setActors(currentlySelectedMovieActionJav.getActors());
+			}
+			
+			//dmm always has the best fanart and posters and extraFanart
 			currentlySelectedMovieJavLibrary.setFanart(currentlySelectedMovieDMM.getFanart());
 			currentlySelectedMovieJavLibrary.setPosters(currentlySelectedMovieDMM.getPosters());
-			if(currentlySelectedMovieJavZoo != null && currentlySelectedMovieJavZoo.getSet() != null && currentlySelectedMovieJavZoo.getSet().getSet().length() > 0)
-				currentlySelectedMovieJavLibrary.setSet(currentlySelectedMovieJavZoo.getSet());
 			currentlySelectedMovieJavLibrary.setExtraFanart(currentlySelectedMovieDMM.getExtraFanart());
-			if(currentlySelectedMovieActionJav != null && currentlySelectedMovieActionJav.getPlot() != null && currentlySelectedMovieActionJav.getPlot().getPlot().length() > 1  &&
-					currentlySelectedMovieActionJav.getId().getId().equals(currentlySelectedMovieJavLibrary.getId().getId()))
-				currentlySelectedMovieJavLibrary.setPlot(currentlySelectedMovieActionJav.getPlot());
+			
+			//JavZoo has better OK set data, but not as good as R18
+			if(currentlySelectedMovieJavZoo != null && currentlySelectedMovieJavZoo.getSet() != null 
+					&& currentlySelectedMovieJavZoo.getSet().getSet().length() > 0 &&
+					!grabbedR18Set)
+			{
+				currentlySelectedMovieJavLibrary.setSet(currentlySelectedMovieJavZoo.getSet());
+			}
+			
+			
+			//DMM is really the only one with a trailer (R18's trailer actually comes from DMM)
 			currentlySelectedMovieJavLibrary.setTrailer(currentlySelectedMovieDMM.getTrailer());
 			return currentlySelectedMovieJavLibrary;
 		}
@@ -924,11 +996,6 @@ public class ScrapeMovieAction extends AbstractAction {
 					.length() > 1 && currentlySelectedMovieActionJav.getId().getId().equals(currentlySelectedMovieJavLibrary.getId().getId()))
 				currentlySelectedMovieJavLibrary
 				.setPlot(currentlySelectedMovieActionJav.getPlot());
-			/*if (currentlySelectedMovieActionJav.getTitle() != null
-					&& currentlySelectedMovieActionJav.getTitle().getTitle()
-							.length() > 1)
-				currentlySelectedMovieJavLibrary
-						.setTitle(currentlySelectedMovieActionJav.getTitle());*/
 			if(currentlySelectedMovieJavZoo != null && currentlySelectedMovieJavZoo.getSet() != null && currentlySelectedMovieJavZoo.getSet().getSet().length() > 0)
 				currentlySelectedMovieJavLibrary.setSet(currentlySelectedMovieJavZoo.getSet());
 			currentlySelectedMovieJavLibrary.setExtraFanart(currentlySelectedMovieDMM.getExtraFanart());
