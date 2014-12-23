@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.Thumb;
@@ -408,25 +410,46 @@ public class DmmParsingProfile extends SiteParsingProfile {
 		if(idElement != null)
 		{
 			String idElementText = idElement.text();
-			//DMM sometimes has a letter and underscore then followed by numbers. numbers will be stripped in the next step, so let's strip out the underscore prefix part of the string
-			if(idElementText.contains("_"))
-			{
-				idElementText = idElementText.substring(idElementText.indexOf('_')+1);
-			}
-
-			//DMM sometimes includes numbers before the ID, so we're going to strip them out to use
-			//the same convention that other sites use for the id number
-			idElementText = idElement.text().substring(StringUtils.indexOfAnyBut(idElement.text(),"0123456789"));
-			//Dmm has everything in lowercase for this field; most sites use uppercase letters as that follows what shows on the cover so will uppercase the string
-			//English locale used for uppercasing just in case user is in some region that messes with the logic of this code...
-			idElementText = idElementText.toUpperCase(Locale.ENGLISH);
-			//insert the dash between the text and number part
-			int firstNumberIndex = StringUtils.indexOfAny(idElementText, "0123456789");
-			idElementText = idElementText.substring(0,firstNumberIndex) + "-" + idElementText.substring(firstNumberIndex);
+			idElementText = fixUpIDFormatting(idElementText);
 			return new ID(idElementText);
 		}
 		//This page didn't have an ID, so just put in a empty one
 		else return ID.BLANK_ID;
+	}
+	
+	public static String fixUpIDFormatting(String idElementText){
+		//DMM sometimes has a letter and underscore then followed by numbers. numbers will be stripped in the next step, so let's strip out the underscore prefix part of the string
+		if(idElementText.contains("_"))
+		{
+			idElementText = idElementText.substring(idElementText.indexOf('_')+1);
+		}
+
+		//DMM sometimes includes numbers before the ID, so we're going to strip them out to use
+		//the same convention that other sites use for the id number
+		idElementText = idElementText.substring(StringUtils.indexOfAnyBut(idElementText,"0123456789"));
+		//Dmm has everything in lowercase for this field; most sites use uppercase letters as that follows what shows on the cover so will uppercase the string
+		//English locale used for uppercasing just in case user is in some region that messes with the logic of this code...
+		idElementText = idElementText.toUpperCase(Locale.ENGLISH);
+		//insert the dash between the text and number part
+		int firstNumberIndex = StringUtils.indexOfAny(idElementText, "0123456789");
+		idElementText = idElementText.substring(0,firstNumberIndex) + "-" + idElementText.substring(firstNumberIndex);
+		
+		//remove extra zeros in case we get a 5 digit numerical part 
+		//(For example ABC-00123 will become ABC-123)
+		Pattern patternID = Pattern.compile("([0-9]*\\D+)(\\d{5})");
+		Matcher matcher = patternID.matcher(idElementText);
+		String groupOne = "";
+		String groupTwo = "";
+		while (matcher.find()) {
+		    groupOne = matcher.group(1);
+		    groupTwo = matcher.group(2);
+		}
+		if(groupOne.length() > 0 && groupTwo.length() > 0)
+		{
+			groupTwo = String.format("%03d", Integer.parseInt(groupTwo));
+			return groupOne + groupTwo; 
+		}
+		return idElementText;
 	}
 
 	@Override

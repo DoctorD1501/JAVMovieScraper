@@ -10,10 +10,14 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.codec.EncoderException;
+import org.apache.commons.codec.net.URLCodec;
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import moviescraper.doctord.Movie;
 import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.Thumb;
 import moviescraper.doctord.SiteParsingProfile.DmmParsingProfile;
@@ -35,6 +39,7 @@ import moviescraper.doctord.dataitem.Studio;
 import moviescraper.doctord.dataitem.Tagline;
 import moviescraper.doctord.dataitem.Title;
 import moviescraper.doctord.dataitem.Top250;
+import moviescraper.doctord.dataitem.Trailer;
 import moviescraper.doctord.dataitem.Votes;
 import moviescraper.doctord.dataitem.Year;
 
@@ -42,6 +47,9 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 
 	private ID id;
 	private OriginalTitle originalTitle;
+	private SearchResult[] searchResultsFromR18; //if we found something with the site search and didn't have to use a google search
+	private DmmParsingProfile cachedDmmParseFromIdSearch;
+	private Movie dmmScrapedMovie;
 	
 	@Override
 	public String getParserName() {
@@ -60,6 +68,14 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 	public OriginalTitle scrapeOriginalTitle() {
 		if(originalTitle != null && originalTitle.getOriginalTitle().length() > 0)
 			return originalTitle;
+		if(id == null)
+		{
+			id = scrapeID(); 
+		}
+		if(id != null && cachedDmmParseFromIdSearch != null)
+		{
+			return cachedDmmParseFromIdSearch.scrapeOriginalTitle();
+		}
 		else return OriginalTitle.BLANK_ORIGINALTITLE;
 	}
 
@@ -72,8 +88,31 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 	@Override
 	public Set scrapeSet() {
 		Element setElement = document.select("div.product-details dl dt:contains(Series:) + dd a").first();
+
 		if(setElement != null)
-			return new Set(setElement.text());
+		{
+			String setText = setElement.text().trim();
+			if(setText.endsWith("..."))
+			{
+				System.out.println("Visiting set page to get full text");
+				try
+				{
+					Document setDocument = SpecificScraperAction.downloadDocument(setElement.attr("href"));
+					Element setElementFullText = setDocument.select("div.cmn-ttl-tabMain01 div.txt01").first();
+					if(setElementFullText != null)
+					{
+						return new Set(setElementFullText.text());
+					}
+					
+				}
+				catch(Exception e)
+				{
+					e.printStackTrace();
+					return new Set(setText);
+				}
+			}
+			return new Set(setText);
+		}
 		return Set.BLANK_SET;
 	}
 
@@ -97,6 +136,17 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 	@Override
 	public Top250 scrapeTop250() {
 		return Top250.BLANK_TOP250;
+	}
+	
+	@Override
+	public Trailer scrapeTrailer() {
+		if(dmmScrapedMovie == null)
+		{
+			scrapeID();
+		}
+		if(dmmScrapedMovie != null && dmmScrapedMovie.getTrailer() != null)
+			return dmmScrapedMovie.getTrailer();
+		return Trailer.BLANK_TRAILER;
 	}
 
 	@Override
@@ -208,10 +258,36 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 			return id;
 		else
 		{
-			//use the one on the R18 page
+
+			
+			//use the one on the R18 page to do a search on DMM and get it from there
 			Element idElement = document.select("div.product-details dl dt:contains(Content ID:) ~ dd").first();
 			if(idElement != null && idElement.text().length() > 0 )
-				return new ID(idElement.text());
+			{
+				String r18ID = idElement.text();
+				DmmParsingProfile dmm = new DmmParsingProfile(false);
+				String dmmSearchString = dmm.createSearchString(new File(r18ID));
+				
+				try {
+					dmmScrapedMovie = Movie.scrapeMovie(new File(r18ID), dmm, "", false);
+					SearchResult [] searchResultsDMM = dmm.getSearchResults(dmmSearchString);
+					if(searchResultsDMM != null && searchResultsDMM.length > 0)
+					{
+						ID dmmID = dmmScrapedMovie.getId();
+						if(dmmID != null && dmmID.getId().length() > 0)
+						{
+							cachedDmmParseFromIdSearch = dmm;
+							id = dmmID;
+							return id;
+						}
+					}
+				} catch (IOException e) {
+					//dmm search didn't work, use the r18 ID instead
+					return new ID(DmmParsingProfile.fixUpIDFormatting(r18ID));
+				}
+			}
+			
+
 		}
 		return new ID("");
 	}
@@ -225,7 +301,7 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 			for(Element currentGenre : genreElements)
 			{
 				String genreText = currentGenre.text();
-				if(genreText.length() > 0 && !genreText.equals("Hi-Def"))
+				if(genreText.length() > 0 && !genreText.equals("Hi-Def") && !genreText.equals("Featured Actress"))
 				{
 					genreList.add(new Genre(genreText));
 				}
@@ -302,13 +378,6 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 	//we'll also check to see if we get a google result with our cid before actually returning it
 	@Override
 	public String createSearchString(File file) {
-		String attemptOneBaseFileName = searchStringHelper(file);
-		if(attemptOneBaseFileName != null)
-			return attemptOneBaseFileName;
-		
-		//Well that didn't work if we are still here, so let's try to guess what the ID is on R18 using some simple rules
-		//let's try to put some more zeros in the file name between the first part of the  ID and the numbers at the end
-		//We need to do this since we'll actually get different results on DMM by putting in some extra zeros
 		String baseId = findIDTagFromFile(file).replace("-", "");
 		Pattern patternID = Pattern.compile("([0-9]*\\D+)(\\d+)");
 		Matcher matcher = patternID.matcher(baseId);
@@ -319,7 +388,63 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 		    groupTwo = matcher.group(2);
 		}
 		
-		String attemptFileNameWithOneExtraZero = searchStringHelper(new File(groupOne + "0" + groupTwo));
+		String potentialOtherMatchOne = groupOne + "0" + groupTwo;
+		String potentialOtherMatchTwo = groupOne + "00" + groupTwo;
+		String potentialOtherMatchThree = groupOne + "000" + groupTwo;
+		String potentialOtherMatchFour = groupOne + "0000" + groupTwo;
+		
+		
+		//try some searches on R18 itself, we'll actually get better accuracy on searches by doing reverse order with more zeros
+		//at the start (for example ABC-001 returns a ton of results but ABC-00001 will only return 1)
+		boolean foundSearch = false;
+
+		
+		
+
+		foundSearch = foundSearchResultOnR18(potentialOtherMatchFour);
+
+		if(foundSearch)
+		{
+			return potentialOtherMatchFour;
+		}
+		
+		foundSearch = foundSearchResultOnR18(potentialOtherMatchThree);
+
+		if(foundSearch)
+		{
+			return potentialOtherMatchThree;
+		}
+		
+		foundSearch = foundSearchResultOnR18(potentialOtherMatchTwo);
+
+		if(foundSearch)
+		{
+			return potentialOtherMatchTwo;
+		}
+		
+		foundSearch = foundSearchResultOnR18(potentialOtherMatchOne);
+		if(foundSearch)
+		{
+			return potentialOtherMatchOne;
+		}
+		
+		foundSearch = foundSearchResultOnR18(baseId);
+
+		if(foundSearch)
+		{
+			return baseId;
+		}
+		
+		String attemptOneBaseFileName = searchStringHelper(file);
+		if(attemptOneBaseFileName != null)
+			return attemptOneBaseFileName;
+		
+		//Well that didn't work if we are still here, so let's try to guess what the ID is on R18 using some simple rules
+		//let's try to put some more zeros in the file name between the first part of the  ID and the numbers at the end
+		//We need to do this since we'll actually get different results on DMM by putting in some extra zeros
+
+		
+		String attemptFileNameWithOneExtraZero = searchStringHelper(new File(potentialOtherMatchOne));
 		if(attemptFileNameWithOneExtraZero != null)
 		{
 			//get rid of the extra zeros we put in
@@ -327,7 +452,7 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 			return attemptFileNameWithOneExtraZero;
 		}
 		
-		String attemptFileNameWithTwoExtraZero = searchStringHelper(new File(groupOne + "00" + groupTwo));
+		String attemptFileNameWithTwoExtraZero = searchStringHelper(new File(potentialOtherMatchTwo));
 		if(attemptFileNameWithTwoExtraZero != null)
 		{
 			//get rid of the extra zeros we put in
@@ -335,7 +460,7 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 			return attemptFileNameWithTwoExtraZero;
 		}
 		
-		String attemptFileNameWithThreeExtraZero = searchStringHelper(new File(groupOne + "000" + groupTwo));
+		String attemptFileNameWithThreeExtraZero = searchStringHelper(new File(potentialOtherMatchThree));
 		if(attemptFileNameWithThreeExtraZero != null)
 		{
 			//get rid of the extra zeros we put in
@@ -343,7 +468,7 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 			return attemptFileNameWithThreeExtraZero;
 		}
 		
-		String attemptFileNameWithFourExtraZero = searchStringHelper(new File(groupOne + "0000" + groupTwo));
+		String attemptFileNameWithFourExtraZero = searchStringHelper(new File(potentialOtherMatchFour));
 		if(attemptFileNameWithFourExtraZero != null)
 		{
 			//get rid of the extra zeros we put in
@@ -355,6 +480,45 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 		//if we're positive r18 should have had a match on that file, so if you're reading this comment
 		//feel free to add some more cases like above to try to get a match :)
 		return null;
+	}
+	
+	private boolean foundSearchResultOnR18(String searchWord)
+	{
+		URLCodec codec = new URLCodec();
+		String searchWordURLEncoded;
+		try {
+			searchWordURLEncoded = codec.encode(searchWord);
+			String searchPattern = "http://www.r18.com/common/search/searchword=" + searchWordURLEncoded;
+			System.out.println("Searching on R18 with this URL:" + searchPattern);
+			Document searchResultsPage = Jsoup.connect(searchPattern).get();
+			Elements moviesFound = searchResultsPage.select(".cmn-list-product01 li");
+			if(moviesFound != null && moviesFound.size() > 0)
+			{
+				SearchResult [] foundResults = new SearchResult[moviesFound.size()];
+				int i = 0;
+				for(Element searchResult : moviesFound)
+				{
+					String urlPath = searchResult.select("a").attr("href");
+					String label = searchResult.select("img").first().attr("alt");
+					Thumb previewImage = null;
+					previewImage = new Thumb(searchResult.select("img").first().attr("src"));
+					SearchResult searchResultToAdd = new SearchResult(urlPath, label, previewImage);
+					foundResults[i] = searchResultToAdd;
+					i++;
+				}
+				searchResultsFromR18 = foundResults;
+				return true;
+			}
+			
+		} catch (EncoderException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return false;
 	}
 	
 	private void removeZerosFromID(int numberOfZeros)
@@ -376,6 +540,7 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 			}
 		}
 	}
+	
 	
 	//get a cid from DMM and use that to make a google search. if the google search returns a link on r18
 	//then return it
@@ -433,7 +598,12 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 	@Override
 	public SearchResult[] getSearchResults(String searchString)
 			throws IOException {
-		return getLinksFromGoogle(searchString, "r18.com");
+		if(searchResultsFromR18 != null && searchResultsFromR18.length > 0)
+		{
+			System.out.println("Using R18 results instead of google results");
+			return searchResultsFromR18;
+		}
+		else return getLinksFromGoogle(searchString, "r18.com");
 	}
 
 	@Override
