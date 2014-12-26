@@ -19,6 +19,7 @@ import javax.swing.KeyStroke;
 
 import moviescraper.doctord.Movie;
 import moviescraper.doctord.controller.BrowseDirectoryAction;
+import moviescraper.doctord.controller.BrowseUriAction;
 import moviescraper.doctord.controller.FileNameCleanupAction;
 import moviescraper.doctord.controller.MoveToNewFolderAction;
 import moviescraper.doctord.controller.OpenFileAction;
@@ -408,6 +409,34 @@ public class GUIMainMenuBar extends JMenuBar{
 		add(scrapeMenu);
 	}
 	
+	private void initializeHelpMenu() {
+		JMenu helpMenu = new JMenu("Help");
+		helpMenu.setMnemonic(KeyEvent.VK_H);
+		
+		JMenuItem website = new JMenuItem("Visit website");
+		website.addActionListener(new BrowseUriAction(BrowseUriAction.MainWebsiteUri));
+		
+		JMenuItem reportBug = new JMenuItem("Report bug");
+		reportBug.addActionListener(new BrowseUriAction(BrowseUriAction.ReportBugUri));
+		
+		JMenuItem about = new JMenuItem("About...");
+		about.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				new AboutDialog(guiMain.getFrmMoviescraper()).setVisible(true);
+			}
+		});
+		
+		helpMenu.add(website);
+		helpMenu.add(reportBug);
+		helpMenu.addSeparator();
+		helpMenu.add(about);
+		
+		add(helpMenu);
+	}
+	
 	private void initializeMenus() {
 		//add the various menus together
 		initializeFileMenu();
@@ -415,6 +444,7 @@ public class GUIMainMenuBar extends JMenuBar{
 		initializePreferencesMenu();
 		initializeSettingsMenu();
 		initializeViewMenu();
+		initializeHelpMenu();
 	}
 	
 	private MoviescraperPreferences getPreferences(){
