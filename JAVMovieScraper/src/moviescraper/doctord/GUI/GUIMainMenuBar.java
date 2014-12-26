@@ -1,11 +1,15 @@
 package moviescraper.doctord.GUI;
 
+import java.awt.Desktop;
 import java.awt.Event;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
@@ -15,8 +19,15 @@ import javax.swing.KeyStroke;
 
 import moviescraper.doctord.Movie;
 import moviescraper.doctord.controller.BrowseDirectoryAction;
+import moviescraper.doctord.controller.FileNameCleanupAction;
+import moviescraper.doctord.controller.MoveToNewFolderAction;
 import moviescraper.doctord.controller.OpenFileAction;
 import moviescraper.doctord.controller.RefreshDirectoryAction;
+import moviescraper.doctord.controller.ScrapeMovieAction;
+import moviescraper.doctord.controller.ScrapeMovieActionAutomatic;
+import moviescraper.doctord.controller.ScrapeMovieActionData18Movie;
+import moviescraper.doctord.controller.ScrapeMovieActionData18WebContent;
+import moviescraper.doctord.controller.WriteFileDataAction;
 import moviescraper.doctord.preferences.MoviescraperPreferences;
 
 public class GUIMainMenuBar extends JMenuBar{
@@ -25,7 +36,7 @@ public class GUIMainMenuBar extends JMenuBar{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JMenu preferenceMenu;
+	
 	private MoviescraperPreferences preferences;
 	private GUIMain guiMain;
 	
@@ -38,12 +49,12 @@ public class GUIMainMenuBar extends JMenuBar{
 		initializeMenus();
 	}
 	
-	private void initializeMenus(){
+	private void initializePreferencesMenu(){
 		
 
 		//Set up the preferences menu
-		preferenceMenu = new JMenu("Scraping Preferences");
-		preferenceMenu.setMnemonic(KeyEvent.VK_S);
+		JMenu preferenceMenu = new JMenu("Preferences");
+		preferenceMenu.setMnemonic(KeyEvent.VK_P);
 		preferenceMenu.getAccessibleContext().setAccessibleDescription(
 				"Preferences for JAVMovieScraper");
 
@@ -235,10 +246,15 @@ public class GUIMainMenuBar extends JMenuBar{
 			}
 		});
 		preferenceMenu.add(scrapeInJapanese);
+		
+		add(preferenceMenu);
+	}
+	
+	private void initializeSettingsMenu() {
 
-		JMenu renameMenu = new JMenu("Rename Settings");
-		renameMenu.setMnemonic(KeyEvent.VK_R);
-		JMenuItem renameSettings = new JMenuItem("Rename Settings");
+		JMenu renameMenu = new JMenu("Settings");
+		renameMenu.setMnemonic(KeyEvent.VK_S);
+		JMenuItem renameSettings = new JMenuItem("Rename Settings...");
 		renameSettings.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -249,7 +265,11 @@ public class GUIMainMenuBar extends JMenuBar{
 			}
 		});
 		renameMenu.add(renameSettings);
-
+		
+		add(renameMenu);
+	}
+	
+	private void initializeFileMenu() {
 		// File menu
 
 		JMenu fileMenu = new JMenu("File");
@@ -273,14 +293,38 @@ public class GUIMainMenuBar extends JMenuBar{
 		refreshDirectory.addActionListener(new RefreshDirectoryAction(guiMain));
 		fileMenu.add(refreshDirectory);
 		
+		fileMenu.addSeparator();
+		
 		//Open file menu
-		JMenuItem openFile = new JMenuItem("Open");
+		JMenuItem openFile = new JMenuItem("Open File");
 		openFile.setMnemonic(KeyEvent.VK_O);
 		openFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,
 				Event.CTRL_MASK));
 		openFile.addActionListener(new OpenFileAction(guiMain));
 		fileMenu.add(openFile);
 
+		JMenuItem writeFile = new JMenuItem("Write File Data");
+		writeFile.setMnemonic(KeyEvent.VK_W);
+		writeFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W,
+				Event.CTRL_MASK));
+		writeFile.addActionListener(new WriteFileDataAction(guiMain));
+		fileMenu.add(writeFile);
+		
+		JMenuItem moveFile = new JMenuItem("Move File to New Folder");
+		moveFile.setMnemonic(KeyEvent.VK_M);
+		moveFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M,
+				Event.CTRL_MASK));
+		moveFile.addActionListener(new MoveToNewFolderAction(guiMain));
+		fileMenu.add(moveFile);
+		
+		JMenuItem cleanFile = new JMenuItem("Clean up File Name");
+		cleanFile.setMnemonic(KeyEvent.VK_C);
+		cleanFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C,
+				Event.CTRL_MASK));
+		cleanFile.addActionListener(new MoveToNewFolderAction(guiMain));
+		fileMenu.add(cleanFile);
+		
+		
 		fileMenu.addSeparator();
 		
 		//Exit file menu
@@ -296,8 +340,16 @@ public class GUIMainMenuBar extends JMenuBar{
 		});
 		fileMenu.add(exit);
 		
-		JMenu consoleMenu = new JMenu("Console Output");
-		consoleMenu.setMnemonic(KeyEvent.VK_C);
+		add(fileMenu);
+	}
+	
+	private void initializeViewMenu() {
+		
+		JMenu consoleMenu = new JMenu("View");
+		consoleMenu.setMnemonic(KeyEvent.VK_V);
+		
+				
+		
 		JMenuItem consoleInSeperateWindowMenuItem = new JMenuItem("View Console Output In Seperate Window");
 		consoleInSeperateWindowMenuItem.addActionListener(new ActionListener() {
 			@Override
@@ -319,15 +371,50 @@ public class GUIMainMenuBar extends JMenuBar{
 					guiMain.hideMessageConsolePanel();	
 			}
 		});
-		
-		consoleMenu.add(consolePanelMenuItem);
+				
 		consoleMenu.add(consoleInSeperateWindowMenuItem);
-
+		consoleMenu.add(consolePanelMenuItem);
+		
+		add(consoleMenu);
+	}
+	
+	private void initializeScrapeMenu() {
+		JMenu scrapeMenu = new JMenu("Scrape");
+		scrapeMenu.setMnemonic(KeyEvent.VK_S);
+		
+		JMenuItem scrapeJav = new JMenuItem(new ScrapeMovieAction(guiMain));
+		scrapeJav.setText(scrapeJav.getText() + "...");
+		scrapeJav.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, Event.CTRL_MASK | Event.SHIFT_MASK));
+		
+		JMenuItem scrapeJavAuto = new JMenuItem(new ScrapeMovieActionAutomatic(guiMain));
+		scrapeJavAuto.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, Event.CTRL_MASK));
+		
+		JMenuItem scrapeData18Movie = new JMenuItem(new ScrapeMovieActionData18Movie(guiMain));
+		scrapeData18Movie.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, Event.CTRL_MASK | Event.SHIFT_MASK));
+		
+		JMenuItem scrapeData18WebContent = new JMenuItem(new ScrapeMovieActionData18WebContent(guiMain));
+		scrapeData18WebContent.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, Event.CTRL_MASK));
+		
+		scrapeMenu.add(scrapeJav);
+		scrapeMenu.add(scrapeJavAuto);
+		scrapeMenu.add(scrapeData18Movie);
+		scrapeMenu.add(scrapeData18WebContent);
+		
+		//TODO: add specific scrapers
+		/*JMenu specificMenu = new JMenu("Specific Scrape");
+		specificMenu.add(new JMenuItem("1pondo"));
+		scrapeMenu.add(specificMenu);*/
+		
+		add(scrapeMenu);
+	}
+	
+	private void initializeMenus() {
 		//add the various menus together
-		this.add(fileMenu);
-		this.add(preferenceMenu);
-		this.add(renameMenu);
-		this.add(consoleMenu);
+		initializeFileMenu();
+		initializeScrapeMenu();
+		initializePreferencesMenu();
+		initializeSettingsMenu();
+		initializeViewMenu();
 	}
 	
 	private MoviescraperPreferences getPreferences(){
