@@ -119,7 +119,7 @@ public class GUIMain {
 	private JFileChooser chooser;
 	
 	private MessageConsolePanel messageConsolePanel;
-
+	private JPanel bottomPanelMainArea;
 
 	private ProgressMonitor progressMonitor;
 
@@ -262,7 +262,7 @@ public class GUIMain {
 		
 		//Set up the bottom panel - area for message panel, buttons, and specific parser panel
 		JPanel bottomPanel = new JPanel(new BorderLayout());
-		JPanel bottomPanelMainArea = new JPanel();
+		bottomPanelMainArea = new JPanel();
 		bottomPanel.add(bottomPanelMainArea, BorderLayout.SOUTH);
 		bottomPanelMainArea.setBorder(BorderFactory.createLineBorder(Color.black));
 		bottomPanelMainArea.setLayout(new BoxLayout(bottomPanelMainArea, BoxLayout.X_AXIS));
@@ -967,7 +967,15 @@ public class GUIMain {
 	public void hideMessageConsolePanel(){
 		messageConsolePanel.setVisible(false);
 	}
-
+	
+	public void showButtonPanel(){
+		bottomPanelMainArea.setVisible(true);
+	}
+	
+	public void hideButtonPanel(){
+		bottomPanelMainArea.setVisible(false);
+	}
+	
 	public Movie getCurrentlySelectedMovieR18() {
 		return currentlySelectedMovieR18;
 	}

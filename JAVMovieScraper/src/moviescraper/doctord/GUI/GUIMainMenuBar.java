@@ -346,8 +346,8 @@ public class GUIMainMenuBar extends JMenuBar{
 	
 	private void initializeViewMenu() {
 		
-		JMenu consoleMenu = new JMenu("View");
-		consoleMenu.setMnemonic(KeyEvent.VK_V);
+		JMenu viewMenu = new JMenu("View");
+		viewMenu.setMnemonic(KeyEvent.VK_V);
 		
 				
 		
@@ -372,11 +372,24 @@ public class GUIMainMenuBar extends JMenuBar{
 					guiMain.hideMessageConsolePanel();	
 			}
 		});
-				
-		consoleMenu.add(consoleInSeperateWindowMenuItem);
-		consoleMenu.add(consolePanelMenuItem);
 		
-		add(consoleMenu);
+		JCheckBoxMenuItem buttonPanelMenuItem = new JCheckBoxMenuItem("Show Button Panel In Main Window");
+		buttonPanelMenuItem.setState(true);
+		buttonPanelMenuItem.addItemListener(new ItemListener() {
+
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				if(e.getStateChange() == ItemEvent.SELECTED)
+					guiMain.showButtonPanel();
+				else if(e.getStateChange() == ItemEvent.DESELECTED)
+					guiMain.hideButtonPanel();	
+			}
+		});
+				
+		viewMenu.add(consoleInSeperateWindowMenuItem);
+		viewMenu.add(consolePanelMenuItem);
+		viewMenu.add(buttonPanelMenuItem);
+		add(viewMenu);
 	}
 	
 	private void initializeScrapeMenu() {
