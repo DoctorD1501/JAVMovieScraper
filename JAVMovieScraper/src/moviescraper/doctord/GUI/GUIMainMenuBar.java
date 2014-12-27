@@ -18,6 +18,8 @@ import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
 import moviescraper.doctord.Movie;
+import moviescraper.doctord.SiteParsingProfile.SiteParsingProfileItem;
+import moviescraper.doctord.SiteParsingProfile.SpecificProfileFactory;
 import moviescraper.doctord.controller.BrowseDirectoryAction;
 import moviescraper.doctord.controller.BrowseUriAction;
 import moviescraper.doctord.controller.FileNameCleanupAction;
@@ -28,6 +30,7 @@ import moviescraper.doctord.controller.ScrapeMovieAction;
 import moviescraper.doctord.controller.ScrapeMovieActionAutomatic;
 import moviescraper.doctord.controller.ScrapeMovieActionData18Movie;
 import moviescraper.doctord.controller.ScrapeMovieActionData18WebContent;
+import moviescraper.doctord.controller.ScrapeSpecificAction;
 import moviescraper.doctord.controller.WriteFileDataAction;
 import moviescraper.doctord.preferences.MoviescraperPreferences;
 
@@ -414,10 +417,21 @@ public class GUIMainMenuBar extends JMenuBar{
 		scrapeMenu.add(scrapeData18Movie);
 		scrapeMenu.add(scrapeData18WebContent);
 		
-		//TODO: add specific scrapers
-		/*JMenu specificMenu = new JMenu("Specific Scrape");
-		specificMenu.add(new JMenuItem("1pondo"));
-		scrapeMenu.add(specificMenu);*/
+		
+		JMenu specificMenu = new JMenu("Specific Scrape");
+		scrapeMenu.add(specificMenu);
+		
+		int i = 0;
+		
+		for(SiteParsingProfileItem item: SpecificProfileFactory.getAll()){
+			JMenuItem menuItem = new JMenuItem(item.toString());
+			
+			if (++i < 10)
+				menuItem.setAccelerator(KeyStroke.getKeyStroke(Character.forDigit(i,  10), Event.CTRL_MASK | Event.SHIFT_MASK));
+			
+			menuItem.addActionListener(new ScrapeSpecificAction(guiMain, item.getParser()));
+			specificMenu.add(menuItem);
+		}
 		
 		add(scrapeMenu);
 	}
