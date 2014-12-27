@@ -30,6 +30,7 @@ import moviescraper.doctord.SiteParsingProfile.SiteParsingProfileItem;
 import moviescraper.doctord.SiteParsingProfile.SpecificProfileFactory;
 import moviescraper.doctord.SiteParsingProfile.specific.AvEntertainmentParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.specific.SpecificProfile;
+import moviescraper.doctord.controller.ScrapeSpecificAction;
 import moviescraper.doctord.controller.SpecificScraperAction;
 
 public class SpecificParserPanel extends JPanel {
@@ -54,57 +55,23 @@ public class SpecificParserPanel extends JPanel {
 		JButton btnScrape = new JButton("Scrape");
 		btnScrape.setAlignmentX( CENTER_ALIGNMENT );
 		add(btnScrape);
-		btnScrape.addActionListener(new ActionListener() {
+		
+		final ScrapeSpecificAction scrapeAction = new ScrapeSpecificAction(main, null);
+		btnScrape.addActionListener(scrapeAction);		
+		
+		comboBox.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				//Find out the type of parser to use from the drop down box and pass it off to the scrape method
 				Object selectedItem = comboBox.getSelectedItem();
 				if (selectedItem instanceof SiteParsingProfileItem) {
 					SiteParsingProfile spp = ((SiteParsingProfileItem) selectedItem).getParser();
-					if ( spp != null ) {
-						scrape(spp);
-					}
+					scrapeAction.setParsingProfile(spp);
 				}	
 			}
 		});
 
-		try {
-			initSpinner();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	protected void scrape(SiteParsingProfile spp) {
-		try
-		{
-			main.setMainGUIEnabled(false);
-			main.removeOldScrapedMovieReferences();
-			List<File> toScrape = main.getCurrentFile();
-			if (toScrape != null) {
-				for(File currentFile : toScrape)
-				{ 
-					//reset the SiteParsingProfile so we don't get leftover stuff from the last file scraped
-					//we want it to be of the same type, so we use the newInstance() method which will automatically
-					//return a new object of the type the SiteParsingProfile actually is
-					spp = spp.newInstance();
-					spp.setScrapingLanguage(main.getPreferences());
-					SpecificScraperAction action = new SpecificScraperAction(spp, spp.getMovieScraper(), currentFile );
-					Movie scrapedMovie = action.scrape();
-					if(scrapedMovie != null)
-						main.movieToWriteToDiskList.add(scrapedMovie);
-					main.getFileDetailPanel().setNewMovie( scrapedMovie , true);
-				}
-
-			} else {
-				JOptionPane.showMessageDialog(this, "No file selected.", "No file selected.", JOptionPane.ERROR_MESSAGE);
-			}
-		}
-		finally
-		{
-			main.setMainGUIEnabled(true);
-		}
+		initSpinner();
 	}
 
 	private void initSpinner() {
