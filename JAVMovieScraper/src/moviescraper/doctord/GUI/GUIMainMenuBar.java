@@ -421,8 +421,14 @@ public class GUIMainMenuBar extends JMenuBar{
 		JMenu specificMenu = new JMenu("Specific Scrape");
 		scrapeMenu.add(specificMenu);
 		
+		int i = 0;
+		
 		for(SiteParsingProfileItem item: SpecificProfileFactory.getAll()){
 			JMenuItem menuItem = new JMenuItem(item.toString());
+			
+			if (++i < 10)
+				menuItem.setAccelerator(KeyStroke.getKeyStroke(Character.forDigit(i,  10), Event.CTRL_MASK | Event.SHIFT_MASK));
+			
 			menuItem.addActionListener(new ScrapeSpecificAction(guiMain, item.getParser()));
 			specificMenu.add(menuItem);
 		}
