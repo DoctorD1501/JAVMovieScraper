@@ -122,6 +122,9 @@ public class FileDetailPanel extends JPanel {
 		
 		//using this workaround for JComboBox constructor for problem with generics in WindowBuilder as per this stackoverflow thread: https://stackoverflow.com/questions/8845139/jcombobox-warning-preventing-opening-the-design-page-in-eclipse
 		comboBoxMovieTitleText = new JComboBox<String>();
+		//Prevent the title of a really long moving from making the combo box way too long
+		//Instead it will only show the first part and the user will have to scroll in the editing box to see the rest
+		comboBoxMovieTitleText.setPrototypeDisplayValue("AAAAAAAAAAAAAAAAAAAAAAAAAAA");
 		comboBoxMovieTitleText.setModel( new TitleListModel() );
 		comboBoxMovieTitleText.addActionListener(new ActionListener(){
 	        @Override
@@ -158,6 +161,7 @@ public class FileDetailPanel extends JPanel {
 			}
 			
 		});
+		//movieTitlePanel.add(comboBoxMovieTitleText);
 		fileDetailsPanel.add(comboBoxMovieTitleText, "4, 2");
 
 
