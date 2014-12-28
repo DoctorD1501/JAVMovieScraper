@@ -69,7 +69,11 @@ public class WriteFileDataAction implements ActionListener {
 							String newMovieFilename = renamer.getNewFileName();
 							System.out.println( "New Filename : " + newMovieFilename );
 							File newMovieFile = new File(newMovieFilename);
-							oldMovieFile.renameTo(newMovieFile);
+							boolean renameStatus = oldMovieFile.renameTo(newMovieFile);
+							if(!renameStatus)
+							{
+								System.err.println("There was a problem renaming " + oldMovieFile + " to "+ newMovieFile);
+							}
 
 							guiMain.movieToWriteToDiskList.get(movieNumberInList).writeToFile(
 									new File( Movie.getFileNameOfNfo(newMovieFile, guiMain.getPreferences().getNfoNamedMovieDotNfo()) ),

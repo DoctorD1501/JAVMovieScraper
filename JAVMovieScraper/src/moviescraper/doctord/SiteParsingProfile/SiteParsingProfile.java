@@ -190,7 +190,10 @@ public abstract class SiteParsingProfile {
 	        	captchaData.put(key, value);
 			}
 	        if ( captchaData.size() > 0 )
+	        {
 	        	System.out.println("Found Captchadata : " + captchaData);
+	        	return new SearchResult[0];
+	        }
 	        
 	        Elements links = doc.select("li[class=g]");
 	        for (Element link : links) {	            
