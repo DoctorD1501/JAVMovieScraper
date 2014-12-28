@@ -151,7 +151,21 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 
 	@Override
 	public Runtime scrapeRuntime() {
-		//This type of info doesn't exist on this site
+		initializeJapaneseDocument();
+		Element durationElement = japaneseDocument.select("div.movie-info dl dt:contains(再生時間:) + dd").first();
+		if(durationElement != null && durationElement.text().trim().length() > 0)
+		{
+			String [] durationSplitByTimeUnit = durationElement.text().split(":");
+			if(durationSplitByTimeUnit.length == 3)
+			{
+				int hours = Integer.parseInt(durationSplitByTimeUnit[0]);
+				int minutes = Integer.parseInt(durationSplitByTimeUnit[1]);
+				//we don't care about seconds
+				
+				int totalMinutes = (hours * 60) + minutes;
+				return new Runtime(new Integer(totalMinutes).toString());
+			}
+		}
 		return Runtime.BLANK_RUNTIME;
 	}
 
@@ -388,7 +402,7 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 		Elements japaneseActors = japaneseDocument.select("div.movie-info dl dt:contains(出演:) ~ dd a");
 		String urlOfCurrentPage = document.location();
 		String actorThumbURL = null;
-		if(actorElement != null &&getScrapingLanguage() == Language.ENGLISH)
+		if(actorElement != null && getScrapingLanguage() == Language.ENGLISH)
 		{
 			String actorName = WordUtils.capitalize(actorElement.attr("title"));
 			//get the actor thumbnail associated with this page

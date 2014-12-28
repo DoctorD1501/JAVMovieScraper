@@ -66,15 +66,18 @@ public class ActressListRenderer extends DefaultListCellRenderer {
 			{
 				String currentActorNameAsPotentialFileName = currentActor.getName().replace(' ', '_');
 				File [] listFiles = currentlySelectedActorsFolderList.get(0).listFiles();
-				for(File currentFile : listFiles)
+				if(listFiles != null)
 				{
-					if(currentFile.isFile() && FilenameUtils.removeExtension(currentFile.getName()).equals(currentActorNameAsPotentialFileName)){
-						try {
-							return new ImageIcon(ImageCache.getImageFromCache(currentFile.toURI().toURL()));
-						} catch (MalformedURLException e) {
-							return new ImageIcon();
-						} catch (IOException e) {
-							return new ImageIcon();
+					for(File currentFile : listFiles)
+					{
+						if(currentFile.isFile() && FilenameUtils.removeExtension(currentFile.getName()).equals(currentActorNameAsPotentialFileName)){
+							try {
+								return new ImageIcon(ImageCache.getImageFromCache(currentFile.toURI().toURL()));
+							} catch (MalformedURLException e) {
+								return new ImageIcon();
+							} catch (IOException e) {
+								return new ImageIcon();
+							}
 						}
 					}
 				}
