@@ -230,7 +230,8 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 		Elements elements = document.select("div[id=detailbox] ul ol a");
 		for (Element element : elements) {
 			String genre = element.childNode(0).toString();
-			list.add(new Genre( genre ));
+			if(!genre.equals("Sample Movie") && !genre.contains("(DVD)"))
+					list.add(new Genre( genre ));
 		}
 		return list;
 	}
