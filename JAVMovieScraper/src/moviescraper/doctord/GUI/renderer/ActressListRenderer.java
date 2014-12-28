@@ -5,6 +5,8 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.SystemColor;
 import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -16,6 +18,7 @@ import javax.swing.border.EmptyBorder;
 
 import org.apache.commons.io.FilenameUtils;
 
+import moviescraper.doctord.ImageCache;
 import moviescraper.doctord.dataitem.Actor;
 
 @SuppressWarnings("serial")
@@ -53,9 +56,7 @@ public class ActressListRenderer extends DefaultListCellRenderer {
 		return label;
 	}
 	
-	//TODO sansibar reimplement Cache function
 	//TODO: I should probably re-implement this to use Maps instead of arrays
-	//TODO: Store the files from .actor in a cache somewhere
 	private ImageIcon getImageIconForLabelName(Actor currentActor) {
 	
 		if (currentActor.getThumb() != null)
@@ -68,8 +69,18 @@ public class ActressListRenderer extends DefaultListCellRenderer {
 				for(File currentFile : listFiles)
 				{
 					if(currentFile.isFile() && FilenameUtils.removeExtension(currentFile.getName()).equals(currentActorNameAsPotentialFileName)){
-						return new ImageIcon(currentFile.getPath());
+						try {
+							return new ImageIcon(ImageCache.getImageFromCache(currentFile.toURI().toURL()));
+						} catch (MalformedURLException e) {
+							return new ImageIcon();
+						} catch (IOException e) {
+							return new ImageIcon();
+						}
 					}
+				}
+				if(currentActor.getThumb().getThumbURL() != null)
+				{
+					return currentActor.getThumb().getImageIconThumbImage();
 				}
 			}
 
