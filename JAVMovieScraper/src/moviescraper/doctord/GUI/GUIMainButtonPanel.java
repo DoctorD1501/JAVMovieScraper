@@ -20,6 +20,7 @@ import javax.swing.JToolBar;
 import org.imgscalr.Scalr;
 import org.imgscalr.Scalr.Method;
 
+import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfileItem;
 import moviescraper.doctord.SiteParsingProfile.SpecificProfileFactory;
 import moviescraper.doctord.controller.BrowseDirectoryAction;
@@ -50,10 +51,19 @@ public class GUIMainButtonPanel extends JPanel {
 		initializeButtons();
 	}
 	
-	private ImageIcon initializeImageIcon(String iconName)
-	{
+	private ImageIcon initializeImageIcon(String iconName) {
+		return initializeResourceIcon("/res/" + iconName + "Icon.png");
+	}
+	
+	private ImageIcon initializeProfileIcon(SiteParsingProfile profile)	{
+		String profileName = profile.getClass().getSimpleName();
+		String siteName = profileName.replace("ParsingProfile", "");
+		return initializeResourceIcon("/res/sites/" + siteName + ".png");
+	}
+	
+	private ImageIcon initializeResourceIcon(String resourceName) {
 		try {
-			URL url = GUIMain.class.getResource("/res/" + iconName + "Icon.png");
+			URL url = GUIMain.class.getResource(resourceName);
 			BufferedImage iconBufferedImage = ImageIO.read(url);
 			if(iconBufferedImage != null)
 			{
@@ -66,7 +76,7 @@ public class GUIMainButtonPanel extends JPanel {
 			return null;
 		}
 	}
-		
+	
 	private void initializeButtons()
 	{
 		initializeDirectoryButtons();
@@ -181,9 +191,12 @@ public class GUIMainButtonPanel extends JPanel {
 		
 		for(SiteParsingProfileItem item: SpecificProfileFactory.getAll()){
 			JMenuItem menuItem = new JMenuItem();
-			Action scrapeAction = new ScrapeSpecificAction(guiMain, item.getParser());
+			SiteParsingProfile profile = item.getParser();
+			ImageIcon icon = initializeProfileIcon(profile);
+			Action scrapeAction = new ScrapeSpecificAction(guiMain, profile);
 			String siteName = item.toString();
 			scrapeAction.putValue(Action.NAME, "Scrape " + siteName);
+			scrapeAction.putValue(Action.SMALL_ICON, icon);
 			menuItem.setAction(scrapeAction);
 			menuItem.setText(siteName);
 			menuItem.addActionListener(scrapeActionListener);
