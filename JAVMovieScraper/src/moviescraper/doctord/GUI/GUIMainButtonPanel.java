@@ -1,14 +1,20 @@
 package moviescraper.doctord.GUI;
 
-import java.net.URL;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import javax.swing.Action;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComponent;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JToolBar;
 
+import moviescraper.doctord.SiteParsingProfile.SiteParsingProfileItem;
+import moviescraper.doctord.SiteParsingProfile.SpecificProfileFactory;
 import moviescraper.doctord.controller.FileNameCleanupAction;
 import moviescraper.doctord.controller.MoveToNewFolderAction;
 import moviescraper.doctord.controller.OpenFileAction;
@@ -16,90 +22,126 @@ import moviescraper.doctord.controller.ScrapeMovieAction;
 import moviescraper.doctord.controller.ScrapeMovieActionAutomatic;
 import moviescraper.doctord.controller.ScrapeMovieActionData18Movie;
 import moviescraper.doctord.controller.ScrapeMovieActionData18WebContent;
+import moviescraper.doctord.controller.ScrapeSpecificAction;
 import moviescraper.doctord.controller.WriteFileDataAction;
 
 public class GUIMainButtonPanel extends JPanel {
-
+	
+	private GUIMain guiMain;
+	
 	public GUIMainButtonPanel(GUIMain guiMain)
 	{
-		//used in the write to file button
-		ImageIcon saveIcon = guiMain.initializeImageIcon("SaveButton");
-
-		//used in the scrape data18 buttons
-		ImageIcon data18Icon = guiMain.initializeImageIcon("Data18");
-
-		//used for scraping japanese movies
-		ImageIcon japanIcon = guiMain.initializeImageIcon("Japan");
-
-		//open the file icon
-		ImageIcon openIcon = guiMain.initializeImageIcon("Open");
-
-		//move to new folder icon
-		ImageIcon moveToFolderIcon = guiMain.initializeImageIcon("FileFolder");
+		this.guiMain = guiMain;
 		
-		//Fix file name icon
-		ImageIcon fixFileNameIcon = guiMain.initializeImageIcon("FixFileName");
+		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+		initializeButtons();
+	}
+	
+	private ImageIcon initializeImageIcon(String iconName)
+	{
+		return GUIMain.initializeImageIcon(iconName);
+	}
 		
-		
-		JToolBar specificParserToolbar = new JToolBar("Specific");
-		JToolBar scrapeButtons = new JToolBar("Scrape");
+	private void initializeButtons()
+	{
+		initializeScrapeButtons();
+		initializeFileButtons();
+	}
+	
+	private void initializeFileButtons()
+	{
 		JToolBar fileOperationsButtons = new JToolBar("File");
-
-		JComponent parserPanel = new SpecificParserPanel(guiMain);
-		parserPanel.setLayout(new BoxLayout(parserPanel, BoxLayout.X_AXIS));
-		//parserPanel.setPreferredSize(new Dimension(200,50));
-		specificParserToolbar.add(parserPanel);
-
-		JButton btnScrapeSelectMovieJAV = new JButton("Scrape JAV (Manual)");
-		btnScrapeSelectMovieJAV.setAction(new ScrapeMovieAction(guiMain));
-		btnScrapeSelectMovieJAV.setIcon(japanIcon);
-		scrapeButtons.add(btnScrapeSelectMovieJAV);
 		
-		JButton btnScrapeSelectMovieJAVAutomatic = new JButton("Scrape JAV (Automatic)");
-		btnScrapeSelectMovieJAVAutomatic.setAction(new ScrapeMovieActionAutomatic(guiMain));
-		btnScrapeSelectMovieJAVAutomatic.setIcon(japanIcon);
-		scrapeButtons.add(btnScrapeSelectMovieJAVAutomatic);
-
-		JButton btnScrapeSelectMovieData18Movie = new JButton("Scrape Data18 Movie");
-		btnScrapeSelectMovieData18Movie.setAction(new ScrapeMovieActionData18Movie(guiMain));
-		btnScrapeSelectMovieData18Movie.setIcon(data18Icon);
-		scrapeButtons.add(btnScrapeSelectMovieData18Movie);
-
-		JButton btnScrapeSelectMovieData18WebContent = new JButton("Scrape Data18 Web Content");
-		btnScrapeSelectMovieData18WebContent.setAction(new ScrapeMovieActionData18WebContent(guiMain));
-		btnScrapeSelectMovieData18WebContent.setIcon(data18Icon);
-		scrapeButtons.add(btnScrapeSelectMovieData18WebContent);
-
 		JButton btnWriteFileData = new JButton("Write File Data");
-		btnWriteFileData.setToolTipText("Write out the .nfo file to disk");
-		btnWriteFileData.setIcon(saveIcon);
 		btnWriteFileData.addActionListener(new WriteFileDataAction(guiMain));
-		fileOperationsButtons.add(btnWriteFileData);
-
+		btnWriteFileData.setToolTipText("Write out the .nfo file to disk");
+		btnWriteFileData.setIcon(initializeImageIcon("SaveButton"));
+		
 		JButton btnMoveFileToFolder = new JButton();
 		btnMoveFileToFolder.setAction(new MoveToNewFolderAction(guiMain));
 		btnMoveFileToFolder.setToolTipText("Create a folder for the file and put the file and any associated files in that new folder.");
-		btnMoveFileToFolder.setIcon(moveToFolderIcon);
-		fileOperationsButtons.add(btnMoveFileToFolder);
-
+		btnMoveFileToFolder.setIcon(initializeImageIcon("FileFolder"));
+		
 		JButton openCurrentlySelectedFileButton = new JButton("Open File");
-		openCurrentlySelectedFileButton.setToolTipText("Open the currently selected file with the system default program for it");
 		openCurrentlySelectedFileButton.addActionListener(new OpenFileAction(guiMain));
-		openCurrentlySelectedFileButton.setIcon(openIcon);
-		fileOperationsButtons.add(openCurrentlySelectedFileButton);
+		openCurrentlySelectedFileButton.setToolTipText("Open the currently selected file with the system default program for it");
+		openCurrentlySelectedFileButton.setIcon(initializeImageIcon("Open"));
 		
 		JButton fileNameCleanupButton = new JButton("Clean Up File Name");
-		fileNameCleanupButton
-				.setToolTipText("Attempts to rename a file of a web content release before scraping so that it is more likely to find a match. I'm still working on adding more site abbreviations, so this feature is experimental for now.");
-		fileNameCleanupButton.setIcon(fixFileNameIcon);
 		fileNameCleanupButton.addActionListener(new FileNameCleanupAction(guiMain));
-		fileOperationsButtons.add(fileNameCleanupButton);
+		fileNameCleanupButton.setToolTipText("Attempts to rename a file of a web content release before scraping so that it is more likely to find a match. I'm still working on adding more site abbreviations, so this feature is experimental for now.");
+		fileNameCleanupButton.setIcon(initializeImageIcon("FixFileName"));
 		
-		JPanel toolbarPanel = this;
-		toolbarPanel.setLayout(new BoxLayout(toolbarPanel, BoxLayout.X_AXIS));
-		toolbarPanel.add(scrapeButtons);
-		toolbarPanel.add(fileOperationsButtons);
-		toolbarPanel.add(specificParserToolbar);
+		fileOperationsButtons.add(openCurrentlySelectedFileButton);
+		fileOperationsButtons.add(btnWriteFileData);
+		fileOperationsButtons.add(btnMoveFileToFolder);
+		fileOperationsButtons.add(fileNameCleanupButton);
+	
+		add(fileOperationsButtons);
 	}
 	
+	private void initializeScrapeButtons()
+	{
+		JToolBar scrapeButtons = new JToolBar("Scrape");
+
+		ImageIcon arrowIcon = initializeImageIcon("Arrow");
+		ImageIcon japanIcon = initializeImageIcon("Japan");
+		ImageIcon data18Icon = initializeImageIcon("Data18");
+		
+		final JButton scrapeButton = new JButton();
+		final JButton arrowButton =  new JButton(arrowIcon);
+		final JPopupMenu scrapeMenu = new JPopupMenu();
+	
+		arrowButton.addActionListener(new ActionListener() {			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				scrapeMenu.show(arrowButton, 0, arrowButton.getHeight());
+			}
+		});
+
+		ActionListener scrapeActionListener = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				Action action = ((JMenuItem)e.getSource()).getAction(); 
+				scrapeButton.setAction(action);;
+			}
+		};
+		
+		Action scrapeJavAction = new ScrapeMovieAction(guiMain);
+		Action scrapeJavAutoAction = new ScrapeMovieActionAutomatic(guiMain);
+		Action scrapeData18MovieAction = new ScrapeMovieActionData18Movie(guiMain);
+		Action scrapeData18WebContentAction = new ScrapeMovieActionData18WebContent(guiMain);
+		
+		scrapeJavAction.putValue(Action.SMALL_ICON, japanIcon);	
+		scrapeJavAutoAction.putValue(Action.SMALL_ICON, japanIcon);	
+		scrapeData18MovieAction.putValue(Action.SMALL_ICON, data18Icon);
+		scrapeData18WebContentAction.putValue(Action.SMALL_ICON, data18Icon);
+
+		scrapeMenu.add(scrapeJavAction).addActionListener(scrapeActionListener);
+		scrapeMenu.add(scrapeJavAutoAction).addActionListener(scrapeActionListener);
+		scrapeMenu.add(scrapeData18MovieAction).addActionListener(scrapeActionListener);
+		scrapeMenu.add(scrapeData18WebContentAction).addActionListener(scrapeActionListener);
+		
+		JMenu specificMenu = new JMenu("Specific Scrape");
+		scrapeMenu.add(specificMenu);
+		
+		for(SiteParsingProfileItem item: SpecificProfileFactory.getAll()){
+			JMenuItem menuItem = new JMenuItem();
+			Action scrapeAction = new ScrapeSpecificAction(guiMain, item.getParser());
+			String siteName = item.toString();
+			scrapeAction.putValue(Action.NAME, "Scrape " + siteName);
+			menuItem.setAction(scrapeAction);
+			menuItem.setText(siteName);
+			menuItem.addActionListener(scrapeActionListener);
+			specificMenu.add(menuItem);
+		}
+		
+		scrapeButton.setAction(scrapeJavAutoAction);
+		
+		scrapeButtons.add(scrapeButton);
+		scrapeButtons.add(arrowButton);
+		
+		add(scrapeButtons);
+	}	
 }
