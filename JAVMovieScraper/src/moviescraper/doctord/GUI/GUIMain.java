@@ -121,8 +121,7 @@ public class GUIMain {
 	private JFileChooser chooser;
 	
 	private MessageConsolePanel messageConsolePanel;
-	private JPanel bottomPanelMainArea;
-
+	
 	private ProgressMonitor progressMonitor;
 
 	//variables for fileList
@@ -878,13 +877,6 @@ public class GUIMain {
 		messageConsolePanel.setVisible(false);
 	}
 	
-	public void showButtonPanel(){
-		bottomPanelMainArea.setVisible(true);
-	}
-	
-	public void hideButtonPanel(){
-		bottomPanelMainArea.setVisible(false);
-	}
 	
 	public Movie getCurrentlySelectedMovieR18() {
 		return currentlySelectedMovieR18;

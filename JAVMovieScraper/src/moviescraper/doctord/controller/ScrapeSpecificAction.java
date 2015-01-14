@@ -23,15 +23,8 @@ public class ScrapeSpecificAction extends AbstractAction {
 		this.profile = profile;
 	}
 	
-	public void setParsingProfile(SiteParsingProfile profile) {
-		this.profile = profile;
-	}
-
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (profile == null)
-			return;
-		
 		try
 		{
 			main.setMainGUIEnabled(false);
