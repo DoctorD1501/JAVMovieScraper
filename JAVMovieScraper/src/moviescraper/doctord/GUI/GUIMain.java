@@ -135,8 +135,6 @@ public class GUIMain {
 	private String originalJavLibraryMovieTitleBeforeAmalgamate;
 
 	//Dimensions of various elements
-	private static final int iconSizeX = 16;
-	private static final int iconSizeY = 16;
 	private static final int defaultMainFrameX = 1024;
 	private static final int defaultMainFrameY = 768;
 
@@ -209,15 +207,6 @@ public class GUIMain {
 		//initialize the icons used in the program
 		URL programIconURL = frmMoviescraper.getClass().getResource("/res/AppIcon.png");
 		
-		//up one folder icon
-		ImageIcon upIcon = initializeImageIcon("Up");
-
-		//browse directory icon
-		ImageIcon browseDirectoryIcon = initializeImageIcon("BrowseDirectory");
-		
-		//refresh directory icon
-		ImageIcon refreshDirectoryIcon = initializeImageIcon("Refresh"); 
-		
 		//Used for icon in the title bar
 		Image programIcon = null;
 		try {
@@ -229,7 +218,7 @@ public class GUIMain {
 		}
 		
 		//Set up the file list panel - the panel where the user picks what file to scrape
-		setUpFileListPanel(upIcon, browseDirectoryIcon, refreshDirectoryIcon);
+		setUpFileListPanel();
 		
 		
 		//Set up the bottom panel - area for message panel
@@ -254,8 +243,7 @@ public class GUIMain {
 	 * @param browseDirectoryIcon
 	 * @param refreshDirectoryIcon
 	 */
-	private void setUpFileListPanel(ImageIcon upIcon,
-			ImageIcon browseDirectoryIcon, ImageIcon refreshDirectoryIcon) {
+	private void setUpFileListPanel() {
 		fileListPanel = new JPanel();
 
 		defaultHomeDirectory = getPreferences().getLastUsedDirectory();
@@ -388,38 +376,6 @@ public class GUIMain {
 		fileListPanel.add(fileListScrollPane);
 		fileListPanel.setBorder(BorderFactory.createLineBorder(Color.black));
 
-		//set up buttons in the file panel
-
-		JPanel fileListPanelButtonsPanel = new JPanel();
-		fileListPanelButtonsPanel.setLayout( new BoxLayout(fileListPanelButtonsPanel, BoxLayout.X_AXIS));
-		fileListPanelButtonsPanel.setAlignmentY(Component.BOTTOM_ALIGNMENT);
-		fileListPanelButtonsPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-		//Button to go up a directory for the current directory
-		JButton btnUpDirectory = new JButton();
-		btnUpDirectory.addActionListener(new UpDirectoryAction(this));
-		btnUpDirectory.setIcon(upIcon);
-		btnUpDirectory.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-		//Button to bring up a file chooser so the user can browse and pick what directory they want to view
-		JButton btnBrowseDirectory = new JButton("Browse");
-		btnBrowseDirectory.addActionListener(new BrowseDirectoryAction(this));
-		btnBrowseDirectory.setIcon(browseDirectoryIcon);
-		btnBrowseDirectory.setAlignmentX(Component.CENTER_ALIGNMENT);
-		
-		//Button to refresh the current directory
-		JButton btnRefreshDirectory = new JButton();
-		btnRefreshDirectory.addActionListener(new RefreshDirectoryAction(this));
-		btnRefreshDirectory.setIcon(refreshDirectoryIcon);
-		btnRefreshDirectory.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-		fileListPanelButtonsPanel.add(btnRefreshDirectory);
-
-		fileListPanelButtonsPanel.add(btnUpDirectory);
-		fileListPanelButtonsPanel.add(btnBrowseDirectory);
-		fileListPanel.add(fileListPanelButtonsPanel);
-		
-
 		fileDetailPanel = new FileDetailPanel(getPreferences(), this);
 		JScrollPane fileDetailsScrollPane = new JScrollPane(fileDetailPanel);
 		
@@ -427,22 +383,6 @@ public class GUIMain {
 		fileListPanel.setMinimumSize(new Dimension(200,50));
 		fileDetailsScrollPane.setMinimumSize(new Dimension(100,50));
 		frmMoviescraper.getContentPane().add(fileListFileDetailSplitPane, BorderLayout.CENTER);
-	}
-
-	public static ImageIcon initializeImageIcon(String iconName){
-		try {
-			URL url = GUIMain.class.getResource("/res/" + iconName + "Icon.png");
-			BufferedImage iconBufferedImage = ImageIO.read(url);
-			if(iconBufferedImage != null)
-			{
-				iconBufferedImage = Scalr.resize(iconBufferedImage, Method.QUALITY, iconSizeX, iconSizeY, Scalr.OP_ANTIALIAS);
-				return new ImageIcon(iconBufferedImage);
-			}
-			else return new ImageIcon();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-			return null;
-		}
 	}
 
 	public void removeOldScrapedMovieReferences() {

@@ -2,7 +2,11 @@ package moviescraper.doctord.GUI;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.URL;
 
+import javax.imageio.ImageIO;
 import javax.swing.Action;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -12,6 +16,9 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JToolBar;
+
+import org.imgscalr.Scalr;
+import org.imgscalr.Scalr.Method;
 
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfileItem;
 import moviescraper.doctord.SiteParsingProfile.SpecificProfileFactory;
@@ -30,6 +37,9 @@ import moviescraper.doctord.controller.WriteFileDataAction;
 
 public class GUIMainButtonPanel extends JPanel {
 	
+	private static final int iconSizeX = 16;
+	private static final int iconSizeY = 16;
+	
 	private GUIMain guiMain;
 	
 	public GUIMainButtonPanel(GUIMain guiMain)
@@ -42,7 +52,19 @@ public class GUIMainButtonPanel extends JPanel {
 	
 	private ImageIcon initializeImageIcon(String iconName)
 	{
-		return GUIMain.initializeImageIcon(iconName);
+		try {
+			URL url = GUIMain.class.getResource("/res/" + iconName + "Icon.png");
+			BufferedImage iconBufferedImage = ImageIO.read(url);
+			if(iconBufferedImage != null)
+			{
+				iconBufferedImage = Scalr.resize(iconBufferedImage, Method.QUALITY, iconSizeX, iconSizeY, Scalr.OP_ANTIALIAS);
+				return new ImageIcon(iconBufferedImage);
+			}
+			else return new ImageIcon();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+			return null;
+		}
 	}
 		
 	private void initializeButtons()
