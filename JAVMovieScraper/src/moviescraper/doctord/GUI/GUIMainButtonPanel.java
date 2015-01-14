@@ -15,14 +15,17 @@ import javax.swing.JToolBar;
 
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfileItem;
 import moviescraper.doctord.SiteParsingProfile.SpecificProfileFactory;
+import moviescraper.doctord.controller.BrowseDirectoryAction;
 import moviescraper.doctord.controller.FileNameCleanupAction;
 import moviescraper.doctord.controller.MoveToNewFolderAction;
 import moviescraper.doctord.controller.OpenFileAction;
+import moviescraper.doctord.controller.RefreshDirectoryAction;
 import moviescraper.doctord.controller.ScrapeMovieAction;
 import moviescraper.doctord.controller.ScrapeMovieActionAutomatic;
 import moviescraper.doctord.controller.ScrapeMovieActionData18Movie;
 import moviescraper.doctord.controller.ScrapeMovieActionData18WebContent;
 import moviescraper.doctord.controller.ScrapeSpecificAction;
+import moviescraper.doctord.controller.UpDirectoryAction;
 import moviescraper.doctord.controller.WriteFileDataAction;
 
 public class GUIMainButtonPanel extends JPanel {
@@ -44,10 +47,38 @@ public class GUIMainButtonPanel extends JPanel {
 		
 	private void initializeButtons()
 	{
+		initializeDirectoryButtons();
 		initializeScrapeButtons();
 		initializeFileButtons();
 	}
 	
+	private void initializeDirectoryButtons() {
+		JToolBar directoryOperationsButtons = new JToolBar("Directory");
+		
+		//Button to go up a directory for the current directory
+		JButton btnUpDirectory = new JButton();
+		btnUpDirectory.addActionListener(new UpDirectoryAction(guiMain));
+		btnUpDirectory.setIcon(initializeImageIcon("Up"));
+		btnUpDirectory.setToolTipText("Go to parent directory");		
+		
+		//Button to bring up a file chooser so the user can browse and pick what directory they want to view
+		JButton btnBrowseDirectory = new JButton("Browse");
+		btnBrowseDirectory.addActionListener(new BrowseDirectoryAction(guiMain));
+		btnBrowseDirectory.setIcon(initializeImageIcon("BrowseDirectory"));
+		btnBrowseDirectory.setToolTipText("Browse directory");
+		
+		JButton btnRefreshDirectory = new JButton();
+		btnRefreshDirectory.addActionListener(new RefreshDirectoryAction(guiMain));
+		btnRefreshDirectory.setIcon(initializeImageIcon("Refresh"));
+		btnRefreshDirectory.setToolTipText("Refresh current directory");
+		
+		directoryOperationsButtons.add(btnBrowseDirectory);
+		directoryOperationsButtons.add(btnUpDirectory);
+		directoryOperationsButtons.add(btnRefreshDirectory);
+		
+		add(directoryOperationsButtons);
+	}
+
 	private void initializeFileButtons()
 	{
 		JToolBar fileOperationsButtons = new JToolBar("File");
