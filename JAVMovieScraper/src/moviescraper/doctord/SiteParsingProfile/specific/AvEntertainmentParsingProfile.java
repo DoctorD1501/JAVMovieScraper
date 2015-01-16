@@ -240,22 +240,25 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 	public ArrayList<Actor> scrapeActors() {
 		Elements elements = document.select("ul li a[href~=ActressDetail]");
 		ArrayList<Actor> list = new ArrayList<>();
-		for (Element element : elements) {
-			String href = element.attr("href");
-			String name = WordUtils.capitalize(element.childNode(0).toString());
-			Thumb thumb = null;
-			try {
-				Document actorDoc = Jsoup.connect(href).userAgent("Mozilla").ignoreHttpErrors(true).timeout(0).get();
-				Element first = actorDoc.select("ul img[src~=ActressImage]").first();
-				if (first != null) {
-					String thumbURL = first.attr("src");
-					thumb = new Thumb(thumbURL);
+		if(elements != null)
+		{
+			for (Element element : elements) {
+				String href = element.attr("href");
+				String name = WordUtils.capitalize(element.childNode(0).toString());
+				Thumb thumb = null;
+				try {
+					Document actorDoc = Jsoup.connect(href).userAgent("Mozilla").ignoreHttpErrors(true).timeout(0).get();
+					Element first = actorDoc.select("ul img[src~=ActressImage]").first();
+					if (first != null) {
+						String thumbURL = first.attr("src");
+						thumb = new Thumb(thumbURL);
+					}
+					list.add(new Actor(name, null, thumb));
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
-				list.add(new Actor(name, null, thumb));
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
 
+			}
 		}
 		return list;
 	}
