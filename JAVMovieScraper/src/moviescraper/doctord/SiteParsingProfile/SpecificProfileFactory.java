@@ -14,7 +14,6 @@ import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import moviescraper.doctord.GUI.SpecificParserPanel;
 import moviescraper.doctord.SiteParsingProfile.specific.SpecificProfile;
 
 public class SpecificProfileFactory {
@@ -104,7 +103,7 @@ public class SpecificProfileFactory {
 	    List<Class> classes = new ArrayList<Class>();
 	    if (!directory.exists()) {
 	    	//maybe we are running from a jar file, so try that
-	    	File thisJarFile = new File(new java.io.File(SpecificParserPanel.class.getProtectionDomain()
+	    	File thisJarFile = new File(new java.io.File(SpecificProfileFactory.class.getProtectionDomain()
 	    			  .getCodeSource()
 	    			  .getLocation()
 	    			  .getPath())

@@ -376,22 +376,10 @@ public class GUIMainMenuBar extends JMenuBar{
 			}
 		});
 		
-		JCheckBoxMenuItem buttonPanelMenuItem = new JCheckBoxMenuItem("Show Button Panel In Main Window");
-		buttonPanelMenuItem.setState(true);
-		buttonPanelMenuItem.addItemListener(new ItemListener() {
-
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				if(e.getStateChange() == ItemEvent.SELECTED)
-					guiMain.showButtonPanel();
-				else if(e.getStateChange() == ItemEvent.DESELECTED)
-					guiMain.hideButtonPanel();	
-			}
-		});
-				
+	
 		viewMenu.add(consoleInSeperateWindowMenuItem);
 		viewMenu.add(consolePanelMenuItem);
-		viewMenu.add(buttonPanelMenuItem);
+	
 		add(viewMenu);
 	}
 	

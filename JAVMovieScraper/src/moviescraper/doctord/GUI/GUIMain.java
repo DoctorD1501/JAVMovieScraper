@@ -13,8 +13,10 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JToolBar;
 
 import java.awt.BorderLayout;
 
@@ -44,6 +46,7 @@ import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.PopupMenu;
 
 import javax.swing.JButton;
 
@@ -107,7 +110,6 @@ public class GUIMain {
 	//Gui Elements
 	JFrame frmMoviescraper;
 	protected WindowBlocker frmMovieScraperBlocker;
-	private final Action moveToNewFolder = new MoveToNewFolderAction(this);
 	private DefaultListModel<File> listModelFiles;
 
 	private JPanel fileListPanel;
@@ -119,8 +121,7 @@ public class GUIMain {
 	private JFileChooser chooser;
 	
 	private MessageConsolePanel messageConsolePanel;
-	private JPanel bottomPanelMainArea;
-
+	
 	private ProgressMonitor progressMonitor;
 
 	//variables for fileList
@@ -134,8 +135,6 @@ public class GUIMain {
 	private String originalJavLibraryMovieTitleBeforeAmalgamate;
 
 	//Dimensions of various elements
-	private static final int iconSizeX = 16;
-	private static final int iconSizeY = 16;
 	private static final int defaultMainFrameX = 1024;
 	private static final int defaultMainFrameY = 768;
 
@@ -200,8 +199,6 @@ public class GUIMain {
 		frmMoviescraper.setTitle("JAVMovieScraper");
 		frmMoviescraper.setBounds(100, 100, defaultMainFrameX, defaultMainFrameY);
 		frmMoviescraper.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-		
 
 		//create tree view icon provider
 		IconCache.setIconProvider(getPreferences().getUseContentBasedTypeIcons() ? IconCache.IconProviderType.CONTENT
@@ -209,16 +206,7 @@ public class GUIMain {
 
 		//initialize the icons used in the program
 		URL programIconURL = frmMoviescraper.getClass().getResource("/res/AppIcon.png");
-		URL saveButtonIconURL = frmMoviescraper.getClass().getResource("/res/SaveButtonIcon.png");
-		URL data18IconURL = frmMoviescraper.getClass().getResource("/res/Data18Icon.png");
-		URL japanIconURL = frmMoviescraper.getClass().getResource("/res/JapanIcon.png");
-		URL openIconURL = frmMoviescraper.getClass().getResource("/res/OpenIcon.png");
-		URL fileFolderIconURL = frmMoviescraper.getClass().getResource("/res/FileFolderIcon.png");
-		URL upIconURL = frmMoviescraper.getClass().getResource("/res/UpIcon.png");
-		URL browseIconURL = frmMoviescraper.getClass().getResource("/res/BrowseDirectoryIcon.png");
-		URL refreshIconURL = frmMoviescraper.getClass().getResource("/res/RefreshIcon.png");
-		URL fixFileNameIconURL = frmMoviescraper.getClass().getResource("/res/FixFileNameIcon.png");
-
+		
 		//Used for icon in the title bar
 		Image programIcon = null;
 		try {
@@ -228,44 +216,13 @@ public class GUIMain {
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-
-		//used in the write to file button
-		ImageIcon saveIcon = initializeImageIcon(saveButtonIconURL);
-
-		//used in the scrape data18 buttons
-		ImageIcon data18Icon = initializeImageIcon(data18IconURL);
-
-		//used for scraping japanese movies
-		ImageIcon japanIcon = initializeImageIcon(japanIconURL);
-
-		//open the file icon
-		ImageIcon openIcon = initializeImageIcon(openIconURL);
-
-		//move to new folder icon
-		ImageIcon moveToFolderIcon = initializeImageIcon(fileFolderIconURL);
-
-		//up one folder icon
-		ImageIcon upIcon = initializeImageIcon(upIconURL);
-
-		//browse directory icon
-		ImageIcon browseDirectoryIcon = initializeImageIcon(browseIconURL);
-		
-		//refresh directory icon
-		ImageIcon refreshDirectoryIcon = initializeImageIcon(refreshIconURL); 
-		
-		//Fix file name icon
-		ImageIcon fixFileNameIcon = initializeImageIcon(fixFileNameIconURL);
 		
 		//Set up the file list panel - the panel where the user picks what file to scrape
-		setUpFileListPanel(upIcon, browseDirectoryIcon, refreshDirectoryIcon);
+		setUpFileListPanel();
 		
 		
-		//Set up the bottom panel - area for message panel, buttons, and specific parser panel
+		//Set up the bottom panel - area for message panel
 		JPanel bottomPanel = new JPanel(new BorderLayout());
-		bottomPanelMainArea = new JPanel();
-		bottomPanel.add(bottomPanelMainArea, BorderLayout.SOUTH);
-		bottomPanelMainArea.setBorder(BorderFactory.createLineBorder(Color.black));
-		bottomPanelMainArea.setLayout(new BoxLayout(bottomPanelMainArea, BoxLayout.X_AXIS));
 		frmMoviescraper.getContentPane().add(bottomPanel, BorderLayout.SOUTH);
 		
 		//Console message area
@@ -273,67 +230,7 @@ public class GUIMain {
 		messageConsolePanel.setVisible(false);
 		bottomPanel.add(messageConsolePanel, BorderLayout.NORTH);
 		
-		JComponent parserPanel = new SpecificParserPanel(this);
-		parserPanel.setPreferredSize(new Dimension(200,50));
-		bottomPanelMainArea.add(parserPanel);
-
-		JPanel buttonsPanel = new JPanel();
-		buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.PAGE_AXIS));
-		JPanel scrapeButtons = new JPanel();
-		JPanel fileOperationsButtons = new JPanel();
-		bottomPanelMainArea.add(buttonsPanel);
-
-		JButton btnScrapeSelectMovieJAV = new JButton("Scrape JAV");
-		btnScrapeSelectMovieJAV.setAction(new ScrapeMovieAction(this));
-		btnScrapeSelectMovieJAV.setIcon(japanIcon);
-		scrapeButtons.add(btnScrapeSelectMovieJAV);
-
-		JButton btnScrapeSelectMovieJAVAutomatic = new JButton("Scrape JAV (Automatic)");
-		btnScrapeSelectMovieJAVAutomatic.setAction(new ScrapeMovieActionAutomatic(this));
-		btnScrapeSelectMovieJAVAutomatic.setIcon(japanIcon);
-		scrapeButtons.add(btnScrapeSelectMovieJAVAutomatic);
-
-		JButton btnScrapeSelectMovieData18Movie = new JButton("Scrape Data18 Movie");
-		btnScrapeSelectMovieData18Movie.setAction(new ScrapeMovieActionData18Movie(this));
-		if(data18Icon != null)
-			btnScrapeSelectMovieData18Movie.setIcon(data18Icon);
-		scrapeButtons.add(btnScrapeSelectMovieData18Movie);
-
-		JButton btnScrapeSelectMovieData18WebContent = new JButton("Scrape Data18 Web Content");
-		btnScrapeSelectMovieData18WebContent.setAction(new ScrapeMovieActionData18WebContent(this));
-		if(data18Icon != null)
-			btnScrapeSelectMovieData18WebContent.setIcon(data18Icon);
-		scrapeButtons.add(btnScrapeSelectMovieData18WebContent);
-
-		JButton btnWriteFileData = new JButton("Write File Data");
-		btnWriteFileData.setToolTipText("Write out the .nfo file to disk");
-		if(saveIcon != null)
-			btnWriteFileData.setIcon(saveIcon);
-		btnWriteFileData.addActionListener(new WriteFileDataAction(this));
-		fileOperationsButtons.add(btnWriteFileData);
-
-		JButton btnMoveFileToFolder = new JButton("Move file to folder");
-		btnMoveFileToFolder.setAction(moveToNewFolder);
-		btnMoveFileToFolder.setToolTipText("Create a folder for the file and put the file and any associated files in that new folder.");
-		btnMoveFileToFolder.setIcon(moveToFolderIcon);
-		fileOperationsButtons.add(btnMoveFileToFolder);
-
-		JButton openCurrentlySelectedFileButton = new JButton(
-				"Open File");
-		openCurrentlySelectedFileButton.setToolTipText("Open the currently selected file with the system default program for it");
-		openCurrentlySelectedFileButton.addActionListener(new OpenFileAction(this));
-		openCurrentlySelectedFileButton.setIcon(openIcon);
-		fileOperationsButtons.add(openCurrentlySelectedFileButton);
-		
-		JButton fileNameCleanupButton = new JButton("File Name Cleanup (Experimental Feature)");
-		fileNameCleanupButton
-				.setToolTipText("Attempts to rename a file of a web content release before scraping so that it is more likely to find a match. I'm still working on adding more site abbreviations, so this feature is experimental for now.");
-		fileNameCleanupButton.setIcon(fixFileNameIcon);
-		fileNameCleanupButton.addActionListener(new FileNameCleanupAction(this));
-		fileOperationsButtons.add(fileNameCleanupButton);
-
-		buttonsPanel.add(scrapeButtons);
-		buttonsPanel.add(fileOperationsButtons);
+		frmMoviescraper.getContentPane().add(new GUIMainButtonPanel(this), BorderLayout.NORTH);
 		
 		//End setting up the bottom panel
 		
@@ -346,8 +243,7 @@ public class GUIMain {
 	 * @param browseDirectoryIcon
 	 * @param refreshDirectoryIcon
 	 */
-	private void setUpFileListPanel(ImageIcon upIcon,
-			ImageIcon browseDirectoryIcon, ImageIcon refreshDirectoryIcon) {
+	private void setUpFileListPanel() {
 		fileListPanel = new JPanel();
 
 		defaultHomeDirectory = getPreferences().getLastUsedDirectory();
@@ -480,38 +376,6 @@ public class GUIMain {
 		fileListPanel.add(fileListScrollPane);
 		fileListPanel.setBorder(BorderFactory.createLineBorder(Color.black));
 
-		//set up buttons in the file panel
-
-		JPanel fileListPanelButtonsPanel = new JPanel();
-		fileListPanelButtonsPanel.setLayout( new BoxLayout(fileListPanelButtonsPanel, BoxLayout.X_AXIS));
-		fileListPanelButtonsPanel.setAlignmentY(Component.BOTTOM_ALIGNMENT);
-		fileListPanelButtonsPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-		//Button to go up a directory for the current directory
-		JButton btnUpDirectory = new JButton();
-		btnUpDirectory.addActionListener(new UpDirectoryAction(this));
-		btnUpDirectory.setIcon(upIcon);
-		btnUpDirectory.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-		//Button to bring up a file chooser so the user can browse and pick what directory they want to view
-		JButton btnBrowseDirectory = new JButton("Browse");
-		btnBrowseDirectory.addActionListener(new BrowseDirectoryAction(this));
-		btnBrowseDirectory.setIcon(browseDirectoryIcon);
-		btnBrowseDirectory.setAlignmentX(Component.CENTER_ALIGNMENT);
-		
-		//Button to refresh the current directory
-		JButton btnRefreshDirectory = new JButton();
-		btnRefreshDirectory.addActionListener(new RefreshDirectoryAction(this));
-		btnRefreshDirectory.setIcon(refreshDirectoryIcon);
-		btnRefreshDirectory.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-		fileListPanelButtonsPanel.add(btnRefreshDirectory);
-
-		fileListPanelButtonsPanel.add(btnUpDirectory);
-		fileListPanelButtonsPanel.add(btnBrowseDirectory);
-		fileListPanel.add(fileListPanelButtonsPanel);
-		
-
 		fileDetailPanel = new FileDetailPanel(getPreferences(), this);
 		JScrollPane fileDetailsScrollPane = new JScrollPane(fileDetailPanel);
 		
@@ -519,21 +383,6 @@ public class GUIMain {
 		fileListPanel.setMinimumSize(new Dimension(200,50));
 		fileDetailsScrollPane.setMinimumSize(new Dimension(100,50));
 		frmMoviescraper.getContentPane().add(fileListFileDetailSplitPane, BorderLayout.CENTER);
-	}
-
-	private ImageIcon initializeImageIcon(URL url){
-		try {
-			BufferedImage iconBufferedImage = ImageIO.read(url);
-			if(iconBufferedImage != null)
-			{
-				iconBufferedImage = Scalr.resize(iconBufferedImage, Method.QUALITY, iconSizeX, iconSizeY, Scalr.OP_ANTIALIAS);
-				return new ImageIcon(iconBufferedImage);
-			}
-			else return new ImageIcon();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-			return null;
-		}
 	}
 
 	public void removeOldScrapedMovieReferences() {
@@ -968,13 +817,6 @@ public class GUIMain {
 		messageConsolePanel.setVisible(false);
 	}
 	
-	public void showButtonPanel(){
-		bottomPanelMainArea.setVisible(true);
-	}
-	
-	public void hideButtonPanel(){
-		bottomPanelMainArea.setVisible(false);
-	}
 	
 	public Movie getCurrentlySelectedMovieR18() {
 		return currentlySelectedMovieR18;

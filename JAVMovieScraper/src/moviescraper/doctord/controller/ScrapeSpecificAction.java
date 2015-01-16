@@ -1,17 +1,19 @@
 package moviescraper.doctord.controller;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.List;
 
+import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
 import moviescraper.doctord.Movie;
 import moviescraper.doctord.GUI.GUIMain;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
 
-public class ScrapeSpecificAction implements ActionListener {
+public class ScrapeSpecificAction extends AbstractAction {
+	
+	private static final long serialVersionUID = 1L;
 	
 	private GUIMain main;
 	private SiteParsingProfile profile;
@@ -21,15 +23,8 @@ public class ScrapeSpecificAction implements ActionListener {
 		this.profile = profile;
 	}
 	
-	public void setParsingProfile(SiteParsingProfile profile) {
-		this.profile = profile;
-	}
-
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (profile == null)
-			return;
-		
 		try
 		{
 			main.setMainGUIEnabled(false);
@@ -59,5 +54,4 @@ public class ScrapeSpecificAction implements ActionListener {
 			main.setMainGUIEnabled(true);
 		}
 	}
-
 }
