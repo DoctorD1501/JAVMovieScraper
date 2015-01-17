@@ -39,7 +39,7 @@ public class ScrapeSpecificAction extends AbstractAction {
 					SiteParsingProfile spp = profile.newInstance();
 					spp.setScrapingLanguage(main.getPreferences());
 					SpecificScraperAction action = new SpecificScraperAction(spp, spp.getMovieScraper(), currentFile );
-					Movie scrapedMovie = action.scrape();
+					Movie scrapedMovie = action.scrape(main.getPreferences());
 					if(scrapedMovie != null)
 						main.movieToWriteToDiskList.add(scrapedMovie);
 					main.getFileDetailPanel().setNewMovie( scrapedMovie , true);

@@ -7,6 +7,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -31,12 +33,12 @@ import moviescraper.doctord.SiteParsingProfile.Data18MovieParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.Data18WebContentParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.DmmParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.IAFDParsingProfile;
-import moviescraper.doctord.SiteParsingProfile.JavLibraryParsingProfile;
-import moviescraper.doctord.SiteParsingProfile.JavZooParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
-import moviescraper.doctord.SiteParsingProfile.SquarePlusParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.specific.CaribbeancomPremiumParsingProfile;
+import moviescraper.doctord.SiteParsingProfile.specific.JavLibraryParsingProfile;
+import moviescraper.doctord.SiteParsingProfile.specific.JavZooParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.specific.R18ParsingProfile;
+import moviescraper.doctord.SiteParsingProfile.specific.SquarePlusParsingProfile;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Director;
 import moviescraper.doctord.dataitem.Genre;
@@ -163,40 +165,66 @@ public class ScrapeMovieAction extends AbstractAction {
 						// bring up some dialog boxes so the user can
 						// choose what URL to use for each site
 						try {
-							DmmParsingProfile dmmPP = new DmmParsingProfile(
+							DmmParsingProfile dmmParsingProfile = new DmmParsingProfile(
 									!ScrapeMovieAction.this.guiMain.getPreferences().getScrapeInJapanese());
-							JavLibraryParsingProfile jlPP = new JavLibraryParsingProfile();
-							String searchStringDMM = dmmPP
-									.createSearchString(ScrapeMovieAction.this.guiMain.getCurrentlySelectedMovieFileList()
-											.get(movieNumberInList));
-							SearchResult[] searchResultsDMM = dmmPP
-									.getSearchResults(searchStringDMM);
-							String searchStringJL = jlPP
-									.createSearchString(ScrapeMovieAction.this.guiMain.getCurrentlySelectedMovieFileList()
-											.get(movieNumberInList));
-							if (searchResultsDMM != null
-									&& searchResultsDMM.length > 0) {
-								SearchResult searchResultFromUser = GUIMain
-										.showOptionPane(searchResultsDMM,
-												"dmm.co.jp");
-								if (searchResultFromUser != null)
-									overrideURLDMM = searchResultFromUser.getUrlPath();
+							if(guiMain.getPreferences().getPromptForUserProvidedURLWhenScraping())
+							{
+								setOverridenSearchResult(dmmParsingProfile, ScrapeMovieAction.this.guiMain.getCurrentlySelectedMovieFileList()
+										.get(movieNumberInList).toString());
+
+							}
+							if(dmmParsingProfile.getOverridenSearchResult() != null)
+							{
+								overrideURLDMM = dmmParsingProfile.getOverridenSearchResult().toString();
+							}
+							else
+							{
+								String searchStringDMM = dmmParsingProfile
+										.createSearchString(ScrapeMovieAction.this.guiMain.getCurrentlySelectedMovieFileList()
+												.get(movieNumberInList));
+								SearchResult[] searchResultsDMM = dmmParsingProfile
+										.getSearchResults(searchStringDMM);
+								if (searchResultsDMM != null
+										&& searchResultsDMM.length > 0) {
+									SearchResult searchResultFromUser = GUIMain
+											.showOptionPane(searchResultsDMM,
+													"dmm.co.jp");
+									if (searchResultFromUser != null)
+										overrideURLDMM = searchResultFromUser.getUrlPath();
+								}
 
 							}
 							// don't read from jav library if we're
 							// scraping in japanese since that site is
 							// only useful for english lang content
 							if (!ScrapeMovieAction.this.guiMain.getPreferences().getScrapeInJapanese()) {
-								SearchResult[] searchResultsJavLibStrings = jlPP
-										.getSearchResults(searchStringJL);
-								if (searchResultsJavLibStrings != null
-										&& searchResultsJavLibStrings.length > 0) {
-									SearchResult searchResultFromUser = GUIMain
-											.showOptionPane(
-													searchResultsJavLibStrings,
-													"javlibrary.com");
-									if (searchResultFromUser != null)
-										overrideURLJavLibrary = searchResultFromUser.getUrlPath();
+								JavLibraryParsingProfile javLibParsingProfile = new JavLibraryParsingProfile();
+								if(guiMain.getPreferences().getPromptForUserProvidedURLWhenScraping())
+								{
+									setOverridenSearchResult(javLibParsingProfile, ScrapeMovieAction.this.guiMain.getCurrentlySelectedMovieFileList()
+											.get(movieNumberInList).toString());
+
+								}
+								if(javLibParsingProfile.getOverridenSearchResult() != null)
+								{
+									overrideURLJavLibrary = javLibParsingProfile.getOverridenSearchResult().toString();
+								}
+								else
+								{
+									String searchStringJL = javLibParsingProfile
+											.createSearchString(ScrapeMovieAction.this.guiMain.getCurrentlySelectedMovieFileList()
+													.get(movieNumberInList));
+									SearchResult[] searchResultsJavLibStrings = javLibParsingProfile
+											.getSearchResults(searchStringJL);
+									if (searchResultsJavLibStrings != null
+											&& searchResultsJavLibStrings.length > 0) {
+										SearchResult searchResultFromUser = GUIMain
+												.showOptionPane(
+														searchResultsJavLibStrings,
+														"javlibrary.com");
+										if (searchResultFromUser != null)
+											overrideURLJavLibrary = searchResultFromUser.getUrlPath();
+									}
 								}
 							}
 							//if we hit cancel twice while scraping, just go on to the next movie and don't scrape
@@ -216,21 +244,33 @@ public class ScrapeMovieAction extends AbstractAction {
 								data18ParsingProfile = new Data18MovieParsingProfile();
 							else if (scrapeData18WebContent)
 								data18ParsingProfile = new Data18WebContentParsingProfile();
-							String searchStringData18Movie = data18ParsingProfile
-									.createSearchString(ScrapeMovieAction.this.guiMain.getCurrentlySelectedMovieFileList()
-											.get(movieNumberInList));
-							SearchResult[] searchResultData18Movie = data18ParsingProfile
-									.getSearchResults(searchStringData18Movie);
-							if (searchResultData18Movie != null
-									&& searchResultData18Movie.length > 0) {
-								SearchResult searchResultFromUser = GUIMain
-										.showOptionPane(
-												searchResultData18Movie,
-												"Data18 Movie");
-								if (searchResultFromUser == null)
-									continue;
-								overrideURLData18Movie = searchResultFromUser
-										.getUrlPath();
+							if(guiMain.getPreferences().getPromptForUserProvidedURLWhenScraping())
+							{
+								setOverridenSearchResult(data18ParsingProfile, ScrapeMovieAction.this.guiMain.getCurrentlySelectedMovieFileList()
+										.get(movieNumberInList).toString());
+							}
+							if(data18ParsingProfile.getOverridenSearchResult() != null)
+							{
+								overrideURLData18Movie = data18ParsingProfile.getOverridenSearchResult().toString();
+							}
+							else
+							{
+								String searchStringData18Movie = data18ParsingProfile
+										.createSearchString(ScrapeMovieAction.this.guiMain.getCurrentlySelectedMovieFileList()
+												.get(movieNumberInList));
+								SearchResult[] searchResultData18Movie = data18ParsingProfile
+										.getSearchResults(searchStringData18Movie);
+								if (searchResultData18Movie != null
+										&& searchResultData18Movie.length > 0) {
+									SearchResult searchResultFromUser = GUIMain
+											.showOptionPane(
+													searchResultData18Movie,
+													"Data18 Movie");
+									if (searchResultFromUser == null)
+										continue;
+									overrideURLData18Movie = searchResultFromUser
+											.getUrlPath();
+								}
 
 							}
 
@@ -241,7 +281,7 @@ public class ScrapeMovieAction extends AbstractAction {
 										.getSearchResults(iafdParsingProfile
 												.createSearchString(ScrapeMovieAction.this.guiMain.getCurrentlySelectedMovieFileList()
 														.get(movieNumberInList)));
-								System.out.println(searchStringData18Movie);
+								//System.out.println(searchStringData18Movie);
 								System.out.println(searchResultsIAFD);
 
 								if (searchResultsIAFD != null
@@ -502,6 +542,7 @@ public class ScrapeMovieAction extends AbstractAction {
 		final int amountOfProgressToMakePerThread = (100 / numberOfThreads) - 1;
 		amountOfProgressPerSubtask = amountOfProgressToMakePerThread;
 		final ScrapeMovieAction thisScrapeAction = this;
+		final String overriddenURL = overrideURLData18Movie;
 
 		Thread scrapeQueryData18MovieThread = new Thread() {
 			public void run() {
@@ -511,6 +552,8 @@ public class ScrapeMovieAction extends AbstractAction {
 						data18MoviePP = new Data18MovieParsingProfile();
 					else
 						data18MoviePP = new Data18WebContentParsingProfile();
+					if(overriddenURL != null && overriddenURL.length() >0)
+						data18MoviePP.setOverridenSearchResult(overriddenURL);
 					//data18MoviePP.setExtraFanartScrapingEnabled(preferences.getExtraFanartScrapingEnabledPreference());
 					ScrapeMovieAction.this.guiMain.debugWriter("Scraping this file (Data18) " + ScrapeMovieAction.this.guiMain.getCurrentlySelectedMovieFileList().get(currentMovieNumberInList));
 					ScrapeMovieAction.this.guiMain
@@ -1170,6 +1213,41 @@ public class ScrapeMovieAction extends AbstractAction {
 			return amalgamatedMovie;
 		}
 
+	}
+	
+	/**
+	 * Displays a dialog where the user can enter in a specific user to scrape from
+	 * Does some minimal checking on the input before setting the overriden search result
+	 * @param spp the {@link SiteParsingProfile} object to set the overriden search result on
+	 */
+	public static void setOverridenSearchResult(SiteParsingProfile spp, String fileName)
+	{
+		 String userProvidedURL = (String)JOptionPane.showInputDialog(
+	             null,
+	             "Enter URL of " + spp.toString() + " to scrape from:" + "\n" + 
+	             fileName + " :",
+	             "Scrape from this URL...",
+	             JOptionPane.PLAIN_MESSAGE,
+	             null,
+	             null,
+	             null);
+		
+	
+		 if(userProvidedURL != null && userProvidedURL.length() > 0)
+		 {
+			 //TODO: validate this is a actually a URL and display an error message if it is not
+			 //also maybe don't let them click OK if isn't a valid URL?
+			 try{
+				 URL isAValidURL = new URL(userProvidedURL);
+				 spp.setOverridenSearchResult(isAValidURL.toString());
+			 }
+			 catch(MalformedURLException e)
+			 {
+				 e.printStackTrace();
+				 return;
+			 }
+			 
+		 }
 	}
 
 }

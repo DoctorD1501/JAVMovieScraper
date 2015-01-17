@@ -32,6 +32,7 @@ public class MoviescraperPreferences {
 	private static final String renamerString = "renamerString";
 	private static final String renameMovieFile = "renameMovieFile";
 	private static final String scrapeInJapanese = "scrapeInJapanese";
+	private static final String promptForUserProvidedURLWhenScraping = "promptForUserProvidedURLWhenScraping";
 	
 	/*
 	 * useContentBasedTypeIcons:
@@ -124,7 +125,12 @@ public class MoviescraperPreferences {
 		}
 
 	}
-
+	/**
+	 * 
+	 * @param preferenceName the preference field to set - must be the exact same as the field's local variable name in {@link MoviescraperPreferences}
+	 * @param defaultValue the value to return if the preference has not been set
+	 * @return
+	 */
 	private boolean getBooleanValue(String preferenceName, boolean defaultValue)
 	{
 		Field fieldToUse;
@@ -261,6 +267,14 @@ public class MoviescraperPreferences {
 
 	public void setUseContentBasedTypeIcons(boolean preferenceValue) {
 		setBooleanValue(useContentBasedTypeIcons, preferenceValue);    
+	}
+	
+	public boolean getPromptForUserProvidedURLWhenScraping(){
+		return getBooleanValue(promptForUserProvidedURLWhenScraping, false);
+	}
+
+	public void setPromptForUserProvidedURLWhenScraping(boolean preferenceValue){
+		setBooleanValue(promptForUserProvidedURLWhenScraping, preferenceValue);
 	}
 	
 	public String toString(){

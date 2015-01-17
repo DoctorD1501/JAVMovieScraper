@@ -53,6 +53,12 @@ public abstract class SiteParsingProfile {
 	
 	private boolean extraFanartScrapingEnabled = false;
 	
+	/**
+	 * If this has a value when scraping, will use overridenSearchResult 
+	 * from a user provided URL without looking at file name
+	 */
+	private SearchResult overridenSearchResult; 
+	
 	public boolean isExtraFanartScrapingEnabled() {
 		return extraFanartScrapingEnabled;
 	}
@@ -85,6 +91,24 @@ public abstract class SiteParsingProfile {
 
 	public void setDocument(Document document) {
 		this.document = document;
+	}
+	
+	/**
+	 * Sets the {@link SiteParsingProfile#overridenSearchResult} to the URL defined by @param urlPath
+	 * This will cause the scraper to ignore the file name of the file when scraping
+	 * @param urlPath
+	 */
+	public void setOverridenSearchResult(String urlPath)
+	{
+		overridenSearchResult = new SearchResult(urlPath);
+	}
+	
+	/**
+	 * @return {@link SiteParsingProfile#overridenSearchResult}
+	 */
+	public SearchResult getOverridenSearchResult()
+	{
+		return overridenSearchResult;
 	}
 	
 	
@@ -253,6 +277,12 @@ public abstract class SiteParsingProfile {
 			scrapingLanguage = Language.JAPANESE;
 		else
 			scrapingLanguage = Language.ENGLISH;
+	}
+	
+	public abstract String getParserName();
+	
+	public String toString(){
+		return getParserName();
 	}
 	
 	/**

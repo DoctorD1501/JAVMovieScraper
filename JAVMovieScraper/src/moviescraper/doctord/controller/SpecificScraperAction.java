@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+
 import javax.swing.JOptionPane;
 
 import org.jsoup.Jsoup;
@@ -17,6 +18,7 @@ import moviescraper.doctord.GUI.SelectionDialog;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.specific.SpecificProfile;
 import moviescraper.doctord.model.AbstractMovieScraper;
+import moviescraper.doctord.preferences.MoviescraperPreferences;
 
 public class SpecificScraperAction {
 
@@ -111,34 +113,46 @@ public class SpecificScraperAction {
 		return movieToModify;
 	}
 	
-
-	
-	public Movie scrape() {
+	public Movie scrape(MoviescraperPreferences preferences) {
 		try {
 			for (SiteParsingProfile spp : sppList) {
-				String searchString = spp.createSearchString(toScrape);
-				SearchResult[] results = spp.getSearchResults(searchString);
-				String site = "Select Movie to Scrape From ";				
-				if ( spp instanceof SpecificProfile )
-					site += ((SpecificProfile) spp).getParserName();
-				else
-					site += spp.getClass().getSimpleName();
-
-				SelectionDialog selectionDialog = new SelectionDialog(results, site);
-				SearchResult searchResult = null;
-				//If there's only one item to choose from, save the user some work and just automatically choose it
-				if(results != null && results.length == 1)
+				if(preferences.getPromptForUserProvidedURLWhenScraping())
+					ScrapeMovieAction.setOverridenSearchResult(spp, toScrape.toString());
+				
+				SearchResult searchResultToUse = null;
+				if(spp.getOverridenSearchResult() != null)
 				{
-					searchResult = results[0];
+					searchResultToUse = spp.getOverridenSearchResult();
 				}
-				//otherwise, the user gets a dialog box where they can pick from the various search results
 				else
 				{
-					searchResult = getSearchResult(selectionDialog, site);
+					String searchString = spp.createSearchString(toScrape);
+					SearchResult[] results = spp.getSearchResults(searchString);
+					String site = "Select Movie to Scrape From ";				
+					if ( spp instanceof SpecificProfile )
+						site += ((SpecificProfile) spp).getParserName();
+					else
+						site += spp.getClass().getSimpleName();
+
+					SelectionDialog selectionDialog = new SelectionDialog(results, site);
+					SearchResult searchResult = null;
+					//If there's only one item to choose from, save the user some work and just automatically choose it
+					if(results != null && results.length == 1)
+					{
+						searchResult = results[0];
+					}
+					//otherwise, the user gets a dialog box where they can pick from the various search results
+					else
+					{
+						searchResult = getSearchResult(selectionDialog, site);
+					}
+					
+					if(searchResult != null)
+						searchResultToUse = searchResult;
 				}
 
-				if ( searchResult != null ) {
-					Document document = downloadDocument(searchResult.getUrlPath());
+				if (searchResultToUse != null) {
+					Document document = downloadDocument(searchResultToUse.getUrlPath());
 					spp.setDocument(document);
 				}
 			}

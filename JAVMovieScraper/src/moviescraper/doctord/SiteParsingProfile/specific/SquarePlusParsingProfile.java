@@ -1,4 +1,4 @@
-package moviescraper.doctord.SiteParsingProfile;
+package moviescraper.doctord.SiteParsingProfile.specific;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,6 +10,7 @@ import org.jsoup.nodes.Element;
 
 import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.Thumb;
+import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Director;
 import moviescraper.doctord.dataitem.Genre;
@@ -29,7 +30,7 @@ import moviescraper.doctord.dataitem.Top250;
 import moviescraper.doctord.dataitem.Votes;
 import moviescraper.doctord.dataitem.Year;
 
-public class SquarePlusParsingProfile extends SiteParsingProfile {
+public class SquarePlusParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
 	public SquarePlusParsingProfile(Document document) {
 		super(document);
@@ -230,6 +231,11 @@ public class SquarePlusParsingProfile extends SiteParsingProfile {
 	@Override
 	public SiteParsingProfile newInstance() {
 		return new SquarePlusParsingProfile();
+	}
+
+	@Override
+	public String getParserName() {
+		return "SquarePlus";
 	}
 
 }

@@ -338,4 +338,9 @@ public class IAFDParsingProfile extends SiteParsingProfile {
 		return new IAFDParsingProfile();
 	}
 
+	@Override
+	public String getParserName() {
+		return "IAFD";
+	}
+
 }

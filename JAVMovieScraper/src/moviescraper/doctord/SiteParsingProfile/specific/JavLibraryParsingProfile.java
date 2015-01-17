@@ -1,4 +1,4 @@
-package moviescraper.doctord.SiteParsingProfile;
+package moviescraper.doctord.SiteParsingProfile.specific;
 
 
 import java.io.File;
@@ -16,6 +16,8 @@ import org.jsoup.select.Elements;
 import moviescraper.doctord.Movie;
 import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.Thumb;
+import moviescraper.doctord.SiteParsingProfile.DmmParsingProfile;
+import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Director;
 import moviescraper.doctord.dataitem.Genre;
@@ -35,7 +37,7 @@ import moviescraper.doctord.dataitem.Top250;
 import moviescraper.doctord.dataitem.Votes;
 import moviescraper.doctord.dataitem.Year;
 
-public class JavLibraryParsingProfile extends SiteParsingProfile {
+public class JavLibraryParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
 	private String siteLanguageToScrape;
 	
@@ -507,6 +509,11 @@ public class JavLibraryParsingProfile extends SiteParsingProfile {
 	@Override
 	public SiteParsingProfile newInstance() {
 		return new JavLibraryParsingProfile();
+	}
+
+	@Override
+	public String getParserName() {
+		return "JAVLibrary";
 	}
 
 

@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.Thumb;
 import moviescraper.doctord.TranslateString;
+import moviescraper.doctord.SiteParsingProfile.specific.SpecificProfile;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Director;
 import moviescraper.doctord.dataitem.Genre;
@@ -852,6 +853,13 @@ public class DmmParsingProfile extends SiteParsingProfile {
 	public SiteParsingProfile newInstance() {
 		return new DmmParsingProfile(this.doGoogleTranslation);
 	}
+
+	@Override
+	public String getParserName() {
+		return "DMM.co.jp";
+	}
+
+
 
 
 
