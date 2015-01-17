@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.FilenameUtils;
@@ -277,6 +278,37 @@ public abstract class SiteParsingProfile {
 			scrapingLanguage = Language.JAPANESE;
 		else
 			scrapingLanguage = Language.ENGLISH;
+	}
+	
+	/**
+	 * If your file is called "Movie Name Here (2001)" this method returns "Movie Name Here"
+	 * @param file the file to process
+	 * @return The movie name without the year in parenthesis next to it
+	 */
+	public static String getMovieNameFromFileWithYear(File file)
+	{
+		String movieName = FilenameUtils.removeExtension(FilenameUtils.getName(file.getName()));
+		movieName = movieName.replaceFirst("\\(\\d{4}\\)$", "").trim();
+		return movieName;
+	}
+	
+	/**
+	 * If your file is called "Movie Name Here (2001)" this method returns "2001"
+	 * @param file the file to process
+	 * @return A length 4 string representing the year, if it exists. Otherwise an empty String
+	 */
+	public static String getYearFromFileWithYear(File file)
+	{
+		String movieName = FilenameUtils.removeExtension(FilenameUtils.getName(file.getName()));
+		String patternString = "\\(\\d{4}\\)$";
+		Pattern pattern = Pattern.compile(patternString);
+		Matcher matcher = pattern.matcher(movieName);
+		while(matcher.find())
+		{
+			System.out.println("match");
+			return matcher.group().replace("(", "").replace(")", "").trim();
+		}
+		return "";
 	}
 	
 	public abstract String getParserName();

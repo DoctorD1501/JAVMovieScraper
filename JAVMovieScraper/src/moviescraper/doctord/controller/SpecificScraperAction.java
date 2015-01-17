@@ -16,6 +16,7 @@ import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.Thumb;
 import moviescraper.doctord.GUI.SelectionDialog;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
+import moviescraper.doctord.SiteParsingProfile.SiteParsingProfileJSON;
 import moviescraper.doctord.SiteParsingProfile.specific.SpecificProfile;
 import moviescraper.doctord.model.AbstractMovieScraper;
 import moviescraper.doctord.preferences.MoviescraperPreferences;
@@ -152,7 +153,7 @@ public class SpecificScraperAction {
 				}
 
 				if (searchResultToUse != null) {
-					Document document = downloadDocument(searchResultToUse.getUrlPath());
+					Document document = downloadDocument(searchResultToUse);
 					spp.setDocument(document);
 				}
 			}
@@ -185,7 +186,9 @@ public class SpecificScraperAction {
 	
 	public static Document downloadDocument(SearchResult searchResult){
 		try {
-			return Jsoup.connect(searchResult.getUrlPath()).userAgent("Mozilla").ignoreHttpErrors(true).timeout(0).get();
+			if(searchResult.isJSONSearchResult())
+				return SiteParsingProfileJSON.getDocument(searchResult.getUrlPath());
+			else return Jsoup.connect(searchResult.getUrlPath()).userAgent("Mozilla").ignoreHttpErrors(true).timeout(0).get();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
