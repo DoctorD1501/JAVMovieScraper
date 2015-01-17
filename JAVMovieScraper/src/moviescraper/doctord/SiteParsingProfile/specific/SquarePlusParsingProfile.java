@@ -2,11 +2,14 @@ package moviescraper.doctord.SiteParsingProfile.specific;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.Thumb;
@@ -88,6 +91,13 @@ public class SquarePlusParsingProfile extends SiteParsingProfile implements Spec
 
 	@Override
 	public Year scrapeYear() {
+		Element yearElement = document.select("th.label:containsOwn(Release date) ~ td").first();
+		if(yearElement != null && yearElement.text().length() >= 4)
+		{
+			String yearText = yearElement.text();
+			yearText = yearText.substring(yearText.length()-4);
+			return new Year(yearText);
+		}
 		return Year.BLANK_YEAR;
 	}
 
@@ -119,16 +129,37 @@ public class SquarePlusParsingProfile extends SiteParsingProfile implements Spec
 
 	@Override
 	public Runtime scrapeRuntime() {
-			return Runtime.BLANK_RUNTIME;
+		Element runtimeElement = document.select("th.label:containsOwn(Play Time) ~ td").first();
+		if(runtimeElement != null)
+			return new Runtime(runtimeElement.text());
+		else return Runtime.BLANK_RUNTIME;
 	}
 
 	@Override
 	public Thumb[] scrapePosters() {
-		return new Thumb[0];
+		return scrapePostersAndFanart(true);
 	}
 
 	@Override
 	public Thumb[] scrapeFanart() {
+		return scrapePostersAndFanart(false);
+	}
+	
+	private Thumb[] scrapePostersAndFanart(boolean doCrop)
+	{
+		Element boxArtElement = document.select("p.product-image a").first();
+		if(boxArtElement != null)
+		{
+			Thumb poster;
+			try {
+				poster = new Thumb(boxArtElement.attr("href"), doCrop);
+				Thumb[] posters = {poster};
+				return posters;
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+		}
 		return new Thumb[0];
 	}
 
@@ -156,12 +187,37 @@ public class SquarePlusParsingProfile extends SiteParsingProfile implements Spec
 
 	@Override
 	public ArrayList<Genre> scrapeGenres() {
-		return new ArrayList<Genre>();
+		ArrayList<Genre> genreList = new ArrayList<Genre>();
+		Element genreElement = document.select("th.label:containsOwn(Genre) ~ td").first();
+		if(genreElement != null)
+		{
+			String [] actorSplitList = genreElement.text().split(",");
+			for(String genreToAdd : actorSplitList)
+				genreList.add(new Genre(genreToAdd));
+		}
+		return genreList;
 	}
 
 	@Override
 	public ArrayList<Actor> scrapeActors() {
-		return new ArrayList<Actor>();
+		ArrayList<Actor> actorList = new ArrayList<Actor>();
+		
+		Element featuringElement = document.select("th.label:containsOwn(Featuring) ~ td").first();
+		if(featuringElement != null)
+		{
+			String [] actorSplitList = featuringElement.text().split(",");
+			for(String actorToAdd : actorSplitList)
+				actorList.add(new Actor(actorToAdd,"",null));
+		}
+		
+		Element starringElement = document.select("th.label:containsOwn(Starring) ~ td").first();
+		if(starringElement != null)
+		{
+			String [] actorSplitList = starringElement.text().split(",");
+			for(String actorToAdd : actorSplitList)
+				actorList.add(new Actor(actorToAdd,"",null));
+		}
+		return actorList;	
 	}
 
 	@Override
@@ -220,7 +276,22 @@ public class SquarePlusParsingProfile extends SiteParsingProfile implements Spec
 
 	@Override
 	public Thumb[] scrapeExtraFanart() {
-		//No extra fanart is supported on this site
+		Elements extraFanartElements = document.select("div.more-views ul li a");
+		if(extraFanartElements != null)
+		{
+			ArrayList<Thumb> extrafanartThumbList = new ArrayList<Thumb>(extraFanartElements.size());
+			for(Element extraFanartElement : extraFanartElements)
+			{
+				Thumb thumbToAdd;
+				try {
+					thumbToAdd = new Thumb(extraFanartElement.attr("href"));
+					extrafanartThumbList.add(thumbToAdd);
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
+				}
+			}
+			return extrafanartThumbList.toArray(new Thumb[extrafanartThumbList.size()]);
+		}
 		return new Thumb[0];
 	}
 	
