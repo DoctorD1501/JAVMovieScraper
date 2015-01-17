@@ -43,8 +43,7 @@ public class ArtWorkPanel extends JPanel {
 	public ArtWorkPanel() {
 		artworkPanel = this;
 		artworkPanel.setLayout(new BoxLayout(artworkPanel, BoxLayout.PAGE_AXIS));
-		artworkPanel.setBorder(BorderFactory.createLineBorder(Color.black));
-		
+				
 		//set up the poster
 		lblPosterIcon = new JLabel("");
 		

@@ -22,7 +22,6 @@ public class MessageConsolePanel extends JPanel{
 	public MessageConsolePanel() {
 		super();
 		setLayout(new BorderLayout());
-		setBorder(new EmptyBorder(5, 5, 5, 5));
 		JTextPane textPane = new JTextPane();
 		setPreferredSize(new Dimension(100,100));
 		setMaximumSize(new Dimension(100,100));
