@@ -3,6 +3,7 @@ package moviescraper.doctord.SiteParsingProfile;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,14 +22,15 @@ public class SpecificProfileFactory {
 	public static Collection<SiteParsingProfileItem> getAll() {
 		try {
 			return getSiteParsingProfileItems();		
-		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException | IOException e) {
+		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException | IOException | URISyntaxException e) {
 			e.printStackTrace();
 			return Collections.emptyList();
 		}
 	}
 
 	@SuppressWarnings("rawtypes")
-	private static Vector<SiteParsingProfileItem> getSiteParsingProfileItems() throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
+	private static Vector<SiteParsingProfileItem> getSiteParsingProfileItems() 
+			throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException, URISyntaxException {
 
 		Vector<SiteParsingProfileItem> items = new Vector<SiteParsingProfileItem>();
 		
@@ -71,7 +73,7 @@ public class SpecificProfileFactory {
 	*/
 	@SuppressWarnings("rawtypes")
 	private static List<Class> getClasses(String packageName)
-			throws ClassNotFoundException, IOException {
+			throws ClassNotFoundException, IOException, URISyntaxException {
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 		assert classLoader != null;
 		String path = packageName.replace('.', '/');
@@ -99,15 +101,14 @@ public class SpecificProfileFactory {
 	 * @throws IOException 
 	 */
 	@SuppressWarnings("rawtypes")
-	private static List<Class> findClasses(File directory, String packageName) throws ClassNotFoundException, IOException {
+	private static List<Class> findClasses(File directory, String packageName) 
+			throws ClassNotFoundException, IOException, URISyntaxException {
 	    List<Class> classes = new ArrayList<Class>();
 	    if (!directory.exists()) {
 	    	//maybe we are running from a jar file, so try that
-	    	File thisJarFile = new File(new java.io.File(SpecificProfileFactory.class.getProtectionDomain()
-	    			  .getCodeSource()
-	    			  .getLocation()
-	    			  .getPath())
-	    			.getName());
+	    		    	
+	    	File thisJarFile = new File(SpecificProfileFactory.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+	    	
 	    	if(thisJarFile != null && thisJarFile.exists())
 	    	{
 	    		List<Class> classNames=new ArrayList<Class>();
