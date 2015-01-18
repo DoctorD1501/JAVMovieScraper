@@ -4,12 +4,15 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 
 import javax.imageio.ImageIO;
 import javax.swing.Action;
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -84,17 +87,38 @@ public class GUIMainButtonPanel extends JPanel {
 			return null;
 		}
 	}
-	
-	
+		
 	private void tweakLookAndFeel(JToolBar toolbar) {
 		
 		// tweak the Metal look and feel
 		if (UIManager.getLookAndFeel().getID() == "Metal") {
+
+			// paint button borders on mouseover only
+
+			MouseListener hoverListener = new MouseListener() {
+				@Override
+				public void mouseExited(MouseEvent arg0) {
+					((JButton)arg0.getSource()).setBorderPainted(false);
+				}
+				
+				@Override
+				public void mouseEntered(MouseEvent arg0) {
+					((JButton)arg0.getSource()).setBorderPainted(true);
+				}
+				
+				@Override
+				public void mouseClicked(MouseEvent arg0) { }
+				@Override
+				public void mouseReleased(MouseEvent arg0) { }				
+				@Override
+				public void mousePressed(MouseEvent arg0) { }
+			};
 			
 			for(Component comp : toolbar.getComponents()) {
 				if (comp instanceof JButton) {
 					JButton button = (JButton)comp;
 					button.setBorderPainted(false);
+					button.addMouseListener(hoverListener);
 				}
 			}
 
