@@ -2,6 +2,7 @@ package moviescraper.doctord.controller;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -30,6 +31,8 @@ public class ScrapeSpecificAction extends AbstractAction {
 			main.setMainGUIEnabled(false);
 			main.removeOldScrapedMovieReferences();
 			List<File> toScrape = main.getCurrentFile();
+			List<File> noMovieFoundList = new LinkedList<File>();
+			List<File> foundMovieMatch = new LinkedList<File>();
 			if (toScrape != null) {
 				for(File currentFile : toScrape)
 				{ 
@@ -41,8 +44,30 @@ public class ScrapeSpecificAction extends AbstractAction {
 					SpecificScraperAction action = new SpecificScraperAction(spp, spp.getMovieScraper(), currentFile );
 					Movie scrapedMovie = action.scrape(main.getPreferences());
 					if(scrapedMovie != null)
+					{
 						main.movieToWriteToDiskList.add(scrapedMovie);
-					main.getFileDetailPanel().setNewMovie( scrapedMovie , true);
+						main.getFileDetailPanel().setNewMovie( scrapedMovie , true);
+						foundMovieMatch.add(currentFile);
+					}
+					else
+					{
+						noMovieFoundList.add(currentFile);
+					}
+					
+				}
+				//Display a list of all the movies not found while scraping if we didn't match any of the files
+				if(noMovieFoundList.size() == toScrape.size())
+					JOptionPane.showMessageDialog(main.getFrmMoviescraper(), 
+							"No Matches found for: \n " + noMovieFoundList, 
+							"No Movies Found", JOptionPane.ERROR_MESSAGE);
+				else
+				{
+					System.out.println("Scraper found matches for" + foundMovieMatch.size() + "/" +
+						toScrape.size() + " selected files.");
+					if(foundMovieMatch.size() > 0)
+						System.out.println("Files scraper found a match for: " + foundMovieMatch);
+					if(noMovieFoundList.size() > 0)
+					System.out.println("Files scraper did not find a match for: " + noMovieFoundList);
 				}
 
 			} else {

@@ -349,8 +349,11 @@ public class FileDetailPanel extends JPanel {
 	
 	public void setNewMovie(Movie newMovie, boolean forcePosterUpdate) {
 		System.out.println("Setting new movie: " + newMovie);
-		setCurrentMovie(newMovie);
-		updateView(forcePosterUpdate, true);
+		if(newMovie != null)
+		{
+			setCurrentMovie(newMovie);
+			updateView(forcePosterUpdate, true);
+		}
 	}
 	
 	public void clearView() {
