@@ -2,7 +2,6 @@ package moviescraper.doctord.GUI;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -11,7 +10,6 @@ import java.net.URL;
 
 import javax.imageio.ImageIO;
 import javax.swing.Action;
-import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -20,12 +18,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JToolBar;
-import javax.swing.UIDefaults;
 import javax.swing.UIManager;
-import javax.swing.border.Border;
-
-import org.imgscalr.Scalr;
-import org.imgscalr.Scalr.Method;
 
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfileItem;
@@ -43,8 +36,12 @@ import moviescraper.doctord.controller.ScrapeSpecificAction;
 import moviescraper.doctord.controller.UpDirectoryAction;
 import moviescraper.doctord.controller.WriteFileDataAction;
 
+import org.imgscalr.Scalr;
+import org.imgscalr.Scalr.Method;
+
 public class GUIMainButtonPanel extends JPanel {
 	
+	private static final long serialVersionUID = 1L;
 	private static final int iconSizeX = 16;
 	private static final int iconSizeY = 16;
 	
@@ -88,11 +85,30 @@ public class GUIMainButtonPanel extends JPanel {
 		}
 	}
 	
+	
+	private void tweakLookAndFeel(JToolBar toolbar) {
+		
+		// tweak the Metal look and feel
+		if (UIManager.getLookAndFeel().getID() == "Metal") {
+			
+			for(Component comp : toolbar.getComponents()) {
+				if (comp instanceof JButton) {
+					JButton button = (JButton)comp;
+					button.setBorderPainted(false);
+				}
+			}
+
+			// this will paint the whole background using a plain color 
+			// instead of using a gradient for borders and separators
+			toolbar.setBackground(new Color(toolbar.getBackground().getRGB()));
+			toolbar.setBorderPainted(false);
+		}
+	}
+		
 	private void add(JToolBar toolbar) {
 		for(Component comp : toolbar.getComponents()) {
 			if (comp instanceof JButton) {
 				JButton button = (JButton)comp;
-				button.setBorderPainted(false);
 				button.setFocusable(false);
 			}
 		}
@@ -100,14 +116,8 @@ public class GUIMainButtonPanel extends JPanel {
 		toolbar.addSeparator();
 		toolbar.setFloatable(false);
 		toolbar.setFocusable(false);
-		toolbar.setBorderPainted(false);
 		
-		// Workaround for the Metal look and feel:
-		// this will paint the whole background using a plain color 
-		// instead of using a gradient for borders and separators
-		
-		if (UIManager.getLookAndFeel().getID() == "Metal")
-			toolbar.setBackground(new Color(toolbar.getBackground().getRGB()));
+		tweakLookAndFeel(toolbar);
 				
 		super.add(toolbar);
 	}
