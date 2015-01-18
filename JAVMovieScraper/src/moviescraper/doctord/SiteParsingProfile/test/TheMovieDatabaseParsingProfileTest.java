@@ -30,7 +30,7 @@ import org.jsoup.nodes.Document;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class TestTheMovieDatabaseParsingProfile {
+public class TheMovieDatabaseParsingProfileTest {
 	static File file = new File("C:/Temp/Pirates (2005).avi");
 	TheMovieDatabaseParsingProfile parser = new TheMovieDatabaseParsingProfile();
 	
@@ -157,7 +157,7 @@ public class TestTheMovieDatabaseParsingProfile {
 		Thumb[] poster = profile.scrapePosters();
 		assertTrue("There should be 1 Poster or more.", poster.length > 1);
 		
-		TestGenericProfile.showImage("Poster", poster[0].getThumbImage());
+		GenericProfileTest.showImage("Poster", poster[0].getThumbImage());
 	}
 	
 

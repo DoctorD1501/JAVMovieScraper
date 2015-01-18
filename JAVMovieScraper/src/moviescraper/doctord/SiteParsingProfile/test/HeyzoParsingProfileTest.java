@@ -22,7 +22,7 @@ import org.jsoup.nodes.Document;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class TestHeyzoParsingProfile {
+public class HeyzoParsingProfileTest {
 	
 	static File file = new File("C:/Temp/Heyzo 0194.wmv");
 	static HeyzoParsingProfile profile;

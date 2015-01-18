@@ -24,7 +24,7 @@ import org.jsoup.nodes.Document;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class TestTokyoHotParsingProfile {
+public class TokyoHotParsingProfileTest {
 
 	static File file = new File("C:/Temp/Tokyo Hot n0754 abc.avi");
 	TokyoHotParsingProfile parser = new TokyoHotParsingProfile();
@@ -93,14 +93,14 @@ public class TestTokyoHotParsingProfile {
 	public void testFanart() throws IOException {
 		Thumb[] scrapeFanart = profile.scrapeFanart();
 		assertTrue("There should only be 1 fanart", scrapeFanart.length == 1);
-		TestGenericProfile.showImage("Test Fanart", scrapeFanart[0].getThumbImage());
+		GenericProfileTest.showImage("Test Fanart", scrapeFanart[0].getThumbImage());
 	}
 	
 	@Test
 	public void testPoster() throws IOException {
 		Thumb[] scrapePosters = profile.scrapePosters();
 		assertTrue("There should only be 1 fanart", scrapePosters.length == 1);
-		TestGenericProfile.showImage("Test Fanart", scrapePosters[0].getThumbImage());
+		GenericProfileTest.showImage("Test Fanart", scrapePosters[0].getThumbImage());
 	}
 	
 

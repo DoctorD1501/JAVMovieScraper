@@ -13,7 +13,7 @@ import org.jsoup.nodes.Document;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class TestOnePondoParsingProfile {
+public class OnePondoParsingProfileTest {
 	static boolean scrapeInEnglish = true;
 	static File file = new File("C:/Temp/1pondo 061314_826 abc.avi");
 	OnePondoParsingProfile parser = new OnePondoParsingProfile(scrapeInEnglish);
