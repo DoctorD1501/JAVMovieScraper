@@ -158,7 +158,8 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 				int hours = Integer.parseInt(runtimeTextSplit[0]);
 				int minutes = Integer.parseInt(runtimeTextSplit[1]);
 				int totalMinutes = (hours * 60) + minutes;
-				return new Runtime(new Integer(totalMinutes).toString());
+				if(totalMinutes > 0)
+					return new Runtime(new Integer(totalMinutes).toString());
 			}
 		}
 		return Runtime.BLANK_RUNTIME;
