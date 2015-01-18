@@ -261,7 +261,11 @@ public abstract class SiteParsingProfile {
 		return new GenericMovieScraper(this);
 	}
 	
-	
+	/**
+	 * 
+	 * @return a new copy of the parser by calling the parser's constructor. 
+	 * used to instiate a parser when the type of the object is not known
+	 */
 	public abstract SiteParsingProfile newInstance();
 
 	public Language getScrapingLanguage() {
@@ -305,12 +309,17 @@ public abstract class SiteParsingProfile {
 		Matcher matcher = pattern.matcher(movieName);
 		while(matcher.find())
 		{
-			System.out.println("match");
 			return matcher.group().replace("(", "").replace(")", "").trim();
 		}
 		return "";
 	}
 	
+	/**
+	 * 
+	 * @return The name of the parser used when displaying the parser in drop down menus or console output.
+	 * For example if the parser parses a site called, "MySite.com"
+	 * this function may return "My Site".
+	 */
 	public abstract String getParserName();
 	
 	public String toString(){

@@ -23,7 +23,7 @@ import org.jsoup.nodes.Document;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class TestR18ParsingProfile {
+public class R18ParsingProfileTest {
 	static boolean scrapeInEnglish = true;
 	static File file = new File("C:/Temp/ONSD-646.avi");
 	R18ParsingProfile parser = new R18ParsingProfile();
@@ -113,7 +113,7 @@ public class TestR18ParsingProfile {
 	public void testExtraFanart() throws IOException
 	{
 		Thumb  [] extraFanart = profile.scrapeExtraFanart();
-		TestGenericProfile.showImage("Extrafanart", extraFanart[0].getThumbImage());
+		GenericProfileTest.showImage("Extrafanart", extraFanart[0].getThumbImage());
 	}
 	
 	@Test
@@ -121,7 +121,7 @@ public class TestR18ParsingProfile {
 		Thumb[] poster = profile.scrapePosters();
 		assertTrue("There should be 1 Fanart.", poster.length == 1);
 		
-		TestGenericProfile.showImage("Poster", poster[0].getThumbImage());
+		GenericProfileTest.showImage("Poster", poster[0].getThumbImage());
 	}
 	
 

@@ -134,7 +134,9 @@ public class SpecificScraperAction {
 						site += ((SpecificProfile) spp).getParserName();
 					else
 						site += spp.getClass().getSimpleName();
-
+					
+					if(results == null || results.length == 0)
+						return null;
 					SelectionDialog selectionDialog = new SelectionDialog(results, site);
 					SearchResult searchResult = null;
 					//If there's only one item to choose from, save the user some work and just automatically choose it
@@ -158,6 +160,8 @@ public class SpecificScraperAction {
 				}
 			}
 			Movie scrapedMovie = movieScraper.createMovie();
+			if(scrapedMovie == null || scrapedMovie.getTitle() == null || scrapedMovie.getTitle().getTitle().length() < 1)
+				return null;
 			scrapedMovie = pickPoster(scrapedMovie);
 			scrapedMovie = pickFanart(scrapedMovie);
 			return scrapedMovie;

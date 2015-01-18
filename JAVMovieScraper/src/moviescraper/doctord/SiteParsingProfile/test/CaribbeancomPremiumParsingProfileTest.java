@@ -23,7 +23,7 @@ import org.jsoup.nodes.Document;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class TestCaribbeancomPremiumParsingProfile {
+public class CaribbeancomPremiumParsingProfileTest {
 	
 	static File file = new File("C:/Temp/Caribbeancom Premium 062014_878.avi");
 	static CaribbeancomPremiumParsingProfile parser = new CaribbeancomPremiumParsingProfile();

@@ -18,7 +18,7 @@ import org.jsoup.nodes.Document;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class TestKin8tengokuParsingProfile {
+public class Kin8tengokuParsingProfileTest {
 
 	static File file = new File("C:/Temp/kin8tengoku-1000.wmv");
 	static Kin8tengokuParsingProfile profile;
@@ -76,7 +76,7 @@ public class TestKin8tengokuParsingProfile {
 		Thumb[] fanart = profile.scrapeFanart();
 		assertTrue("There should be 1 Fanart.", fanart.length == 1);
 		
-		TestGenericProfile.showImage("Fanart", fanart[0].getThumbImage());
+		GenericProfileTest.showImage("Fanart", fanart[0].getThumbImage());
 	}
 
 }

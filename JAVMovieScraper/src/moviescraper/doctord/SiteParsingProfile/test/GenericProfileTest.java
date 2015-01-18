@@ -39,7 +39,7 @@ import org.jsoup.nodes.Document;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class TestGenericProfile {
+public class GenericProfileTest {
 
 	static SiteParsingProfile profile;
 	static File file = new File("C:/Temp/Empty File.avi"); 

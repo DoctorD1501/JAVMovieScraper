@@ -24,7 +24,7 @@ import org.jsoup.nodes.Document;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class TestCaribbeancomParsingProfile {
+public class CaribbeancomParsingProfileTest {
 	static File file = new File("C:/Temp/Caribbeancom 070514-637 abc.avi");
 	static CaribbeancomParsingProfile parser = new CaribbeancomParsingProfile();
 	

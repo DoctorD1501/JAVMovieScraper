@@ -22,7 +22,7 @@ import org.jsoup.nodes.Document;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class TestMyTokyoHotParsingProfile {
+public class MyTokyoHotParsingProfileTest {
 	static File file = new File("C:/Temp/Tokyo Hot n0754 abc.avi");
 	static MyTokyoHotParsingProfile parser = new MyTokyoHotParsingProfile();
 	

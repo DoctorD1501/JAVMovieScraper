@@ -118,7 +118,7 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 						return new Set(setName);
 				}
 			} catch (JSONException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 		}
 		return Set.BLANK_SET;
@@ -248,7 +248,6 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 						{
 							String filePath = posterOrBackdropObject.getString("file_path");
 							Thumb thumbToAdd = new Thumb(movieImagePathPrefix + filePath);
-							System.out.println("setting preview url to " + previewPrefix + filePath);
 							thumbToAdd.setPreviewURL(new URL(previewPrefix + filePath));
 							thumbArray[i] = thumbToAdd;
 						}
