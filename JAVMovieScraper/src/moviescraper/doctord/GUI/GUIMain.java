@@ -238,11 +238,11 @@ public class GUIMain {
 		
 		//add in the menu bar
 		frmMoviescraper.setJMenuBar(new GUIMainMenuBar(this));
-		
-		int gap = 5;
-		
-		fileListFileDetailSplitPane.setBorder(BorderFactory.createEmptyBorder(0, gap, gap, gap));		
-		messageConsolePanel.setBorder(BorderFactory.createEmptyBorder(0, gap, gap, gap));
+
+		int gap = 7;
+		fileListFileDetailSplitPane.setBorder(BorderFactory.createEmptyBorder());
+		fileListFileDetailSplitPane.setDividerSize(gap);
+		messageConsolePanel.setBorder(BorderFactory.createEmptyBorder(gap, 0, 0, 0));
 	}
 
 	/**
