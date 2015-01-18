@@ -97,7 +97,8 @@ public class TestR18ParsingProfile {
 	{
 		ArrayList<Genre> testGenre = profile.scrapeGenres();
 		System.out.println(testGenre);
-		assertTrue("There should be 5 genres", testGenre.size() == 5);
+		assertTrue("There should be genres", testGenre.size() > 1);
+		assertTrue(testGenre.contains(new Genre("Idol & Celebrity")));
 	}
 	
 	@Test

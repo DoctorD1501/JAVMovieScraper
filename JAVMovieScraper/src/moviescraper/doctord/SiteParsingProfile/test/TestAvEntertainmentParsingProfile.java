@@ -62,12 +62,9 @@ public class TestAvEntertainmentParsingProfile {
 	@Test
 	public void testGenres() {
 		ArrayList<Genre> genres = profile.scrapeGenres();
-		assertTrue("There should be 12 genres.", genres.size() == 16);
-		
-		assertEquals("First Genre not found", "Uncensored", genres.get(0).getGenre());
-		assertEquals("Second Genre not found", "New Release", genres.get(1).getGenre());
-		assertEquals("Third Genre not found", "Sample Movie", genres.get(2).getGenre());
-		assertEquals("Fourth Genre not found", "Editor's Pick", genres.get(3).getGenre());
+		System.out.println("genreList for AvEntertainment = " + genres);
+		assertTrue(genres.contains(new Genre("Drama")));
+		assertTrue(genres.contains(new Genre("Editor's Pick")));
 	}
 	
 	@Test
@@ -92,7 +89,7 @@ public class TestAvEntertainmentParsingProfile {
 	public void testPosters() throws IOException {
 		Thumb[] posters = profile.scrapePosters();
 		assertTrue("Wrong count of posters", posters.length == 1);
-		assertEquals("Wrong poster", "http://imgs.aventertainments.com/new/bigcover/DVD1PT-154.jpg", posters[0].getThumbURL().toString());
+		assertEquals("Wrong poster", "http://imgs.aventertainments.com/new/bigcover/dvd1pt-154.jpg", posters[0].getThumbURL().toString());
 		TestGenericProfile.showImage("posters", posters[0].getThumbImage());
 	}
 	
@@ -101,7 +98,7 @@ public class TestAvEntertainmentParsingProfile {
 		Thumb[] fanart = profile.scrapeFanart();
 		assertTrue("There should be 1 Fanart.", fanart.length == 1);
 		
-		assertEquals("Wrong Fanart", "http://imgs.aventertainments.com/new/bigcover/DVD1PT-154.jpg", fanart[0].getThumbURL().toString());
+		assertEquals("Wrong Fanart", "http://imgs.aventertainments.com/new/bigcover/dvd1pt-154.jpg", fanart[0].getThumbURL().toString());
 		TestGenericProfile.showImage("Fanart", fanart[0].getThumbImage());
 	}
 	
