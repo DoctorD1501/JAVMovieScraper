@@ -50,6 +50,9 @@ public class TestHeyzoParsingProfile {
 	
 	@Test
 	public void testRuntime() {
+		//It seems there might be a bug on the site where the runtimes are all displaying as zero
+		//This might get fixed later, so if this test case is failing, it may be OK for now until Heyzo fixes
+		//their issue because this file used to be 68 minutes
 		Runtime runtime = profile.scrapeRuntime();
 		System.out.println("Runtime = " + runtime.getRuntime());
 		assertEquals("Wrong Runtime", "68", runtime.getRuntime());

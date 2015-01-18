@@ -155,7 +155,7 @@ public class TestTheMovieDatabaseParsingProfile {
 	@Test
 	public void testPoster() throws IOException {
 		Thumb[] poster = profile.scrapePosters();
-		assertTrue("There should be 1 Fanart.", poster.length == 1);
+		assertTrue("There should be 1 Poster or more.", poster.length > 1);
 		
 		TestGenericProfile.showImage("Poster", poster[0].getThumbImage());
 	}

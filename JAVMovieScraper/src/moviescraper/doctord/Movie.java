@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
@@ -516,7 +517,12 @@ public class Movie {
 			{
 				Boolean hidden = (Boolean) Files.getAttribute(path, "dos:hidden", LinkOption.NOFOLLOW_LINKS);
 				if (hidden != null && !hidden) {
-					Files.setAttribute(path, "dos:hidden", Boolean.TRUE, LinkOption.NOFOLLOW_LINKS);
+					try{
+						Files.setAttribute(path, "dos:hidden", Boolean.TRUE, LinkOption.NOFOLLOW_LINKS);
+					}
+					catch(AccessDeniedException e){
+						System.err.println("I was not allowed to make .actors folder hidden. This is not a big deal - continuing with write of actor files...");
+					}
 				}
 			}
 

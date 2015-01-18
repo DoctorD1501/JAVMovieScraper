@@ -395,7 +395,7 @@ public class Data18MovieParsingProfile extends SiteParsingProfile {
 			if(movieSearchResultElements == null || movieSearchResultElements.size() == 0)
 			{
 				this.useSiteSearch = false;
-				return getLinksFromGoogle(fileName, "data18.com/movies/");
+				return getLinksFromGoogle(fileName.replace("-", ""), "data18.com/movies/");
 			}
 			else
 			{

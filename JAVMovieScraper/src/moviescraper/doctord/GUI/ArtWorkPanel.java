@@ -159,7 +159,7 @@ public class ArtWorkPanel extends JPanel {
 					e.printStackTrace();
 				}
 			}
-			if(gui.getCurrentlySelectedPosterFileList().get(0).exists())
+			if(gui.getCurrentlySelectedFanartFileList().get(0).exists())
 			{
 				try {
 					BufferedImage img = ImageIO.read(gui.getCurrentlySelectedFanartFileList().get(0));
