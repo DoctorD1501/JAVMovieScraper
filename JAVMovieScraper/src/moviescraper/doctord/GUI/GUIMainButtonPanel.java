@@ -71,6 +71,8 @@ public class GUIMainButtonPanel extends JPanel {
 	private ImageIcon initializeResourceIcon(String resourceName) {
 		try {
 			URL url = GUIMain.class.getResource(resourceName);
+			if(url != null)
+			{
 			BufferedImage iconBufferedImage = ImageIO.read(url);
 			if(iconBufferedImage != null)
 			{
@@ -78,6 +80,8 @@ public class GUIMainButtonPanel extends JPanel {
 				return new ImageIcon(iconBufferedImage);
 			}
 			else return new ImageIcon();
+			}
+			return new ImageIcon();
 		} catch (IOException e1) {
 			e1.printStackTrace();
 			return null;

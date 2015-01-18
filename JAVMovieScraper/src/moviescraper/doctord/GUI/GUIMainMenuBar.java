@@ -251,7 +251,26 @@ public class GUIMainMenuBar extends JMenuBar{
 		});
 		preferenceMenu.add(scrapeInJapanese);
 		
+		//Checkbox for scraping dialog box allowing the user to override the URL used when scraping
+		JCheckBoxMenuItem promptForUserProvidedURL = new JCheckBoxMenuItem("Provide the URL yourself when scraping");
+		promptForUserProvidedURL.setState(getPreferences().getPromptForUserProvidedURLWhenScraping());
+		promptForUserProvidedURL.addItemListener(new ItemListener() {
+
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				//save the menu choice off to the preference object (and the disk based settings file)
+				if(e.getStateChange() == ItemEvent.SELECTED)
+					getPreferences().setPromptForUserProvidedURLWhenScraping(true);
+				else if(e.getStateChange() == ItemEvent.DESELECTED)
+					getPreferences().setPromptForUserProvidedURLWhenScraping(false);
+
+			}
+		});
+		preferenceMenu.add(promptForUserProvidedURL);
+		
+		
 		add(preferenceMenu);
+
 	}
 	
 	private void initializeSettingsMenu() {

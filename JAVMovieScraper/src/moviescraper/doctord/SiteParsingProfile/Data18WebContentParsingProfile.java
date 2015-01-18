@@ -546,4 +546,9 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile{
 	public SiteParsingProfile newInstance() {
 		return new Data18WebContentParsingProfile();
 	}
+
+	@Override
+	public String getParserName() {
+		return "Data 18 Web Content";
+	}
 }

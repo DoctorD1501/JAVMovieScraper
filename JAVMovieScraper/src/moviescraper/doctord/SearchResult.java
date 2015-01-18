@@ -5,6 +5,7 @@ public class SearchResult {
 	private String urlPath;
 	private String label;
 	private Thumb previewImage;
+	boolean isJSONSearchResult;
 	
 	
 	public SearchResult(String urlPath, String label, Thumb previewImage) {
@@ -50,6 +51,12 @@ public class SearchResult {
 		if(label.length() > 0)
 			return label + " - " + urlPath;
 		else return urlPath;
+	}
+	public boolean isJSONSearchResult() {
+		return isJSONSearchResult;
+	}
+	public void setJSONSearchResult(boolean isJSONSearchResult) {
+		this.isJSONSearchResult = isJSONSearchResult;
 	}
 	
 }

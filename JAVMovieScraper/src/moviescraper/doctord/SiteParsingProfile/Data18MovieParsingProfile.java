@@ -427,4 +427,9 @@ public class Data18MovieParsingProfile extends SiteParsingProfile {
 		return new Data18MovieParsingProfile();
 	}
 
+	@Override
+	public String getParserName() {
+		return "Data18 Movie";
+	}
+
 }

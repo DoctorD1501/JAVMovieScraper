@@ -25,6 +25,7 @@ import moviescraper.doctord.SiteParsingProfile.specific.HeyzoParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.specific.Kin8tengokuParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.specific.MyTokyoHotParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.specific.OnePondoParsingProfile;
+import moviescraper.doctord.SiteParsingProfile.specific.TheMovieDatabaseParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.specific.TokyoHotParsingProfile;
 import moviescraper.doctord.model.Renamer;
 import moviescraper.doctord.preferences.MoviescraperPreferences;
@@ -59,7 +60,7 @@ public class Main {
                     .hasArgs(2)
                     .withDescription(  "Scrapes and writes metadata of the file located at <FilePath> with type of scraper specified by <ScraperName>.\n" +
                     					"Valid ScraperNames are: \n" +
-                    					"data18webcontent , data18, iafd, 1pondo, aventertainment, caribbeancom, caribbeancompremium, heyzo, kin8tengoku, mytokyohot, tokyohot .\n" + 
+                    					"data18webcontent , data18, themoviedatabase, iafd, 1pondo, aventertainment, caribbeancom, caribbeancompremium, heyzo, kin8tengoku, mytokyohot, tokyohot .\n" + 
                     					"Any settings.xml file preference values will be taken into account when scraping.")
                     .create( "scrape" );
 			
@@ -292,6 +293,9 @@ public class Main {
 				break;
 			case "iafd":
 				parsingProfile = new IAFDParsingProfile();
+				break;
+			case "themoviedatabase":
+				parsingProfile = new TheMovieDatabaseParsingProfile();
 				break;
 		}
 		return parsingProfile;

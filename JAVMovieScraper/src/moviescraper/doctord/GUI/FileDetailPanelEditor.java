@@ -43,6 +43,7 @@ abstract class AbstractFileDetailPanelEditGUI {
 class FileDetailPanelActorEditor extends AbstractFileDetailPanelEditGUI {
 
 	private JTextField textFieldActor;
+	private JTextField textFieldActorRole;
 	private JTextField textFieldURL;
 	
 	public FileDetailPanelActorEditor(FileDetailPanel fileDetailPanel) {
@@ -55,7 +56,7 @@ class FileDetailPanelActorEditor extends AbstractFileDetailPanelEditGUI {
 		gridBagLayout.columnWeights = new double[]{0.0, 1.0};
 		innerPanel.setLayout(gridBagLayout);
 		
-		JLabel lblActor = new JLabel("Actor :");
+		JLabel lblActor = new JLabel("Actor Name:");
 		GridBagConstraints gbc_lblActor = new GridBagConstraints();
 		gbc_lblActor.anchor = GridBagConstraints.EAST;
 		gbc_lblActor.insets = new Insets(0, 0, 5, 5);
@@ -72,12 +73,29 @@ class FileDetailPanelActorEditor extends AbstractFileDetailPanelEditGUI {
 		innerPanel.add(textFieldActor, gbc_textFieldActor);
 		textFieldActor.setColumns(10);
 		
+		JLabel lblActorRole = new JLabel("Actor Role:");
+		GridBagConstraints gbc_lblActorRole = new GridBagConstraints();
+		gbc_lblActorRole.anchor = GridBagConstraints.EAST;
+		gbc_lblActorRole.insets = new Insets(0, 0, 5, 5);
+		gbc_lblActorRole.gridx = 0;
+		gbc_lblActorRole.gridy = 1;
+		innerPanel.add(lblActorRole, gbc_lblActorRole);
+		
+		textFieldActorRole = new JTextField();
+		GridBagConstraints gbc_textFieldActorRole = new GridBagConstraints();
+		gbc_textFieldActorRole.insets = new Insets(0, 0, 5, 0);
+		gbc_textFieldActorRole.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textFieldActorRole.gridx = 1;
+		gbc_textFieldActorRole.gridy = 1;
+		innerPanel.add(textFieldActorRole, gbc_textFieldActorRole);
+		textFieldActor.setColumns(10);
+		
 		JLabel lblNewLabel = new JLabel("URL :");
 		GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
 		gbc_lblNewLabel.anchor = GridBagConstraints.EAST;
 		gbc_lblNewLabel.insets = new Insets(0, 0, 5, 5);
 		gbc_lblNewLabel.gridx = 0;
-		gbc_lblNewLabel.gridy = 1;
+		gbc_lblNewLabel.gridy = 2;
 		innerPanel.add(lblNewLabel, gbc_lblNewLabel);
 		
 		textFieldURL = new JTextField();
@@ -85,7 +103,7 @@ class FileDetailPanelActorEditor extends AbstractFileDetailPanelEditGUI {
 		gbc_textFieldURL.insets = new Insets(0, 0, 5, 0);
 		gbc_textFieldURL.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textFieldURL.gridx = 1;
-		gbc_textFieldURL.gridy = 1;
+		gbc_textFieldURL.gridy = 2;
 		innerPanel.add(textFieldURL, gbc_textFieldURL);
 		textFieldURL.setColumns(10);
 		
@@ -102,13 +120,16 @@ class FileDetailPanelActorEditor extends AbstractFileDetailPanelEditGUI {
 		Actor newActor;
 		Thumb newThumb;
 		String actorName = textFieldActor.getText();
+		String actorRole = textFieldActorRole.getText();
 		String actorURL = textFieldURL.getText();
 		if (actorURL == null || actorURL.isEmpty() ) {
 			newThumb = null;
 		} else {
 			newThumb = new Thumb(actorURL);
 		}
-		newActor = new Actor(actorName, null, newThumb);
+		if(actorRole != null && actorRole.length() > 0)
+			newActor = new Actor(actorName, actorRole, newThumb);
+		else newActor = new Actor(actorName, null, newThumb);
 		Movie currentMovie = fileDetailPanel.getCurrentMovie();
 		if (currentMovie != null) {
 			currentMovie.getActors().add(newActor);

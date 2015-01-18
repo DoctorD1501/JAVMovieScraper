@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.FilenameUtils;
@@ -53,6 +54,12 @@ public abstract class SiteParsingProfile {
 	
 	private boolean extraFanartScrapingEnabled = false;
 	
+	/**
+	 * If this has a value when scraping, will use overridenSearchResult 
+	 * from a user provided URL without looking at file name
+	 */
+	private SearchResult overridenSearchResult; 
+	
 	public boolean isExtraFanartScrapingEnabled() {
 		return extraFanartScrapingEnabled;
 	}
@@ -85,6 +92,24 @@ public abstract class SiteParsingProfile {
 
 	public void setDocument(Document document) {
 		this.document = document;
+	}
+	
+	/**
+	 * Sets the {@link SiteParsingProfile#overridenSearchResult} to the URL defined by @param urlPath
+	 * This will cause the scraper to ignore the file name of the file when scraping
+	 * @param urlPath
+	 */
+	public void setOverridenSearchResult(String urlPath)
+	{
+		overridenSearchResult = new SearchResult(urlPath);
+	}
+	
+	/**
+	 * @return {@link SiteParsingProfile#overridenSearchResult}
+	 */
+	public SearchResult getOverridenSearchResult()
+	{
+		return overridenSearchResult;
 	}
 	
 	
@@ -253,6 +278,43 @@ public abstract class SiteParsingProfile {
 			scrapingLanguage = Language.JAPANESE;
 		else
 			scrapingLanguage = Language.ENGLISH;
+	}
+	
+	/**
+	 * If your file is called "Movie Name Here (2001)" this method returns "Movie Name Here"
+	 * @param file the file to process
+	 * @return The movie name without the year in parenthesis next to it
+	 */
+	public static String getMovieNameFromFileWithYear(File file)
+	{
+		String movieName = FilenameUtils.removeExtension(FilenameUtils.getName(file.getName()));
+		movieName = movieName.replaceFirst("\\(\\d{4}\\)$", "").trim();
+		return movieName;
+	}
+	
+	/**
+	 * If your file is called "Movie Name Here (2001)" this method returns "2001"
+	 * @param file the file to process
+	 * @return A length 4 string representing the year, if it exists. Otherwise an empty String
+	 */
+	public static String getYearFromFileWithYear(File file)
+	{
+		String movieName = FilenameUtils.removeExtension(FilenameUtils.getName(file.getName()));
+		String patternString = "\\(\\d{4}\\)$";
+		Pattern pattern = Pattern.compile(patternString);
+		Matcher matcher = pattern.matcher(movieName);
+		while(matcher.find())
+		{
+			System.out.println("match");
+			return matcher.group().replace("(", "").replace(")", "").trim();
+		}
+		return "";
+	}
+	
+	public abstract String getParserName();
+	
+	public String toString(){
+		return getParserName();
 	}
 	
 	/**

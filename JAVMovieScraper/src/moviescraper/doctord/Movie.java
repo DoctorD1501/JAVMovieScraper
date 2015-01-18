@@ -30,8 +30,8 @@ import moviescraper.doctord.SiteParsingProfile.Data18MovieParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.Data18WebContentParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.DmmParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.IAFDParsingProfile;
-import moviescraper.doctord.SiteParsingProfile.JavLibraryParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
+import moviescraper.doctord.SiteParsingProfile.specific.JavLibraryParsingProfile;
 import moviescraper.doctord.controller.ScrapeMovieAction;
 import moviescraper.doctord.dataitem.*;
 import moviescraper.doctord.dataitem.Runtime;
@@ -771,6 +771,7 @@ public class Movie {
 		else if(useURLtoScrapeFrom)
 		{
 			searchResults = new SearchResult[1];
+			
 			if(siteToParseFrom instanceof DmmParsingProfile)
 				searchResults[0] = new SearchResult(urlToScrapeFromDMM);
 			else if(siteToParseFrom instanceof Data18MovieParsingProfile || siteToParseFrom instanceof Data18WebContentParsingProfile)
@@ -779,6 +780,14 @@ public class Movie {
 				searchResults[0] = new SearchResult(((JavLibraryParsingProfile) siteToParseFrom).getOverrideURLJavLibrary());
 			else if(siteToParseFrom instanceof IAFDParsingProfile)
 				searchResults[0] = new SearchResult(urlToScrapeFromDMM);
+			
+			//override any of the above if we have specifically set an override url
+			if(siteToParseFrom.getOverridenSearchResult() != null)
+			{
+				searchResults[0] = siteToParseFrom.getOverridenSearchResult();
+				searchResultNumberToUse = 0;
+			}
+				
 			if(scrapeMovieAction != null)
 			{
 				scrapeMovieAction.makeProgress(amountOfProgressToMakeEachTick, siteToParseFrom.toString() + " found search result");
