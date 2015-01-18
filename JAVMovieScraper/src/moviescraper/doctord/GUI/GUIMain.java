@@ -224,17 +224,11 @@ public class GUIMain {
 		
 		
 		//Set up the bottom panel - area for message panel
-		JPanel bottomPanel = new JPanel(new BorderLayout());
-		frmMoviescraper.getContentPane().add(bottomPanel, BorderLayout.SOUTH);
-		
-		//Console message area
 		messageConsolePanel = new MessageConsolePanel();
-		messageConsolePanel.setVisible(false);
-		bottomPanel.add(messageConsolePanel, BorderLayout.NORTH);
-		
+		frmMoviescraper.getContentPane().add(messageConsolePanel, BorderLayout.SOUTH);
+
+		// set up button panel
 		frmMoviescraper.getContentPane().add(new GUIMainButtonPanel(this), BorderLayout.NORTH);
-		
-		//End setting up the bottom panel
 		
 		//add in the menu bar
 		frmMoviescraper.setJMenuBar(new GUIMainMenuBar(this));
