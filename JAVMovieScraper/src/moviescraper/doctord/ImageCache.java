@@ -59,7 +59,7 @@ public class ImageCache {
 	
 	private static Image createBlankImage()
 	{
-		return new BufferedImage(1,1, BufferedImage.TYPE_INT_RGB);
+		return new BufferedImage(1,1, BufferedImage.TYPE_INT_ARGB);
 	}
 	
 	public static void removeImageFromCachce(URL url)
