@@ -40,6 +40,7 @@ import moviescraper.doctord.controller.UpDirectoryAction;
 import moviescraper.doctord.controller.WriteFileDataAction;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Title;
+import moviescraper.doctord.preferences.GuiSettings;
 import moviescraper.doctord.preferences.MoviescraperPreferences;
 
 import java.awt.Cursor;
@@ -97,6 +98,7 @@ public class GUIMain {
 	private File currentlySelectedDirectoryList;
 	private File defaultHomeDirectory;
 	private MoviescraperPreferences preferences;
+	private GuiSettings guiSettings;
 
 	//scraped movies
 	private Movie currentlySelectedMovieDMM;
@@ -184,7 +186,9 @@ public class GUIMain {
 	 */
 	private void initialize() {
 		
-		setPreferences(new MoviescraperPreferences());
+		preferences = new MoviescraperPreferences();
+		guiSettings = new GuiSettings();
+		
 		setCurrentlySelectedNfoFileList(new ArrayList<File>());
 		setCurrentlySelectedMovieFileList(new ArrayList<File>());
 		setCurrentlySelectedPosterFileList(new ArrayList<File>());
@@ -238,6 +242,10 @@ public class GUIMain {
 		fileListFileDetailSplitPane.setBorder(BorderFactory.createEmptyBorder());
 		fileListFileDetailSplitPane.setDividerSize(gap);
 		messageConsolePanel.setBorder(BorderFactory.createEmptyBorder(gap, 0, 0, 0));
+		
+		// restore gui state
+		buttonPanel.setVisible(guiSettings.getShowToolbar());
+		messageConsolePanel.setVisible(guiSettings.getShowOutputPanel());
 	}
 
 	/**
@@ -734,8 +742,8 @@ public class GUIMain {
 		return preferences;
 	}
 
-	public void setPreferences(MoviescraperPreferences preferences) {
-		this.preferences = preferences;
+	public GuiSettings getGuiSettings() {
+		return guiSettings;
 	}
 
 	public File getCurrentlySelectedDirectoryList() {
@@ -813,18 +821,22 @@ public class GUIMain {
 	
 	public void showMessageConsolePanel(){
 		messageConsolePanel.setVisible(true);
+		guiSettings.setShowOutputPanel(true);
 	}
 	
 	public void hideMessageConsolePanel(){
 		messageConsolePanel.setVisible(false);
+		guiSettings.setShowOutputPanel(false);
 	}
 	
 	public void showButtonPanel(){
 		buttonPanel.setVisible(true);
+		guiSettings.setShowToolbar(true);
 	}
 	
 	public void hideButtonPanel(){
 		buttonPanel.setVisible(false);
+		guiSettings.setShowToolbar(false);
 	}
 	
 	public Movie getCurrentlySelectedMovieR18() {

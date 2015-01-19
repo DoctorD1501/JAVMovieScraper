@@ -377,7 +377,7 @@ public class GUIMainMenuBar extends JMenuBar{
 		
 		JCheckBoxMenuItem consolePanelMenuItem = new JCheckBoxMenuItem("Show Output Panel");
 		consolePanelMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F12, 0));
-		consolePanelMenuItem.setState(false);
+		consolePanelMenuItem.setState(guiMain.getGuiSettings().getShowOutputPanel());
 		consolePanelMenuItem.addItemListener(new ItemListener() {
 
 			@Override
@@ -391,7 +391,7 @@ public class GUIMainMenuBar extends JMenuBar{
 		
 		JCheckBoxMenuItem buttonPanelMenuItem = new JCheckBoxMenuItem("Show Tool Bar");
 		buttonPanelMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F11, 0));
-		buttonPanelMenuItem.setState(true);
+		buttonPanelMenuItem.setState(guiMain.getGuiSettings().getShowToolbar());
 		buttonPanelMenuItem.addItemListener(new ItemListener() {
 			
 			@Override
