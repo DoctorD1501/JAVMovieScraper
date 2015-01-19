@@ -46,6 +46,7 @@ import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.LayoutManager;
 import java.awt.PopupMenu;
 
 import javax.swing.JButton;
@@ -80,6 +81,7 @@ import javax.swing.BoxLayout;
 
 import java.awt.Component;
 
+import javax.swing.border.Border;
 import javax.swing.event.ListSelectionListener;
 
 public class GUIMain {
@@ -222,20 +224,19 @@ public class GUIMain {
 		
 		
 		//Set up the bottom panel - area for message panel
-		JPanel bottomPanel = new JPanel(new BorderLayout());
-		frmMoviescraper.getContentPane().add(bottomPanel, BorderLayout.SOUTH);
-		
-		//Console message area
 		messageConsolePanel = new MessageConsolePanel();
-		messageConsolePanel.setVisible(false);
-		bottomPanel.add(messageConsolePanel, BorderLayout.NORTH);
-		
+		frmMoviescraper.getContentPane().add(messageConsolePanel, BorderLayout.SOUTH);
+
+		// set up button panel
 		frmMoviescraper.getContentPane().add(new GUIMainButtonPanel(this), BorderLayout.NORTH);
-		
-		//End setting up the bottom panel
 		
 		//add in the menu bar
 		frmMoviescraper.setJMenuBar(new GUIMainMenuBar(this));
+
+		int gap = 7;
+		fileListFileDetailSplitPane.setBorder(BorderFactory.createEmptyBorder());
+		fileListFileDetailSplitPane.setDividerSize(gap);
+		messageConsolePanel.setBorder(BorderFactory.createEmptyBorder(gap, 0, 0, 0));
 	}
 
 	/**
@@ -374,7 +375,6 @@ public class GUIMain {
 				true);
 		fileListPanel.setLayout(new BoxLayout(fileListPanel, BoxLayout.Y_AXIS));
 		fileListPanel.add(fileListScrollPane);
-		fileListPanel.setBorder(BorderFactory.createLineBorder(Color.black));
 
 		fileDetailPanel = new FileDetailPanel(getPreferences(), this);
 		JScrollPane fileDetailsScrollPane = new JScrollPane(fileDetailPanel);
@@ -382,6 +382,7 @@ public class GUIMain {
 		fileListFileDetailSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, fileListPanel, fileDetailsScrollPane);
 		fileListPanel.setMinimumSize(new Dimension(200,50));
 		fileDetailsScrollPane.setMinimumSize(new Dimension(100,50));
+		
 		frmMoviescraper.getContentPane().add(fileListFileDetailSplitPane, BorderLayout.CENTER);
 	}
 

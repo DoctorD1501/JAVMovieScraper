@@ -22,6 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.border.Border;
 
 import moviescraper.doctord.Movie;
 import moviescraper.doctord.Thumb;
@@ -80,15 +81,16 @@ public class FileDetailPanel extends JPanel {
 		this.preferences = preferences;
 		this.gui = gui;
 		JPanel fileDetailsPanel = this;
-		fileDetailsPanel.setBorder(BorderFactory.createLineBorder(Color.black));
-
+				
 		FormLayout formLayout = new FormLayout(new ColumnSpec[] {
 				FormFactory.RELATED_GAP_COLSPEC, // 1 - empty space
 				FormFactory.DEFAULT_COLSPEC, //2 - label for each of the form items
 				FormFactory.RELATED_GAP_COLSPEC,//3 - empty space
 				ColumnSpec.decode("default:grow"), // 4 - Form text items
 				FormFactory.RELATED_GAP_COLSPEC,//5 - empty space
-				FormFactory.DEFAULT_COLSPEC},// 6 - artwork panel
+				FormFactory.DEFAULT_COLSPEC,// 6 - artwork panel
+				FormFactory.RELATED_GAP_COLSPEC,//7 - empty space
+			},
 			new RowSpec[] {
 				FormFactory.RELATED_GAP_ROWSPEC, //1 - empty space
 				FormFactory.DEFAULT_ROWSPEC, //2 - Title and artwork panel

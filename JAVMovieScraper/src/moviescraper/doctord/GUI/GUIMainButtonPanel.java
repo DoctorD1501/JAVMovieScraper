@@ -1,13 +1,18 @@
 package moviescraper.doctord.GUI;
 
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 
 import javax.imageio.ImageIO;
 import javax.swing.Action;
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -16,9 +21,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JToolBar;
-
-import org.imgscalr.Scalr;
-import org.imgscalr.Scalr.Method;
+import javax.swing.UIManager;
 
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfileItem;
@@ -36,8 +39,12 @@ import moviescraper.doctord.controller.ScrapeSpecificAction;
 import moviescraper.doctord.controller.UpDirectoryAction;
 import moviescraper.doctord.controller.WriteFileDataAction;
 
+import org.imgscalr.Scalr;
+import org.imgscalr.Scalr.Method;
+
 public class GUIMainButtonPanel extends JPanel {
 	
+	private static final long serialVersionUID = 1L;
 	private static final int iconSizeX = 16;
 	private static final int iconSizeY = 16;
 	
@@ -80,6 +87,64 @@ public class GUIMainButtonPanel extends JPanel {
 			return null;
 		}
 	}
+		
+	private void tweakLookAndFeel(JToolBar toolbar) {
+		
+		// tweak the Metal look and feel
+		if (UIManager.getLookAndFeel().getID() == "Metal") {
+
+			// paint button borders on mouseover only
+
+			MouseListener hoverListener = new MouseListener() {
+				@Override
+				public void mouseExited(MouseEvent arg0) {
+					((JButton)arg0.getSource()).setBorderPainted(false);
+				}
+				
+				@Override
+				public void mouseEntered(MouseEvent arg0) {
+					((JButton)arg0.getSource()).setBorderPainted(true);
+				}
+				
+				@Override
+				public void mouseClicked(MouseEvent arg0) { }
+				@Override
+				public void mouseReleased(MouseEvent arg0) { }				
+				@Override
+				public void mousePressed(MouseEvent arg0) { }
+			};
+			
+			for(Component comp : toolbar.getComponents()) {
+				if (comp instanceof JButton) {
+					JButton button = (JButton)comp;
+					button.setBorderPainted(false);
+					button.addMouseListener(hoverListener);
+				}
+			}
+
+			// this will paint the whole background using a plain color 
+			// instead of using a gradient for borders and separators
+			toolbar.setBackground(new Color(toolbar.getBackground().getRGB()));
+			toolbar.setBorderPainted(false);
+		}
+	}
+		
+	private void add(JToolBar toolbar) {
+		for(Component comp : toolbar.getComponents()) {
+			if (comp instanceof JButton) {
+				JButton button = (JButton)comp;
+				button.setFocusable(false);
+			}
+		}
+		
+		toolbar.addSeparator();
+		toolbar.setFloatable(false);
+		toolbar.setFocusable(false);
+		
+		tweakLookAndFeel(toolbar);
+				
+		super.add(toolbar);
+	}
 	
 	private void initializeButtons()
 	{
@@ -87,7 +152,7 @@ public class GUIMainButtonPanel extends JPanel {
 		initializeScrapeButtons();
 		initializeFileButtons();
 	}
-	
+
 	private void initializeDirectoryButtons() {
 		JToolBar directoryOperationsButtons = new JToolBar("Directory");
 		
