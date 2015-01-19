@@ -366,9 +366,7 @@ public class GUIMainMenuBar extends JMenuBar{
 		JMenu viewMenu = new JMenu("View");
 		viewMenu.setMnemonic(KeyEvent.VK_V);
 		
-				
-		
-		JMenuItem consoleInSeperateWindowMenuItem = new JMenuItem("View Console Output In Seperate Window");
+		JMenuItem consoleInSeperateWindowMenuItem = new JMenuItem("View Output In New Window");
 		consoleInSeperateWindowMenuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -377,7 +375,8 @@ public class GUIMainMenuBar extends JMenuBar{
 		});
 		
 		
-		JCheckBoxMenuItem consolePanelMenuItem = new JCheckBoxMenuItem("Show Console Panel In Main Window");
+		JCheckBoxMenuItem consolePanelMenuItem = new JCheckBoxMenuItem("Show Output Panel");
+		consolePanelMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F12, 0));
 		consolePanelMenuItem.setState(false);
 		consolePanelMenuItem.addItemListener(new ItemListener() {
 
@@ -406,9 +405,9 @@ public class GUIMainMenuBar extends JMenuBar{
 		});
 		
 		viewMenu.add(buttonPanelMenuItem);
-		viewMenu.add(consoleInSeperateWindowMenuItem);
 		viewMenu.add(consolePanelMenuItem);
-	
+		viewMenu.add(consoleInSeperateWindowMenuItem);
+		
 		add(viewMenu);
 	}
 	
