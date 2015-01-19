@@ -99,7 +99,10 @@ public class ActressListRenderer extends DefaultListCellRenderer {
 	
 	private ImageIcon resizeToMaxDimensions(Image image)
 	{
-		return new ImageIcon(Scalr.resize(toBufferedImage(image), Method.QUALITY, maxActorSizeDimension.width, maxActorSizeDimension.height, Scalr.OP_ANTIALIAS));
+		if(image.getWidth(null) > maxActorSizeDimension.width || image.getHeight(null) > maxActorSizeDimension.height)
+			return new ImageIcon(Scalr.resize(toBufferedImage(image), Method.QUALITY, maxActorSizeDimension.width, maxActorSizeDimension.height, Scalr.OP_ANTIALIAS));
+		else
+			return new ImageIcon(toBufferedImage(image));
 	}
 	
 	//TODO: I should probably re-implement this to use Maps instead of arrays
