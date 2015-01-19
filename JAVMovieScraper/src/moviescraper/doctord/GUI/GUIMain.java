@@ -141,6 +141,7 @@ public class GUIMain {
 	private static final int defaultMainFrameY = 768;
 
 	private final static boolean debugMessages = false;
+	private GUIMainButtonPanel buttonPanel;
 
 	/**
 	 * Launch the application.
@@ -227,8 +228,8 @@ public class GUIMain {
 		messageConsolePanel = new MessageConsolePanel();
 		frmMoviescraper.getContentPane().add(messageConsolePanel, BorderLayout.SOUTH);
 
-		// set up button panel
-		frmMoviescraper.getContentPane().add(new GUIMainButtonPanel(this), BorderLayout.NORTH);
+		buttonPanel = new GUIMainButtonPanel(this);
+		frmMoviescraper.getContentPane().add(buttonPanel, BorderLayout.NORTH);
 		
 		//add in the menu bar
 		frmMoviescraper.setJMenuBar(new GUIMainMenuBar(this));
@@ -818,6 +819,13 @@ public class GUIMain {
 		messageConsolePanel.setVisible(false);
 	}
 	
+	public void showButtonPanel(){
+		buttonPanel.setVisible(true);
+	}
+	
+	public void hideButtonPanel(){
+		buttonPanel.setVisible(false);
+	}
 	
 	public Movie getCurrentlySelectedMovieR18() {
 		return currentlySelectedMovieR18;
