@@ -208,7 +208,7 @@ public class GUIMain {
 		frmMoviescraper.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		//create tree view icon provider
-		IconCache.setIconProvider(getPreferences().getUseContentBasedTypeIcons() ? IconCache.IconProviderType.CONTENT
+		IconCache.setIconProvider(getGuiSettings().getUseContentBasedTypeIcons() ? IconCache.IconProviderType.CONTENT
 						: IconCache.IconProviderType.SYSTEM);
 
 		//initialize the icons used in the program
@@ -256,7 +256,7 @@ public class GUIMain {
 	private void setUpFileListPanel() {
 		fileListPanel = new JPanel();
 
-		defaultHomeDirectory = getPreferences().getLastUsedDirectory();
+		defaultHomeDirectory = getGuiSettings().getLastUsedDirectory();
 		setCurrentlySelectedDirectoryList(defaultHomeDirectory);
 		
 		listModelFiles = new DefaultListModel<File>();
@@ -342,7 +342,7 @@ public class GUIMain {
 							}
 							finally
 							{
-								getPreferences().setLastUsedDirectory(getCurrentlySelectedDirectoryList());
+								getGuiSettings().setLastUsedDirectory(getCurrentlySelectedDirectoryList());
 								frmMoviescraper.setCursor(Cursor.getDefaultCursor());
 							}
 						}

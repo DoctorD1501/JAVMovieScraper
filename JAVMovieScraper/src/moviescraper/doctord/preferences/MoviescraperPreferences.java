@@ -1,13 +1,9 @@
 package moviescraper.doctord.preferences;
 
-import java.io.File;
-
-import org.apache.commons.lang3.SystemUtils;
 
 public class MoviescraperPreferences extends Settings {
 
 	enum Key implements Settings.Key {
-		lastUsedDirectory,
 		writeFanartAndPosters,
 		overwriteFanartAndPosters,
 		downloadActorImagesToActorFolder,
@@ -22,7 +18,6 @@ public class MoviescraperPreferences extends Settings {
 		renameMovieFile,
 		scrapeInJapanese,
 		promptForUserProvidedURLWhenScraping,
-		useContentBasedTypeIcons,
 		;
 
 		@Override
@@ -39,22 +34,6 @@ public class MoviescraperPreferences extends Settings {
 		setRenamerString(getRenamerString());
 	}
 
-	public File getLastUsedDirectory(){
-		String lastUsedDir =  getStringValue(Key.lastUsedDirectory, null);
-
-		if(lastUsedDir != null)
-		{
-			File lastUsedDirFile = new File(lastUsedDir);
-			if(lastUsedDirFile.exists())
-				return lastUsedDirFile;
-			else return new File(System.getProperty("user.home"));
-		}
-		else return new File(System.getProperty("user.home"));
-	}
-
-	public void setLastUsedDirectory(File lastUsedDirectoryFile){
-		setStringValue(Key.lastUsedDirectory, lastUsedDirectoryFile.getPath());
-	}
 
 	public void setOverWriteFanartAndPostersPreference(boolean preferenceValue){
 		setBooleanValue(Key.overwriteFanartAndPosters, preferenceValue);
@@ -164,24 +143,6 @@ public class MoviescraperPreferences extends Settings {
 
 	public void setScrapeInJapanese(boolean preferenceValue){
 		setBooleanValue(Key.scrapeInJapanese, preferenceValue);
-	}
-
-	public boolean getUseContentBasedTypeIcons() {
-	/*    
-     * Use icons in res/mime instead of system icons. 
-     * Needed for linux as system icons only show two types of icons otherwise (files and folders)
-     * There's no menu option for this preference, but you can manually modify the settings file yourself to enable it
-     * this option is also automatically enabled on linux
-     */
-
-		// if we're on linux we want the content based icons as default        
-		boolean defaultValue = SystemUtils.IS_OS_LINUX;
-
-		return getBooleanValue(Key.useContentBasedTypeIcons, defaultValue);
-	}
-
-	public void setUseContentBasedTypeIcons(boolean preferenceValue) {
-		setBooleanValue(Key.useContentBasedTypeIcons, preferenceValue);    
 	}
 	
 	public boolean getPromptForUserProvidedURLWhenScraping(){
