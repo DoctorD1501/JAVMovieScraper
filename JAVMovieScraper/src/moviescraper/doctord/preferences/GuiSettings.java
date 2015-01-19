@@ -8,9 +8,10 @@ public class GuiSettings extends Settings {
 
 	enum Key implements Settings.Key {
 		lastUsedDirectory,
-		useContentBasedTypeIcons,		
-		showToolbar,
+		lastUsedScraper,
 		showOutputPanel,
+		showToolbar,
+		useContentBasedTypeIcons,		
 		;
 
 		@Override
@@ -72,5 +73,13 @@ public class GuiSettings extends Settings {
 	public void setUseContentBasedTypeIcons(boolean preferenceValue) {
 		setBooleanValue(Key.useContentBasedTypeIcons, preferenceValue);    
 	}
+
+	public String getLastUsedScraper(){
+		return getStringValue(Key.lastUsedScraper, null);
+	}
 	
+	public void setLastUsedScraper(String preferenceValue){
+		setStringValue(Key.lastUsedScraper, preferenceValue);
+	}
 }
+

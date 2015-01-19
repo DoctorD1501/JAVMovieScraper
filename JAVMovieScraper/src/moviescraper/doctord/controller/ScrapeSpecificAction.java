@@ -22,6 +22,8 @@ public class ScrapeSpecificAction extends AbstractAction {
 	public ScrapeSpecificAction(GUIMain main, SiteParsingProfile profile) {
 		this.main = main;
 		this.profile = profile;
+		
+		putValue(ScrapeMovieAction.SCRAPE_KEY, profile.getClass().getName());
 	}
 	
 	@Override
