@@ -22,7 +22,7 @@ public class MoviescraperPreferences extends Settings {
 
 		@Override
 		public String getKey() {
-			return toString();
+			return "Preferences:" + toString();
 		}
 	}
 	
