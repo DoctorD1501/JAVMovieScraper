@@ -10,8 +10,8 @@ import java.util.Properties;
 
 public class Settings {
 
-	protected static Properties programPreferences;
-	protected static final String fileNameOfPreferences = "settings.xml";
+	private static Properties programPreferences;
+	private static final String fileNameOfPreferences = "settings.xml";
 	
 	/*initialization block*/{
 		programPreferences = new Properties();
@@ -85,9 +85,44 @@ public class Settings {
 		return defaultValue;
 	}
 	
+
+	protected void setStringValue(String preferenceName, String preferenceValue) {
+		Field fieldToUse;
+		try {
+			fieldToUse = this.getClass().getDeclaredField(preferenceName);
+			programPreferences.setProperty((String)fieldToUse.get(new String()), preferenceValue);
+			savePreferences();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
+	}
+
+	/**
+	 * 
+	 * @param preferenceName the preference field to set - must be the exact same as the field's local variable name in {@link MoviescraperPreferences}
+	 * @param defaultValue the value to return if the preference has not been set
+	 * @return
+	 */
+	protected String getStringValue(String preferenceName, String defaultValue) {
+		Field fieldToUse;
+		try {
+			fieldToUse = this.getClass().getDeclaredField(preferenceName);
+			String fieldValue = (String)fieldToUse.get(new String());
+			String preferenceValue = programPreferences.getProperty(fieldValue);
+			if(preferenceValue != null)
+				return preferenceValue;
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return defaultValue;
+	}
+	
 	
 	public String toString(){
 		return programPreferences.toString();
 	}
-
 }

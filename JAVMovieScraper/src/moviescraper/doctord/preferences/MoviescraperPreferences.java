@@ -49,7 +49,7 @@ public class MoviescraperPreferences extends Settings {
 	}
 
 	public File getLastUsedDirectory(){
-		String lastUsedDir = programPreferences.getProperty(lastUsedDirectory);
+		String lastUsedDir = getStringValue(lastUsedDirectory, null);
 		if(lastUsedDir != null)
 		{
 			File lastUsedDirFile = new File(lastUsedDir);
@@ -61,7 +61,7 @@ public class MoviescraperPreferences extends Settings {
 	}
 
 	public void setLastUsedDirectory(File lastUsedDirectoryFile){
-		programPreferences.setProperty(lastUsedDirectory, lastUsedDirectoryFile.getPath());
+		setStringValue(lastUsedDirectory, lastUsedDirectoryFile.getPath());
 		savePreferences();
 	}
 
@@ -91,7 +91,7 @@ public class MoviescraperPreferences extends Settings {
 	}
 
 	public boolean getWriteFanartAndPostersPreference() {
-		/*String writeFanartAndPostersPref = programPreferences.getProperty(writeFanartAndPosters);
+		/*String writeFanartAndPostersPref = getStringValue(writeFanartAndPosters);
 		if(writeFanartAndPostersPref != null)
 		{
 		if(writeFanartAndPostersPref.equals("true"))
@@ -152,19 +152,19 @@ public class MoviescraperPreferences extends Settings {
 	}
 
 	public String getSanitizerForFilename() {
-		return programPreferences.getProperty(sanitizerForFilename, "[\\\\/:*?\"<>|\\r\\n]|[ ]+$|(?<=[^.])[.]+$|(?<=.{250})(.+)(?=[.]\\p{Alnum}{3}$)");
+		return getStringValue(sanitizerForFilename, "[\\\\/:*?\"<>|\\r\\n]|[ ]+$|(?<=[^.])[.]+$|(?<=.{250})(.+)(?=[.]\\p{Alnum}{3}$)");
 	}
 
 	public void setSanitizerForFilename(String preferenceValue) {
-		programPreferences.setProperty(sanitizerForFilename, preferenceValue);
+		setStringValue(sanitizerForFilename, preferenceValue);
 	}
 
 	public String getRenamerString() {
-		return programPreferences.getProperty(renamerString, "<TITLE> [<ACTORS>] (<YEAR>) [<ID>]");
+		return getStringValue(renamerString, "<TITLE> [<ACTORS>] (<YEAR>) [<ID>]");
 	}
 
 	public void setRenamerString(String preferenceValue) {
-		programPreferences.setProperty(renamerString, preferenceValue);
+		setStringValue(renamerString, preferenceValue);
 		savePreferences();
 	}
 
