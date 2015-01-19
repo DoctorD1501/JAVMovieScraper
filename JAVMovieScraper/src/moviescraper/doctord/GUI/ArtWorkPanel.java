@@ -1,16 +1,20 @@
 package moviescraper.doctord.GUI;
 
-import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.Transparency;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -23,115 +27,162 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.imgscalr.Scalr;
 import org.imgscalr.Scalr.Method;
 
-public class ArtWorkPanel extends JPanel {
+
+
+public class ArtWorkPanel extends JPanel implements ComponentListener {
 
 	private static final long serialVersionUID = 9061046066424044803L;
-	
+
 	private ArtWorkPanel artworkPanel;
+
+	private JLabel lblPosterIcon;
+	private JLabel lblFanartIcon;
 
 	private Image posterImage;
 	private Image fanartImage;
-	private JLabel lblPosterIcon;
-	private JLabel lblFanartIcon;
-	
-	private static final int posterSizeX = 379;
-	private static final int posterSizeY = 536;
-	private static int fanartSizeX = 85;
-	private static int fanartSizeY = 85;
-	
-	
+
+	//initial max sizes = values can change when window is resized
+	private static int maximumPosterSizeX = 379;
+	private static int maximumPosterSizeY = 500;
+	private static int maximumFanartSizeX = 379;
+	private static int maximumFanartSizeY = 135;
+	private Dimension oldSize;
+
+	private boolean updatingPosterAndFanartSizes = false;
+
+
+
+
 	public ArtWorkPanel() {
 		artworkPanel = this;
-		artworkPanel.setLayout(new BoxLayout(artworkPanel, BoxLayout.PAGE_AXIS));
-				
+		//artworkPanel.setMinimumSize(new Dimension(379,675));
+		artworkPanel.setLayout(new BoxLayout(artworkPanel, BoxLayout.Y_AXIS));
+		artworkPanel.addComponentListener(this);
+
 		//set up the poster
 		lblPosterIcon = new JLabel("");
-		
+
 		//Dimension posterSize = new Dimension(posterSizeX, posterSizeY);
 		// posterImage is initially a transparent poster size rectangle
-		posterImage = createEmptyImage(posterSizeX, posterSizeY);
-		
+
+		posterImage = createEmptyImage(maximumPosterSizeX, maximumPosterSizeY);
 		ImageIcon posterIcon = new ImageIcon(posterImage);
 		lblPosterIcon.setIcon(posterIcon);
-		//lblPosterIcon.setSize(posterSize);
-		//lblPosterIcon.setMaximumSize(posterSize);
-		//lblPosterIcon.setMinimumSize(posterSize);
-		//lblPosterIcon.setPreferredSize(posterSize);
 		lblPosterIcon.setAlignmentX(Component.LEFT_ALIGNMENT);
 		lblPosterIcon.setAlignmentY(Component.CENTER_ALIGNMENT);
-		
+
 		//set up the fanart
 		lblFanartIcon = new JLabel("");
-		//Dimension fanartSize = new Dimension(fanartSizeX, fanartSizeY);
-		// fanartImage is intiailly a transparent rectangle
-		fanartImage = createEmptyImage(fanartSizeX, fanartSizeY);
-		
+		// fanartImage is initially a transparent rectangle
+		fanartImage = createEmptyImage(maximumFanartSizeX, maximumFanartSizeY);
 		ImageIcon fanartIcon = new ImageIcon(fanartImage);
 		lblFanartIcon.setIcon(fanartIcon);
-		//lblFanartIcon.setMaximumSize(fanartSize);
-		//lblFanartIcon.setMinimumSize(fanartSize);
-		//lblFanartIcon.setPreferredSize(fanartSize);
 		lblFanartIcon.setAlignmentX(Component.LEFT_ALIGNMENT);
 		lblFanartIcon.setAlignmentY(Component.BOTTOM_ALIGNMENT);
-		
-		
+
+
 		artworkPanel.add(lblPosterIcon);
+		//add a little bit of space between the poster and the fanart
+		artworkPanel.add(Box.createRigidArea(new Dimension(0,5)));
 		artworkPanel.add(lblFanartIcon);
+
+		oldSize = artworkPanel.getBounds().getSize();
 	}
-	
+
 	private Image createEmptyImage(int x, int y) {
 		return GraphicsEnvironment.getLocalGraphicsEnvironment()
 				.getDefaultScreenDevice().getDefaultConfiguration()
 				.createCompatibleImage(x, y, Transparency.TRANSLUCENT);
 	}
-	
+
 	public void clearPictures() {
 		clearFanart();
 		clearPoster();
 	}
-	
+
 	public void clearFanart() {
-		lblFanartIcon.setIcon( new ImageIcon(createEmptyImage(fanartSizeX, fanartSizeY)) );
+		lblFanartIcon.setIcon( new ImageIcon(createEmptyImage(maximumFanartSizeX, maximumFanartSizeY)) );
 	}
-	
+
 	public void clearPoster() {
-		lblPosterIcon.setIcon( new ImageIcon(createEmptyImage(posterSizeX, posterSizeY)) );
+		lblPosterIcon.setIcon( new ImageIcon(createEmptyImage(maximumPosterSizeX, maximumPosterSizeY)) );
 	}
 
-	public void setNewFanart(Image fanart) {
-		lblFanartIcon.setIcon( new ImageIcon(fanart) );
-	}
-	
-	public void setNewFanart(ImageIcon fanart) {
-		lblFanartIcon.setIcon( fanart );
+	public void setNewFanart(Image fanart, boolean updateSourceImages) {
+		if(updateSourceImages)
+		{
+			fanartImage = fanart;
+		}
+		lblFanartIcon.setIcon(new ImageIcon(fanart));
 	}
 
-	public void setNewPoster(Image poster) {
-		lblPosterIcon.setIcon( new ImageIcon(poster) );
+	public void setNewFanart(ImageIcon fanart, boolean updateSourceImages) {
+		if(updateSourceImages)
+		{
+			fanartImage = fanart.getImage();
+		}
+		lblFanartIcon.setIcon(fanart);
 	}
-	
-	public void setNewPoster(ImageIcon poster) {
-		lblPosterIcon.setIcon( poster );
+
+	public void setNewPoster(Image poster, boolean updateSourceImages) {
+		if(updateSourceImages)
+		{
+			posterImage = poster;
+		}
+		lblPosterIcon.setIcon(new ImageIcon(poster));
 	}
-	
-	public static BufferedImage resizeToFanart(Image image) {
-		return resizeToFanart( (BufferedImage) new ImageIcon(image).getImage() );
+
+	public void setNewPoster(ImageIcon poster, boolean updateSourceImages) {
+		if(updateSourceImages)
+		{
+			posterImage = poster.getImage();
+		}
+		lblPosterIcon.setIcon(poster);
 	}
-	
+
+	private void updatePosterAndFanartSizes(){
+		updatingPosterAndFanartSizes = true;
+		BufferedImage fanartImg = (BufferedImage)(fanartImage);
+		BufferedImage fanartScaledImage = ArtWorkPanel.resizeToFanart(fanartImg);
+		this.setNewFanart(fanartScaledImage, false);
+
+		BufferedImage posterImg = (BufferedImage)(posterImage);
+		BufferedImage posterScaledImage = ArtWorkPanel.resizeToPoster(posterImg);
+		this.setNewPoster(posterScaledImage, false);
+
+	}
+
 	public static BufferedImage resizeToFanart(BufferedImage image) {
-		return resizePicture(image, fanartSizeX, fanartSizeY);
+		Dimension dimensionFit = calculateDimensionFit(image.getWidth(), image.getHeight(), 
+				maximumFanartSizeX, maximumFanartSizeY);
+		return resizePicture(image, dimensionFit.width, dimensionFit.height);
 	}
-	
-	public static BufferedImage resizeToPoster(Image image) {
-		return resizeToPoster( (BufferedImage) new ImageIcon(image).getImage() );
+
+	/**
+	 * Calculate the max size we can resize an image while fitting within maxWidth and maxHeight
+	 * and still maintaining the aspect ratio
+	 * @param imageWidth - the width of the image to resize
+	 * @param imageHeight - the height of the image to resize
+	 * @param maxWidth - the maximum width the image can be
+	 * @param maxHeight - the maximum height the image can be
+	 * @return A Dimension object with the calculated width and heights set on it
+	 */
+	private static Dimension calculateDimensionFit(int imageWidth, int imageHeight, 
+			int maxWidth, int maxHeight)
+	{
+		double aspectRatio = Math.min((double) maxWidth / (double) imageWidth,
+				(double) maxHeight / (double) imageHeight);
+		return new Dimension((int)(imageWidth * aspectRatio), (int)(imageHeight * aspectRatio));
 	}
-	
+
 	public static BufferedImage resizeToPoster(BufferedImage image) {
-		return resizePicture(image, posterSizeX, posterSizeY);
+		Dimension dimensionFit = calculateDimensionFit(image.getWidth(), image.getHeight(), 
+				maximumPosterSizeX, maximumPosterSizeY);
+		return resizePicture(image, dimensionFit.width, dimensionFit.height);
 	}
-	
-	public static BufferedImage resizePicture(BufferedImage image, int newWidth, int newHeigth) {
-		return Scalr.resize(image, Method.QUALITY, newWidth, newHeigth, Scalr.OP_ANTIALIAS);
+
+	public static BufferedImage resizePicture(BufferedImage image, int newWidth, int newHeight) {
+		return Scalr.resize(image, Method.QUALITY, newWidth, newHeight, Scalr.OP_ANTIALIAS);
 	}
 
 	public void updateView(boolean forceUpdatePoster, GUIMain gui) {
@@ -151,8 +202,10 @@ public class ArtWorkPanel extends JPanel {
 					BufferedImage img = ImageIO.read(gui.getCurrentlySelectedPosterFileList().get(0));
 					if(img != null)
 					{
+						//we're doing a resize so store off the original img so if we resize again we don't lose quality
+						posterImage = img;
 						BufferedImage scaledImage = ArtWorkPanel.resizeToPoster(img);
-						this.setNewPoster(scaledImage);
+						this.setNewPoster(scaledImage, false);
 						posterFileUpdateOccured = true;
 					}
 				} catch (IOException e) {
@@ -165,8 +218,10 @@ public class ArtWorkPanel extends JPanel {
 					BufferedImage img = ImageIO.read(gui.getCurrentlySelectedFanartFileList().get(0));
 					if(img != null)
 					{
+						//we're doing a resize so store off the original img so if we resize again we don't lose quality
+						fanartImage = img;
 						BufferedImage scaledImage = ArtWorkPanel.resizeToFanart(img);
-						this.setNewFanart(scaledImage);
+						this.setNewFanart(scaledImage, false);
 						fanartFileUpdateOccured = true;
 					}
 				} catch (IOException e) {
@@ -181,7 +236,7 @@ public class ArtWorkPanel extends JPanel {
 					if(img != null)
 					{
 						BufferedImage scaledImage = ArtWorkPanel.resizeToPoster(img);
-						this.setNewPoster(scaledImage);
+						this.setNewPoster(scaledImage, true);
 						posterFileUpdateOccured = true;
 					}
 				} catch (IOException e) {
@@ -196,7 +251,7 @@ public class ArtWorkPanel extends JPanel {
 					if(img != null)
 					{
 						BufferedImage scaledImage = ArtWorkPanel.resizeToFanart(img);
-						this.setNewFanart(scaledImage);
+						this.setNewFanart(scaledImage, true);
 						fanartFileUpdateOccured = true;
 					}
 				} catch (IOException e) {
@@ -209,10 +264,9 @@ public class ArtWorkPanel extends JPanel {
 			{
 				try {
 					this.setNewPoster(new ImageIcon(
-							standardPosterJpg.getCanonicalPath()));
+							standardPosterJpg.getCanonicalPath()), true);
 					posterFileUpdateOccured = true;
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -225,11 +279,10 @@ public class ArtWorkPanel extends JPanel {
 					if(img != null)
 					{
 						BufferedImage scaledImage = ArtWorkPanel.resizeToFanart(img);
-						this.setNewFanart(scaledImage);
+						this.setNewFanart(scaledImage, true);
 						fanartFileUpdateOccured = true;
 					}
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -244,11 +297,10 @@ public class ArtWorkPanel extends JPanel {
 					ImageIcon newPosterIcon = new ImageIcon(posterImage);
 					BufferedImage img = (BufferedImage) newPosterIcon.getImage();
 					BufferedImage scaledImage = ArtWorkPanel.resizeToPoster(img);
-					this.setNewPoster(scaledImage);
+					this.setNewPoster(scaledImage, true);
 					posterFileUpdateOccured = true;
 				}
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				JOptionPane.showMessageDialog(null, ExceptionUtils.getStackTrace(e),"Unhandled Exception",JOptionPane.ERROR_MESSAGE);
 			}
@@ -264,18 +316,45 @@ public class ArtWorkPanel extends JPanel {
 					ImageIcon newFanartIcon = new ImageIcon(fanartImage);
 					BufferedImage img = (BufferedImage) newFanartIcon.getImage();
 					BufferedImage scaledImage = ArtWorkPanel.resizeToFanart(img);
-					this.setNewFanart(scaledImage);
+					this.setNewFanart(scaledImage, true);
 					fanartImage = scaledImage;
 				}
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				JOptionPane.showMessageDialog(null, ExceptionUtils.getStackTrace(e),"Unhandled Exception",JOptionPane.ERROR_MESSAGE);
 			}
 		}
 	}
 
-		
+	@Override
+	public void componentHidden(ComponentEvent e) {}
+
+	@Override
+	public void componentMoved(ComponentEvent e) {}
+
+	@Override
+	public void componentResized(ComponentEvent e) {
+
+		Dimension newSize = e.getComponent().getBounds().getSize();
+		double oldSizeToNewSizeScaleWidth = (double) newSize.width / (double) oldSize.width; 
+		//double oldSizeToNewSizeScaleHeight = (double) newSize.height / (double) oldSize.height;
+		if(oldSize.width != 0 && oldSize.height != 0 && !updatingPosterAndFanartSizes )
+		{
+			maximumPosterSizeX *= oldSizeToNewSizeScaleWidth;
+			//maximumPosterSizeY *= oldSizeToNewSizeScaleHeight;
+			maximumFanartSizeX = maximumPosterSizeX;
+			maximumFanartSizeY = newSize.height - maximumPosterSizeY - 25;
+
+			updatePosterAndFanartSizes();
+		}
+		oldSize = newSize;
+		updatingPosterAndFanartSizes = false;
 	}
 
+
+	@Override
+	public void componentShown(ComponentEvent e) {}
+
+
+}
 
