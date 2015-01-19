@@ -52,7 +52,7 @@ public class Settings {
 		if(preferenceValue)
 			programPreferences.setProperty(key, "true");
 		else
-			programPreferences.setProperty(preferenceName.toString(), "false");
+			programPreferences.setProperty(key, "false");
 		
 		savePreferences();
 	}
