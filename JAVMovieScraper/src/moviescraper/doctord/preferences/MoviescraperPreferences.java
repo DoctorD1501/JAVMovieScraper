@@ -62,7 +62,6 @@ public class MoviescraperPreferences extends Settings {
 
 	public void setLastUsedDirectory(File lastUsedDirectoryFile){
 		setStringValue(lastUsedDirectory, lastUsedDirectoryFile.getPath());
-		savePreferences();
 	}
 
 	public void setOverWriteFanartAndPostersPreference(boolean preferenceValue){
@@ -165,7 +164,6 @@ public class MoviescraperPreferences extends Settings {
 
 	public void setRenamerString(String preferenceValue) {
 		setStringValue(renamerString, preferenceValue);
-		savePreferences();
 	}
 
 	public boolean getRenameMovieFile() {
@@ -174,7 +172,6 @@ public class MoviescraperPreferences extends Settings {
 
 	public void setRenameMovieFile(boolean preferenceValue) {
 		setBooleanValue(renameMovieFile, preferenceValue);
-		savePreferences();
 	}
 
 	public boolean getScrapeInJapanese(){
