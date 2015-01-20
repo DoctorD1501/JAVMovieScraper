@@ -1,15 +1,11 @@
 package moviescraper.doctord.GUI;
 
-import java.awt.Desktop;
 import java.awt.Event;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
@@ -22,7 +18,6 @@ import moviescraper.doctord.SiteParsingProfile.SiteParsingProfileItem;
 import moviescraper.doctord.SiteParsingProfile.SpecificProfileFactory;
 import moviescraper.doctord.controller.BrowseDirectoryAction;
 import moviescraper.doctord.controller.BrowseUriAction;
-import moviescraper.doctord.controller.FileNameCleanupAction;
 import moviescraper.doctord.controller.MoveToNewFolderAction;
 import moviescraper.doctord.controller.OpenFileAction;
 import moviescraper.doctord.controller.RefreshDirectoryAction;
@@ -371,9 +366,7 @@ public class GUIMainMenuBar extends JMenuBar{
 		JMenu viewMenu = new JMenu("View");
 		viewMenu.setMnemonic(KeyEvent.VK_V);
 		
-				
-		
-		JMenuItem consoleInSeperateWindowMenuItem = new JMenuItem("View Console Output In Seperate Window");
+		JMenuItem consoleInSeperateWindowMenuItem = new JMenuItem("View Output In New Window");
 		consoleInSeperateWindowMenuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -382,8 +375,9 @@ public class GUIMainMenuBar extends JMenuBar{
 		});
 		
 		
-		JCheckBoxMenuItem consolePanelMenuItem = new JCheckBoxMenuItem("Show Console Panel In Main Window");
-		consolePanelMenuItem.setState(false);
+		JCheckBoxMenuItem consolePanelMenuItem = new JCheckBoxMenuItem("Show Output Panel");
+		consolePanelMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F12, 0));
+		consolePanelMenuItem.setState(guiMain.getGuiSettings().getShowOutputPanel());
 		consolePanelMenuItem.addItemListener(new ItemListener() {
 
 			@Override
@@ -395,10 +389,25 @@ public class GUIMainMenuBar extends JMenuBar{
 			}
 		});
 		
-	
-		viewMenu.add(consoleInSeperateWindowMenuItem);
+		JCheckBoxMenuItem buttonPanelMenuItem = new JCheckBoxMenuItem("Show Tool Bar");
+		buttonPanelMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F11, 0));
+		buttonPanelMenuItem.setState(guiMain.getGuiSettings().getShowToolbar());
+		buttonPanelMenuItem.addItemListener(new ItemListener() {
+			
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				if(e.getStateChange() == ItemEvent.SELECTED)
+					guiMain.showButtonPanel();
+				else if(e.getStateChange() == ItemEvent.DESELECTED)
+					guiMain.hideButtonPanel();	
+				
+			}
+		});
+		
+		viewMenu.add(buttonPanelMenuItem);
 		viewMenu.add(consolePanelMenuItem);
-	
+		viewMenu.add(consoleInSeperateWindowMenuItem);
+		
 		add(viewMenu);
 	}
 	

@@ -34,7 +34,7 @@ public class UpDirectoryAction implements ActionListener {
 		}
 		finally
 		{
-			this.guiMain.getPreferences().setLastUsedDirectory(this.guiMain.getCurrentlySelectedDirectoryList());
+			this.guiMain.getGuiSettings().setLastUsedDirectory(this.guiMain.getCurrentlySelectedDirectoryList());
 			this.guiMain.getFrmMoviescraper().setCursor(Cursor.getDefaultCursor());
 		}
 	}

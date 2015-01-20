@@ -25,8 +25,8 @@ public class BrowseDirectoryAction implements ActionListener {
 	public void actionPerformed(ActionEvent arg0) {
 		this.guiMain.setChooser(new JFileChooser());
 		//remember our last used directory and start the search there
-		if(this.guiMain.getPreferences().getLastUsedDirectory().exists())
-			this.guiMain.getChooser().setCurrentDirectory(this.guiMain.getPreferences().getLastUsedDirectory());
+		if(this.guiMain.getGuiSettings().getLastUsedDirectory().exists())
+			this.guiMain.getChooser().setCurrentDirectory(this.guiMain.getGuiSettings().getLastUsedDirectory());
 		this.guiMain.getChooser().setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
 				"Movies", "avi", "mp4", "wmv", "flv", "mov", "rm", "mkv");
@@ -44,7 +44,7 @@ public class BrowseDirectoryAction implements ActionListener {
 			}
 			finally
 			{
-				this.guiMain.getPreferences().setLastUsedDirectory(this.guiMain.getCurrentlySelectedDirectoryList());
+				this.guiMain.getGuiSettings().setLastUsedDirectory(this.guiMain.getCurrentlySelectedDirectoryList());
 				this.guiMain.getFrmMoviescraper().setCursor(Cursor.getDefaultCursor());
 			}
 

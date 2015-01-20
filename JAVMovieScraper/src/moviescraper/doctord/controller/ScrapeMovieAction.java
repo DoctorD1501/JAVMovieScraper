@@ -84,10 +84,12 @@ public class ScrapeMovieAction extends AbstractAction {
 	boolean scrapeCanceled;
 
 
+	public static final String SCRAPE_KEY = "SCRAPE_KEY";
 
 
 	public ScrapeMovieAction(GUIMain guiMain) {
 		this.guiMain = guiMain;
+		putValue(SCRAPE_KEY, getClass().getName());
 		putValue(NAME, "Scrape JAV");
 		putValue(SHORT_DESCRIPTION, "Scrape Selected Movie");
 		overrideURLDMM = "";

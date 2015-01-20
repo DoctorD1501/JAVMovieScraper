@@ -21,6 +21,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JToolBar;
+import javax.swing.MenuElement;
 import javax.swing.UIManager;
 
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
@@ -146,6 +147,29 @@ public class GUIMainButtonPanel extends JPanel {
 		super.add(toolbar);
 	}
 	
+	private Action findScraperAction(MenuElement scrapeMenu, String scraperKey) {
+		
+		if (scrapeMenu instanceof JMenuItem){
+			JMenuItem menuItem = (JMenuItem)scrapeMenu;
+			Action action = menuItem.getAction();
+			if (action != null){
+				String key = (String)action.getValue(ScrapeMovieAction.SCRAPE_KEY);
+				if (key != null && key.equals(scraperKey)){
+					return action;
+				}
+			}
+		}
+		
+		for(MenuElement childMenu: scrapeMenu.getSubElements()){
+			Action childAction = findScraperAction(childMenu, scraperKey);
+			if (childAction != null){
+				return childAction;
+			}
+		}
+		
+		return null;
+	}
+	
 	private void initializeButtons()
 	{
 		initializeDirectoryButtons();
@@ -234,9 +258,10 @@ public class GUIMainButtonPanel extends JPanel {
 		ActionListener scrapeActionListener = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
 				Action action = ((JMenuItem)e.getSource()).getAction(); 
-				scrapeButton.setAction(action);;
+				scrapeButton.setAction(action);
+				String scraperKey = (String)action.getValue(ScrapeMovieAction.SCRAPE_KEY);
+				guiMain.getGuiSettings().setLastUsedScraper(scraperKey);
 			}
 		};
 		
@@ -272,11 +297,20 @@ public class GUIMainButtonPanel extends JPanel {
 			specificMenu.add(menuItem);
 		}
 		
-		scrapeButton.setAction(scrapeJavAutoAction);
+		String lastUsedScraper = guiMain.getGuiSettings().getLastUsedScraper();
+		Action scrapeAction = scrapeJavAutoAction;
+		
+		if (lastUsedScraper != null){
+			Action lastScrapeAction = findScraperAction(scrapeMenu, lastUsedScraper);
+			if (lastScrapeAction != null)
+				scrapeAction = lastScrapeAction;
+		}
+		
+		scrapeButton.setAction(scrapeAction);
 		
 		scrapeButtons.add(scrapeButton);
 		scrapeButtons.add(arrowButton);
 		
 		add(scrapeButtons);
-	}	
+	}
 }
