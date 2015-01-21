@@ -1,7 +1,11 @@
 package moviescraper.doctord.GUI;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -13,6 +17,7 @@ import java.net.URL;
 import javax.imageio.ImageIO;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -50,12 +55,17 @@ public class GUIMainButtonPanel extends JPanel {
 	private static final int iconSizeY = 16;
 	
 	private GUIMain guiMain;
+	private Box box;
 	
 	public GUIMainButtonPanel(GUIMain guiMain)
 	{
 		this.guiMain = guiMain;
 		
-		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+		setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
+
+		box = Box.createHorizontalBox();
+		add(box);
+				
 		initializeButtons();
 	}
 	
@@ -144,7 +154,7 @@ public class GUIMainButtonPanel extends JPanel {
 		
 		tweakLookAndFeel(toolbar);
 				
-		super.add(toolbar);
+		box.add(toolbar);
 	}
 	
 	private Action findScraperAction(MenuElement scrapeMenu, String scraperKey) {
