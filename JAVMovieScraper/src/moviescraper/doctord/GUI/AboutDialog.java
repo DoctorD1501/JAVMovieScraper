@@ -1,5 +1,6 @@
 package moviescraper.doctord.GUI;
 
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -78,8 +79,8 @@ public class AboutDialog extends JDialog {
 				
 		setContentPane(topPanel);
 		
+		setPreferredSize(new Dimension(320, 240));
 		pack();
-		setSize(320, 240);
 		setLocationByPlatform(true);
 		setLocationRelativeTo(parent);
 	}
