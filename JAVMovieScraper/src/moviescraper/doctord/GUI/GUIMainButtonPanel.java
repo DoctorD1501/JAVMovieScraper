@@ -1,11 +1,8 @@
 package moviescraper.doctord.GUI;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -18,7 +15,6 @@ import javax.imageio.ImageIO;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JMenu;
@@ -137,6 +133,11 @@ public class GUIMainButtonPanel extends JPanel {
 			// instead of using a gradient for borders and separators
 			toolbar.setBackground(new Color(toolbar.getBackground().getRGB()));
 			toolbar.setBorderPainted(false);
+		}
+		// tweak the GTK look and feel
+		else if (UIManager.getLookAndFeel().getID() == "GTK"){
+			// keep from drawing a bottom toolbar border even with null or empty borders
+			toolbar.setBorder(BorderFactory.createLineBorder(getBackground()));
 		}
 	}
 		
