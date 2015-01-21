@@ -370,7 +370,7 @@ public class GUIMainMenuBar extends JMenuBar{
 		consoleInSeperateWindowMenuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				new MessageConsoleGUI();
+				MessageConsoleGUI.showWindow();
 			}
 		});
 		

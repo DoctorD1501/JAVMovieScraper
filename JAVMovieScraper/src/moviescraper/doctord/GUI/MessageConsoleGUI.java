@@ -2,7 +2,8 @@ package moviescraper.doctord.GUI;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.EventQueue;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -12,31 +13,25 @@ import javax.swing.border.EmptyBorder;
 
 public class MessageConsoleGUI extends JFrame{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					MessageConsoleGUI frame = new MessageConsoleGUI();
-					frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
+	private static MessageConsoleGUI window;
+		
+	public static void showWindow(){
+		if (window == null){
+			window = new MessageConsoleGUI();
+			window.setVisible(true);
+		}
+		else{
+			window.setState(NORMAL);
+			window.toFront();
+		}
 	}
 	
 	/**
 	 * Create the frame.
 	 */
-	public MessageConsoleGUI()
+	private MessageConsoleGUI()
 	{
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 800, 600);
@@ -53,6 +48,13 @@ public class MessageConsoleGUI extends JFrame{
 		mc.redirectErr(Color.RED, System.err);
 		mc.setMessageLines(750);
 		this.setVisible(true);
+		
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosed(WindowEvent arg0) {
+				window = null;
+			}
+		});
 	}
 
 }
