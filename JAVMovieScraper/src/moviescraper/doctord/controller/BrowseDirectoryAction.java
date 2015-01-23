@@ -3,9 +3,10 @@ package moviescraper.doctord.controller;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.filechooser.FileFilter;
 
 import moviescraper.doctord.GUI.GUIMain;
 
@@ -28,9 +29,19 @@ public class BrowseDirectoryAction implements ActionListener {
 		if(this.guiMain.getGuiSettings().getLastUsedDirectory().exists())
 			this.guiMain.getChooser().setCurrentDirectory(this.guiMain.getGuiSettings().getLastUsedDirectory());
 		this.guiMain.getChooser().setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-		FileNameExtensionFilter filter = new FileNameExtensionFilter(
-				"Movies", "avi", "mp4", "wmv", "flv", "mov", "rm", "mkv");
-		this.guiMain.getChooser().setFileFilter(filter);
+		this.guiMain.getChooser().setAcceptAllFileFilterUsed(false);
+		this.guiMain.getChooser().setFileFilter( new FileFilter(){
+
+	            @Override
+	            public boolean accept(File f) {
+	                return f.isDirectory();
+	            }
+
+	            @Override
+	            public String getDescription() {
+	                return "Directories only";
+	            }
+	        });
 		int returnVal = this.guiMain.getChooser().showOpenDialog(this.guiMain.getFrmMoviescraper());
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 
