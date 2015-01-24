@@ -134,7 +134,7 @@ public class ScrapeMovieAction extends AbstractAction {
 		// clear out all old values of the scraped movie
 		this.guiMain.removeOldScrapedMovieReferences();
 		clearOverrides();
-
+		
 		worker = new SwingWorker<Void, String>() {
 
 			Movie javMovie = null;
@@ -586,7 +586,11 @@ public class ScrapeMovieAction extends AbstractAction {
 		scrapeQueryData18MovieThread.start();
 		scrapeQueryData18MovieThread.join();
 		if(this.guiMain.getCurrentlySelectedMovieData18Movie() != null)
-			this.guiMain.movieToWriteToDiskList.add(this.guiMain.getCurrentlySelectedMovieData18Movie());
+			System.out.print("No results found for file: " + 
+					guiMain.getCurrentlySelectedMovieFileList().get(currentMovieNumberInList).getName());
+			
+		// Add null results too
+		this.guiMain.movieToWriteToDiskList.add(this.guiMain.getCurrentlySelectedMovieData18Movie());
 
 		return this.guiMain.getCurrentlySelectedMovieData18Movie();
 	}
@@ -815,10 +819,14 @@ public class ScrapeMovieAction extends AbstractAction {
 		//if we didn't get a result from the general jav db's, then maybe this is from a webonly type scraper
 		if(movieAmalgamated == null && this.guiMain.getCurrentlySelectedMovieCaribbeancomPremium() != null)
 			movieAmalgamated = this.guiMain.getCurrentlySelectedMovieCaribbeancomPremium();
-		if(movieAmalgamated != null)
-		{
-			this.guiMain.movieToWriteToDiskList.add(movieAmalgamated);
-		}	
+
+		if (movieAmalgamated == null)
+			System.out.print("No results found for file: " + 
+				guiMain.getCurrentlySelectedMovieFileList().get(currentMovieNumberInList).getName());
+		
+		// Add null results too
+		this.guiMain.movieToWriteToDiskList.add(movieAmalgamated);
+		
 		return movieAmalgamated;
 	}
 
