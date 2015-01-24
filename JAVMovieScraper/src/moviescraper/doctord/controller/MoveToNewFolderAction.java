@@ -49,7 +49,9 @@ public class MoveToNewFolderAction extends AbstractAction {
 					// ID in the filename (assuming the file is only named the
 					// ID of the movie)
 					String destinationDirectoryPrefix = "";
-					if (this.guiMain.movieToWriteToDiskList != null && this.guiMain.movieToWriteToDiskList.size() > 0) {
+					if (this.guiMain.movieToWriteToDiskList != null 
+							&& this.guiMain.movieToWriteToDiskList.size() > 0
+							&& this.guiMain.movieToWriteToDiskList.get(movieNumberInList) != null) {
 						
 						String possibleID = this.guiMain.movieToWriteToDiskList.get(movieNumberInList).getId().getId()
 								.toUpperCase();

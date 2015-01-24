@@ -53,6 +53,7 @@ public class ScrapeSpecificAction extends AbstractAction {
 					}
 					else
 					{
+						main.movieToWriteToDiskList.add(null);
 						noMovieFoundList.add(currentFile);
 					}
 					
