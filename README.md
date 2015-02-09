@@ -1,7 +1,7 @@
 JAVMovieScraper
 ===============
 
-JAVMovieScraper is a Java Swing program to scrape English [XBMC](http://xbmc.org/) and [Kodi](http://kodi.tv/) metadata for Japanese Adult Videos (JAV) found on JavLibrary.com, R18.com, DMM.co.jp, and Caribbeancompr.com (Carribeancom Premium), AV Entertainment, Kin8Tengoku, Tokyo Hot, 1pondo, HEYZO, American adult DVDs and web content found on Data18.com, and adult dvds on The Movie Database (TMDb).
+JAVMovieScraper is a Java Swing program to scrape English [XBMC](http://xbmc.org/) and [Kodi](http://kodi.tv/) metadata for Japanese Adult Videos (JAV) found on JavLibrary.com, R18.com, DMM.co.jp, 1000Giri, Caribbeancompr.com (Carribeancom Premium), AV Entertainment, Kin8Tengoku, Tokyo Hot, 1pondo, HEYZO, American adult DVDs and web content found on Data18.com, and adult dvds on The Movie Database (TMDb).
 
 As no one site has a complete set of English metadata, the program amalgamates metadeta info from a variety of sources, including dmm.co.jp, javlibrary.com, squareplus.co.jp, and actionjav.com.
 The data is then fed through a machine translation (if original data is in Japanese) and then quality checked to sanitize it and poster elements are cropped so only the cover is shown.
@@ -34,7 +34,7 @@ Usage:
 <br>
 <b> -rename &#60;FilePath&#62; </b> renames the file argument(s) and any associated metadata files if the file argument has a valid movie nfo using the file name format from settings.xml
 <br>
-<b> -scrape &#60;ScraperName FilePath&#62;</b> Scrapes and writes metadata of the file located at &#60;FilePath&#62; with type of scraper specified by &#60;ScraperName&#62;. Valid ScraperNames are: data18webcontent, iafd, data18, themoviedatabase, 1pondo, aventertainment, caribbeancom, caribbeancompremium, heyzo, kin8tengoku, mytokyohot, tokyohot. Any settings.xml file preference values will be taken into account when scraping.
+<b> -scrape &#60;ScraperName FilePath&#62;</b> Scrapes and writes metadata of the file located at &#60;FilePath&#62; with type of scraper specified by &#60;ScraperName&#62;. Valid ScraperNames are: data18webcontent, data18, themoviedatabase, iafd, 1000giri, 1pondo, aventertainment, caribbeancom, caribbeancompremium, heyzo, kin8tengoku, mytokyohot, tokyohot. Any settings.xml file preference values will be taken into account when scraping.
 </p>
 <p>
 Example command to run filenamecleanup on two different files:
@@ -62,6 +62,7 @@ If you're having trouble getting matches with -scrape data18webcontent, try to f
 
 ###### Site Specific File Name Conventions
 When using the site specific scraper feature, your file name must contain an ID number which conforms to the release ID conventions set by that site. 
+* 1000Giri: ID follows a YYMMDDactorname structure. You can also see the ID from the URL (right after /moviepages/ and before /index.html). Example: 150206name
 * Aventertainments: This follows the usual JAV id naming structure like ABC-123. It does a search on the site using this ID.<br>
 * Kin8tengoku: The ID is in the URL. It is the numeric part before /pht/ and is usually 4 numeric digits. Example: 1147.<br>
 * Tokyohot: The ID follows the format of n123 or n1234 k123/k1234. In other words, a lowercase n or k followed by a 3 or 4 digit number.<br> 

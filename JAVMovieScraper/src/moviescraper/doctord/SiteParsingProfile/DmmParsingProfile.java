@@ -221,10 +221,6 @@ public class DmmParsingProfile extends SiteParsingProfile {
 			String cid = getCIDFromDocumentURL();
 			if(cid != null && cid.length() >= 3)
 			{
-				//String movieExtension = "_dmb_w.mp4";
-				//System.out.println("CID: " + cid);
-				//String firstLetterOfCid = cid.substring(0,1);
-				//String threeLetterCidCode = cid.substring(0,3);
 
 				//get the widescreen trailer URLs
 				ArrayList<String> trailerURL = constructTrailerURLs(cid, "_dmb_w.mp4");
@@ -245,7 +241,6 @@ public class DmmParsingProfile extends SiteParsingProfile {
 				trailerURL.addAll(trailerURLSquareAspectRatioSmallNoFirstLetter);
 				for(String potentialTrailerURL : trailerURL)
 				{
-					//System.out.println("potentialTrailerURL:" + potentialTrailerURL);
 					if(SiteParsingProfile.fileExistsAtURL(potentialTrailerURL))
 					{
 						System.out.println("Trailer existed at: " + potentialTrailerURL);
