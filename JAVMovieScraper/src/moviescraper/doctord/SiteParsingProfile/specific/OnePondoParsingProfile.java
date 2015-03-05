@@ -12,6 +12,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
+import moviescraper.doctord.Language;
 import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.Thumb;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
@@ -37,26 +38,10 @@ import moviescraper.doctord.dataitem.Year;
 
 public class OnePondoParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
-	private boolean scrapeInEnglish;
+	//private boolean scrapeInEnglish;
 	private String englishPage;
 	private String japanesePage;
 	
-	/**
-	 * By default the scraper scrapes in english from en.1Pondo.tv/eng
-	 */
-	public OnePondoParsingProfile()
-	{
-		scrapeInEnglish = true;
-	}
-	
-	/**
-	 * 
-	 * @param scrapeInEnglish If true, the scraper will use the english version of 1Pondo, otherwise it will use the japanese version
-	 */
-	public OnePondoParsingProfile(boolean scrapeInEnglish)
-	{
-		this.scrapeInEnglish = scrapeInEnglish;
-	}
 	
 	@Override
 	public String getParserName() {
@@ -66,24 +51,28 @@ public class OnePondoParsingProfile extends SiteParsingProfile implements Specif
 	@Override
 	public Title scrapeTitle() {
 		Element titleElement = document.select("title").first();
-		String id = scrapeID().getId();
-		String title = titleElement.text().trim();
-		//replace used for english title
-		title = title.replaceAll(Pattern.quote("::"), "-");
-		//replace used for japanese title
-		title = title.replaceAll(Pattern.quote(":"), "-");
-		//old scenes on the site that do no contain the actor name in the title
-		if(title.equals("1pondo.tv -"))
-			title = title + " " + id;
-		else
-			title = title + " - " + id;
-		return new Title(title);
+		if(titleElement != null)
+		{
+			String id = scrapeID().getId();
+			String title = titleElement.text().trim();
+			//replace used for english title
+			title = title.replaceAll(Pattern.quote("::"), "-");
+			//replace used for japanese title
+			title = title.replaceAll(Pattern.quote(":"), "-");
+			//old scenes on the site that do no contain the actor name in the title
+			if(title.equals("1pondo.tv -"))
+				title = title + " " + id;
+			else
+				title = title + " - " + id;
+			return new Title(title);
+		}
+		return new Title("");
 	}
 
 	@Override
 	public OriginalTitle scrapeOriginalTitle() {
 		//the original title is the japanese title
-		if(!scrapeInEnglish)
+		if(scrapingLanguage == Language.JAPANESE)
 			return new OriginalTitle(scrapeTitle().getTitle());
 		else
 		{
@@ -330,7 +319,7 @@ public class OnePondoParsingProfile extends SiteParsingProfile implements Specif
 		if (fileID != null) {
 			englishPage = "http://en.1pondo.tv/eng/moviepages/" + fileID + "/index.htm";
 			japanesePage = "http://www.1pondo.tv/moviepages/" + fileID + "/index.html";
-			if(scrapeInEnglish)
+			if(scrapingLanguage == Language.ENGLISH)
 			{
 				return englishPage;
 			}

@@ -16,14 +16,14 @@ import org.junit.Test;
 public class OnePondoParsingProfileTest {
 	static boolean scrapeInEnglish = true;
 	static File file = new File("C:/Temp/1pondo 061314_826 abc.avi");
-	OnePondoParsingProfile parser = new OnePondoParsingProfile(scrapeInEnglish);
+	OnePondoParsingProfile parser = new OnePondoParsingProfile();
 	
 	private static OnePondoParsingProfile profile;
 	
 	@BeforeClass
 	public static void initialize() {
 		
-		profile = new OnePondoParsingProfile(scrapeInEnglish);
+		profile = new OnePondoParsingProfile();
 		String searchString = profile.createSearchString(file);
 		System.out.println(searchString);
 		Document document = SpecificScraperAction.downloadDocument(searchString);
