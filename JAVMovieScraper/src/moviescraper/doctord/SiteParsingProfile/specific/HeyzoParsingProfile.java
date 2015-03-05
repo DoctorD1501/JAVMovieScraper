@@ -14,6 +14,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import moviescraper.doctord.Language;
 import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.Thumb;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
@@ -39,7 +40,6 @@ import moviescraper.doctord.dataitem.Year;
 
 public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
-	private boolean scrapeInEnglish;
 	private String englishPage;
 	private String japanesePage;
 	
@@ -52,13 +52,9 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 	
 	public HeyzoParsingProfile()
 	{
-		scrapeInEnglish = true;
+		super();
 	}
 	
-	public HeyzoParsingProfile(boolean scrapeInEnglish)
-	{
-		this.scrapeInEnglish = scrapeInEnglish;
-	}
 
 	@Override
 	public Title scrapeTitle() {
@@ -73,7 +69,7 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 
 	@Override
 	public OriginalTitle scrapeOriginalTitle() {
-		if(!scrapeInEnglish)
+		if(scrapingLanguage == Language.JAPANESE)
 			return new OriginalTitle(scrapeTitle().getTitle());
 		else
 		{
@@ -309,7 +305,7 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			if(scrapeInEnglish)
+			if(scrapingLanguage == Language.ENGLISH)
 			{
 				return englishPage;
 			}
@@ -346,7 +342,7 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 
 	@Override
 	public SiteParsingProfile newInstance() {
-		return new HeyzoParsingProfile(scrapeInEnglish);
+		return new HeyzoParsingProfile();
 	}
 
 }
