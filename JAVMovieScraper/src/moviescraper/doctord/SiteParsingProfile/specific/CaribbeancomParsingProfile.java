@@ -248,8 +248,9 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements
 
 	@Override
 	public ID scrapeID() {
+		initializeJapaneseDocument();
 		//Just get the ID from the page URL by doing some string manipulation
-		String baseUri = document.baseUri();
+		String baseUri = japaneseDocument.baseUri();
 		if(baseUri.length() > 0 && baseUri.contains("caribbeancom.com"))
 		{
 			baseUri = baseUri.replaceFirst("/index.html", "");
@@ -304,11 +305,14 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements
 			}
 			
 		}
-		else if(japaneseActors != null && getScrapingLanguage() == Language.JAPANESE)
+		//We're scraping in Japanese or we didn't find the actors in English scrape so we'll machine translate the Japanese actor names
+		else if((japaneseActors != null && getScrapingLanguage() == Language.JAPANESE) || actorList.size() == 0)
 		{
 			for(Element japaneseActor : japaneseActors)
 			{
 				String actorName = japaneseActor.text();
+				if(scrapingLanguage == Language.ENGLISH)
+					actorName = TranslateString.translateJapanesePersonNameToRomaji(actorName);
 				actorList.add(new Actor(actorName,"",null));
 			}
 		}
