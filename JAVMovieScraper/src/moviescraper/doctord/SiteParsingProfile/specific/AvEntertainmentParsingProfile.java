@@ -244,7 +244,7 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 		{
 			for (Element element : elements) {
 				String href = element.attr("href");
-				String name = WordUtils.capitalize(element.childNode(0).toString());
+				String name = WordUtils.capitalize(element.text());
 				Thumb thumb = null;
 				try {
 					Document actorDoc = Jsoup.connect(href).userAgent("Mozilla").ignoreHttpErrors(true).timeout(0).get();
