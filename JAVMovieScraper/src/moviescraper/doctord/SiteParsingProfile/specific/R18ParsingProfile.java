@@ -548,6 +548,7 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 	{
 		DmmParsingProfile dmm = new DmmParsingProfile(false);
 		String dmmSearchString = dmm.createSearchString(file);
+		int maxNumberOfTries = 4; //only do a few tries so the scraper doesn't get stuck
 		try {
 			SearchResult [] searchResultsDMM = dmm.getSearchResults(dmmSearchString);
 			if(searchResultsDMM != null && searchResultsDMM.length > 0)
@@ -564,7 +565,7 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 							//do a sleep before doing google searches. we're doing a lot of them are likely to get blocked
 							//make the sleep somewhat random to try to make this look more like a human doing these ;)
 							Random ran = new Random();
-							int randomTime = ran.nextInt(2000) + 3500;
+							int randomTime = ran.nextInt(2000);
 							System.out.println("Sleeping thread for " + randomTime + "ms before doing google search in R18.com scraping.");
 							Thread.sleep(randomTime);
 							SearchResult [] googleLinkCandidate = getLinksFromGoogle(cidToUse, "r18.com");
@@ -586,6 +587,8 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 						}
 					}
 					i++;
+					if(i > maxNumberOfTries)
+						break;
 				}
 			}
 		} catch (IOException | InterruptedException e) {

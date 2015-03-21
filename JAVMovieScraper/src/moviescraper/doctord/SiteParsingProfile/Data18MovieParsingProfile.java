@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.codec.EncoderException;
@@ -45,7 +46,7 @@ public class Data18MovieParsingProfile extends SiteParsingProfile {
 
 	@Override
 	public Title scrapeTitle() {
-		Element titleElement = document.select("div#centered.main2 div div h1.h1big").first();
+		Element titleElement = document.select("div#centered.main2 div h1").first();
 		if(titleElement != null)
 			return new Title(titleElement.text());
 		else return new Title("");
@@ -78,22 +79,31 @@ public class Data18MovieParsingProfile extends SiteParsingProfile {
 
 	@Override
 	public Year scrapeYear() {
-		
+
 		//old method before site update in September 2014
 		Element releaseDateElement = document.select("div p:contains(Release Date:) b").first();
-		//new method after site update in sept 2014
+		//new method after site update in mar 2015
 		if(releaseDateElement == null)
 		{
-			
-			releaseDateElement = document.select("div.p8 div h1.h1big ~ p").first();
-			String releaseDateText = releaseDateElement.text().trim();
-			if(releaseDateText.length() > 4)
+
+			releaseDateElement = document.select("div.p8 div.gen12 p:contains(Release Date:), div.p8 div.gen12 p:contains(Production Year:)").first();
+			if(releaseDateElement != null)
 			{
-				//just get the first 4 letters which is the year
-				releaseDateText = releaseDateText.substring(0,4);
-				return new Year(releaseDateText);
+				String releaseDateText = releaseDateElement.text().trim();
+				final Pattern pattern = Pattern.compile("(\\d{4})"); //4 digit years
+				final Matcher matcher = pattern.matcher(releaseDateText);
+				if ( matcher.find() ) {
+					String year = matcher.group(matcher.groupCount());
+					return new Year(year);
+				}
+				if(releaseDateText.length() > 4)
+				{
+					//just get the first 4 letters which is the year
+					releaseDateText = releaseDateText.substring(0,4);
+					return new Year(releaseDateText);
+				}
+				else return Year.BLANK_YEAR;
 			}
-			else return Year.BLANK_YEAR;
 		}
 		else if(releaseDateElement != null)
 		{
@@ -128,9 +138,16 @@ public class Data18MovieParsingProfile extends SiteParsingProfile {
 
 	@Override
 	public Plot scrapePlot() {
-		Element plotElement = document.select("div.gen12 b:contains(Description:) ~ p").first();
+		Element plotElement = document.select("p.gen12:contains(Description:)").first();
 		if(plotElement != null)
-			return new Plot(plotElement.text());
+		{
+			String plotText = plotElement.text();
+			if(plotText.startsWith("Description: "))
+			{
+				plotText = plotText.replaceFirst("Description:", "");
+			}
+			return new Plot(plotText);
+		}
 		return Plot.BLANK_PLOT;
 	}
 
