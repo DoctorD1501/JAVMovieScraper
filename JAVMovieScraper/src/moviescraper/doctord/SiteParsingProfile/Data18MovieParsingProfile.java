@@ -153,7 +153,6 @@ public class Data18MovieParsingProfile extends SiteParsingProfile {
 
 	@Override
 	public Tagline scrapeTagline() {
-		// TODO Auto-generated method stub
 		return Tagline.BLANK_TAGLINE;
 	}
 

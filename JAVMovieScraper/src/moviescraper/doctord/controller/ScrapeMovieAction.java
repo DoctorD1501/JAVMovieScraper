@@ -320,8 +320,10 @@ public class ScrapeMovieAction extends AbstractAction {
 							data18Movie = makeData18MovieThreadsAndScrape(
 									movieNumberInListFinal, false);
 						}
+						clearOverrides();
 					} catch (InterruptedException e) {
 						e.printStackTrace();
+						clearOverrides();
 					}
 					// finish up the progress monitor for the current scraping
 					makeProgress(100, "Done!"); 
@@ -585,7 +587,7 @@ public class ScrapeMovieAction extends AbstractAction {
 
 		scrapeQueryData18MovieThread.start();
 		scrapeQueryData18MovieThread.join();
-		if(this.guiMain.getCurrentlySelectedMovieData18Movie() != null)
+		if(this.guiMain.getCurrentlySelectedMovieData18Movie() == null)
 			System.out.print("No results found for file: " + 
 					guiMain.getCurrentlySelectedMovieFileList().get(currentMovieNumberInList).getName());
 			

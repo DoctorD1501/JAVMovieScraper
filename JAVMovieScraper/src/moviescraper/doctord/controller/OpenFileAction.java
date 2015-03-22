@@ -29,11 +29,12 @@ public class OpenFileAction implements ActionListener {
 		{
 			if (this.guiMain.getCurrentlySelectedMovieFileList() != null) {
 				try {
-					Desktop.getDesktop().open(this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList));
+					if(this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList).exists())
+					{
+						Desktop.getDesktop().open(this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList));
+					}
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
-					JOptionPane.showMessageDialog(null, ExceptionUtils.getStackTrace(e),"Unhandled Exception",JOptionPane.ERROR_MESSAGE);
 				}
 			}
 
