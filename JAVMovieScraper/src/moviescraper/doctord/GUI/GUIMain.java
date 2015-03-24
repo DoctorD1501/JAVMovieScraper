@@ -541,9 +541,11 @@ public class GUIMain {
 
 			SelectionDialog selectionDialog = new SelectionDialog(searchResults, siteName);
 
-			JOptionPane.showOptionDialog(null, selectionDialog, "Select Movie to Scrape From " + siteName,
+			int optionPicked = JOptionPane.showOptionDialog(null, selectionDialog, "Select Movie to Scrape From " + siteName,
 					JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,
 					null, null, null);
+			if(optionPicked == JOptionPane.CANCEL_OPTION)
+				return null;
 			return selectionDialog.getSelectedValue();
 		}
 		else return null;

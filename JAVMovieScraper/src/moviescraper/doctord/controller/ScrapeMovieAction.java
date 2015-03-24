@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -193,6 +194,11 @@ public class ScrapeMovieAction extends AbstractAction {
 													"dmm.co.jp");
 									if (searchResultFromUser != null)
 										overrideURLDMM = searchResultFromUser.getUrlPath();
+									else
+									{
+										guiMain.movieToWriteToDiskList.add(null);
+										clearOverrides();
+									}
 								}
 
 							}
@@ -231,7 +237,11 @@ public class ScrapeMovieAction extends AbstractAction {
 							}
 							//if we hit cancel twice while scraping, just go on to the next movie and don't scrape
 							if (overrideURLDMM == null && overrideURLJavLibrary == null)
+							{
+								guiMain.movieToWriteToDiskList.add(null);
+								clearOverrides();
 								continue;
+							}
 						} catch (IOException e2) {
 							// TODO Auto-generated catch block
 							e2.printStackTrace();
@@ -268,8 +278,11 @@ public class ScrapeMovieAction extends AbstractAction {
 											.showOptionPane(
 													searchResultData18Movie,
 													"Data18 Movie");
-									if (searchResultFromUser == null)
+									if (searchResultFromUser == null){
+										guiMain.movieToWriteToDiskList.add(null);
+										clearOverrides();
 										continue;
+									}
 									overrideURLData18Movie = searchResultFromUser
 											.getUrlPath();
 								}
@@ -293,7 +306,11 @@ public class ScrapeMovieAction extends AbstractAction {
 													searchResultsIAFD,
 													"Data18 Movie");
 									if (searchResultFromUser == null)
+									{
+										guiMain.movieToWriteToDiskList.add(null);
+										clearOverrides();
 										continue;
+									}
 									overrideURLIAFD = searchResultFromUser
 											.getUrlPath();
 									if (!overrideURLIAFD
