@@ -2,15 +2,9 @@ package moviescraper.doctord.SiteParsingProfile.test;
 
 import static org.junit.Assert.*;
 
-import java.awt.EventQueue;
-import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 
 import moviescraper.doctord.Thumb;
 import moviescraper.doctord.SiteParsingProfile.specific.TokyoHotParsingProfile;

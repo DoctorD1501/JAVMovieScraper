@@ -11,14 +11,11 @@ import moviescraper.doctord.Language;
 import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.Thumb;
 import moviescraper.doctord.SiteParsingProfile.specific.OneThousandGiriParsingProfile;
-import moviescraper.doctord.SiteParsingProfile.specific.R18ParsingProfile;
 import moviescraper.doctord.controller.SpecificScraperAction;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Genre;
-import moviescraper.doctord.dataitem.ID;
 import moviescraper.doctord.dataitem.OriginalTitle;
 import moviescraper.doctord.dataitem.Plot;
-import moviescraper.doctord.dataitem.Set;
 import moviescraper.doctord.dataitem.Title;
 import moviescraper.doctord.dataitem.Year;
 

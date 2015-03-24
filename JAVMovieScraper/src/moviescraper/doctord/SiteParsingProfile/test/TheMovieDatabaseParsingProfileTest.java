@@ -9,7 +9,6 @@ import java.util.ArrayList;
 
 import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.Thumb;
-import moviescraper.doctord.SiteParsingProfile.specific.R18ParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.specific.TheMovieDatabaseParsingProfile;
 import moviescraper.doctord.controller.SpecificScraperAction;
 import moviescraper.doctord.dataitem.Actor;

@@ -6,15 +6,11 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 
-import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 
 import moviescraper.doctord.Movie;
 import moviescraper.doctord.GUI.GUIMain;
-import moviescraper.doctord.dataitem.Trailer;
 import moviescraper.doctord.model.Renamer;
-
-import org.apache.commons.lang3.exception.ExceptionUtils;
 
 public class WriteFileDataAction implements ActionListener {
 

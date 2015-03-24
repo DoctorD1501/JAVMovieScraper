@@ -3,13 +3,9 @@ package moviescraper.doctord.GUI;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.EventQueue;
-
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
-import javax.swing.border.EmptyBorder;
 
 public class MessageConsolePanel extends JPanel{
 

@@ -2,7 +2,6 @@ package moviescraper.doctord.GUI;
 
 import java.io.*;
 import java.awt.*;
-import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.text.*;
 

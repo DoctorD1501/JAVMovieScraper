@@ -5,11 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
-import javax.swing.JOptionPane;
-
 import moviescraper.doctord.GUI.GUIMain;
-
-import org.apache.commons.lang3.exception.ExceptionUtils;
 
 public class OpenFileAction implements ActionListener {
 	/**

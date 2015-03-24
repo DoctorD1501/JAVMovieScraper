@@ -5,19 +5,14 @@ import java.awt.EventQueue;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
-import javax.swing.ImageIcon;
-import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.JToolBar;
-
 import java.awt.BorderLayout;
 
 import javax.swing.JList;
@@ -26,20 +21,8 @@ import moviescraper.doctord.IconCache;
 import moviescraper.doctord.Movie;
 import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.GUI.renderer.FileRenderer;
-import moviescraper.doctord.controller.BrowseDirectoryAction;
-import moviescraper.doctord.controller.FileNameCleanupAction;
-import moviescraper.doctord.controller.MoveToNewFolderAction;
-import moviescraper.doctord.controller.OpenFileAction;
-import moviescraper.doctord.controller.RefreshDirectoryAction;
-import moviescraper.doctord.controller.ScrapeMovieAction;
-import moviescraper.doctord.controller.ScrapeMovieActionAutomatic;
-import moviescraper.doctord.controller.ScrapeMovieActionData18Movie;
-import moviescraper.doctord.controller.ScrapeMovieActionData18WebContent;
 import moviescraper.doctord.controller.SelectFileListAction;
-import moviescraper.doctord.controller.UpDirectoryAction;
-import moviescraper.doctord.controller.WriteFileDataAction;
 import moviescraper.doctord.dataitem.Actor;
-import moviescraper.doctord.dataitem.Title;
 import moviescraper.doctord.preferences.GuiSettings;
 import moviescraper.doctord.preferences.MoviescraperPreferences;
 
@@ -47,16 +30,10 @@ import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Image;
-import java.awt.LayoutManager;
-import java.awt.PopupMenu;
-
-import javax.swing.JButton;
-
 import java.awt.SystemColor;
 
 import javax.swing.UIManager;
 
-import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -69,20 +46,10 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-import javax.swing.Action;
-
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.imgscalr.Scalr;
-import org.imgscalr.Scalr.Method;
-
-import java.awt.image.BufferedImage;
-
 import javax.swing.BoxLayout;
 
-import java.awt.Component;
-
-import javax.swing.border.Border;
 import javax.swing.event.ListSelectionListener;
 
 public class GUIMain {
