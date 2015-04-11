@@ -54,7 +54,7 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 	
 	private String getJapaneseTitleText(){
 		initializeJapaneseDocument();
-		Element titleElement = japaneseDocument.select("div.video-detail span h1").first();
+		Element titleElement = japaneseDocument.select("div.video-detail span h1").first();		
 		
 		if(titleElement != null)
 		{
@@ -500,7 +500,18 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 	@Override
 	public SearchResult[] getSearchResults(String searchString)
 			throws IOException {
-		return getLinksFromGoogle(searchString, "http://en.caribbeancompr.com/eng/moviepages/");
+		SearchResult[] googleResults = getLinksFromGoogle(searchString, "http://en.caribbeancompr.com/eng/moviepages/");
+		//Remove any parts of the URL after .html - for some reason this sometimes happens and messes up the scrape
+		for(int i = 0; i < googleResults.length; i++)
+		{
+			String currentUrl = googleResults[i].getUrlPath();
+			if(!currentUrl.endsWith(".html") && currentUrl.contains(".html"))
+			{
+				String newURL = currentUrl.substring(0,currentUrl.indexOf(".html")+5);
+				googleResults[i].setUrlPath(newURL);
+			}
+		}
+		return googleResults;
 	}
 
 	private void initializeJapaneseDocument() {

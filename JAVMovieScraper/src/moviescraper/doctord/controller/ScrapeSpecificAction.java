@@ -65,7 +65,7 @@ public class ScrapeSpecificAction extends AbstractAction {
 							"No Movies Found", JOptionPane.ERROR_MESSAGE);
 				else
 				{
-					System.out.println("Scraper found matches for" + foundMovieMatch.size() + "/" +
+					System.out.println("Scraper found matches for " + foundMovieMatch.size() + "/" +
 						toScrape.size() + " selected files.");
 					if(foundMovieMatch.size() > 0)
 						System.out.println("Files scraper found a match for: " + foundMovieMatch);
