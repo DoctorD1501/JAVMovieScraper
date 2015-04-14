@@ -78,13 +78,17 @@ public class ActionJavParsingProfile extends SiteParsingProfile {
 		Element ratingElement = document
 				.select("body table tbody tr td table tbody tr td div table tbody tr td table tbody tr td table tbody tr:contains(Rated) td ~ td p img")
 				.first();
-		String ratingImgUrl = ratingElement.attr("src");
-		String ratingIntegerIntegerPart = ratingImgUrl.substring(
-				ratingImgUrl.length() - 7, ratingImgUrl.length() - 6);
-		String ratingDecimalIntegerPart = ratingImgUrl.substring(
-				ratingImgUrl.length() - 5, ratingImgUrl.length() - 4);
-		return new Rating(5.0, ratingIntegerIntegerPart + "."
-				+ ratingDecimalIntegerPart);
+		if(ratingElement != null)
+		{
+			String ratingImgUrl = ratingElement.attr("src");
+			String ratingIntegerIntegerPart = ratingImgUrl.substring(
+					ratingImgUrl.length() - 7, ratingImgUrl.length() - 6);
+			String ratingDecimalIntegerPart = ratingImgUrl.substring(
+					ratingImgUrl.length() - 5, ratingImgUrl.length() - 4);
+			return new Rating(5.0, ratingIntegerIntegerPart + "."
+					+ ratingDecimalIntegerPart);
+		}
+		return Rating.BLANK_RATING;
 	}
 
 	@Override
@@ -108,9 +112,13 @@ public class ActionJavParsingProfile extends SiteParsingProfile {
 		Element votesElement = document
 				.select("body table tbody tr td table tbody tr td div table tbody tr td table tbody tr td table tbody tr:contains(Rated) td ~ td p font")
 				.first();
-		String votes = votesElement.text();
-		votes = votes.substring(2,votes.indexOf('v')-1);
-		return new Votes(votes);
+		if(votesElement != null)
+		{
+			String votes = votesElement.text();
+			votes = votes.substring(2,votes.indexOf('v')-1);
+			return new Votes(votes);
+		}
+		return Votes.BLANK_VOTES;
 	}
 
 	@Override
