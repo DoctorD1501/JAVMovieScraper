@@ -435,7 +435,10 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 			return baseId;
 		}
 		
-		String attemptOneBaseFileName = searchStringHelper(file);
+		//I've commented out doing additional google searches from the DMM cid for now as it was getting us banned
+		
+		
+		/*String attemptOneBaseFileName = searchStringHelper(file);
 		if(attemptOneBaseFileName != null)
 			return attemptOneBaseFileName;
 		
@@ -474,7 +477,7 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 			//get rid of the extra zeros we put in
 			removeZerosFromID(4);
 			return attemptFileNameWithFourExtraZero;
-		}
+		}*/
 		
 		//after all that we still didn't find anything, oh well, it happens! maybe the method above can be improved
 		//if we're positive r18 should have had a match on that file, so if you're reading this comment
