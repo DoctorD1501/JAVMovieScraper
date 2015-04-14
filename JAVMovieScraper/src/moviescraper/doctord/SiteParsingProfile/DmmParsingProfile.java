@@ -200,6 +200,9 @@ public class DmmParsingProfile extends SiteParsingProfile {
 	private String getCIDFromDocumentURL()
 	{
 		String pageURL = document.location();
+		//get rid of any parameters at the end of the URL - these mess up our calculation of extracting the CID from the URL
+		if(pageURL.contains("?"))
+			pageURL = pageURL.substring(0, pageURL.indexOf("?"));
 		if(pageURL != null)
 		{
 			String subStringToSearchFor = "/=/cid=";
