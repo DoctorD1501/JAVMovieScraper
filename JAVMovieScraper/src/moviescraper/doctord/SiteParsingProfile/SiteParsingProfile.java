@@ -228,6 +228,7 @@ public abstract class SiteParsingProfile {
 	            href = href.replaceFirst(Pattern.quote("/url?q="), "");
 	            href = href.replaceFirst(Pattern.quote("http://www.google.com/url?url="),"");
 	            href = href.replace("&rct=j&q=&esrc=s", "");
+	            href = href.replace("&rct=j&frm=1&q=&esrc=s", "");
 	            //remove some junk referrer stuff
 	            int startIndexToRemove = href.indexOf("&sa=");
 	            if (startIndexToRemove > -1)
