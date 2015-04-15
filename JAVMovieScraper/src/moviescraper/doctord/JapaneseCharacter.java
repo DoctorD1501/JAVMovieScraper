@@ -231,4 +231,21 @@ public class JapaneseCharacter {
 		
 		
 	}
+	
+	/**
+	 * Returns true if one or more letters in the word are katakana, kanji, or hiragana
+	 */
+	public static boolean containsJapaneseLetter(String word)
+	{
+		for(int i = 0; i < word.length(); i++)
+		{
+			char currentChar = word.charAt(i);
+			if(JapaneseCharacter.isHiragana(currentChar) || JapaneseCharacter.isKanji(currentChar) 
+					|| JapaneseCharacter.isKatakana(currentChar))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 }
