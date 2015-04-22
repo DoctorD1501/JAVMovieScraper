@@ -29,9 +29,9 @@ import org.jsoup.nodes.Document;
 
 import moviescraper.doctord.SiteParsingProfile.Data18MovieParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.Data18WebContentParsingProfile;
-import moviescraper.doctord.SiteParsingProfile.DmmParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.IAFDParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
+import moviescraper.doctord.SiteParsingProfile.specific.DmmParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.specific.JavLibraryParsingProfile;
 import moviescraper.doctord.controller.ScrapeMovieAction;
 import moviescraper.doctord.dataitem.*;

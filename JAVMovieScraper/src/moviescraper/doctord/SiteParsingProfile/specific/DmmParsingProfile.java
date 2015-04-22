@@ -1,4 +1,4 @@
-package moviescraper.doctord.SiteParsingProfile;
+package moviescraper.doctord.SiteParsingProfile.specific;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,9 +9,11 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import moviescraper.doctord.Language;
 import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.Thumb;
 import moviescraper.doctord.TranslateString;
+import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Director;
 import moviescraper.doctord.dataitem.Genre;
@@ -30,6 +32,7 @@ import moviescraper.doctord.dataitem.Top250;
 import moviescraper.doctord.dataitem.Trailer;
 import moviescraper.doctord.dataitem.Votes;
 import moviescraper.doctord.dataitem.Year;
+import moviescraper.doctord.preferences.MoviescraperPreferences;
 
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.lang3.StringUtils;
@@ -39,11 +42,21 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-public class DmmParsingProfile extends SiteParsingProfile {
+public class DmmParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
 	final static double dmmMaxRating = 5.00;
 	private boolean doGoogleTranslation;
 	private boolean scrapeTrailers;
+	
+	public DmmParsingProfile()
+	{
+		super();
+		doGoogleTranslation = (scrapingLanguage == Language.ENGLISH);
+		System.out.println("scrapingLanguage = " + scrapingLanguage);
+		System.out.println("doGoogleTranslation = " + doGoogleTranslation);
+		scrapeTrailers = true;
+	}
+	
 	public DmmParsingProfile(Document document) {
 		super(document);
 		doGoogleTranslation = true;
@@ -848,7 +861,8 @@ public class DmmParsingProfile extends SiteParsingProfile {
 
 	@Override
 	public SiteParsingProfile newInstance() {
-		return new DmmParsingProfile(this.doGoogleTranslation);
+		MoviescraperPreferences preferences = new MoviescraperPreferences();
+		return new DmmParsingProfile(preferences.getScrapeInJapanese());
 	}
 
 	@Override

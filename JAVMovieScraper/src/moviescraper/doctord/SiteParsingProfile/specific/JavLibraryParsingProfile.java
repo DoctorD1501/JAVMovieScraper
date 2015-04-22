@@ -16,7 +16,6 @@ import org.jsoup.select.Elements;
 import moviescraper.doctord.Movie;
 import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.Thumb;
-import moviescraper.doctord.SiteParsingProfile.DmmParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Director;
