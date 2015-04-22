@@ -59,7 +59,7 @@ public class OneThousandGiriParsingProfileTest {
 	@SuppressWarnings("static-access")
 	@Test
 	public void testFindID() {
-		String findIDTagFromFile = parser.findIDTagFromFile(file);
+		String findIDTagFromFile = parser.findIDTagFromFile(file, false);
 		System.out.println(findIDTagFromFile);
 		assertEquals(findIDTagFromFile, "150130ran_rio");
 	}

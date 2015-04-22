@@ -54,6 +54,10 @@ public abstract class SiteParsingProfile {
 	
 	private boolean extraFanartScrapingEnabled = false;
 	
+	MoviescraperPreferences scrapingPreferences;
+	
+	private boolean firstWordOfFileIsID = false;
+	
 	/**
 	 * If this has a value when scraping, will use overridenSearchResult 
 	 * from a user provided URL without looking at file name
@@ -80,10 +84,14 @@ public abstract class SiteParsingProfile {
 		this.document = document;
 		overrideURLDMM = null;
 		scrapingLanguage = Language.ENGLISH;
+		scrapingPreferences = new MoviescraperPreferences();
+		this.firstWordOfFileIsID = scrapingPreferences.getIsFirstWordOfFileID();
 	}
 	
 	public SiteParsingProfile(){
 		scrapingLanguage = Language.ENGLISH;
+		scrapingPreferences = new MoviescraperPreferences();
+		this.firstWordOfFileIsID = scrapingPreferences.getIsFirstWordOfFileID();
 	}
 
 	public Document getDocument() {
@@ -113,12 +121,18 @@ public abstract class SiteParsingProfile {
 	}
 	
 	
-	//Gets the ID number from the file and considers stripped out multipart file identifiers like CD1, CD2, etc
-	//The ID number needs to be the last word in the filename or the next to the last word in the file name if the file name
-	//ends with something like CD1 or Disc 1
-	//So this filename "My Movie ABC-123 CD1" would return the id as ABC-123
-	//This filename "My Movie ABC-123" would return the id as ABC-123
-	public static String findIDTagFromFile(File file)
+	/**
+	 * Gets the ID number from the file and considers stripped out multipart file identifiers like CD1, CD2, etc
+	 * The ID number needs to be the last word in the filename or the next to the last word in the file name if the file name
+	 * ends with something like CD1 or Disc 1
+	 * So this filename "My Movie ABC-123 CD1" would return the id as ABC-123
+	 * This filename "My Movie ABC-123" would return the id as ABC-123
+	 * @param file - file to find the ID tag from
+	 * @param firstWordOfFileIsID - if true, just uses the first word in the file (seperated by space) as the ID number
+	 * otherwise use the method described above
+	 * @return
+	 */
+	public static String findIDTagFromFile(File file, boolean firstWordOfFileIsID)
 	{
 		String fileNameNoExtension;
 		if(file.isDirectory())
@@ -128,7 +142,10 @@ public abstract class SiteParsingProfile {
 		else fileNameNoExtension = FilenameUtils.removeExtension(file.getName());
 		String fileNameNoExtensionNoDiscNumber = stripDiscNumber(fileNameNoExtension);
 		String[] splitFileName = fileNameNoExtensionNoDiscNumber.split(" ");
-		String lastWord = splitFileName[splitFileName.length-1];
+		String lastWord = "";
+		if(firstWordOfFileIsID && splitFileName.length > 0)
+			lastWord = splitFileName[0];
+		else lastWord = splitFileName[splitFileName.length-1];
 		
 		//Some people like to enclose the ID number in parenthesis or brackets like this (ABC-123) or this [ABC-123] so this gets rid of that
 		//TODO: Maybe consolidate these lines of code using a single REGEX?
@@ -344,6 +361,14 @@ public abstract class SiteParsingProfile {
 				"Mozilla/5.0 (Windows; U; Windows NT 6.1; tr-TR) AppleWebKit/533.20.25 (KHTML, like Gecko) Version/5.0.4 Safari/533.20.27",
 				"Mozilla/5.0 (Windows; U; Windows NT 5.0; en-en) AppleWebKit/533.16 (KHTML, like Gecko) Version/4.1 Safari/533.16"};
 		return userAgent[new Random().nextInt(userAgent.length)];
+	}
+
+	public boolean isFirstWordOfFileIsID() {
+		return firstWordOfFileIsID;
+	}
+
+	public void setFirstWordOfFileIsID(boolean firstWordOfFileIsID) {
+		this.firstWordOfFileIsID = firstWordOfFileIsID;
 	}
 	
 }

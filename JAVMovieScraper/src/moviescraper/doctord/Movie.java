@@ -129,6 +129,15 @@ public class Movie {
 		actors = siteToScrapeFrom.scrapeActors();
 		genres = siteToScrapeFrom.scrapeGenres();
 		directors = siteToScrapeFrom.scrapeDirectors();
+		
+		MoviescraperPreferences scraperPreferences = new MoviescraperPreferences();
+		if(scraperPreferences.getAppendIDToStartOfTitle() && id != null && 
+				id.getId() != null && id.getId().trim().length() > 0 && title != null &&
+				title.getTitle() != null && title.getTitle().length() > 0)
+		{
+			title.setTitle(id.getId() + " - " + title.getTitle());
+		}
+		
 	}
 	
 	/**
@@ -752,7 +761,7 @@ public class Movie {
 			scrapeMovieAction.makeProgress(amountOfProgressToMakeEachTick, siteToParseFrom.toString() + " got search results.");
 		}
 		int levDistanceOfCurrentMatch = 999999; // just some super high number
-		String idFromMovieFile = SiteParsingProfile.findIDTagFromFile(movieFile);
+		String idFromMovieFile = SiteParsingProfile.findIDTagFromFile(movieFile, siteToParseFrom.isFirstWordOfFileIsID());
 		
 		//loop through search results and see if URL happens to contain ID number in the URL. This will improve accuracy!
 		for (int i = 0; i < searchResults.length; i++)

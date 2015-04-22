@@ -263,6 +263,41 @@ public class GUIMainMenuBar extends JMenuBar{
 		});
 		preferenceMenu.add(promptForUserProvidedURL);
 		
+		//Checkbox for option if the ID is just considered the first word in the file
+		JCheckBoxMenuItem isFirstWordOfFileID = new JCheckBoxMenuItem("Use First Word of File for ID Instead of Last");
+		isFirstWordOfFileID.setState(getPreferences().getIsFirstWordOfFileID());
+		isFirstWordOfFileID.addItemListener(new ItemListener() {
+
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				//save the menu choice off to the preference object (and the disk based settings file)
+				if(e.getStateChange() == ItemEvent.SELECTED)
+					getPreferences().setIsFirstWordOfFileID(true);
+				else if(e.getStateChange() == ItemEvent.DESELECTED)
+					getPreferences().setIsFirstWordOfFileID(false);
+
+			}
+		});
+		preferenceMenu.add(isFirstWordOfFileID);
+		
+		
+		//Checkbox for option to append the ID to start of the title field
+		JCheckBoxMenuItem appendIDToStartOfTitle = new JCheckBoxMenuItem("Append ID to Start of Title Field When Scraping");
+		appendIDToStartOfTitle.setState(getPreferences().getAppendIDToStartOfTitle());
+		appendIDToStartOfTitle.addItemListener(new ItemListener() {
+
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				//save the menu choice off to the preference object (and the disk based settings file)
+				if(e.getStateChange() == ItemEvent.SELECTED)
+					getPreferences().setAppendIDToStartOfTitle(true);
+				else if(e.getStateChange() == ItemEvent.DESELECTED)
+					getPreferences().setAppendIDToStartOfTitle(false);
+
+			}
+		});
+		preferenceMenu.add(appendIDToStartOfTitle);
+		
 		
 		add(preferenceMenu);
 

@@ -25,6 +25,7 @@ import moviescraper.doctord.dataitem.Top250;
 import moviescraper.doctord.dataitem.Trailer;
 import moviescraper.doctord.dataitem.Votes;
 import moviescraper.doctord.dataitem.Year;
+import moviescraper.doctord.preferences.MoviescraperPreferences;
 
 public class GenericMovieScraper extends AbstractMovieScraper {
 	
@@ -83,7 +84,15 @@ public class GenericMovieScraper extends AbstractMovieScraper {
 		scrapeTop250 = spp.scrapeTop250();
 		scrapeTrailer = spp.scrapeTrailer();
 		scrapeVotes = spp.scrapeVotes();
-		scrapeYear = spp.scrapeYear();		
+		scrapeYear = spp.scrapeYear();
+		
+		MoviescraperPreferences scraperPreferences = new MoviescraperPreferences();
+		if(scraperPreferences.getAppendIDToStartOfTitle() && scrapeID != null && 
+				scrapeID.getId() != null && scrapeID.getId().trim().length() > 0 && scrapeTitle != null
+				&& scrapeTitle.getTitle() != null && scrapeTitle.getTitle().length() > 0)
+		{
+			scrapeTitle.setTitle(scrapeID.getId() + " - " + scrapeTitle.getTitle());
+		}
 	}
 	
 	protected Movie generateGeneric() {

@@ -293,7 +293,7 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 
 	@Override
 	public String createSearchString(File file) {
-		String fileNameNoExtension = findIDTagFromFile(file);
+		String fileNameNoExtension = findIDTagFromFile(file, isFirstWordOfFileIsID());
 		return getSearchString(fileNameNoExtension);
 	}
 

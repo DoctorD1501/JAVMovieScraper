@@ -53,7 +53,7 @@ public class JavBusParsingProfileTest {
 	@SuppressWarnings("static-access")
 	@Test
 	public void testFindID() {
-		String findIDTagFromFile = parser.findIDTagFromFile(file);
+		String findIDTagFromFile = parser.findIDTagFromFile(file, false);
 		System.out.println(findIDTagFromFile);
 		assertEquals(findIDTagFromFile, "MIDE-058");
 	}

@@ -18,6 +18,8 @@ public class MoviescraperPreferences extends Settings {
 		renameMovieFile,
 		scrapeInJapanese,
 		promptForUserProvidedURLWhenScraping,
+		isFirstWordOfFileID,
+		appendIDToStartOfTitle,
 		;
 
 		@Override
@@ -151,6 +153,22 @@ public class MoviescraperPreferences extends Settings {
 
 	public void setPromptForUserProvidedURLWhenScraping(boolean preferenceValue){
 		setBooleanValue(Key.promptForUserProvidedURLWhenScraping, preferenceValue);
+	}
+	
+	public boolean getIsFirstWordOfFileID(){
+		return getBooleanValue(Key.isFirstWordOfFileID, false);
+	}
+	
+	public void setIsFirstWordOfFileID(boolean preferenceValue){
+		setBooleanValue(Key.isFirstWordOfFileID, preferenceValue);
+	}
+	
+	public boolean getAppendIDToStartOfTitle(){
+		return getBooleanValue(Key.appendIDToStartOfTitle, false);
+	}
+	
+	public void setAppendIDToStartOfTitle(boolean preferenceValue){
+		setBooleanValue(Key.appendIDToStartOfTitle, preferenceValue);
 	}
 
 

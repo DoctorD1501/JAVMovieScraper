@@ -231,7 +231,7 @@ public class SquarePlusParsingProfile extends SiteParsingProfile implements Spec
 
 	@Override
 	public String createSearchString(File file) {
-		String fileNameNoExtension = findIDTagFromFile(file);
+		String fileNameNoExtension = findIDTagFromFile(file, isFirstWordOfFileIsID());
 		return fileNameNoExtension;
 		/*URLCodec codec = new URLCodec();
 		try {

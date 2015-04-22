@@ -378,7 +378,7 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 	//we'll also check to see if we get a google result with our cid before actually returning it
 	@Override
 	public String createSearchString(File file) {
-		String baseId = findIDTagFromFile(file).replace("-", "");
+		String baseId = findIDTagFromFile(file, isFirstWordOfFileIsID()).replace("-", "");
 		Pattern patternID = Pattern.compile("([0-9]*\\D+)(\\d+)");
 		Matcher matcher = patternID.matcher(baseId);
 		String groupOne = "";

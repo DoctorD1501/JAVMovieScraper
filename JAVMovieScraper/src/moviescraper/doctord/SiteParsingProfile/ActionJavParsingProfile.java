@@ -35,13 +35,7 @@ import moviescraper.doctord.dataitem.Year;
 
 public class ActionJavParsingProfile extends SiteParsingProfile {
 
-	public ActionJavParsingProfile(Document document) {
-		super(document);
-	}
 
-	public ActionJavParsingProfile() {
-		// TODO Auto-generated constructor stub
-	}
 
 	@Override
 	public Title scrapeTitle() {
@@ -319,7 +313,7 @@ public class ActionJavParsingProfile extends SiteParsingProfile {
 
 	@Override
 	public String createSearchString(File file) {
-		String fileNameNoExtension = findIDTagFromFile(file);
+		String fileNameNoExtension = findIDTagFromFile(file, isFirstWordOfFileIsID());
 		return fileNameNoExtension;
 	}
 

@@ -283,7 +283,7 @@ public class OneThousandGiriParsingProfile extends SiteParsingProfile implements
 
 	@Override
 	public String createSearchString(File file) {
-		idSearchedForFromFileName = findIDTagFromFile(file);
+		idSearchedForFromFileName = findIDTagFromFile(file, isFirstWordOfFileIsID());
 		return idSearchedForFromFileName;
 	}
 

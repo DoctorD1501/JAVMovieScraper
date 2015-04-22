@@ -50,7 +50,7 @@ public class R18ParsingProfileTest {
 	@SuppressWarnings("static-access")
 	@Test
 	public void testFindID() {
-		String findIDTagFromFile = parser.findIDTagFromFile(file);
+		String findIDTagFromFile = parser.findIDTagFromFile(file, false);
 		System.out.println(findIDTagFromFile);
 		assertEquals(findIDTagFromFile, "ONSD-646");
 	}
