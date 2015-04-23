@@ -84,13 +84,13 @@ public abstract class SiteParsingProfile {
 		this.document = document;
 		overrideURLDMM = null;
 		scrapingLanguage = Language.ENGLISH;
-		scrapingPreferences = new MoviescraperPreferences();
+		scrapingPreferences = MoviescraperPreferences.getInstance();
 		this.firstWordOfFileIsID = scrapingPreferences.getIsFirstWordOfFileID();
 	}
 	
 	public SiteParsingProfile(){
 		scrapingLanguage = Language.ENGLISH;
-		scrapingPreferences = new MoviescraperPreferences();
+		scrapingPreferences = MoviescraperPreferences.getInstance();
 		this.firstWordOfFileIsID = scrapingPreferences.getIsFirstWordOfFileID();
 	}
 

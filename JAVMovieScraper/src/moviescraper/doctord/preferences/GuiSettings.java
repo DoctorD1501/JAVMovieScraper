@@ -5,6 +5,8 @@ import java.io.File;
 import org.apache.commons.lang3.SystemUtils;
 
 public class GuiSettings extends Settings {
+	
+	protected final static GuiSettings INSTANCE = new GuiSettings();
 
 	enum Key implements Settings.Key {
 		lastUsedDirectory,
@@ -20,6 +22,16 @@ public class GuiSettings extends Settings {
 			return "Gui:" + toString();
 		}	
 	}
+	private GuiSettings()
+	{
+		//prevent people from using this
+	}
+	
+	public static synchronized GuiSettings getInstance()
+	{
+		return INSTANCE;
+	}
+	
 	
 	public boolean getShowToolbar(){
 		return getBooleanValue(Key.showToolbar, true);

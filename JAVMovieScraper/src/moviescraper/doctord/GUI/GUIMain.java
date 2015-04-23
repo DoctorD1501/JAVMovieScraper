@@ -153,8 +153,8 @@ public class GUIMain {
 	 */
 	private void initialize() {
 		
-		preferences = new MoviescraperPreferences();
-		guiSettings = new GuiSettings();
+		preferences = MoviescraperPreferences.getInstance();
+		guiSettings = GuiSettings.getInstance();
 		
 		setCurrentlySelectedNfoFileList(new ArrayList<File>());
 		setCurrentlySelectedMovieFileList(new ArrayList<File>());

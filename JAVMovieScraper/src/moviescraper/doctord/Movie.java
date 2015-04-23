@@ -130,7 +130,7 @@ public class Movie {
 		genres = siteToScrapeFrom.scrapeGenres();
 		directors = siteToScrapeFrom.scrapeDirectors();
 		
-		MoviescraperPreferences scraperPreferences = new MoviescraperPreferences();
+		MoviescraperPreferences scraperPreferences = MoviescraperPreferences.getInstance();
 		if(scraperPreferences.getAppendIDToStartOfTitle() && id != null && 
 				id.getId() != null && id.getId().trim().length() > 0 && title != null &&
 				title.getTitle() != null && title.getTitle().length() > 0)

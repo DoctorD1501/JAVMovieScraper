@@ -9,35 +9,37 @@ import java.util.Properties;
 
 public class Settings {
 
-	private static Properties programPreferences;
+	private final static Properties programPreferences = new Properties();
 	private static final String fileNameOfPreferences = "settings.xml";
 
 	protected interface Key {
 		String getKey(); 
 	}
 
-	/*initialization block*/{
-		programPreferences = new Properties();
-		try {
-			programPreferences.loadFromXML(new FileInputStream(fileNameOfPreferences));
+	//Initialization that only happens once
+	static {
+		try (FileInputStream settingsInputStream = new FileInputStream(fileNameOfPreferences);){
+			programPreferences.loadFromXML(settingsInputStream);
+
 		} catch (InvalidPropertiesFormatException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (FileNotFoundException e) {
+			System.out.println("Creating settings.xml since it was not found...");
 			savePreferences(); //file doesn't exist. this will create the file
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+	}
+	protected Settings() {
+		//prevent other people from calling this
 	}
 
-	public Settings() {
-		super();
-	}
-
-	public void savePreferences() {
-		try {
-			programPreferences.storeToXML(new FileOutputStream(fileNameOfPreferences), "");
+	public static void savePreferences() {
+		try (FileOutputStream settingsOutputStream = new FileOutputStream(fileNameOfPreferences);){
+			programPreferences.storeToXML(settingsOutputStream, "");
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -81,7 +83,7 @@ public class Settings {
 		savePreferences();
 	}
 
-	protected <K extends Key> String getStringValue(K preferenceName, String defaultValue) {
+	protected static <K extends Key> String getStringValue(K preferenceName, String defaultValue) {
 		String fieldValue = preferenceName.getKey();
 		String preferenceValue = programPreferences.getProperty(fieldValue);
 		if(preferenceValue != null)

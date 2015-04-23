@@ -861,7 +861,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 
 	@Override
 	public SiteParsingProfile newInstance() {
-		MoviescraperPreferences preferences = new MoviescraperPreferences();
+		MoviescraperPreferences preferences = MoviescraperPreferences.getInstance();
 		return new DmmParsingProfile(preferences.getScrapeInJapanese());
 	}
 

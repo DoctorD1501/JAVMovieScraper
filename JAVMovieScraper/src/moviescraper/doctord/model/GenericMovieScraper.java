@@ -86,7 +86,7 @@ public class GenericMovieScraper extends AbstractMovieScraper {
 		scrapeVotes = spp.scrapeVotes();
 		scrapeYear = spp.scrapeYear();
 		
-		MoviescraperPreferences scraperPreferences = new MoviescraperPreferences();
+		MoviescraperPreferences scraperPreferences = MoviescraperPreferences.getInstance();
 		if(scraperPreferences.getAppendIDToStartOfTitle() && scrapeID != null && 
 				scrapeID.getId() != null && scrapeID.getId().trim().length() > 0 && scrapeTitle != null
 				&& scrapeTitle.getTitle() != null && scrapeTitle.getTitle().length() > 0)

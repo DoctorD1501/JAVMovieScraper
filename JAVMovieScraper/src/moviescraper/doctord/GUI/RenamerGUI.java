@@ -74,7 +74,7 @@ public class RenamerGUI extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					RenamerGUI frame = new RenamerGUI(new MoviescraperPreferences(),null);
+					RenamerGUI frame = new RenamerGUI(MoviescraperPreferences.getInstance(),null);
 					frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				} catch (Exception e) {
 					e.printStackTrace();

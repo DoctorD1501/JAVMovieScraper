@@ -2,7 +2,9 @@ package moviescraper.doctord.preferences;
 
 
 public class MoviescraperPreferences extends Settings {
-
+	
+	private static MoviescraperPreferences INSTANCE;
+	
 	enum Key implements Settings.Key {
 		writeFanartAndPosters,
 		overwriteFanartAndPosters,
@@ -28,12 +30,21 @@ public class MoviescraperPreferences extends Settings {
 		}
 	}
 	
-	public MoviescraperPreferences(){
-		super();
+	private MoviescraperPreferences(){
 		
 		//initialize default values that must exist in the settings file
-		setSanitizerForFilename(getSanitizerForFilename());
-		setRenamerString(getRenamerString());
+
+	}
+	
+	public static synchronized MoviescraperPreferences getInstance()
+	{
+		if(INSTANCE == null)
+		{
+			INSTANCE = new MoviescraperPreferences();
+			INSTANCE.setSanitizerForFilename(getSanitizerForFilename());
+			INSTANCE.setRenamerString(getRenamerString());
+		}
+		return INSTANCE;
 	}
 
 
@@ -115,7 +126,7 @@ public class MoviescraperPreferences extends Settings {
 		setBooleanValue(Key.useIAFDForActors, preferenceValue);
 	}
 
-	public String getSanitizerForFilename() {
+	public static String getSanitizerForFilename() {
 		return getStringValue(Key.sanitizerForFilename, "[\\\\/:*?\"<>|\\r\\n]|[ ]+$|(?<=[^.])[.]+$|(?<=.{250})(.+)(?=[.]\\p{Alnum}{3}$)");
 	}
 
@@ -123,7 +134,7 @@ public class MoviescraperPreferences extends Settings {
 		setStringValue(Key.sanitizerForFilename, preferenceValue);
 	}
 
-	public String getRenamerString() {
+	public static String getRenamerString() {
 		return getStringValue(Key.renamerString, "<TITLE> [<ACTORS>] (<YEAR>) [<ID>]");
 	}
 

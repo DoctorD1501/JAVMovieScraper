@@ -121,7 +121,7 @@ public class Main {
 			else
 			{
 				System.out.println("Trying to rename " + currentFile);
-				MoviescraperPreferences preferences = new MoviescraperPreferences();
+				MoviescraperPreferences preferences = MoviescraperPreferences.getInstance();
 				System.out.println("Renaming with these preferences:");
 				System.out.println(preferences);
 				try {
@@ -235,7 +235,7 @@ public class Main {
 	
 	private static void writeMovieToFile(Movie scrapedMovie, File scrapeTarget)
 	{
-		MoviescraperPreferences preferences = new MoviescraperPreferences();
+		MoviescraperPreferences preferences = MoviescraperPreferences.getInstance();
 
 		
 		File nfoFile = new File(Movie
