@@ -34,7 +34,7 @@ Usage:
 <br>
 <b> -rename &#60;FilePath&#62; </b> renames the file argument(s) and any associated metadata files if the file argument has a valid movie nfo using the file name format from settings.xml
 <br>
-<b> -scrape &#60;ScraperName FilePath&#62;</b> Scrapes and writes metadata of the file located at &#60;FilePath&#62; with type of scraper specified by &#60;ScraperName&#62;. Valid ScraperNames are: data18webcontent, data18, themoviedatabase, iafd, 1000giri, 1pondo, aventertainment, caribbeancom, caribbeancompremium, heyzo, kin8tengoku, mytokyohot, tokyohot, javbus. Any settings.xml file preference values will be taken into account when scraping.
+<b> -scrape &#60;ScraperName FilePath&#62;</b> Scrapes and writes metadata of the file located at &#60;FilePath&#62; with type of scraper specified by &#60;ScraperName&#62;. Valid ScraperNames are: data18webcontent, data18, themoviedatabase, iafd, dmm, 1000giri, 1pondo, aventertainment, caribbeancom, caribbeancompremium, heyzo, kin8tengoku, mytokyohot, tokyohot, javbus. Any settings.xml file preference values will be taken into account when scraping.
 </p>
 <p>
 Example command to run filenamecleanup on two different files:
