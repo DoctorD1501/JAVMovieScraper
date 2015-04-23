@@ -198,7 +198,7 @@ public class IAFDParsingProfile extends SiteParsingProfile {
 				if ( indexOfAs >= 0 ) {
 					actorName = actorName.substring(indexOfAs + actorAlias.length(), actorName.lastIndexOf(")") );
 				}
-				String actorThumbnailSite = "http://www.iafd.com" + currentActorElement.childNode(0).attr("href");
+				String actorThumbnailSite = currentActorElement.childNode(0).absUrl("href");
 				
 				Document searchActor;
 				try {
@@ -206,7 +206,7 @@ public class IAFDParsingProfile extends SiteParsingProfile {
 					Element actorPicture = searchActor.select("div[id=headshot] img").first();
 					if (actorPicture == null)
 						continue;	//found something like "Non Sex Performers" Text between actors
-					String actorThumbnail = "http://www.iafd.com" + actorPicture.attr("src");
+					String actorThumbnail = actorPicture.absUrl("src");
 					//case with actor with thumbnail
 					if(actorThumbnail != null && !actorThumbnail.equals("http://www.iafd.com/graphics/headshots/no_photo.gif"))
 					{
