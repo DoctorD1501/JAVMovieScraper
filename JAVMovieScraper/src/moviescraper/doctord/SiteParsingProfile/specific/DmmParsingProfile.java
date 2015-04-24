@@ -59,7 +59,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 	
 	public DmmParsingProfile(Document document) {
 		super(document);
-		doGoogleTranslation = true;
+		doGoogleTranslation = (scrapingLanguage == Language.ENGLISH);
 	}
 
 	/**
@@ -598,7 +598,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 			String actressPageURL = "http://actress.dmm.co.jp/-/detail/=/actress_id="
 					+ actressID + "/";
 			try {
-				Document actressPage = Jsoup.connect(actressPageURL).timeout(0)
+				Document actressPage = Jsoup.connect(actressPageURL).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE)
 						.get();
 				Element actressNameElement = actressPage.select("td.t1 h1")
 						.first();
@@ -862,7 +862,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 	@Override
 	public SiteParsingProfile newInstance() {
 		MoviescraperPreferences preferences = MoviescraperPreferences.getInstance();
-		return new DmmParsingProfile(preferences.getScrapeInJapanese());
+		return new DmmParsingProfile(!preferences.getScrapeInJapanese());
 	}
 
 	@Override
