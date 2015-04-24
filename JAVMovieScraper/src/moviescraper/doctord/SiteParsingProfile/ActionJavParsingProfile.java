@@ -196,7 +196,7 @@ public class ActionJavParsingProfile extends SiteParsingProfile {
 		String coverLink = document.select("a[href$=&console=cover]").first()
 				.attr("abs:href");
 		try {
-			Document coverPage = Jsoup.connect(coverLink).timeout(0).get();
+			Document coverPage = Jsoup.connect(coverLink).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
 			Element posterImg = coverPage.select(
 					"img[src*=/web_img/covers_hires_full/]").first();
 			//Thumb coverImageCrop = new Thumb(posterImg.attr("src"), 52.7, 0, 0,0);
@@ -216,7 +216,7 @@ public class ActionJavParsingProfile extends SiteParsingProfile {
 		String coverLink = document.select("a[href$=&console=cover]").first()
 				.attr("abs:href");
 		try {
-			Document coverPage = Jsoup.connect(coverLink).timeout(0).get();
+			Document coverPage = Jsoup.connect(coverLink).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
 			Element posterImg = coverPage.select(
 					"img[src*=/web_img/covers_hires_full/]").first();
 			Thumb coverImageCrop = new Thumb(posterImg.attr("src"));

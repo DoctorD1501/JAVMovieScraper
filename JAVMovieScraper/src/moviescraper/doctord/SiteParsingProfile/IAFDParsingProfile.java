@@ -202,7 +202,7 @@ public class IAFDParsingProfile extends SiteParsingProfile {
 				
 				Document searchActor;
 				try {
-					searchActor = Jsoup.connect(actorThumbnailSite).timeout(0).userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:5.0) Gecko/20100101 Firefox/5.0").get();
+					searchActor = Jsoup.connect(actorThumbnailSite).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:5.0) Gecko/20100101 Firefox/5.0").get();
 					Element actorPicture = searchActor.select("div[id=headshot] img").first();
 					if (actorPicture == null)
 						continue;	//found something like "Non Sex Performers" Text between actors
@@ -299,7 +299,7 @@ public class IAFDParsingProfile extends SiteParsingProfile {
 		if(useSiteSearch)
 		{
 			ArrayList<SearchResult> linksList = new ArrayList<SearchResult>();
-			Document doc = Jsoup.connect(searchString).userAgent("Mozilla").ignoreHttpErrors(true).timeout(0).get();
+			Document doc = Jsoup.connect(searchString).userAgent("Mozilla").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
 			Elements movieSearchResultElements = doc.select("li b a");
 			if(movieSearchResultElements == null || movieSearchResultElements.size() == 0)
 			{

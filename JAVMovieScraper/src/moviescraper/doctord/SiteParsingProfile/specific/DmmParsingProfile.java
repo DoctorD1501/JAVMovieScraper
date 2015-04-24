@@ -52,8 +52,6 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 	{
 		super();
 		doGoogleTranslation = (scrapingLanguage == Language.ENGLISH);
-		System.out.println("scrapingLanguage = " + scrapingLanguage);
-		System.out.println("doGoogleTranslation = " + doGoogleTranslation);
 		scrapeTrailers = true;
 	}
 	

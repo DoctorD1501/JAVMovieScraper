@@ -57,7 +57,7 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 				if(urlOfCurrentPage.length() > 1)
 				{
 						try {
-							japaneseDocument = Jsoup.connect(urlOfCurrentPage).userAgent("Mozilla").ignoreHttpErrors(true).timeout(0).get();
+							japaneseDocument = Jsoup.connect(urlOfCurrentPage).userAgent("Mozilla").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -339,14 +339,14 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 			throws IOException {
 		ArrayList<SearchResult> linksList = new ArrayList<SearchResult>();
 		try{
-			Document doc = Jsoup.connect(searchString).userAgent("Mozilla").ignoreHttpErrors(true).timeout(0).get();
+			Document doc = Jsoup.connect(searchString).userAgent("Mozilla").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
 			Elements videoLinksElements = doc.select("div.item");
 			if(videoLinksElements == null || videoLinksElements.size() == 0)
 			{
 				searchString = searchString.replace("/search/", "/uncensored/search/");
 				isCensoredSearch = false;
 			}
-			doc = Jsoup.connect(searchString).userAgent("Mozilla").ignoreHttpErrors(true).timeout(0).get();
+			doc = Jsoup.connect(searchString).userAgent("Mozilla").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
 			videoLinksElements = doc.select("div.item");
 			if(videoLinksElements != null)
 			{

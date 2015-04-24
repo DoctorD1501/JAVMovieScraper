@@ -525,7 +525,7 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 				if(urlOfCurrentPage.length() > 1)
 				{
 						try {
-							japaneseDocument = Jsoup.connect(urlOfCurrentPage).userAgent("Mozilla").ignoreHttpErrors(true).timeout(0).get();
+							japaneseDocument = Jsoup.connect(urlOfCurrentPage).userAgent("Mozilla").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();

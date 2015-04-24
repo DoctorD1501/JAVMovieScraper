@@ -46,7 +46,7 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 	
 	private Document downloadDocument(String url) {
 		try {
-			return Jsoup.connect(url).userAgent("Mozilla").ignoreHttpErrors(true).timeout(0).get();
+			return Jsoup.connect(url).userAgent("Mozilla").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -247,7 +247,7 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 				String name = WordUtils.capitalize(element.text());
 				Thumb thumb = null;
 				try {
-					Document actorDoc = Jsoup.connect(href).userAgent("Mozilla").ignoreHttpErrors(true).timeout(0).get();
+					Document actorDoc = Jsoup.connect(href).userAgent("Mozilla").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
 					Element first = actorDoc.select("ul img[src~=ActressImage]").first();
 					if (first != null) {
 						String thumbURL = first.attr("src");
@@ -300,7 +300,7 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 	@Override
 	public SearchResult[] getSearchResults(String searchString)
 			throws IOException {
-		Document doc = Jsoup.connect(searchString).userAgent("Mozilla").ignoreHttpErrors(true).timeout(0).get();
+		Document doc = Jsoup.connect(searchString).userAgent("Mozilla").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
 		List<SearchResult> list = new ArrayList<>();
 		Elements elements = doc.select("td[valign=top] table tbody tr td");
 

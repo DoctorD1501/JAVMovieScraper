@@ -765,6 +765,7 @@ public class ScrapeMovieAction extends AbstractAction {
 		}
 		// wait for them to finish before updating gui
 		scrapeQueryDMMThread.join();
+		System.out.println("DMM thread complete");
 		if(!this.guiMain.getPreferences().getScrapeInJapanese())
 		{
 			if(anyThreadWasInterrupted())
@@ -774,6 +775,7 @@ public class ScrapeMovieAction extends AbstractAction {
 				return null;
 			}
 			scrapeQueryJavLibraryThread.join();
+			System.out.println("JavLib thread complete");
 			if(anyThreadWasInterrupted())
 			{
 				System.err.println("Something was interrupted");
@@ -781,6 +783,7 @@ public class ScrapeMovieAction extends AbstractAction {
 				return null;
 			}
 			scrapeQueryActionJavThread.join();
+			System.out.println("Action JAV thread complete");
 			if(anyThreadWasInterrupted())
 			{
 				System.err.println("Something was interrupted");
@@ -788,6 +791,7 @@ public class ScrapeMovieAction extends AbstractAction {
 				return null;
 			}
 			scrapeQuerySquarePlusThread.join();
+			System.out.println("Square Plus thread complete");
 			if(anyThreadWasInterrupted())
 			{
 				System.err.println("Something was interrupted");
@@ -795,6 +799,7 @@ public class ScrapeMovieAction extends AbstractAction {
 				return null;
 			}
 			scrapeQueryJavZooThread.join();
+			System.out.println("JavZoo thread complete");
 			if(anyThreadWasInterrupted())
 				if(anyThreadWasInterrupted())
 				{
@@ -804,6 +809,7 @@ public class ScrapeMovieAction extends AbstractAction {
 				}
 			
 			scrapeQueryR18Thread.join();
+			System.out.println("R18 joined");
 			if(anyThreadWasInterrupted())
 				if(anyThreadWasInterrupted())
 				{
@@ -820,7 +826,7 @@ public class ScrapeMovieAction extends AbstractAction {
 			cancelRunningThreads();
 			return null;
 		}
-
+		System.out.println("Now amalgamating movie from all different sources...");
 		if(this.guiMain.getPreferences().getScrapeInJapanese())
 			movieAmalgamated = this.guiMain.getCurrentlySelectedMovieDMM();
 		else{

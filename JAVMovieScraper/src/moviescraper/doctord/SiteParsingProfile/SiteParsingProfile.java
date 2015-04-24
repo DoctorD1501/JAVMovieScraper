@@ -58,6 +58,8 @@ public abstract class SiteParsingProfile {
 	
 	private boolean firstWordOfFileIsID = false;
 	
+	public static final int CONNECTION_TIMEOUT_VALUE = 13000;
+	
 	/**
 	 * If this has a value when scraping, will use overridenSearchResult 
 	 * from a user provided URL without looking at file name
@@ -223,7 +225,7 @@ public abstract class SiteParsingProfile {
 	    	String encodingScheme = "UTF-8";
 	    	String queryToEncode = "site:" + site + " " + searchQuery;
 	    	String encodedSearchQuery = URLEncoder.encode(queryToEncode, encodingScheme);
-	        doc = Jsoup.connect("https://www.google.com/search?q="+encodedSearchQuery).userAgent(getRandomUserAgent()).referrer("http://www.google.com").ignoreHttpErrors(true).timeout(0).get();
+	        doc = Jsoup.connect("https://www.google.com/search?q="+encodedSearchQuery).userAgent(getRandomUserAgent()).referrer("http://www.google.com").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
 	        Elements sorryLink = doc.select("form[action=CaptchaRedirect] input");
 	        Map<String, String> captchaData = new HashMap<>();
 	        for (Element element : sorryLink) {
@@ -297,6 +299,7 @@ public abstract class SiteParsingProfile {
 	
 	public void setScrapingLanguage(MoviescraperPreferences preferences)
 	{
+		System.out.println("prefs = " + preferences);
 		if(preferences.getScrapeInJapanese())
 			scrapingLanguage = Language.JAPANESE;
 		else

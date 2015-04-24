@@ -306,7 +306,7 @@ public class JavZooParsingProfile extends SiteParsingProfile implements Specific
 	public SearchResult[] getSearchResults(String searchString) throws IOException {
 		ArrayList<SearchResult> linksList = new ArrayList<SearchResult>();
 		try{
-			Document doc = Jsoup.connect(searchString).userAgent("Mozilla").ignoreHttpErrors(true).timeout(0).get();
+			Document doc = Jsoup.connect(searchString).userAgent("Mozilla").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
 			{
 				Elements divVideoLinksElements = doc.select("div.item:has(a[href*=/movie/])");
 				String favoredSearchResultString = null;

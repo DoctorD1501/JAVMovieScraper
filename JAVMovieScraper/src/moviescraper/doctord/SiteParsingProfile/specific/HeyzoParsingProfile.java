@@ -300,7 +300,7 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 			englishPage = "http://en.heyzo.com/moviepages/" + fileID + "/index.html";
 			japanesePage = "http://www.heyzo.com/moviepages/" + fileID + "/index.html";
 			try {
-				japaneseDocument = Jsoup.connect(japanesePage).timeout(0).get();
+				japaneseDocument = Jsoup.connect(japanesePage).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

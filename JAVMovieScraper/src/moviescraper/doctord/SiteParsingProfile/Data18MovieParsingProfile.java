@@ -239,7 +239,7 @@ public class Data18MovieParsingProfile extends SiteParsingProfile {
 				//System.out.println("currentVIewerPageURL + " + currentViewerPageURL);
 				try {
 					
-					Document viewerDocument = Jsoup.connect(currentViewerPageURL).timeout(0).userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:5.0) Gecko/20100101 Firefox/5.0").get();
+					Document viewerDocument = Jsoup.connect(currentViewerPageURL).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:5.0) Gecko/20100101 Firefox/5.0").get();
 					if(viewerDocument!= null)
 					{
 						Element imgElement = viewerDocument.select("div#post_view a[href*=/viewer/] img").first();
@@ -406,7 +406,7 @@ public class Data18MovieParsingProfile extends SiteParsingProfile {
 		if(useSiteSearch)
 		{
 			ArrayList<SearchResult> linksList = new ArrayList<SearchResult>();
-			Document doc = Jsoup.connect(searchString).userAgent("Mozilla").ignoreHttpErrors(true).timeout(0).get();
+			Document doc = Jsoup.connect(searchString).userAgent("Mozilla").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
 			Elements movieSearchResultElements = doc.select("div[style=float: left; padding: 6px; width: 130px;");
 			if(movieSearchResultElements == null || movieSearchResultElements.size() == 0)
 			{

@@ -181,7 +181,7 @@ public class SpecificScraperAction {
 	
 	public static Document downloadDocument(String url) {
 		try {
-			return Jsoup.connect(url).userAgent("Mozilla").ignoreHttpErrors(true).timeout(0).get();
+			return Jsoup.connect(url).userAgent("Mozilla").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -192,7 +192,7 @@ public class SpecificScraperAction {
 		try {
 			if(searchResult.isJSONSearchResult())
 				return SiteParsingProfileJSON.getDocument(searchResult.getUrlPath());
-			else return Jsoup.connect(searchResult.getUrlPath()).userAgent("Mozilla").ignoreHttpErrors(true).timeout(0).get();
+			else return Jsoup.connect(searchResult.getUrlPath()).userAgent("Mozilla").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -348,7 +348,7 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 						//System.out.println("Document location: " + document.location());
 						String japaneseLangVersionURLOfCurrentPage = document.location().replaceFirst(Pattern.quote("/" + siteLanguageToScrape), "/" + japaneseLanguageCode);
 						
-						Document japaneseLangDocumentOfCurrentMovie = Jsoup.connect(japaneseLangVersionURLOfCurrentPage).userAgent("Mozilla").timeout(0).get();
+						Document japaneseLangDocumentOfCurrentMovie = Jsoup.connect(japaneseLangVersionURLOfCurrentPage).userAgent("Mozilla").timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
 						Elements japaneseActressElements = japaneseLangDocumentOfCurrentMovie
 								.select("span.cast");
 						if(japaneseActressElements != null)
@@ -446,7 +446,7 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 		ArrayList<SearchResult> linksList = new ArrayList<SearchResult>();
 		String websiteURLBegin = "http://www.javlibrary.com/" + siteLanguageToScrape;
 		try{
-		Document doc = Jsoup.connect(searchString).userAgent("Mozilla").ignoreHttpErrors(true).timeout(0).get();
+		Document doc = Jsoup.connect(searchString).userAgent("Mozilla").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
 		//The search found the page directly
 		if(doc.baseUri().contains("/?v="))
 		{

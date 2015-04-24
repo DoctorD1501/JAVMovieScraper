@@ -2,6 +2,8 @@ package moviescraper.doctord;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -29,7 +31,7 @@ public class TestJavLibSearch {
 			String currentlySelectedLang = "en";
 			String searchTerm = "SNIS-091";
 			String websiteURLBegin = "http://www.javlibrary.com/" + currentlySelectedLang;
-			Document doc = Jsoup.connect("http://www.javlibrary.com/en/vl_searchbyid.php?keyword=" + searchTerm).userAgent("Mozilla").ignoreHttpErrors(true).timeout(0).get();
+			Document doc = Jsoup.connect("http://www.javlibrary.com/en/vl_searchbyid.php?keyword=" + searchTerm).userAgent("Mozilla").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
 			//http://www.javlibrary.com/en/vl_searchbyid.php?keyword=SNIS
 			//The search found the page directly
 			if(doc.baseUri().contains("/?v="))
