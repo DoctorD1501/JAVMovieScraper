@@ -21,6 +21,7 @@ import moviescraper.doctord.controller.BrowseUriAction;
 import moviescraper.doctord.controller.ChooseExternalMediaPlayerAction;
 import moviescraper.doctord.controller.MoveToNewFolderAction;
 import moviescraper.doctord.controller.OpenFileAction;
+import moviescraper.doctord.controller.PlayMovieAction;
 import moviescraper.doctord.controller.RefreshDirectoryAction;
 import moviescraper.doctord.controller.ScrapeMovieAction;
 import moviescraper.doctord.controller.ScrapeMovieActionAutomatic;
@@ -360,6 +361,13 @@ public class GUIMainMenuBar extends JMenuBar{
 				Event.CTRL_MASK));
 		openFile.addActionListener(new OpenFileAction(guiMain));
 		fileMenu.add(openFile);
+		
+		JMenuItem playMovie = new JMenuItem("Play Movie");
+		playMovie.setMnemonic(KeyEvent.VK_P);
+		playMovie.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P,
+				Event.CTRL_MASK));
+		playMovie.addActionListener(new PlayMovieAction(guiMain));
+		fileMenu.add(playMovie);
 
 		JMenuItem writeFile = new JMenuItem("Write File Data");
 		writeFile.setMnemonic(KeyEvent.VK_W);
