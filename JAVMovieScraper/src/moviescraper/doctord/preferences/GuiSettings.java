@@ -13,7 +13,8 @@ public class GuiSettings extends Settings {
 		lastUsedScraper,
 		showOutputPanel,
 		showToolbar,
-		useContentBasedTypeIcons,		
+		useContentBasedTypeIcons,
+		pathToExternalMediaPlayer
 		;
 
 		@Override
@@ -92,6 +93,16 @@ public class GuiSettings extends Settings {
 	
 	public void setLastUsedScraper(String preferenceValue){
 		setStringValue(Key.lastUsedScraper, preferenceValue);
+	}
+	
+	public String getPathToExternalMediaPlayer()
+	{
+		return getStringValue(Key.pathToExternalMediaPlayer, null);		
+	}
+	
+	public void setPathToExternalMediaPlayer(String externalMediaPlayer)
+	{
+		setStringValue(Key.pathToExternalMediaPlayer, externalMediaPlayer);
 	}
 }
 

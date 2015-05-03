@@ -32,6 +32,7 @@ import moviescraper.doctord.controller.BrowseDirectoryAction;
 import moviescraper.doctord.controller.FileNameCleanupAction;
 import moviescraper.doctord.controller.MoveToNewFolderAction;
 import moviescraper.doctord.controller.OpenFileAction;
+import moviescraper.doctord.controller.PlayMovieAction;
 import moviescraper.doctord.controller.RefreshDirectoryAction;
 import moviescraper.doctord.controller.ScrapeMovieAction;
 import moviescraper.doctord.controller.ScrapeMovieActionAutomatic;
@@ -234,12 +235,18 @@ public class GUIMainButtonPanel extends JPanel {
 		openCurrentlySelectedFileButton.setToolTipText("Open the currently selected file with the system default program for it");
 		openCurrentlySelectedFileButton.setIcon(initializeImageIcon("Open"));
 		
+		JButton playCurrentlySelectedMovieButton = new JButton("Play Movie");
+		playCurrentlySelectedMovieButton.addActionListener(new PlayMovieAction(guiMain));
+		playCurrentlySelectedMovieButton.setToolTipText("<html>Play the currently selected movie file using the external movie player defined in the settings menu.<br>If the movie contains stacked files, all files will be added to the external movie player's playlist in alphabetical order.<br>Trailer files will be automatically excluded from the playlist.</html>");
+		playCurrentlySelectedMovieButton.setIcon(initializeImageIcon("Play"));
+		
 		JButton fileNameCleanupButton = new JButton("Clean Up File Name");
 		fileNameCleanupButton.addActionListener(new FileNameCleanupAction(guiMain));
 		fileNameCleanupButton.setToolTipText("Attempts to rename a file of a web content release before scraping so that it is more likely to find a match. I'm still working on adding more site abbreviations, so this feature is experimental for now.");
 		fileNameCleanupButton.setIcon(initializeImageIcon("FixFileName"));
 		
 		fileOperationsButtons.add(openCurrentlySelectedFileButton);
+		fileOperationsButtons.add(playCurrentlySelectedMovieButton);
 		fileOperationsButtons.add(btnWriteFileData);
 		fileOperationsButtons.add(btnMoveFileToFolder);
 		fileOperationsButtons.add(fileNameCleanupButton);

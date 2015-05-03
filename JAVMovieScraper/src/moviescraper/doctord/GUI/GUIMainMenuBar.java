@@ -18,6 +18,7 @@ import moviescraper.doctord.SiteParsingProfile.SiteParsingProfileItem;
 import moviescraper.doctord.SiteParsingProfile.SpecificProfileFactory;
 import moviescraper.doctord.controller.BrowseDirectoryAction;
 import moviescraper.doctord.controller.BrowseUriAction;
+import moviescraper.doctord.controller.ChooseExternalMediaPlayerAction;
 import moviescraper.doctord.controller.MoveToNewFolderAction;
 import moviescraper.doctord.controller.OpenFileAction;
 import moviescraper.doctord.controller.RefreshDirectoryAction;
@@ -305,8 +306,8 @@ public class GUIMainMenuBar extends JMenuBar{
 	
 	private void initializeSettingsMenu() {
 
-		JMenu renameMenu = new JMenu("Settings");
-		renameMenu.setMnemonic(KeyEvent.VK_S);
+		JMenu settingsMenu = new JMenu("Settings");
+		settingsMenu.setMnemonic(KeyEvent.VK_S);
 		JMenuItem renameSettings = new JMenuItem("Rename Settings...");
 		renameSettings.addActionListener(new ActionListener() {
 			@Override
@@ -317,9 +318,13 @@ public class GUIMainMenuBar extends JMenuBar{
 				new RenamerGUI(getPreferences(), currentSelectedMovie);
 			}
 		});
-		renameMenu.add(renameSettings);
+		settingsMenu.add(renameSettings);
 		
-		add(renameMenu);
+		JMenuItem externalMediaPlayerPickerMenu = new JMenuItem("Pick External Media Player");
+		externalMediaPlayerPickerMenu.addActionListener(new ChooseExternalMediaPlayerAction(guiMain));
+		settingsMenu.add(externalMediaPlayerPickerMenu);
+		
+		add(settingsMenu);
 	}
 	
 	private void initializeFileMenu() {
