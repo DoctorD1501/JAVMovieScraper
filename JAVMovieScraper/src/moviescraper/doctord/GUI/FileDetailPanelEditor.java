@@ -3,6 +3,7 @@ package moviescraper.doctord.GUI;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.net.MalformedURLException;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -21,23 +22,42 @@ abstract class AbstractFileDetailPanelEditGUI {
 		this.fileDetailPanel = fileDetailPanel;
 	}
 	
-	protected void showOptionDialog(JPanel panel, String title) {
+	protected enum Operation{
+		ADD, EDIT, DELETE
+	}
+	
+	protected void showOptionDialog(JPanel panel, String title, Operation operation) {
 		int result = JOptionPane.showOptionDialog(null, panel, title,
 				JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,
 				null, null, null);
 		if ( result == JOptionPane.OK_OPTION )
 			try {
-				addAction();
+				switch(operation)
+				{
+				case ADD:
+					addAction();
+					break;
+				case DELETE:
+					//do nothing for now, since we aren't using a form to delete items
+					break;
+				case EDIT:
+					editAction();
+					break;
+				default:
+					break;
+				}
 			} catch (Exception e) {
 				// TODO sansibar better error detection instead of try-catch
 				e.printStackTrace();
 			}
 	}
 	
+	
 	public abstract String getMenuItemName();
-	public abstract void showGUI();
+	public abstract void showGUI(Operation operation);
 	public abstract void addAction() throws Exception;
 	public abstract void deleteAction();
+	public abstract void editAction();
 }
 
 class FileDetailPanelActorEditor extends AbstractFileDetailPanelEditGUI {
@@ -50,7 +70,11 @@ class FileDetailPanelActorEditor extends AbstractFileDetailPanelEditGUI {
 		super(fileDetailPanel);
 	}
 	
-	private JPanel initializeInnerFrame() {
+	private JPanel initializeInnerFrame(){
+		return initializeInnerFrame(new Actor("", "", null));
+	}
+	
+	private JPanel initializeInnerFrame(Actor actorToInitializeFieldsWith) {
 		JPanel innerPanel = new JPanel();
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWeights = new double[]{0.0, 1.0};
@@ -65,6 +89,11 @@ class FileDetailPanelActorEditor extends AbstractFileDetailPanelEditGUI {
 		innerPanel.add(lblActor, gbc_lblActor);
 		
 		textFieldActor = new JTextField();
+		if(actorToInitializeFieldsWith.getName() != null && 
+				actorToInitializeFieldsWith.getName().length() > 0)
+		{
+			textFieldActor.setText(actorToInitializeFieldsWith.getName());
+		}
 		GridBagConstraints gbc_textFieldActor = new GridBagConstraints();
 		gbc_textFieldActor.insets = new Insets(0, 0, 5, 0);
 		gbc_textFieldActor.fill = GridBagConstraints.HORIZONTAL;
@@ -82,6 +111,11 @@ class FileDetailPanelActorEditor extends AbstractFileDetailPanelEditGUI {
 		innerPanel.add(lblActorRole, gbc_lblActorRole);
 		
 		textFieldActorRole = new JTextField();
+		if(actorToInitializeFieldsWith.getRole() != null && 
+				actorToInitializeFieldsWith.getRole().length() > 0)
+		{
+			textFieldActorRole.setText(actorToInitializeFieldsWith.getRole());
+		}
 		GridBagConstraints gbc_textFieldActorRole = new GridBagConstraints();
 		gbc_textFieldActorRole.insets = new Insets(0, 0, 5, 0);
 		gbc_textFieldActorRole.fill = GridBagConstraints.HORIZONTAL;
@@ -99,6 +133,11 @@ class FileDetailPanelActorEditor extends AbstractFileDetailPanelEditGUI {
 		innerPanel.add(lblNewLabel, gbc_lblNewLabel);
 		
 		textFieldURL = new JTextField();
+		if(actorToInitializeFieldsWith.getThumb() != null && 
+				actorToInitializeFieldsWith.getThumb().getThumbURL().toString().length() > 0)
+		{
+			textFieldURL.setText(actorToInitializeFieldsWith.getThumb().getThumbURL().toString());
+		}
 		GridBagConstraints gbc_textFieldURL = new GridBagConstraints();
 		gbc_textFieldURL.insets = new Insets(0, 0, 5, 0);
 		gbc_textFieldURL.fill = GridBagConstraints.HORIZONTAL;
@@ -111,8 +150,11 @@ class FileDetailPanelActorEditor extends AbstractFileDetailPanelEditGUI {
 	}
 	
 	@Override
-	public void showGUI() {
-		showOptionDialog(initializeInnerFrame(), "Manually Add New Actor");
+	public void showGUI(Operation operation) {
+		if(operation == Operation.ADD)
+			showOptionDialog(initializeInnerFrame(), "Manually Add New Actor", operation);
+		else if(operation == Operation.EDIT)
+			showOptionDialog(initializeInnerFrame(fileDetailPanel.getActorList().getSelectedValue()), "Edit Actor", operation);
 	}
 	
 	@Override
@@ -148,6 +190,39 @@ class FileDetailPanelActorEditor extends AbstractFileDetailPanelEditGUI {
 		fileDetailPanel.getCurrentMovie().getActors().remove(actorToRemove);
 		fileDetailPanel.updateView(false, false);
 	}
+
+	@Override
+	public void editAction() {
+		Actor actorToEdit = fileDetailPanel.getActorList().getSelectedValue();
+		if(actorToEdit != null)
+		{
+			String newActorName = textFieldActor.getText();
+			String newActorRole = textFieldActorRole.getText();
+			String newActorURL = textFieldURL.getText();
+
+			if(newActorName != null && newActorName.length() > 0){
+				actorToEdit.setName(newActorName);
+			}
+
+			if(newActorRole != null && newActorRole.length() > 0)
+			{
+				actorToEdit.setRole(newActorRole);
+			}
+			
+			if(newActorURL != null && newActorURL.length() > 0)
+			{
+				try {
+					actorToEdit.setThumb(new Thumb(newActorURL));
+					actorToEdit.setThumbEdited(true);
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			fileDetailPanel.updateView(false, true);
+		}
+		
+	}
 }
 
 class FileDetailPanelGenreEditor extends AbstractFileDetailPanelEditGUI {
@@ -157,8 +232,9 @@ class FileDetailPanelGenreEditor extends AbstractFileDetailPanelEditGUI {
 	}
 
 	private JTextField textFieldGenre;
-
-	private JPanel initializeInnerFrame() {
+	
+	private JPanel initializeInnerFrame(Genre genreToEdit)
+	{
 		JPanel innerPanel = new JPanel();
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWeights = new double[]{0.0, 1.0};
@@ -173,6 +249,8 @@ class FileDetailPanelGenreEditor extends AbstractFileDetailPanelEditGUI {
 		innerPanel.add(lblGenre, gbc_lblGenre);
 		
 		textFieldGenre = new JTextField();
+		if(genreToEdit != null && genreToEdit.getGenre().length() >0)
+			textFieldGenre.setText(genreToEdit.getGenre());
 		GridBagConstraints gbc_textField = new GridBagConstraints();
 		gbc_textField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textField.gridx = 1;
@@ -182,6 +260,9 @@ class FileDetailPanelGenreEditor extends AbstractFileDetailPanelEditGUI {
 		
 		return innerPanel;
 	}
+	private JPanel initializeInnerFrame() {
+		return initializeInnerFrame(new Genre(""));
+	}
 
 	@Override
 	public String getMenuItemName() {
@@ -189,8 +270,11 @@ class FileDetailPanelGenreEditor extends AbstractFileDetailPanelEditGUI {
 	}
 
 	@Override
-	public void showGUI() {
-		showOptionDialog(initializeInnerFrame(), "Add manually new Genre");
+	public void showGUI(Operation operation) {
+		if(operation == Operation.ADD)
+			showOptionDialog(initializeInnerFrame(), "Add New Genre", operation);
+		else if(operation == Operation.EDIT)
+			showOptionDialog(initializeInnerFrame(fileDetailPanel.getGenreList().getSelectedValue()),"Edit Genre", operation);
 	}
 
 	@Override
@@ -205,9 +289,16 @@ class FileDetailPanelGenreEditor extends AbstractFileDetailPanelEditGUI {
 
 	@Override
 	public void deleteAction() {
-		String genreToRemove = fileDetailPanel.getGenreList().getSelectedValue();
-		System.out.println("want to remove " + genreToRemove);
-		fileDetailPanel.getCurrentMovie().getGenres().remove(new Genre(genreToRemove));
+		Genre genreToRemove = fileDetailPanel.getGenreList().getSelectedValue();
+		fileDetailPanel.getCurrentMovie().getGenres().remove(genreToRemove);
+		fileDetailPanel.updateView(false, false);
+		
+	}
+
+	@Override
+	public void editAction() {
+		Genre genreToEdit = fileDetailPanel.getGenreList().getSelectedValue();
+		genreToEdit.setGenre(textFieldGenre.getText());
 		fileDetailPanel.updateView(false, false);
 		
 	}

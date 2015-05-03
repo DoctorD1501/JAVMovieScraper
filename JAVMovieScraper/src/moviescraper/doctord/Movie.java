@@ -540,6 +540,9 @@ public class Movie {
 				String currentActorToFileName = currentActor.getName().replace(' ', '_');
 				File fileNameToWrite = new File(actorFolder.getPath() + File.separator + currentActorToFileName + ".jpg");
 				currentActor.writeImageToFile(fileNameToWrite);
+				//reload from disk instead of cache since the cache is now pointing to the wrong image and the disk has the correct newly edited one
+				if(currentActor.isThumbEdited())
+					ImageCache.removeImageFromCachce(fileNameToWrite.toURI().toURL());
 			}
 
 		}

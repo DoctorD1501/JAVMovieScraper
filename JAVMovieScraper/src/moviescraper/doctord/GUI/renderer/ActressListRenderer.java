@@ -59,7 +59,7 @@ public class ActressListRenderer extends DefaultListCellRenderer {
 				value, index, isSelected, cellHasFocus);
 		Object listElement = list.getModel().getElementAt(index);
 		if (listElement != null && listElement instanceof Actor && label.getIcon() == null) {
-			label.setIcon(getImageIconForLabelName((Actor)listElement));			
+			label.setIcon(getImageIconForLabelName((Actor)listElement));		
 		}
 		label.setHorizontalTextPosition(JLabel.RIGHT);
 		label.setFont(font);
@@ -111,7 +111,7 @@ public class ActressListRenderer extends DefaultListCellRenderer {
 		if (currentActor.getThumb() != null)
 		{
 			//see if we can find a local copy in the .actors folder before trying to download, but only if the image is not already in memory
-			if(currentlySelectedActorsFolderList != null && currentlySelectedActorsFolderList.size() > 0 && currentlySelectedActorsFolderList.get(0).isDirectory())
+			if(!currentActor.isThumbEdited() && currentlySelectedActorsFolderList != null && currentlySelectedActorsFolderList.size() > 0 && currentlySelectedActorsFolderList.get(0).isDirectory())
 			{
 				String currentActorNameAsPotentialFileName = currentActor.getName().replace(' ', '_');
 				File [] listFiles = currentlySelectedActorsFolderList.get(0).listFiles();
@@ -145,6 +145,7 @@ public class ActressListRenderer extends DefaultListCellRenderer {
 				try {
 					return resizeToMaxDimensions(currentActor.getThumb().getThumbImage());
 				} catch (IOException | NullPointerException e) {
+					currentActor.setThumbEdited(false);
 					return new ImageIcon();
 				}
 			}

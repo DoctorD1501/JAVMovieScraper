@@ -1,6 +1,7 @@
 package moviescraper.doctord.GUI;
 
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -20,9 +21,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+
 import moviescraper.doctord.Movie;
 import moviescraper.doctord.Thumb;
 import moviescraper.doctord.GUI.renderer.ActressListRenderer;
+import moviescraper.doctord.GUI.renderer.GenreListRenderer;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Director;
 import moviescraper.doctord.dataitem.Genre;
@@ -61,7 +64,7 @@ public class FileDetailPanel extends JPanel {
 	private JTextField txtFieldMovieSet;
 	private JTextArea moviePlotTextField;
 	private JList<Actor> actorList;
-	private JList<String> genreList;
+	private JList<Genre> genreList;
 	
 	protected Movie currentMovie = getEmptyMovie();
 	MoviescraperPreferences preferences;
@@ -328,7 +331,8 @@ public class FileDetailPanel extends JPanel {
 		JLabel lblGenres = new JLabel("Genres:");
 		fileDetailsPanel.add(lblGenres, "2, 18");
 
-		genreList = new JList<String>(new GenreItemListModel());
+		genreList = new JList<Genre>(new GenreItemListModel());
+		genreList.setCellRenderer(new GenreListRenderer());
 		JScrollPane listScrollerGenres = new JScrollPane(genreList);
 		genreList.setComponentPopupMenu(new FileDetailPanelPopup(new FileDetailPanelGenreEditor(this)));
 		
@@ -360,7 +364,12 @@ public class FileDetailPanel extends JPanel {
 		this.currentMovie = getEmptyMovie();
 	}
 
-	//Updates the view for the current movie
+	/**
+	 * Updates the view for the current movie
+	 * @param forcePosterUpdate - if force a refresh of the poster from the URL by downloading the file. If false, tries to
+	 * read from the local file first
+	 * @param newMovieWasSet - true if you are setting a new movie. clears the old one and refreshes all fields
+	 */
 	public void updateView(boolean forcePosterUpdate, boolean newMovieWasSet) {
 		
 		List<Movie> movieToWriteToDiskList = gui.getMovieToWriteToDiskList();
@@ -470,14 +479,14 @@ public class FileDetailPanel extends JPanel {
 		return artWorkPanel;
 	}
 	
-	class GenreItemListModel extends AbstractListModel<String> {
+	class GenreItemListModel extends AbstractListModel<Genre> {
 		
 		private static final long serialVersionUID = 973741706455659871L;
 
 		@Override
-		public String getElementAt(int index) {
+		public Genre getElementAt(int index) {
 			Genre genre = currentMovie.getGenres().get(index);
-			return (genre != null) ? genre.getGenre() : "";
+			return (genre != null) ? genre : new Genre("");
 		}
 		
 		@Override
@@ -526,11 +535,11 @@ public class FileDetailPanel extends JPanel {
 		this.actorList = actorList;
 	}
 
-	public JList<String> getGenreList() {
+	public JList<Genre> getGenreList() {
 		return genreList;
 	}
 
-	public void setGenreList(JList<String> genreList) {
+	public void setGenreList(JList<Genre> genreList) {
 		this.genreList = genreList;
 	}
 

@@ -5,6 +5,7 @@ import moviescraper.doctord.Thumb;
 public abstract class Person extends MovieDataItem {
 	private String name;
 	private Thumb thumb;
+	private boolean thumbEdited; //did we change the URL of the thumb since loading and thus need to force a refresh
 
 
 	public String getName() {
@@ -26,6 +27,7 @@ public abstract class Person extends MovieDataItem {
 	public Person(String name, Thumb thumb) {
 		setName(name);
 		this.thumb = thumb;
+		this.thumbEdited = false;
 	}
 
 	abstract public String toXML();
@@ -56,6 +58,14 @@ public abstract class Person extends MovieDataItem {
 		} else if (!thumb.equals(other.thumb))
 			return false;
 		return true;
+	}
+
+	public boolean isThumbEdited() {
+		return thumbEdited;
+	}
+
+	public void setThumbEdited(boolean thumbEdited) {
+		this.thumbEdited = thumbEdited;
 	}
 
 }

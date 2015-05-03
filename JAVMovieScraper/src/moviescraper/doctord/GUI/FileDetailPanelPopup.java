@@ -6,6 +6,8 @@ import java.awt.event.ActionListener;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
+import moviescraper.doctord.GUI.AbstractFileDetailPanelEditGUI.Operation;
+
 public class FileDetailPanelPopup extends JPopupMenu {
 	
 	private static final long serialVersionUID = 8711342488935696278L;
@@ -21,10 +23,17 @@ public class FileDetailPanelPopup extends JPopupMenu {
 		addItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				editor.showGUI();
+				editor.showGUI(Operation.ADD);
 			}
 		});
 		
+		JMenuItem editItem = new JMenuItem("Edit Item");
+		editItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				editor.showGUI(Operation.EDIT);;
+			}
+		});
 		
 		JMenuItem removeItem = new JMenuItem("Remove Item");
 		removeItem.addActionListener(new ActionListener() {
@@ -35,6 +44,7 @@ public class FileDetailPanelPopup extends JPopupMenu {
 		});
 		
 		this.add(addItem);
+		this.add(editItem);
 		this.add(removeItem);
 	}
 }
