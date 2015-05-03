@@ -24,6 +24,7 @@ import javax.swing.JTextField;
 
 import moviescraper.doctord.Movie;
 import moviescraper.doctord.Thumb;
+import moviescraper.doctord.GUI.AbstractFileDetailPanelEditGUI.Operation;
 import moviescraper.doctord.GUI.renderer.ActressListRenderer;
 import moviescraper.doctord.GUI.renderer.GenreListRenderer;
 import moviescraper.doctord.dataitem.Actor;
@@ -320,6 +321,14 @@ public class FileDetailPanel extends JPanel {
 		     public void mousePressed(MouseEvent e) {
 		    	 actorList.setSelectedIndex(actorList.locationToIndex(e.getPoint()));
 		     }
+		     //double or triple click the actor list to open the editor on the item you clicked
+		     public void mouseClicked(MouseEvent evt) {
+			        if (evt.getClickCount() == 2 || evt.getClickCount() == 3) {
+			            // Double-click detected
+			            FileDetailPanelActorEditor actorEditor = new FileDetailPanelActorEditor(FileDetailPanel.this);
+			            actorEditor.showGUI(Operation.EDIT);
+			        }
+			    }
 		});
 
 
@@ -332,6 +341,17 @@ public class FileDetailPanel extends JPanel {
 		fileDetailsPanel.add(lblGenres, "2, 18");
 
 		genreList = new JList<Genre>(new GenreItemListModel());
+		//double or triple click the genre list to open the editor on the item you clicked
+		genreList.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent evt) {
+		        if (evt.getClickCount() == 2 || evt.getClickCount() == 3) {
+
+		            // Double-click detected
+		            FileDetailPanelGenreEditor genreEditor = new FileDetailPanelGenreEditor(FileDetailPanel.this);
+		            genreEditor.showGUI(Operation.EDIT);
+		        }
+		    }
+		});
 		genreList.setCellRenderer(new GenreListRenderer());
 		JScrollPane listScrollerGenres = new JScrollPane(genreList);
 		genreList.setComponentPopupMenu(new FileDetailPanelPopup(new FileDetailPanelGenreEditor(this)));
