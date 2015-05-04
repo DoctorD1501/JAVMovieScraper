@@ -6,7 +6,6 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,7 +16,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import moviescraper.doctord.Movie;
 import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.Thumb;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
@@ -43,12 +41,6 @@ import moviescraper.doctord.dataitem.Votes;
 import moviescraper.doctord.dataitem.Year;
 
 public class R18ParsingProfile extends SiteParsingProfile implements SpecificProfile {
-
-	private ID id;
-	private OriginalTitle originalTitle;
-	private SearchResult[] searchResultsFromR18; //if we found something with the site search and didn't have to use a google search
-	private DmmParsingProfile cachedDmmParseFromIdSearch;
-	private Movie dmmScrapedMovie;
 	
 	@Override
 	public String getParserName() {
@@ -65,17 +57,8 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 
 	@Override
 	public OriginalTitle scrapeOriginalTitle() {
-		if(originalTitle != null && originalTitle.getOriginalTitle().length() > 0)
-			return originalTitle;
-		if(id == null)
-		{
-			id = scrapeID(); 
-		}
-		if(id != null && cachedDmmParseFromIdSearch != null)
-		{
-			return cachedDmmParseFromIdSearch.scrapeOriginalTitle();
-		}
-		else return OriginalTitle.BLANK_ORIGINALTITLE;
+		// r18 does not have a title in japanese :(
+		return OriginalTitle.BLANK_ORIGINALTITLE;
 	}
 
 	@Override
@@ -139,12 +122,7 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 	
 	@Override
 	public Trailer scrapeTrailer() {
-		if(dmmScrapedMovie == null)
-		{
-			scrapeID();
-		}
-		if(dmmScrapedMovie != null && dmmScrapedMovie.getTrailer() != null)
-			return dmmScrapedMovie.getTrailer();
+		// don't know how to get trailers from r18 (flash)
 		return Trailer.BLANK_TRAILER;
 	}
 
@@ -251,43 +229,14 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 	}
 
 	@Override
-	public ID scrapeID() {
-		//try to use the id scraped from DMM
-		if(id != null)
-			return id;
-		else
+	public ID scrapeID() {		
+		Element idElement = document.select("div.product-details dl dt:contains(Content ID:) ~ dd").first();
+		if(idElement != null && idElement.text().length() > 0 )
 		{
-
-			
-			//use the one on the R18 page to do a search on DMM and get it from there
-			Element idElement = document.select("div.product-details dl dt:contains(Content ID:) ~ dd").first();
-			if(idElement != null && idElement.text().length() > 0 )
-			{
-				String r18ID = idElement.text();
-				DmmParsingProfile dmm = new DmmParsingProfile(false);
-				String dmmSearchString = dmm.createSearchString(new File(r18ID));
-				
-				try {
-					dmmScrapedMovie = Movie.scrapeMovie(new File(r18ID), dmm, "", false);
-					SearchResult [] searchResultsDMM = dmm.getSearchResults(dmmSearchString);
-					if(searchResultsDMM != null && searchResultsDMM.length > 0)
-					{
-						ID dmmID = dmmScrapedMovie.getId();
-						if(dmmID != null && dmmID.getId().length() > 0)
-						{
-							cachedDmmParseFromIdSearch = dmm;
-							id = dmmID;
-							return id;
-						}
-					}
-				} catch (IOException e) {
-					//dmm search didn't work, use the r18 ID instead
-					return new ID(DmmParsingProfile.fixUpIDFormatting(r18ID));
-				}
-			}
-			
-
+			String r18ID = idElement.text();
+			return new ID(DmmParsingProfile.fixUpIDFormatting(r18ID));
 		}
+
 		return new ID("");
 	}
 
@@ -437,83 +386,9 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 			e.printStackTrace();
 		}
 
-	
-	private void removeZerosFromID(int numberOfZeros)
-	{
-		if(id != null)
-		{
-			Pattern patternID = Pattern.compile("([0-9]*\\D+)(\\d+)");
-			Matcher matcher = patternID.matcher(id.getId());
-			String groupOne = "";
-			String groupTwo = "";
-			while (matcher.find()) {
-			    groupOne = matcher.group(1);
-			    groupTwo = matcher.group(2);
-			}
-			if(groupOne.length() > 0 && groupTwo.length() > 0)
-			{
-				String newId = groupOne + groupTwo.substring(numberOfZeros,groupTwo.length());
-				id.setId(newId);
-			}
-		}
-	}
-	
-	
-	//get a cid from DMM and use that to make a google search. if the google search returns a link on r18
-	//then return it
-	private String searchStringHelper(File file)
-	{
-		DmmParsingProfile dmm = new DmmParsingProfile(false);
-		String dmmSearchString = dmm.createSearchString(file);
-		int maxNumberOfTries = 4; //only do a few tries so the scraper doesn't get stuck
-		try {
-			SearchResult [] searchResultsDMM = dmm.getSearchResults(dmmSearchString);
-			if(searchResultsDMM != null && searchResultsDMM.length > 0)
-			{
-				int i = 0;
-				for(SearchResult currentSR : searchResultsDMM)
-				{
-					String urlToUse = currentSR.getUrlPath();
-					if(urlToUse.contains("cid="))
-					{
-						String cidToUse = urlToUse.substring(urlToUse.indexOf("cid=")+4,urlToUse.length()-1);
-						if(cidToUse.length() > 0)
-						{
-							//do a sleep before doing google searches. we're doing a lot of them are likely to get blocked
-							//make the sleep somewhat random to try to make this look more like a human doing these ;)
-							Random ran = new Random();
-							int randomTime = ran.nextInt(2000);
-							System.out.println("Sleeping thread for " + randomTime + "ms before doing google search in R18.com scraping.");
-							Thread.sleep(randomTime);
-							SearchResult [] googleLinkCandidate = getLinksFromGoogle(cidToUse, "r18.com");
-							if(googleLinkCandidate != null && googleLinkCandidate.length > 0)
-							{
-								//we really just want to get the ID from DMM - the one on R18 is inconsistent
-								//so we're going to save it until later so we can use it in scrapeID()
-								Document document = SpecificScraperAction.downloadDocument(searchResultsDMM[i]);
-								dmm.setDocument(document);
-								ID idFromDMM = dmm.scrapeID();
-								OriginalTitle originalTitleFromDMM = dmm.scrapeOriginalTitle();
-								if(idFromDMM != null)
-									id = idFromDMM;
-								if(originalTitleFromDMM != null)
-									originalTitle = originalTitleFromDMM;
-									
-								return cidToUse;
-							}
-						}
-					}
-					i++;
-					if(i > maxNumberOfTries)
-						break;
-				}
-			}
-		} catch (IOException | InterruptedException e) {
-			e.printStackTrace();
-			return null;
-		}
 		return null;
 	}
+	
 
 	@Override
 	public SearchResult[] getSearchResults(String searchString)
