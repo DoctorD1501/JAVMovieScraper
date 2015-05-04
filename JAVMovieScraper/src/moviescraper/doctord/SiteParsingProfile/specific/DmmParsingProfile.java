@@ -443,9 +443,9 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 		int firstNumberIndex = StringUtils.indexOfAny(idElementText, "0123456789");
 		idElementText = idElementText.substring(0,firstNumberIndex) + "-" + idElementText.substring(firstNumberIndex);
 		
-		//remove extra zeros in case we get a 5 digit numerical part 
+		//remove extra zeros in case we get a 5 or 6 digit numerical part 
 		//(For example ABC-00123 will become ABC-123)
-		Pattern patternID = Pattern.compile("([0-9]*\\D+)(\\d{5})");
+		Pattern patternID = Pattern.compile("([0-9]*\\D+)(\\d{5,6})");
 		Matcher matcher = patternID.matcher(idElementText);
 		String groupOne = "";
 		String groupTwo = "";
