@@ -133,13 +133,17 @@ public class PlayMovieAction implements ActionListener {
 	 * @param pathToPlayerProgram - full system path of the program to use to open the movie files
 	 */
 	private void openMediaFilesInExternalProgram(List<File> fileList, String pathToPlayerProgram) {
-	    String args = " ";
+		int i = 0;
+		String args = " ";
+		String[] cmdarray = new String[fileList.size()+1];
+		cmdarray[i++] = pathToPlayerProgram;
 	    for (File file : fileList) {
 	        args += "\"" + file.getAbsolutePath() + "\" ";
+	        cmdarray[i++] = file.getAbsolutePath();
 	    }
 	    try {
 	    	System.out.println("Running command to open External Media Player: \"" + pathToPlayerProgram + "\"" + args);
-	        Runtime.getRuntime().exec(pathToPlayerProgram + args);
+	        Runtime.getRuntime().exec(cmdarray);
 	        
 	    } catch (Exception e1) {
 	    	e1.printStackTrace();
