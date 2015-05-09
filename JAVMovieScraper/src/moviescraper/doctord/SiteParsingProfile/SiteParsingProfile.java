@@ -299,7 +299,6 @@ public abstract class SiteParsingProfile {
 	
 	public void setScrapingLanguage(MoviescraperPreferences preferences)
 	{
-		System.out.println("prefs = " + preferences);
 		if(preferences.getScrapeInJapanese())
 			scrapingLanguage = Language.JAPANESE;
 		else

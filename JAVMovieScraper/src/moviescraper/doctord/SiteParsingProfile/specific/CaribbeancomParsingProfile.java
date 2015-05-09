@@ -78,7 +78,7 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements
 		{
 			initializeJapaneseDocument();
 			documentToUse = japaneseDocument;
-			titleElement = documentToUse.select("span.movie-title h1").first();
+			titleElement = documentToUse.select("div.video-detail h1[itemprop=name]").first();
 		}
 		
 		if(titleElement != null)
@@ -97,7 +97,7 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements
 	@Override
 	public OriginalTitle scrapeOriginalTitle() {
 		initializeJapaneseDocument();
-		Element titleElement = japaneseDocument.select("span.movie-title h1").first();
+		Element titleElement = japaneseDocument.select("div.video-detail h1[itemprop=name]").first();
 		if(titleElement != null)
 			return new OriginalTitle(titleElement.text());
 		return OriginalTitle.BLANK_ORIGINALTITLE;
