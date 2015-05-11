@@ -1,5 +1,9 @@
 package moviescraper.doctord.preferences;
 
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+
 
 public class MoviescraperPreferences extends Settings {
 	
@@ -22,6 +26,7 @@ public class MoviescraperPreferences extends Settings {
 		promptForUserProvidedURLWhenScraping,
 		isFirstWordOfFileID,
 		appendIDToStartOfTitle,
+		selectedScrapers,
 		;
 
 		@Override
@@ -182,5 +187,20 @@ public class MoviescraperPreferences extends Settings {
 		setBooleanValue(Key.appendIDToStartOfTitle, preferenceValue);
 	}
 
+	public String[] getSelectedScrapers(){
+		String[] defaultValue = { "DMM.co.jp","ActionJav","SquarePlus","JavLibrary", "JavZoo", "R18.com" };
+		
+		String preferenceValue = getStringValue(Key.selectedScrapers, null);
+		
+		if (preferenceValue == null)
+			return defaultValue;
+		
+		return preferenceValue.split(";");
+	}
+	
+	public void setSelectedScrapers(String[] preferenceValue){
+		String value = StringUtils.join(preferenceValue, ";");
+		setStringValue(Key.selectedScrapers, value);
+	}
 
 }
