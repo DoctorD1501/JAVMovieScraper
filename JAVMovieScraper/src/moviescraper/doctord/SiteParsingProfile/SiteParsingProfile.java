@@ -3,6 +3,7 @@ package moviescraper.doctord.SiteParsingProfile;
 import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -270,7 +271,14 @@ public abstract class SiteParsingProfile {
 	      HttpURLConnection con =
 	         (HttpURLConnection) new URL(URLName).openConnection();
 	      con.setRequestMethod("HEAD");
+	      con.setConnectTimeout(CONNECTION_TIMEOUT_VALUE);
+	      con.setReadTimeout(CONNECTION_TIMEOUT_VALUE);
 	      return (con.getResponseCode() == HttpURLConnection.HTTP_OK);
+	    }
+	    catch(SocketTimeoutException e) {
+	    	// Non-existing DMM trailers usually time out
+	    	System.err.println("Connection timed out: " + URLName);
+	    	return false;
 	    }
 	    catch (Exception e) {
 	       e.printStackTrace();
