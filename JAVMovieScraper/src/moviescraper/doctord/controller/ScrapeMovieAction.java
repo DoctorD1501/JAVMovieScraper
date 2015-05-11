@@ -456,6 +456,8 @@ public class ScrapeMovieAction extends AbstractAction {
 				ScrapeMovieAction.this.guiMain.updateAllFieldsOfFileDetailPanel(true);
 				ScrapeMovieAction.this.guiMain.getFrmMoviescraper().setCursor(Cursor.getDefaultCursor());
 				ScrapeMovieAction.this.guiMain.setMainGUIEnabled(true);
+				
+				System.out.println("Scraping completed");
 			}
 
 		};
@@ -616,17 +618,19 @@ public class ScrapeMovieAction extends AbstractAction {
 		//we need to create a final copy of the loop variable to pass it into each run method and make the compiler happy
 		final int currentMovieNumberInList = movieNumberInList;
 		Movie movieAmalgamated = null;
-		// Scape dmm.co.jp for currently selected movie
+
+		List<String> selected = Arrays.asList(this.guiMain.getPreferences().getSelectedScrapers());
 
 		final int numberOfThreads;
 		if(!this.guiMain.getPreferences().getScrapeInJapanese())
-			numberOfThreads = 5;
-		else numberOfThreads = 1;
+			numberOfThreads = selected.size();
+		else 
+			numberOfThreads = 1;
 
 		final int amountOfProgressToMakePerThread = (100 / numberOfThreads) - 1;
 		amountOfProgressPerSubtask = amountOfProgressToMakePerThread;
 		final ScrapeMovieAction thisScrapeAction = this;
-		Thread scrapeQueryDMMThread = new Thread() {
+		Thread scrapeQueryDMMThread = new Thread("DMM") {
 			public void run() {
 				try {
 					DmmParsingProfile dmmPP = new DmmParsingProfile(!ScrapeMovieAction.this.guiMain.getPreferences().getScrapeInJapanese());
@@ -644,7 +648,7 @@ public class ScrapeMovieAction extends AbstractAction {
 			}
 		};
 		// Scrape ActionJav.com for currently selected movie
-		Thread scrapeQueryActionJavThread = new Thread() {
+		Thread scrapeQueryActionJavThread = new Thread("ActionJav") {
 			public void run() {
 				try {
 					ScrapeMovieAction.this.guiMain.setCurrentlySelectedMovieActionJav(Movie.scrapeMovie(
@@ -661,7 +665,7 @@ public class ScrapeMovieAction extends AbstractAction {
 		};
 
 		// Scrape SquarePlus.co.jp for currently selected movie
-		Thread scrapeQuerySquarePlusThread = new Thread() {
+		Thread scrapeQuerySquarePlusThread = new Thread("SquarePlus") {
 			public void run() {
 				try {
 					ScrapeMovieAction.this.guiMain.setCurrentlySelectedMovieSquarePlus(Movie.scrapeMovie(
@@ -678,7 +682,7 @@ public class ScrapeMovieAction extends AbstractAction {
 		};
 
 		// Scrape JavLibrary for currently selected movie
-		Thread scrapeQueryJavLibraryThread = new Thread() {
+		Thread scrapeQueryJavLibraryThread = new Thread("JavLibrary") {
 			public void run() {
 				try {
 					JavLibraryParsingProfile jlParsingProfile = new JavLibraryParsingProfile();
@@ -697,7 +701,7 @@ public class ScrapeMovieAction extends AbstractAction {
 		};
 		
 		//Scrape Javzoo for currently selected movie
-		Thread scrapeQueryJavZooThread = new Thread() {
+		Thread scrapeQueryJavZooThread = new Thread("JavZoo") {
 			public void run() {
 				try {
 					ScrapeMovieAction.this.guiMain.setCurrentlySelectedMovieJavZoo(Movie.scrapeMovie(
@@ -714,7 +718,7 @@ public class ScrapeMovieAction extends AbstractAction {
 		};
 		
 		//Scrape R18 for currently selected movie
-		Thread scrapeQueryR18Thread = new Thread() {
+		Thread scrapeQueryR18Thread = new Thread("R18.com") {
 			public void run() {
 				try {
 					ScrapeMovieAction.this.guiMain.setCurrentlySelectedMovieR18(Movie.scrapeMovie(
@@ -732,100 +736,51 @@ public class ScrapeMovieAction extends AbstractAction {
 
 
 
-
+		
 		scrapeThreads = new ArrayList<Thread>(numberOfThreads);
-		scrapeThreads.add(scrapeQueryDMMThread);
+		
+		if (selected.contains("DMM.co.jp"))
+			scrapeThreads.add(scrapeQueryDMMThread);
+		
 		if(!this.guiMain.getPreferences().getScrapeInJapanese())
 		{
-			scrapeThreads.add(scrapeQueryActionJavThread);
-			scrapeThreads.add(scrapeQuerySquarePlusThread);
-			scrapeThreads.add(scrapeQueryJavLibraryThread);
-			scrapeThreads.add(scrapeQueryJavZooThread);
-			scrapeThreads.add(scrapeQueryR18Thread);
+			if (selected.contains("ActionJav"))
+				scrapeThreads.add(scrapeQueryActionJavThread);
+			
+			if (selected.contains("SquarePlus"))
+				scrapeThreads.add(scrapeQuerySquarePlusThread);
+			
+			if (selected.contains("JavLibrary"))
+				scrapeThreads.add(scrapeQueryJavLibraryThread);
+			
+			if (selected.contains("JavZoo"))
+				scrapeThreads.add(scrapeQueryJavZooThread);
+			
+			if (selected.contains("R18.com"))
+				scrapeThreads.add(scrapeQueryR18Thread);
 		}
 
 
 
 		// Run all the threads in parallel
-		scrapeQueryDMMThread.start();
-		if(!this.guiMain.getPreferences().getScrapeInJapanese())
-		{
-			scrapeQueryActionJavThread.start();
-			scrapeQuerySquarePlusThread.start();
-			scrapeQueryJavLibraryThread.start();
-			scrapeQueryJavZooThread.start();
-			scrapeQueryR18Thread.start();
-		}
-
-		if(anyThreadWasInterrupted())
-		{
-			System.err.println("Something was interrupted");
-			cancelRunningThreads();
-			return null;
-		}
+		
+		for(Thread t: scrapeThreads)
+			t.start();
+		
 		// wait for them to finish before updating gui
-		scrapeQueryDMMThread.join();
-		System.out.println("DMM thread complete");
-		if(!this.guiMain.getPreferences().getScrapeInJapanese())
-		{
-			if(anyThreadWasInterrupted())
-			{
-				System.err.println("Something was interrupted");
-				cancelRunningThreads();
-				return null;
-			}
-			scrapeQueryJavLibraryThread.join();
-			System.out.println("JavLib thread complete");
-			if(anyThreadWasInterrupted())
-			{
-				System.err.println("Something was interrupted");
-				cancelRunningThreads();
-				return null;
-			}
-			scrapeQueryActionJavThread.join();
-			System.out.println("Action JAV thread complete");
-			if(anyThreadWasInterrupted())
-			{
-				System.err.println("Something was interrupted");
-				cancelRunningThreads();
-				return null;
-			}
-			scrapeQuerySquarePlusThread.join();
-			System.out.println("Square Plus thread complete");
-			if(anyThreadWasInterrupted())
-			{
-				System.err.println("Something was interrupted");
-				cancelRunningThreads();
-				return null;
-			}
-			scrapeQueryJavZooThread.join();
-			System.out.println("JavZoo thread complete");
-			if(anyThreadWasInterrupted())
-				if(anyThreadWasInterrupted())
-				{
-					System.err.println("Something was interrupted");
-					cancelRunningThreads();
-					return null;
-				}
-			
-			scrapeQueryR18Thread.join();
-			System.out.println("R18 joined");
-			if(anyThreadWasInterrupted())
-				if(anyThreadWasInterrupted())
-				{
-					System.err.println("Something was interrupted");
-					cancelRunningThreads();
-					return null;
-				}
-			
-		}
+		
+		for(Thread t: scrapeThreads){
+			t.join();
 
-		if(anyThreadWasInterrupted())
-		{
-			System.err.println("Something was interrupted");
-			cancelRunningThreads();
-			return null;
+			System.out.println(t.getName() + " thread complete");
+			
+			if(anyThreadWasInterrupted()) {
+				System.err.println("Something was interrupted");
+				cancelRunningThreads();
+				return null;
+			}
 		}
+		
 		System.out.println("Now amalgamating movie from all different sources...");
 		if(this.guiMain.getPreferences().getScrapeInJapanese())
 			movieAmalgamated = this.guiMain.getCurrentlySelectedMovieDMM();
