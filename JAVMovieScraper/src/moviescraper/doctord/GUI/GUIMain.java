@@ -827,4 +827,10 @@ public class GUIMain {
 			String originalJavLibraryMovieTitleBeforeAmalgamate) {
 		this.originalJavLibraryMovieTitleBeforeAmalgamate = originalJavLibraryMovieTitleBeforeAmalgamate;
 	}
+	
+	public boolean showSelectScrapersDialog(List<String> options, List<String> selected) {
+		SelectScrapersDialog dialog =  new SelectScrapersDialog(frmMoviescraper, options, selected);
+		return dialog.show();
+	}
+	
 }
