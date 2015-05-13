@@ -2,6 +2,10 @@ package moviescraper.doctord.SiteParsingProfile.specific;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -41,6 +45,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
 
 public class DmmParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
@@ -208,125 +213,53 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 
 	}
 	
-	private String getCIDFromDocumentURL()
-	{
-		String pageURL = document.location();
-		//get rid of any parameters at the end of the URL - these mess up our calculation of extracting the CID from the URL
-		if(pageURL.contains("?"))
-			pageURL = pageURL.substring(0, pageURL.indexOf("?"));
-		if(pageURL != null)
-		{
-			String subStringToSearchFor = "/=/cid=";
-			String cid = pageURL.substring(pageURL.indexOf("/=/cid=") + subStringToSearchFor.length(), pageURL.length()-1);
-			//sometimes dmm will have two entries / cids for a given movie, but the trailer will always be on the non tk version of the page
-			if(cid.startsWith("tk"))
-				cid = cid.replaceFirst("tk","");
-			return cid;
-		}
-		return null;
-	}
 	@Override
 	public Trailer scrapeTrailer(){
-		//we can return no trailers if scraping trailers is not enabled or the page we are scraping does not have a button to link to the trailer
-		if(scrapeTrailers && document.select("a.d-btn[onclick*=sampleplay]").first() != null)
-		{
-			System.out.println("There should be a trailer, searching now...");
-			String cid = getCIDFromDocumentURL();
-			if(cid != null && cid.length() >= 3)
-			{
-
-				//get the widescreen trailer URLs
-				ArrayList<String> trailerURL = constructTrailerURLs(cid, "_dmb_w.mp4");
-				//get the 4:3 ration trailer urls
-				ArrayList<String> trailerURLSquareAspectRatio = constructTrailerURLs(cid, "_dmb_s.mp4");
-				ArrayList<String> trailerURLSquareAspectRatioSmall = constructTrailerURLs(cid, "_sm_s.mp4");
-
-				//sometimes DMM throws a number in there at the start of the cid which throws things off for no good reason
-				//let's also consider the set of trailers without this number
-				ArrayList<String> trailerURLNoFirstLetter = constructTrailerURLs(cid.substring(1), "_dmb_w.mp4");
-				ArrayList<String> trailerURLSquareAspectRatioNoFirstLetter = constructTrailerURLs(cid.substring(1), "_dmb_s.mp4");
-				ArrayList<String> trailerURLSquareAspectRatioSmallNoFirstLetter = constructTrailerURLs(cid.substring(1), "_sm_s.mp4");
-				//combine them together
-				trailerURL.addAll(trailerURLSquareAspectRatio);
-				trailerURL.addAll(trailerURLSquareAspectRatioSmall);
-				trailerURL.addAll(trailerURLNoFirstLetter);
-				trailerURL.addAll(trailerURLSquareAspectRatioNoFirstLetter);
-				trailerURL.addAll(trailerURLSquareAspectRatioSmallNoFirstLetter);
-				for(String potentialTrailerURL : trailerURL)
-				{
-					if(SiteParsingProfile.fileExistsAtURL(potentialTrailerURL))
-					{
+		try {
+			//we can return no trailers if scraping trailers is not enabled or the page we are scraping does not have a button to link to the trailer
+			Element buttonElement;
+			
+			if(scrapeTrailers && (buttonElement = document.select("a.d-btn[onclick*=sampleplay]").first()) != null){
+				System.out.println("There should be a trailer, searching now...");
+				
+				// First, scrape the contents of the 'play trailer' button action. It's a small ajax document containing
+				// an iframe that hosts the flash video player. Then scrape that iframe contents obtaining trailer information.
+				
+				String playerPath = buttonElement.attr("onclick").replaceFirst("^.*sampleplay\\('([^']+).*$", "$1");
+				URL playerURL = new URI(document.location()).resolve(playerPath).toURL();	
+				Document playerDocument = Jsoup.parse(playerURL, CONNECTION_TIMEOUT_VALUE);
+				URL iframeURL = new URL(playerDocument.select("iframe").first().attr("src"));
+				Document iframeDocument = Jsoup.parse(iframeURL, CONNECTION_TIMEOUT_VALUE);
+				String flashPlayerScript = iframeDocument.select("script").last().data();
+				Pattern pattern = Pattern.compile(".*flashvars.fid\\s*=\\s*\"([^\"]+).*flashvars.bid\\s*=\\s*\"(\\d)(w|s)\".*", Pattern.DOTALL);
+				Matcher matcher = pattern.matcher(flashPlayerScript);
+				
+				if (matcher.matches()){
+					String cid = matcher.group(1);
+					int bitrates = Integer.parseInt(matcher.group(2));
+					String ratio = matcher.group(3);
+					String quality = (bitrates & 0b100) != 0 ? "dmb" : (bitrates & 0b010) != 0 ? "dm" : "sm";
+					String firstLetterOfCid = cid.substring(0,1);
+					String threeLetterCidCode = cid.substring(0,3);
+					
+					String potentialTrailerURL = String.format("http://cc3001.dmm.co.jp/litevideo/freepv/%1$s/%2$s/%3$s/%3$s_%4$s_%5$s.mp4", 
+				 			firstLetterOfCid, threeLetterCidCode, cid, quality, ratio);
+					
+					if(SiteParsingProfile.fileExistsAtURL(potentialTrailerURL)) {
 						System.out.println("Trailer existed at: " + potentialTrailerURL);
 						return new Trailer(potentialTrailerURL);
 					}
 				}
-			}
-			System.err.println("I expected to find a trailer and did not at " + document.location());
-		}		
+			
+				System.err.println("I expected to find a trailer and did not at " + document.location());
+			}		
+		} catch (MalformedURLException | URISyntaxException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 		return Trailer.BLANK_TRAILER;
-	}
-	
-	private ArrayList<String> constructTrailerURLs(String cid, String movieExtension)
-	{
-		ArrayList<String> trailerURL = new ArrayList<String>();
-		//String movieExtension = "_dmb_w.mp4";
-		String firstLetterOfCid = cid.substring(0,1);
-		String threeLetterCidCode = cid.substring(0,3);
-		trailerURL.add("http://cc3001.dmm.co.jp/litevideo/freepv/" + firstLetterOfCid + "/" + threeLetterCidCode + "/" + cid + "/" + cid + movieExtension);
-		
-		String potentialCid1 = cid.replaceFirst("0", "00");
-		trailerURL.add("http://cc3001.dmm.co.jp/litevideo/freepv/" + firstLetterOfCid + "/" + threeLetterCidCode + "/" + potentialCid1 + "/" + potentialCid1 + movieExtension);
-		
-		
-		String potentialCid2 = cid.replaceFirst("0", "000");
-		trailerURL.add("http://cc3001.dmm.co.jp/litevideo/freepv/" + firstLetterOfCid + "/" + threeLetterCidCode + "/" + potentialCid2 + "/" + potentialCid2 + movieExtension);
-		
-		//find the index of the last character (a-z) of the string
-		int indexOfLastCharacterInCid = -1;
-		for(int i = 0; i< cid.length()-1; i++)
-		{
-			if(Character.isAlphabetic(cid.charAt(i)) && Character.isDigit(cid.charAt(i + 1)))
-			{
-				indexOfLastCharacterInCid = i;
-				break;
-			}
-		}
-		
-		//System.out.println("indeOfLastCharInCid: " + indexOfLastCharacterInCid);
-		
-		//the case where the character part of the jav ID is just two letters, e.g. AB-123
-		if(indexOfLastCharacterInCid == 1)
-		{
-			String firstPartOfCid = cid.substring(0,indexOfLastCharacterInCid+1);
-			String secondPartOfCid = cid.substring(indexOfLastCharacterInCid+1);
-			String twoLetterCidCodePlusZero = threeLetterCidCode.substring(0,2) + "0";
-
-			String potentialCidOneZero = firstPartOfCid + "0" + secondPartOfCid;
-			String potentialCidTwoZero = firstPartOfCid + "00" + secondPartOfCid;
-			String potentialCidThreeZero = firstPartOfCid + "000" + secondPartOfCid;
-			trailerURL.add("http://cc3001.dmm.co.jp/litevideo/freepv/" + firstLetterOfCid + "/" + twoLetterCidCodePlusZero + "/" + potentialCidOneZero + "/" + potentialCidOneZero + movieExtension);
-			trailerURL.add("http://cc3001.dmm.co.jp/litevideo/freepv/" + firstLetterOfCid + "/" + twoLetterCidCodePlusZero + "/" + potentialCidTwoZero + "/" + potentialCidTwoZero + movieExtension);
-			trailerURL.add("http://cc3001.dmm.co.jp/litevideo/freepv/" + firstLetterOfCid + "/" + twoLetterCidCodePlusZero + "/" + potentialCidThreeZero + "/" + potentialCidThreeZero + movieExtension);
-
-		}
-		
-		if(indexOfLastCharacterInCid != -1)
-		{
-			String firstPartOfCid = cid.substring(0,indexOfLastCharacterInCid+1);
-			String secondPartOfCid = cid.substring(indexOfLastCharacterInCid+1);
-			
-			String potentialCid3 = firstPartOfCid + "0" + secondPartOfCid;
-			String potentialCid4 = firstPartOfCid + "00" + secondPartOfCid;
-			String potentialCid5 = firstPartOfCid + "000" + secondPartOfCid;
-			
-			trailerURL.add("http://cc3001.dmm.co.jp/litevideo/freepv/" + firstLetterOfCid + "/" + threeLetterCidCode + "/" + potentialCid3 + "/" + potentialCid3 + movieExtension);
-			trailerURL.add("http://cc3001.dmm.co.jp/litevideo/freepv/" + firstLetterOfCid + "/" + threeLetterCidCode + "/" + potentialCid4 + "/" + potentialCid4 + movieExtension);
-			trailerURL.add("http://cc3001.dmm.co.jp/litevideo/freepv/" + firstLetterOfCid + "/" + threeLetterCidCode + "/" + potentialCid5 + "/" + potentialCid5 + movieExtension);
-		}
-		
-
-		
-		return trailerURL;
 	}
 	
 	
