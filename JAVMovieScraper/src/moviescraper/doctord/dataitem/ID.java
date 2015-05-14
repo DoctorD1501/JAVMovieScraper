@@ -104,8 +104,19 @@ public class ID extends MovieDataItem {
 			}
 			
 			//The part that looks like "ABC" above must be the same (case doesn't matter)
-			if(!thisIDMovieSeries.equalsIgnoreCase(otherIDMovieSeries))
-				return false;
+			if(!thisIDMovieSeries.equalsIgnoreCase(otherIDMovieSeries)) {
+				
+				// Special case for Moodyz titles with slightly different tags for DVD/VHS, 
+				// (MDED -> MDE, MDID -> MDI, MDLD -> MDL...)
+				
+				Pattern moodyzPatternID = Pattern.compile("^(MD.)D?$", Pattern.CASE_INSENSITIVE);
+				Matcher moodyzMatcher1 = moodyzPatternID.matcher(thisIDMovieSeries);
+				Matcher moodyzMatcher2 = moodyzPatternID.matcher(otherIDMovieSeries);
+				
+				if (!(moodyzMatcher1.matches() && moodyzMatcher2.matches()
+						&& moodyzMatcher1.group(1).equalsIgnoreCase(moodyzMatcher2.group(1))))
+					return false;
+			}
 			
 			//The part that looks like 123 must be the same when treated as an integer
 			Integer thisIDMovieNumberInteger = Integer.parseInt(thisIDMovieNumber);
