@@ -491,7 +491,7 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 	 catch (IOException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
-		return null;
+		return new SearchResult[0];
 	}
 	}
 

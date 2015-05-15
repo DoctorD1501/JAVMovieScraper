@@ -322,7 +322,7 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 	public SearchResult[] getSearchResults(String searchString)
 			throws IOException {
 		if(searchString == null)
-			return null;
+			return new SearchResult[0];
 		Document doc = Jsoup.connect(searchString).userAgent("Mozilla").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
 		Elements movieElements = doc.select("ul.list.slider.cf li.detail");
 		SearchResult[] searchResults = new SearchResult[movieElements.size()];

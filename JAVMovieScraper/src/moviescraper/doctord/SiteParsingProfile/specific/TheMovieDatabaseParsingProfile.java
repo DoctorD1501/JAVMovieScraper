@@ -477,7 +477,7 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		return null;
+		return new SearchResult[0];
 	}
 	
 	private String getAPIURLPathFromMovieID(int movieID){
