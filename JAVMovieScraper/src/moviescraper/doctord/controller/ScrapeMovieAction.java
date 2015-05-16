@@ -895,14 +895,18 @@ public class ScrapeMovieAction extends AbstractAction {
 		if (currentlySelectedMovieDMM == null
 				&& currentlySelectedMovieActionJav == null
 				&& currentlySelectedMovieSquarePlus == null
-				&& currentlySelectedMovieJavLibrary == null)
+				&& currentlySelectedMovieJavLibrary == null
+				&& currentlySelectedMovieJavZoo == null
+				&& currentlySelectedMovieR18 == null)
 			return null;
 		// the case when i'm reading in a movie from a nfo file
 		else if (guiMain.movieToWriteToDiskList != null
 				&& currentlySelectedMovieDMM == null
 				&& currentlySelectedMovieActionJav == null
 				&& currentlySelectedMovieSquarePlus == null
-				&& currentlySelectedMovieJavLibrary == null) {
+				&& currentlySelectedMovieJavLibrary == null
+				&& currentlySelectedMovieJavZoo == null
+				&& currentlySelectedMovieR18 == null) {
 			return guiMain.movieToWriteToDiskList.get(movieNumberInList);
 		} else if (currentlySelectedMovieJavLibrary != null
 				&& currentlySelectedMovieDMM != null
@@ -997,7 +1001,78 @@ public class ScrapeMovieAction extends AbstractAction {
 			currentlySelectedMovieJavLibrary.setTrailer(currentlySelectedMovieDMM.getTrailer());
 			return currentlySelectedMovieJavLibrary;
 		}
-
+		// No result from JavLibrary, amalgamate DMM and others 
+		else if (currentlySelectedMovieJavLibrary == null
+					&& currentlySelectedMovieDMM != null
+					&& (currentlySelectedMovieR18 != null || currentlySelectedMovieActionJav != null || currentlySelectedMovieSquarePlus != null || currentlySelectedMovieJavZoo != null)) {
+			
+			//R18 has the absolute best title information
+			if(currentlySelectedMovieR18 != null && currentlySelectedMovieR18.getTitle().getTitle().length() > 0)
+				currentlySelectedMovieDMM.setTitle(currentlySelectedMovieR18.getTitle());
+			
+			if(currentlySelectedMovieR18 != null && currentlySelectedMovieR18.getPlot().getPlot().length() > 0)
+			{
+				//R18 has the best plot data for english
+				currentlySelectedMovieDMM.setPlot(currentlySelectedMovieR18.getPlot());
+			}
+			
+			//R18 has the best studio data for english
+			if(currentlySelectedMovieR18 != null && currentlySelectedMovieR18.getStudio().getStudio().length() > 0)
+			{
+				currentlySelectedMovieDMM.setStudio(currentlySelectedMovieR18.getStudio());
+			}
+			
+			//R18 has the best director info in english, if it's there
+			if(currentlySelectedMovieR18 != null && currentlySelectedMovieR18.getDirectors().size() > 0)
+			{
+				currentlySelectedMovieDMM.setDirectors(currentlySelectedMovieR18.getDirectors());
+			}
+			
+			boolean grabbedR18Set = false;
+			if(currentlySelectedMovieR18 != null && currentlySelectedMovieR18.getSet().getSet().length() > 0)
+			{
+				//R18 has the best set data for english
+				currentlySelectedMovieDMM.setSet(currentlySelectedMovieR18.getSet());
+				grabbedR18Set = true;
+			}
+			
+			boolean grabbedR18Actors = false;
+			//If R18 have actors, grab them
+			if(currentlySelectedMovieR18 != null && currentlySelectedMovieR18.getActors().size() > 0)
+			{
+				currentlySelectedMovieDMM.setActors(currentlySelectedMovieR18.getActors());
+				grabbedR18Actors = true;
+			}
+			
+			// grabbing the things from ActionJav which tend to be high quality info
+			
+			//set the plot from actionjav only if R18 didn't have one already
+			if ((currentlySelectedMovieR18 == null || currentlySelectedMovieR18.getPlot().getPlot().length() == 0)
+					&& currentlySelectedMovieActionJav != null
+					&& currentlySelectedMovieActionJav.getPlot() != null
+					&& currentlySelectedMovieActionJav.getPlot().getPlot()
+					.length() > 1 && currentlySelectedMovieActionJav.getId().getId().equals(currentlySelectedMovieDMM.getId().getId()))
+				currentlySelectedMovieDMM
+				.setPlot(currentlySelectedMovieActionJav.getPlot());
+			
+			//get action jav actors if both JavLib and R18 didn't have any
+			if (currentlySelectedMovieActionJav != null
+					&& currentlySelectedMovieActionJav.getActors().size() > 0
+					&& !grabbedR18Actors)
+			{
+				currentlySelectedMovieDMM.setActors(currentlySelectedMovieActionJav.getActors());
+			}
+				
+			//JavZoo has better OK set data, but not as good as R18
+			if(currentlySelectedMovieJavZoo != null && currentlySelectedMovieJavZoo.getSet() != null 
+					&& currentlySelectedMovieJavZoo.getSet().getSet().length() > 0 &&
+					!grabbedR18Set)
+			{
+				currentlySelectedMovieDMM.setSet(currentlySelectedMovieJavZoo.getSet());
+			}
+			
+			return currentlySelectedMovieDMM;
+		}
 		else if (currentlySelectedMovieJavLibrary != null
 				&& currentlySelectedMovieDMM != null
 				&& currentlySelectedMovieActionJav != null) {
