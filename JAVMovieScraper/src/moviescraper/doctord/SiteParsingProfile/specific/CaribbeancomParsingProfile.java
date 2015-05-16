@@ -2,10 +2,8 @@ package moviescraper.doctord.SiteParsingProfile.specific;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -284,9 +282,11 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements
 	public ArrayList<Actor> scrapeActors() {
 		ArrayList<Actor> actorList = new ArrayList<Actor>();
 		initializeJapaneseDocument();
-		Element actorEnglishSearchElement = document.select("table.info_table tbody tr td.property:contains(Starring:) ~ td a").first();
+		//Element actorEnglishSearchElement = document.select("table.info_table tbody tr td.property:contains(Starring:) ~ td a").first();
 		Elements japaneseActors = japaneseDocument.select("div.movie-info dl dt:contains(出演:) ~ dd a");
-		if(actorEnglishSearchElement != null && getScrapingLanguage() == Language.ENGLISH)
+		//Disabling the english actor scraping and just going to use the japanese ones for now - the data for english actors
+		//doesn't comma seperate each person
+		/*if(actorEnglishSearchElement != null && getScrapingLanguage() == Language.ENGLISH)
 		{
 			
 			String hrefText = actorEnglishSearchElement.attr("href");
@@ -304,9 +304,9 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements
 				e.printStackTrace();
 			}
 			
-		}
-		//We're scraping in Japanese or we didn't find the actors in English scrape so we'll machine translate the Japanese actor names
-		else if((japaneseActors != null && getScrapingLanguage() == Language.JAPANESE) || actorList.size() == 0)
+		}*/
+		//Scrape actors from Japanese page for now and do a name translate if we are scraping in English
+		if(japaneseActors != null)
 		{
 			for(Element japaneseActor : japaneseActors)
 			{
