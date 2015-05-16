@@ -1,6 +1,5 @@
 package moviescraper.doctord.GUI;
 
-import java.awt.Font;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,8 +22,6 @@ public class SelectScrapersDialog {
 		this.panel = Box.createVerticalBox();
 
 		JLabel helpLabel = new JLabel("<html>Any scrapers selected here will be used to amalgamate data when using either the<br> \"Scrape JAV\" or \"Scrape JAV (Automatic)\" scrapers</html>");
-		Font baseFont = helpLabel.getFont().deriveFont(Font.PLAIN);
-		//helpLabel.setFont(baseFont);
 		panel.add(helpLabel);
 		this.parent = parent;
 

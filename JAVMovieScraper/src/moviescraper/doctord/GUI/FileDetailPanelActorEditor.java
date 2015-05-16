@@ -88,6 +88,7 @@ public class FileDetailPanelActorEditor extends AbstractFileDetailPanelEditGUI {
 		
 		textFieldURL = new JTextField();
 		if(actorToInitializeFieldsWith.getThumb() != null && 
+				actorToInitializeFieldsWith.getThumb().getThumbURL() != null &&
 				actorToInitializeFieldsWith.getThumb().getThumbURL().toString().length() > 0)
 		{
 			textFieldURL.setText(actorToInitializeFieldsWith.getThumb().getThumbURL().toString());
