@@ -16,6 +16,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import com.sun.org.apache.xalan.internal.xsltc.compiler.Parser;
+
 import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.Thumb;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
@@ -233,6 +235,15 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 		Element idElement = document.select("div.product-details dl dt:contains(Content ID:) ~ dd").first();
 		if(idElement != null && idElement.text().length() > 0 )
 		{
+			// Some h.m.p titles does not feature the correct Content ID. We need to get it from another location.
+			
+			if (idElement.text().startsWith("41hodv") && scrapeStudio().getStudio().equals("h.m.p")) {
+				Element wishListElement = document.select("div.js-add-to-wishlist[data-wishlist-id]").first();
+				if (wishListElement != null) {
+					return new ID(DmmParsingProfile.fixUpIDFormatting(wishListElement.attr("data-wishlist-id")));
+				}
+			}
+			
 			String r18ID = idElement.text();
 			return new ID(DmmParsingProfile.fixUpIDFormatting(r18ID));
 		}
@@ -346,7 +357,7 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 		// some h.m.p. titles need extra padding
 		
 		if (groupOne.toUpperCase().equals("HODV")) {
-			return String.format("%s%06d", groupOne, number);
+			return String.format("%s%%2B%05d", groupOne, number);
 		}
 				
 		return String.format("%s%05d", groupOne, number);
