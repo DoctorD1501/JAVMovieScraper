@@ -276,7 +276,7 @@ public class OnePondoParsingProfile extends SiteParsingProfile implements Specif
 		if(profileArea != null)
 		{
 		String actressThumbURL = profileArea.select("img").attr("src");
-		String actressName = profileArea.select(".bgoose h2").text();
+		String actressName = profileArea.select(".bgoose h2, .bgg1").text();
 			try {
 				actorList.add(new Actor(actressName, "", new Thumb(actressThumbURL)));
 			} catch (MalformedURLException e) {
