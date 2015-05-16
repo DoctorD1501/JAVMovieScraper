@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.text.WordUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -43,6 +44,7 @@ import moviescraper.doctord.dataitem.Year;
 public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implements SpecificProfile {
 	
 	private Document japaneseDocument;
+	private Thumb[] scrapedPosters;
 
 	@Override
 	public Title scrapeTitle() {
@@ -211,7 +213,8 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 				}
 			}
 		}
-		return posters.toArray(new Thumb[posters.size()]);
+		scrapedPosters = posters.toArray(new Thumb[posters.size()]);
+		return scrapedPosters;
 	}
 
 	@Override
@@ -231,8 +234,12 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 				try {
 					Thumb fanartThumbs[] = new Thumb[1];
 					Thumb fanartThumb = new Thumb(imageURL);
+					//also allow the user to use posters as the fanart
+					Thumb [] additionalPosterThumbs;
 					fanartThumbs[0] = fanartThumb;
-					return fanartThumbs;
+					additionalPosterThumbs = (scrapedPosters == null) ? scrapePosters() : scrapedPosters;
+					Thumb[] allCombinedFanart = ArrayUtils.addAll(fanartThumbs, additionalPosterThumbs);
+					return allCombinedFanart;
 				} catch (MalformedURLException e) {
 					e.printStackTrace();
 					return new Thumb[0];
