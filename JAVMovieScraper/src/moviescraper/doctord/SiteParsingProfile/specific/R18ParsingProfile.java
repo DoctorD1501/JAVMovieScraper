@@ -399,8 +399,7 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 				{
 					String urlPath = searchResult.select("a").attr("href");
 					String label = searchResult.select("img").first().attr("alt");
-					Thumb previewImage = null;
-					previewImage = new Thumb(searchResult.select("img").first().attr("src"));
+					Thumb previewImage = new Thumb(searchResult.select("img").first().attr("data-original"));
 					SearchResult searchResultToAdd = new SearchResult(urlPath, label, previewImage);
 					foundResults[i] = searchResultToAdd;
 					i++;
