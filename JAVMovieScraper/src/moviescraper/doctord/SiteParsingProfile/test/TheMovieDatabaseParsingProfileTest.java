@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import moviescraper.doctord.SearchResult;
-import moviescraper.doctord.Thumb;
 import moviescraper.doctord.SiteParsingProfile.specific.TheMovieDatabaseParsingProfile;
 import moviescraper.doctord.controller.SpecificScraperAction;
 import moviescraper.doctord.dataitem.Actor;
@@ -21,6 +20,7 @@ import moviescraper.doctord.dataitem.Rating;
 import moviescraper.doctord.dataitem.Set;
 import moviescraper.doctord.dataitem.Studio;
 import moviescraper.doctord.dataitem.Tagline;
+import moviescraper.doctord.dataitem.Thumb;
 import moviescraper.doctord.dataitem.Title;
 import moviescraper.doctord.dataitem.Votes;
 import moviescraper.doctord.dataitem.Year;

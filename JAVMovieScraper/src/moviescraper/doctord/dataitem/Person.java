@@ -1,6 +1,5 @@
 package moviescraper.doctord.dataitem;
 
-import moviescraper.doctord.Thumb;
 
 public abstract class Person extends MovieDataItem {
 	private String name;
@@ -34,7 +33,7 @@ public abstract class Person extends MovieDataItem {
 
 	@Override
 	public String toString() {
-		return "Person [name=" + name + ", thumb=" + thumb + "]";
+		return "Person [name=\"" + name + "\", thumb=" + thumb + "]";
 	}
 
 

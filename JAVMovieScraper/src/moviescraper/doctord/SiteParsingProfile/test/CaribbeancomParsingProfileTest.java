@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import moviescraper.doctord.SearchResult;
-import moviescraper.doctord.Thumb;
 import moviescraper.doctord.SiteParsingProfile.specific.CaribbeancomParsingProfile;
 import moviescraper.doctord.controller.SpecificScraperAction;
 import moviescraper.doctord.dataitem.Actor;
@@ -16,6 +15,7 @@ import moviescraper.doctord.dataitem.ID;
 import moviescraper.doctord.dataitem.OriginalTitle;
 import moviescraper.doctord.dataitem.Plot;
 import moviescraper.doctord.dataitem.Rating;
+import moviescraper.doctord.dataitem.Thumb;
 import moviescraper.doctord.dataitem.Title;
 import moviescraper.doctord.dataitem.Trailer;
 import moviescraper.doctord.dataitem.Year;

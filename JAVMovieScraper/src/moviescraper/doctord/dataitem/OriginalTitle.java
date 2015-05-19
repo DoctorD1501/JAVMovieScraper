@@ -14,7 +14,7 @@ public class OriginalTitle extends MovieDataItem {
 
 	@Override
 	public String toString() {
-		return "OriginalTitle [originalTitle=" + originalTitle + "]";
+		return "OriginalTitle [originalTitle=\"" + originalTitle + "\"" + dataItemSourceToString() + "]";
 	}
 
 	public OriginalTitle(String originalTitle) {

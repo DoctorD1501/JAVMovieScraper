@@ -19,7 +19,7 @@ public class Set extends MovieDataItem {
 
 	@Override
 	public String toString() {
-		return "Set [set=" + set + "]";
+		return "Set [set=\"" + set + "\"" + dataItemSourceToString() + "]";
 	}
 
 	@Override

@@ -17,7 +17,7 @@ public class Top250 extends MovieDataItem {
 
 	@Override
 	public String toString() {
-		return "Top250 [top250=" + top250 + "]";
+		return "Top250 [top250=\"" + top250 + "\"" + dataItemSourceToString() + "]";
 	}
 
 	public Top250(String top250) {

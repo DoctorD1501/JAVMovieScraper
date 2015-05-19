@@ -1,4 +1,4 @@
-package moviescraper.doctord;
+package moviescraper.doctord.dataitem;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -13,9 +13,11 @@ import java.net.URL;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
+import moviescraper.doctord.ImageCache;
+
 import org.apache.commons.io.FileUtils;
 
-public class Thumb {
+public class Thumb extends MovieDataItem {
 	private URL thumbURL;
 	private URL previewURL; //smaller version of the image used in GUI pickers
 	Image thumbImage;
@@ -339,7 +341,7 @@ public class Thumb {
 
 	@Override
 	public String toString() {
-		return "Thumb [thumbURL=" + thumbURL + "]";
+		return "Thumb [thumbURL=" + thumbURL + "\"" + dataItemSourceToString() + "]";
 	}
 
 	public boolean isModified(){

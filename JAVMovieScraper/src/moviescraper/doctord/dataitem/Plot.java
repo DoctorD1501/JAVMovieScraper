@@ -15,7 +15,7 @@ public class Plot extends MovieDataItem {
 
 	@Override
 	public String toString() {
-		return "Plot [plot=" + plot + "]";
+		return "Plot [plot=\"" + plot + "\"" + dataItemSourceToString() + "]";
 	}
 
 	public Plot(String plot) {

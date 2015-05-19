@@ -3,6 +3,7 @@ package moviescraper.doctord;
 import java.io.IOException;
 
 import moviescraper.doctord.dataitem.Actor;
+import moviescraper.doctord.dataitem.Thumb;
 
 public class XbmcXmlActorBean {
 	

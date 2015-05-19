@@ -21,7 +21,7 @@ public class Year extends MovieDataItem {
 
 	@Override
 	public String toString() {
-		return "Year [year=" + year + "]";
+		return "Year [year=\"" + year + "\"" + dataItemSourceToString() + "]";
 	}
 
 	@Override

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<movie>
+  <title>Movie 2 title</title>
+  <originaltitle>Movie 2 Original Title</originaltitle>
+  <sorttitle>Movie 2 Sort Title</sorttitle>
+  <set>Movie 2 Set</set>
+  <year>2002</year>
+  <top250></top250>
+  <trailer>http://techslides.com/demos/sample-videos/small1.mp4</trailer>
+  <votes>2</votes>
+  <rating>2</rating>
+  <outline>Movie 2 Outline</outline>
+  <plot>Movie 2 Plot</plot>
+  <tagline>Movie 2 Tagline</tagline>
+  <runtime>130</runtime>
+  <studio>Movie 2 Studio</studio>
+  <thumb>https://developer.chrome.com/extensions/examples/api/idle/idle_simple/sample-128MovieTwoPoster.png</thumb>
+  <fanart>
+    <thumb>https://developer.chrome.com/extensions/examples/api/idle/idle_simple/sample-128MovieTwoFanart.png</thumb>
+  </fanart>
+  <mpaa>Movie Two</mpaa>
+  <id>Movie 2</id>
+  <genre>Movie 2 Genre 1</genre>
+  <genre>Movie 2 Genre 2</genre><actor>
+    <name>Movie 2 Actor 1</name>
+    <role>Movie 2 Actor 1 Role 1</role>
+    <thumb>https://developer.chrome.com/extensions/examples/api/idle/idle_simple/sample-128.png</thumb>
+  </actor>
+  <actor>
+    <name>Movie 2 Actor 2</name>
+    <role></role>
+    <thumb>https://developer.chrome.com/extensions/examples/api/idle/idle_simple/sample-128.png</thumb>
+  </actor>
+</movie>

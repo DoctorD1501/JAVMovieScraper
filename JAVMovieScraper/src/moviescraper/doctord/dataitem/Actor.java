@@ -5,8 +5,6 @@ import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
 
-import moviescraper.doctord.Thumb;
-
 public class Actor extends Person {
 	private String role;
 
@@ -32,7 +30,7 @@ public class Actor extends Person {
 
 	@Override
 	public String toString() {
-		return "Actor [role=" + role + ", toString()=" + super.toString() + "]";
+		return "Actor [role=\"" + role + "\", " + super.toString() + dataItemSourceToString() + "]";
 	}
 
 	public void writeImageToFile(File fileNameToWrite) throws IOException {

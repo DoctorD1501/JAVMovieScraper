@@ -3,6 +3,8 @@ package moviescraper.doctord.SiteParsingProfile.specific;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import org.apache.commons.codec.net.URLCodec;
@@ -13,10 +15,11 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import moviescraper.doctord.SearchResult;
-import moviescraper.doctord.Thumb;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
+import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile.ScraperGroupName;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Director;
+
 import moviescraper.doctord.dataitem.Genre;
 import moviescraper.doctord.dataitem.ID;
 import moviescraper.doctord.dataitem.MPAARating;
@@ -29,6 +32,7 @@ import moviescraper.doctord.dataitem.Set;
 import moviescraper.doctord.dataitem.SortTitle;
 import moviescraper.doctord.dataitem.Studio;
 import moviescraper.doctord.dataitem.Tagline;
+import moviescraper.doctord.dataitem.Thumb;
 import moviescraper.doctord.dataitem.Title;
 import moviescraper.doctord.dataitem.Top250;
 import moviescraper.doctord.dataitem.Votes;
@@ -37,11 +41,21 @@ import moviescraper.doctord.dataitem.Year;
 public class JavZooParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
 	private static final String siteLanguageToScrape = "en";
-
+	
+	@Override
+	public List<ScraperGroupName> getScraperGroupNames()
+	{
+		if(groupNames == null)
+			groupNames = Arrays.asList(ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP);
+		return groupNames;
+	}
+	
 	public JavZooParsingProfile(Document doc) {
 		super(doc);
 	}
-
+	
+	
+	
 	public JavZooParsingProfile() {
 		// TODO Auto-generated constructor stub
 	}

@@ -22,7 +22,7 @@ public class MPAARating extends MovieDataItem {
 
 	@Override
 	public String toString() {
-		return "MPAARating [MPAARating=" + MPAARating + "]";
+		return "MPAARating [MPAARating=\"" + MPAARating + "\"" + dataItemSourceToString() + "]";
 	}
 
 	@Override

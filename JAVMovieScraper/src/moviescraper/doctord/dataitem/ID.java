@@ -21,7 +21,7 @@ public class ID extends MovieDataItem {
 
 	@Override
 	public String toString() {
-		return "ID [id=" + id + "]";
+		return "ID [id=\"" + id + "\"" + dataItemSourceToString() + "]";
 	}
 
 	public ID(String id) {

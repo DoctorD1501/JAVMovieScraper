@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<movie>
+  <title>Movie 1 title</title>
+  <originaltitle>Movie 1 Original Title</originaltitle>
+  <sorttitle>Movie 1 Sort Title</sorttitle>
+  <set>Movie 1 Set</set>
+  <year>2001</year>
+  <top250></top250>
+  <trailer>http://techslides.com/demos/sample-videos/small1.mp4</trailer>
+  <votes>1</votes>
+  <rating>1</rating>
+  <outline>Movie 1 Outline</outline>
+  <plot>Movie 1 Plot</plot>
+  <tagline>Movie 1 Tagline</tagline>
+  <runtime>130</runtime>
+  <studio>Movie 1 Studio</studio>
+  <thumb>https://developer.chrome.com/extensions/examples/api/idle/idle_simple/sample-128MovieOnePoster.png</thumb>
+  <fanart>
+    <thumb>https://developer.chrome.com/extensions/examples/api/idle/idle_simple/sample-128MovieOneFanart.png</thumb>
+  </fanart>
+  <mpaa>Movie One</mpaa>
+  <id>Movie 1</id>
+  <genre>Movie 1 Genre 1</genre>
+  <genre>Movie 1 Genre 2</genre><actor>
+    <name>Movie 1 Actor 1</name>
+    <role>Movie 1 Actor 1 Role 1</role>
+    <thumb>https://developer.chrome.com/extensions/examples/api/idle/idle_simple/sample-128.png</thumb>
+  </actor>
+  <actor>
+    <name>Movie 1 Actor 2</name>
+    <role></role>
+    <thumb>https://developer.chrome.com/extensions/examples/api/idle/idle_simple/sample-128.png</thumb>
+  </actor>
+</movie>

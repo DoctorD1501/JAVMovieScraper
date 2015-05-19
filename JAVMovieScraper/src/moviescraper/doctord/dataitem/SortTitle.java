@@ -7,7 +7,7 @@ public class SortTitle extends MovieDataItem {
 
 	@Override
 	public String toString() {
-		return "SortTitle [sortTitle=" + sortTitle + "]";
+		return "SortTitle [sortTitle=\"" + sortTitle + "\"" + dataItemSourceToString() + "]";
 	}
 
 	public String getSortTitle() {

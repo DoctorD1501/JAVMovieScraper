@@ -7,7 +7,7 @@ public class Runtime extends MovieDataItem {
 
 	@Override
 	public String toString() {
-		return "Runtime [runtime=" + runtime + "]";
+		return "Runtime [runtime=\"" + runtime + "\"" + dataItemSourceToString() + "]";
 	}
 
 	public String getRuntime() {

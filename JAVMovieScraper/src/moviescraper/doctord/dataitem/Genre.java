@@ -16,7 +16,7 @@ public class Genre extends MovieDataItem {
 
 	@Override
 	public String toString() {
-		return "Genre [genre=" + genre + "]";
+		return "Genre [genre=\"" + genre + "\"" + dataItemSourceToString() + "]";
 	}
 
 	public String getGenre() {

@@ -8,7 +8,9 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.regex.Matcher;
@@ -22,9 +24,10 @@ import org.jsoup.select.Elements;
 
 import moviescraper.doctord.Language;
 import moviescraper.doctord.SearchResult;
-import moviescraper.doctord.Thumb;
 import moviescraper.doctord.dataitem.Actor;
+import moviescraper.doctord.dataitem.DataItemSource;
 import moviescraper.doctord.dataitem.Director;
+
 import moviescraper.doctord.dataitem.Genre;
 import moviescraper.doctord.dataitem.ID;
 import moviescraper.doctord.dataitem.MPAARating;
@@ -36,6 +39,7 @@ import moviescraper.doctord.dataitem.Set;
 import moviescraper.doctord.dataitem.SortTitle;
 import moviescraper.doctord.dataitem.Studio;
 import moviescraper.doctord.dataitem.Tagline;
+import moviescraper.doctord.dataitem.Thumb;
 import moviescraper.doctord.dataitem.Title;
 import moviescraper.doctord.dataitem.Top250;
 import moviescraper.doctord.dataitem.Trailer;
@@ -45,7 +49,24 @@ import moviescraper.doctord.model.AbstractMovieScraper;
 import moviescraper.doctord.model.GenericMovieScraper;
 import moviescraper.doctord.preferences.MoviescraperPreferences;
 
-public abstract class SiteParsingProfile {
+public abstract class SiteParsingProfile implements DataItemSource{
+	
+	/* Any group of SiteParsingProfiles which return the same type of information for a given file and which
+	 * will be compatible for amalgamation should return the same ScraperGroupName by implementing getScraperGroupName()
+	 */
+	public enum ScraperGroupName{
+		JAV_CENSORED_SCRAPER_GROUP {public String toString() {return "JAV Censored Group";}}, 
+		DEFAULT_SCRAPER_GROUP {public String toString() {return "Default Group";}}
+	}
+	
+	public List<ScraperGroupName> getScraperGroupNames()
+	{
+		if(groupNames == null)
+			groupNames = Arrays.asList(ScraperGroupName.DEFAULT_SCRAPER_GROUP);
+		return groupNames;
+	}
+	
+	protected List<ScraperGroupName> groupNames;
 	
 	protected Language scrapingLanguage;
 
@@ -380,5 +401,11 @@ public abstract class SiteParsingProfile {
 	public void setFirstWordOfFileIsID(boolean firstWordOfFileIsID) {
 		this.firstWordOfFileIsID = firstWordOfFileIsID;
 	}
+	
+	public String getDataItemSourceName(){
+		return getParserName();
+	}
+	
+
 	
 }

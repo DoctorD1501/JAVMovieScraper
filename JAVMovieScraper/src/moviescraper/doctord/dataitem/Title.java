@@ -24,7 +24,7 @@ public class Title extends MovieDataItem {
 
 	@Override
 	public String toString() {
-		return "Title [title=" + title + "]";
+		return "Title [title=\"" + title + "\"" + dataItemSourceToString() + "]";
 	}
 
 }

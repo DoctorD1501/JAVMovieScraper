@@ -15,7 +15,7 @@ public class Outline extends MovieDataItem {
 
 	@Override
 	public String toString() {
-		return "Outline [outline=" + outline + "]";
+		return "Outline [outline=\"" + outline + "\"" + dataItemSourceToString() + "]";
 	}
 
 	public Outline(String outline) {

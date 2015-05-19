@@ -10,9 +10,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import moviescraper.doctord.Movie;
-import moviescraper.doctord.Thumb;
 import moviescraper.doctord.GUI.AbstractFileDetailPanelEditGUI.Operation;
 import moviescraper.doctord.dataitem.Actor;
+import moviescraper.doctord.dataitem.Thumb;
 
 public class FileDetailPanelActorEditor extends AbstractFileDetailPanelEditGUI {
 

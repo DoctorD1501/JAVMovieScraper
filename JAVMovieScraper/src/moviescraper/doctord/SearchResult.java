@@ -1,5 +1,7 @@
 package moviescraper.doctord;
 
+import moviescraper.doctord.dataitem.Thumb;
+
 public class SearchResult {
 	
 	private String urlPath;

@@ -13,11 +13,11 @@ import org.jsoup.nodes.Document;
 
 import moviescraper.doctord.Movie;
 import moviescraper.doctord.SearchResult;
-import moviescraper.doctord.Thumb;
 import moviescraper.doctord.GUI.SelectionDialog;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfileJSON;
 import moviescraper.doctord.SiteParsingProfile.specific.SpecificProfile;
+import moviescraper.doctord.dataitem.Thumb;
 import moviescraper.doctord.model.AbstractMovieScraper;
 import moviescraper.doctord.preferences.MoviescraperPreferences;
 

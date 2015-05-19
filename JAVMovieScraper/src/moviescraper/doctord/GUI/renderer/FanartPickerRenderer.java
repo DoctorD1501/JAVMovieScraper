@@ -12,7 +12,7 @@ import javax.swing.ListCellRenderer;
 import org.imgscalr.Scalr;
 import org.imgscalr.Scalr.Method;
 
-import moviescraper.doctord.Thumb;
+import moviescraper.doctord.dataitem.Thumb;
 
 public class FanartPickerRenderer extends JLabel implements ListCellRenderer<Thumb> {
 	/**

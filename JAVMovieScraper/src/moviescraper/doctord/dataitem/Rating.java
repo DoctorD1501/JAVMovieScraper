@@ -55,7 +55,7 @@ public class Rating extends MovieDataItem {
 
 	@Override
 	public String toString() {
-		return "Rating [maxRating=" + maxRating + ", rating=" + rating + "]";
+		return "Rating [maxRating=\"" + maxRating + "\", rating=\"" + rating + "\" " + dataItemSourceToString() + "]";
 	}
 
 	@Override

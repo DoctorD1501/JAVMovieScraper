@@ -15,7 +15,7 @@ public class Studio extends MovieDataItem {
 
 	@Override
 	public String toString() {
-		return "Studio [Studio=" + studio + "]";
+		return "Studio [studio=\"" + studio + "\"" + dataItemSourceToString() + "]";
 	}
 
 	public Studio(String studio) {

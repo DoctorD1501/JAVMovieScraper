@@ -40,6 +40,10 @@ import moviescraper.doctord.preferences.MoviescraperPreferences;
 
 public class Movie {
 
+	/* Be careful if you decide you want to change the field names in this class (especially the arrays) 
+	 * because reflection is used in the movie amalgamation routine to get these fields by name, so you will need to 
+	 * update the references in the reflective call with the new name as well.
+	*/
 	private ArrayList<Actor> actors;
 	private ArrayList<Director> directors;
 	private Thumb[] fanart;
@@ -62,7 +66,7 @@ public class Movie {
 
 	private Title title;
 	
-	private List<Title> allTitles = new ArrayList<>();
+	private List<Title> allTitles = new ArrayList<Title>();
 
 	private Top250 top250;
 	
@@ -108,27 +112,73 @@ public class Movie {
 
 	public Movie(SiteParsingProfile siteToScrapeFrom) {
 		title = siteToScrapeFrom.scrapeTitle();
+		title.setDataItemSource(siteToScrapeFrom);
+		
 		originalTitle = siteToScrapeFrom.scrapeOriginalTitle();
+		originalTitle.setDataItemSource(siteToScrapeFrom);
+		
 		sortTitle = siteToScrapeFrom.scrapeSortTitle();
+		sortTitle.setDataItemSource(siteToScrapeFrom);
+		
 		set = siteToScrapeFrom.scrapeSet();
+		set.setDataItemSource(siteToScrapeFrom);
+		
 		rating = siteToScrapeFrom.scrapeRating();
+		rating.setDataItemSource(siteToScrapeFrom);
+		
 		year = siteToScrapeFrom.scrapeYear();
+		year.setDataItemSource(siteToScrapeFrom);
+		
 		top250 = siteToScrapeFrom.scrapeTop250();
+		top250.setDataItemSource(siteToScrapeFrom);
+		
 		trailer = siteToScrapeFrom.scrapeTrailer();
+		trailer.setDataItemSource(siteToScrapeFrom);
+		
 		votes = siteToScrapeFrom.scrapeVotes();
+		votes.setDataItemSource(siteToScrapeFrom);
+		
 		outline = siteToScrapeFrom.scrapeOutline();
+		outline.setDataItemSource(siteToScrapeFrom);
+		
 		plot = siteToScrapeFrom.scrapePlot();
+		plot.setDataItemSource(siteToScrapeFrom);
+		
 		tagline = siteToScrapeFrom.scrapeTagline();
+		tagline.setDataItemSource(siteToScrapeFrom);
+		
 		studio = siteToScrapeFrom.scrapeStudio();
+		studio.setDataItemSource(siteToScrapeFrom);
+		
 		runtime = siteToScrapeFrom.scrapeRuntime();
+		runtime.setDataItemSource(siteToScrapeFrom);
+		
 		posters = siteToScrapeFrom.scrapePosters();
+		setDataItemSourceOnThumbs(posters, siteToScrapeFrom);
+		
 		fanart = siteToScrapeFrom.scrapeFanart();
+		setDataItemSourceOnThumbs(fanart, siteToScrapeFrom);
+		
 		extraFanart = siteToScrapeFrom.scrapeExtraFanart();
+		setDataItemSourceOnThumbs(extraFanart, siteToScrapeFrom);
+		
 		mpaa = siteToScrapeFrom.scrapeMPAA();
+		mpaa.setDataItemSource(siteToScrapeFrom);
+		
 		id = siteToScrapeFrom.scrapeID();
+		id.setDataItemSource(siteToScrapeFrom);
+		
 		actors = siteToScrapeFrom.scrapeActors();
+		for(Actor actor : actors)
+			actor.setDataItemSource(siteToScrapeFrom);
+		
 		genres = siteToScrapeFrom.scrapeGenres();
+		for(Genre genre : genres)
+			genre.setDataItemSource(siteToScrapeFrom);
+		
 		directors = siteToScrapeFrom.scrapeDirectors();
+		for(Director director : directors)
+			director.setDataItemSource(siteToScrapeFrom);
 		
 		MoviescraperPreferences scraperPreferences = MoviescraperPreferences.getInstance();
 		if(scraperPreferences.getAppendIDToStartOfTitle() && id != null && 
@@ -138,6 +188,14 @@ public class Movie {
 			title.setTitle(id.getId() + " - " + title.getTitle());
 		}
 		
+	}
+	
+	private void setDataItemSourceOnThumbs(Thumb [] thumbs, DataItemSource dataItemSource)
+	{
+		for (Thumb thumb : thumbs)
+		{
+			thumb.setDataItemSource(dataItemSource);
+		}
 	}
 	
 	/**
@@ -188,7 +246,7 @@ public class Movie {
 	public ArrayList<Director> getDirectors() {
 		return directors;
 	}
-
+	
 	public Thumb[] getFanart() {
 		return fanart;
 	}

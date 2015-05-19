@@ -6,12 +6,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import moviescraper.doctord.Thumb;
 import moviescraper.doctord.SiteParsingProfile.specific.Kin8tengokuParsingProfile;
 import moviescraper.doctord.controller.SpecificScraperAction;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Genre;
 import moviescraper.doctord.dataitem.Runtime;
+import moviescraper.doctord.dataitem.Thumb;
 import moviescraper.doctord.dataitem.Year;
 
 import org.jsoup.nodes.Document;

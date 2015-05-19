@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<movie>
+  <title>Movie 3 title</title>
+  <originaltitle>Movie 3 Original Title</originaltitle>
+  <sorttitle>Movie 3 Sort Title</sorttitle>
+  <set>Movie 3 Set</set>
+  <year>2003</year>
+  <top250></top250>
+  <trailer>http://techslides.com/demos/sample-videos/small1.mp4</trailer>
+  <votes>3</votes>
+  <rating>3</rating>
+  <outline>Movie 3 Outline</outline>
+  <plot>Movie 3 Plot</plot>
+  <tagline>Movie 3 Tagline</tagline>
+  <runtime>130</runtime>
+  <studio>Movie 3 Studio</studio>
+  <thumb>https://developer.chrome.com/extensions/examples/api/idle/idle_simple/sample-128MovieThreePoster.png</thumb>
+  <fanart>
+    <thumb>https://developer.chrome.com/extensions/examples/api/idle/idle_simple/sample-128MovieThreeFanart.png</thumb>
+  </fanart>
+  <mpaa>Movie Three</mpaa>
+  <id>Movie 3</id>
+  <genre>Movie 3 Genre 1</genre>
+  <genre>Movie 3 Genre 2</genre><actor>
+    <name>Movie 3 Actor 1</name>
+    <role>Movie 3 Actor 1 Role 1</role>
+    <thumb>https://developer.chrome.com/extensions/examples/api/idle/idle_simple/sample-128.png</thumb>
+  </actor>
+  <actor>
+    <name>Movie 3 Actor 2</name>
+    <role></role>
+    <thumb>https://developer.chrome.com/extensions/examples/api/idle/idle_simple/sample-128.png</thumb>
+  </actor>
+</movie>

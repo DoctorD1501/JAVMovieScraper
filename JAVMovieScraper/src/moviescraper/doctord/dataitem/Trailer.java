@@ -27,7 +27,7 @@ public class Trailer extends MovieDataItem {
 
 	@Override
 	public String toString() {
-		return "Trailer [trailer=" + trailer + "]";
+		return "Trailer [trailer=\"" + trailer + "\"" + dataItemSourceToString() + "]";
 	}
 	
 	public void writeTrailerToFile(File fileNameToWrite) throws IOException {

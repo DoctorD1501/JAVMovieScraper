@@ -20,7 +20,7 @@ public class Votes extends MovieDataItem {
 
 	@Override
 	public String toString() {
-		return "Votes [votes=" + votes + "]";
+		return "Votes [votes=\"" + votes + "\"" + dataItemSourceToString() + "]";
 	}
 
 	@Override

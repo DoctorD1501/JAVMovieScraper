@@ -21,7 +21,7 @@ public class Tagline extends MovieDataItem {
 
 	@Override
 	public String toString() {
-		return "Tagline [tagline=" + tagline + "]";
+		return "Tagline [tagline=\"" + tagline + "\"" + dataItemSourceToString() + "]";
 	}
 
 	@Override

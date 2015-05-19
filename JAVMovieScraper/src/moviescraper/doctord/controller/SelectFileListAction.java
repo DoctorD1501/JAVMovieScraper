@@ -14,9 +14,9 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import moviescraper.doctord.Movie;
-import moviescraper.doctord.Thumb;
 import moviescraper.doctord.XbmcXmlMovieBean;
 import moviescraper.doctord.GUI.GUIMain;
+import moviescraper.doctord.dataitem.Thumb;
 
 public class SelectFileListAction implements ListSelectionListener {
 	/**
