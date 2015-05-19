@@ -96,7 +96,7 @@ public class JavZooParsingProfile extends SiteParsingProfile implements Specific
 					
 					// scrape japanese site for original text
 					String japaneseUrl = document.location().replaceFirst(Pattern.quote("/en/"), "/ja/");
-					if (japaneseUrl == document.location())
+					if (japaneseUrl.equals(document.location()))
 						return new OriginalTitle(titleElementText);
 						
 					Document japaneseDoc = Jsoup.connect(japaneseUrl).timeout(CONNECTION_TIMEOUT_VALUE).get();		
