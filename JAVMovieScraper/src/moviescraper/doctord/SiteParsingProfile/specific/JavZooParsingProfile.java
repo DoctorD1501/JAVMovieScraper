@@ -3,6 +3,7 @@ package moviescraper.doctord.SiteParsingProfile.specific;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.regex.Pattern;
 
 import org.apache.commons.codec.net.URLCodec;
@@ -304,35 +305,33 @@ public class JavZooParsingProfile extends SiteParsingProfile implements Specific
 
 	@Override
 	public SearchResult[] getSearchResults(String searchString) throws IOException {
-		ArrayList<SearchResult> linksList = new ArrayList<SearchResult>();
+		LinkedList<SearchResult> linksList = new LinkedList<SearchResult>();
 		try{
 			Document doc = Jsoup.connect(searchString).userAgent("Mozilla").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
 			{
 				Elements divVideoLinksElements = doc.select("div.item:has(a[href*=/movie/])");
-				String favoredSearchResultString = null;
+
 				for(Element currentDivVideoLink : divVideoLinksElements)
 				{
-					Element videoLinksElements = currentDivVideoLink.select("a[href*=/movie/]").first();
+					Element videoLinksElements = currentDivVideoLink.select("a[href*=/movie/]").last();
 					String idFromSearchResult = currentDivVideoLink.select("span").first().text();
 					String currentLink = videoLinksElements.attr("href");
+					String currentLabel = idFromSearchResult + " " + videoLinksElements.text();
+					String currentThumb = currentDivVideoLink.select("img").first().attr("src");
+					
 					if(currentLink.length() > 1)
 					{
+						SearchResult searchResult = new SearchResult(currentLink, currentLabel, new Thumb(currentThumb));
+						
 						//maybe we can improve search accuracy by putting our suspected best match at the front of the array
 						//we do this by examining the ID from the search result and seeing if it was in our initial search string
 						if(searchString.contains(idFromSearchResult) || searchString.contains(idFromSearchResult.replaceAll(Pattern.quote("-"),"")))
-						{
-							favoredSearchResultString = currentLink;
-						}
-						linksList.add(new SearchResult(currentLink));
-
+							linksList.addFirst(searchResult);
+						else
+							linksList.addLast(searchResult);
 					}
 				}
-				//if we had a favoredSearchResult, remove it from the list and add it back to the front of the list
-				if(favoredSearchResultString != null)
-				{
-					linksList.remove(favoredSearchResultString);
-					linksList.add(0, new SearchResult(favoredSearchResultString));
-				}
+
 				return linksList.toArray(new SearchResult[linksList.size()]);
 			}
 		}
