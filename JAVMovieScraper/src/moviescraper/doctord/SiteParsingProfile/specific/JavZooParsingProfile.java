@@ -385,7 +385,7 @@ public class JavZooParsingProfile extends SiteParsingProfile implements Specific
 	public Thumb[] scrapeExtraFanart() {
 		ArrayList<Thumb> imageList = new ArrayList<Thumb>();
 
-		Elements sampleBoxImageLinks = document.select("div.sample-box li a");
+		Elements sampleBoxImageLinks = document.select("div.sample-box li a[href]");
 		if (sampleBoxImageLinks != null) {
 			for(Element link: sampleBoxImageLinks)
 				try {
