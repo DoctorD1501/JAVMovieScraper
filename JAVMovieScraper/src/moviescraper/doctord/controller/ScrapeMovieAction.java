@@ -1043,7 +1043,7 @@ public class ScrapeMovieAction extends AbstractAction {
 		Thumb[] fanartToUse = new Thumb[0];
 		
 		for(Movie m: bestContentForPosterAndFanart){
-			if (m.getFanart() != null && m.getFanart().length > 0){
+			if (m != null && m.getFanart() != null && m.getFanart().length > 0){
 				fanartToUse = m.getFanart();
 				break;
 			}
