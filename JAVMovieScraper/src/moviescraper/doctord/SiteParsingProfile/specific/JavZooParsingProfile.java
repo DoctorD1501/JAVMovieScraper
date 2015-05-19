@@ -13,8 +13,10 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import moviescraper.doctord.JapaneseCharacter;
 import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.Thumb;
+import moviescraper.doctord.TranslateString;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Director;
@@ -60,6 +62,13 @@ public class JavZooParsingProfile extends SiteParsingProfile implements Specific
 				{
 					titleElementText = titleElementText.replaceFirst(Pattern.quote("- "), "");
 				}
+				
+				//sometimes title is not translated to english
+				if (document.location().contains("/en/"))
+					if (JapaneseCharacter.containsJapaneseLetter(titleElementText))
+						return new Title(TranslateString.translateStringJapaneseToEnglish(titleElementText));
+				
+				
 				return new Title(titleElementText);
 		}
 		else return new Title("");
