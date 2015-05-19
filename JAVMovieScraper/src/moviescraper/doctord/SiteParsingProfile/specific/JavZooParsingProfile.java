@@ -2,6 +2,7 @@ package moviescraper.doctord.SiteParsingProfile.specific;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.regex.Pattern;
@@ -382,8 +383,19 @@ public class JavZooParsingProfile extends SiteParsingProfile implements Specific
 
 	@Override
 	public Thumb[] scrapeExtraFanart() {
-		//no extra fanart is supported on this site, for now
-		return new Thumb[0];
+		ArrayList<Thumb> imageList = new ArrayList<Thumb>();
+
+		Elements sampleBoxImageLinks = document.select("div.sample-box li a");
+		if (sampleBoxImageLinks != null) {
+			for(Element link: sampleBoxImageLinks)
+				try {
+					imageList.add(new Thumb(link.attr("href")));
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
+				}
+		}
+		
+		return imageList.toArray(new Thumb[imageList.size()]);
 	}
 	
 	public String toString(){
