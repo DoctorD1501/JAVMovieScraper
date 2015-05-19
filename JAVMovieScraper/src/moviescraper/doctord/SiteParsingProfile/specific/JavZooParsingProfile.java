@@ -76,7 +76,36 @@ public class JavZooParsingProfile extends SiteParsingProfile implements Specific
 
 	@Override
 	public OriginalTitle scrapeOriginalTitle() {
-		//JavZoo doesn't have the original title when scraping in english
+		try {
+			Element titleElement = document.select("div div.container div.row-fluid h3").first();
+			if(titleElement != null)
+			{
+				//remove the ID number off beginning of the title, if it exists (and it usually always does on JavLibrary)
+					String titleElementText = titleElement.text().trim();
+					titleElementText = titleElementText.substring(StringUtils.indexOf(titleElementText," ")).trim();
+					//sometimes this still leaves "- " at the start of the title, so we'll want to get rid of that too
+					if(titleElementText.startsWith("- "))
+					{
+						titleElementText = titleElementText.replaceFirst(Pattern.quote("- "), "");
+					}
+					
+					//sometimes title is not translated on the english site
+					if (JapaneseCharacter.containsJapaneseLetter(titleElementText))
+						return new OriginalTitle(titleElementText);
+					
+					// scrape japanese site for original text
+					String japaneseUrl = document.location().replaceFirst(Pattern.quote("/en/"), "/ja/");
+					if (japaneseUrl == document.location())
+						return new OriginalTitle(titleElementText);
+						
+					Document japaneseDoc = Jsoup.connect(japaneseUrl).timeout(CONNECTION_TIMEOUT_VALUE).get();		
+					JavZooParsingProfile spp = new JavZooParsingProfile(japaneseDoc);
+					return spp.scrapeOriginalTitle();
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return OriginalTitle.BLANK_ORIGINALTITLE;
 	}
 
