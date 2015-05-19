@@ -2,8 +2,10 @@ package moviescraper.doctord.SiteParsingProfile.specific;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -14,12 +16,13 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import moviescraper.doctord.JapaneseCharacter;
 import moviescraper.doctord.SearchResult;
+import moviescraper.doctord.TranslateString;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile.ScraperGroupName;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Director;
-
 import moviescraper.doctord.dataitem.Genre;
 import moviescraper.doctord.dataitem.ID;
 import moviescraper.doctord.dataitem.MPAARating;
@@ -73,6 +76,13 @@ public class JavZooParsingProfile extends SiteParsingProfile implements Specific
 				{
 					titleElementText = titleElementText.replaceFirst(Pattern.quote("- "), "");
 				}
+				
+				//sometimes title is not translated to english
+				if (document.location().contains("/en/"))
+					if (JapaneseCharacter.containsJapaneseLetter(titleElementText))
+						return new Title(TranslateString.translateStringJapaneseToEnglish(titleElementText));
+				
+				
 				return new Title(titleElementText);
 		}
 		else return new Title("");
@@ -80,7 +90,36 @@ public class JavZooParsingProfile extends SiteParsingProfile implements Specific
 
 	@Override
 	public OriginalTitle scrapeOriginalTitle() {
-		//JavZoo doesn't have the original title when scraping in english
+		try {
+			Element titleElement = document.select("div div.container div.row-fluid h3").first();
+			if(titleElement != null)
+			{
+				//remove the ID number off beginning of the title, if it exists (and it usually always does on JavLibrary)
+					String titleElementText = titleElement.text().trim();
+					titleElementText = titleElementText.substring(StringUtils.indexOf(titleElementText," ")).trim();
+					//sometimes this still leaves "- " at the start of the title, so we'll want to get rid of that too
+					if(titleElementText.startsWith("- "))
+					{
+						titleElementText = titleElementText.replaceFirst(Pattern.quote("- "), "");
+					}
+					
+					//sometimes title is not translated on the english site
+					if (JapaneseCharacter.containsJapaneseLetter(titleElementText))
+						return new OriginalTitle(titleElementText);
+					
+					// scrape japanese site for original text
+					String japaneseUrl = document.location().replaceFirst(Pattern.quote("/en/"), "/ja/");
+					if (japaneseUrl == document.location())
+						return new OriginalTitle(titleElementText);
+						
+					Document japaneseDoc = Jsoup.connect(japaneseUrl).timeout(CONNECTION_TIMEOUT_VALUE).get();		
+					JavZooParsingProfile spp = new JavZooParsingProfile(japaneseDoc);
+					return spp.scrapeOriginalTitle();
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return OriginalTitle.BLANK_ORIGINALTITLE;
 	}
 
@@ -318,35 +357,33 @@ public class JavZooParsingProfile extends SiteParsingProfile implements Specific
 
 	@Override
 	public SearchResult[] getSearchResults(String searchString) throws IOException {
-		ArrayList<SearchResult> linksList = new ArrayList<SearchResult>();
+		LinkedList<SearchResult> linksList = new LinkedList<SearchResult>();
 		try{
 			Document doc = Jsoup.connect(searchString).userAgent("Mozilla").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
 			{
 				Elements divVideoLinksElements = doc.select("div.item:has(a[href*=/movie/])");
-				String favoredSearchResultString = null;
+
 				for(Element currentDivVideoLink : divVideoLinksElements)
 				{
-					Element videoLinksElements = currentDivVideoLink.select("a[href*=/movie/]").first();
+					Element videoLinksElements = currentDivVideoLink.select("a[href*=/movie/]").last();
 					String idFromSearchResult = currentDivVideoLink.select("span").first().text();
 					String currentLink = videoLinksElements.attr("href");
+					String currentLabel = idFromSearchResult + " " + videoLinksElements.text();
+					String currentThumb = currentDivVideoLink.select("img").first().attr("src");
+					
 					if(currentLink.length() > 1)
 					{
+						SearchResult searchResult = new SearchResult(currentLink, currentLabel, new Thumb(currentThumb));
+						
 						//maybe we can improve search accuracy by putting our suspected best match at the front of the array
 						//we do this by examining the ID from the search result and seeing if it was in our initial search string
 						if(searchString.contains(idFromSearchResult) || searchString.contains(idFromSearchResult.replaceAll(Pattern.quote("-"),"")))
-						{
-							favoredSearchResultString = currentLink;
-						}
-						linksList.add(new SearchResult(currentLink));
-
+							linksList.addFirst(searchResult);
+						else
+							linksList.addLast(searchResult);
 					}
 				}
-				//if we had a favoredSearchResult, remove it from the list and add it back to the front of the list
-				if(favoredSearchResultString != null)
-				{
-					linksList.remove(favoredSearchResultString);
-					linksList.add(0, new SearchResult(favoredSearchResultString));
-				}
+
 				return linksList.toArray(new SearchResult[linksList.size()]);
 			}
 		}
@@ -359,8 +396,19 @@ public class JavZooParsingProfile extends SiteParsingProfile implements Specific
 
 	@Override
 	public Thumb[] scrapeExtraFanart() {
-		//no extra fanart is supported on this site, for now
-		return new Thumb[0];
+		ArrayList<Thumb> imageList = new ArrayList<Thumb>();
+
+		Elements sampleBoxImageLinks = document.select("div.sample-box li a");
+		if (sampleBoxImageLinks != null) {
+			for(Element link: sampleBoxImageLinks)
+				try {
+					imageList.add(new Thumb(link.attr("href")));
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
+				}
+		}
+		
+		return imageList.toArray(new Thumb[imageList.size()]);
 	}
 	
 	public String toString(){

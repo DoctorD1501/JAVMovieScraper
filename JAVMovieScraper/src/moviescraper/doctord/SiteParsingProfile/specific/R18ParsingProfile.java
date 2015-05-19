@@ -135,7 +135,26 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 	
 	@Override
 	public Trailer scrapeTrailer() {
-		// don't know how to get trailers from r18 (flash)
+		Element element = document.select("object#FreeViewPlayer>param[name=flashvars]").first();
+		if (element != null){
+			String flashvars = element.attr("value");
+			Pattern pattern = Pattern.compile("^.*&fid=(.+)&.*&bid=(\\d)(w|s)&.*$");
+			Matcher matcher = pattern.matcher(flashvars);
+			if (matcher.matches()){
+				String cid = matcher.group(1);
+				int bitrates = Integer.parseInt(matcher.group(2));
+				String ratio = matcher.group(3);
+				String quality = (bitrates & 0b100) != 0 ? "dmb" : (bitrates & 0b010) != 0 ? "dm" : "sm";
+				String firstLetterOfCid = cid.substring(0,1);
+				String threeLetterCidCode = cid.substring(0,3);
+				
+				String trailerURL = String.format("http://cc3001.r18.com/litevideo/freepv/%1$s/%2$s/%3$s/%3$s_%4$s_%5$s.mp4", 
+			 			firstLetterOfCid, threeLetterCidCode, cid, quality, ratio);
+				
+				return new Trailer(trailerURL);
+			}
+			
+		}
 		return Trailer.BLANK_TRAILER;
 	}
 
@@ -391,8 +410,7 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 				{
 					String urlPath = searchResult.select("a").attr("href");
 					String label = searchResult.select("img").first().attr("alt");
-					Thumb previewImage = null;
-					previewImage = new Thumb(searchResult.select("img").first().attr("src"));
+					Thumb previewImage = new Thumb(searchResult.select("img").first().attr("data-original"));
 					SearchResult searchResultToAdd = new SearchResult(urlPath, label, previewImage);
 					foundResults[i] = searchResultToAdd;
 					i++;
