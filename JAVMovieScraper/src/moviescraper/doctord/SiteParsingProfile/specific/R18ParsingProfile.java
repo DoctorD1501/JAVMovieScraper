@@ -391,7 +391,7 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 		String searchWordURLEncoded;
 		try {
 			searchWordURLEncoded = codec.encode(searchWord);
-			String searchPattern = "http://www.r18.com/common/search/floor=movies/searchword=" + searchWordURLEncoded;
+			String searchPattern = "http://www.r18.com/common/search/floor=movies/searchword=" + searchWordURLEncoded + "/";
 			System.out.println("Searching on R18 with this URL:" + searchPattern);
 			Document searchResultsPage = Jsoup.connect(searchPattern).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
 			Elements moviesFound = searchResultsPage.select(".cmn-list-product01 li");
