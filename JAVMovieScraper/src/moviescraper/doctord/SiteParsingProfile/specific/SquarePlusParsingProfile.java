@@ -206,7 +206,7 @@ public class SquarePlusParsingProfile extends SiteParsingProfile implements Spec
 	public ArrayList<Actor> scrapeActors() {
 		ArrayList<Actor> actorList = new ArrayList<Actor>();
 		
-		Element featuringElement = document.select("th.label:containsOwn(Featuring) ~ td").first();
+		Element featuringElement = document.select("th.label:containsOwn(Featuring) ~ td:not(:containsOwn(Various))").first();
 		if(featuringElement != null)
 		{
 			String [] actorSplitList = featuringElement.text().split(",");
@@ -214,7 +214,7 @@ public class SquarePlusParsingProfile extends SiteParsingProfile implements Spec
 				actorList.add(new Actor(actorToAdd,"",null));
 		}
 		
-		Element starringElement = document.select("th.label:containsOwn(Starring) ~ td").first();
+		Element starringElement = document.select("th.label:containsOwn(Starring) ~ td:not(:containsOwn(Various))").first();
 		if(starringElement != null)
 		{
 			String [] actorSplitList = starringElement.text().split(",");
