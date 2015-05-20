@@ -27,7 +27,7 @@ import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.Thumb;
 import moviescraper.doctord.GUI.GUIMain;
 import moviescraper.doctord.GUI.renderer.FanartPickerRenderer;
-import moviescraper.doctord.SiteParsingProfile.ActionJavParsingProfile;
+import moviescraper.doctord.SiteParsingProfile.specific.ActionJavParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.Data18MovieParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.Data18WebContentParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.IAFDParsingProfile;
