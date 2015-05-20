@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.LinkedList;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
@@ -313,13 +314,41 @@ public class ActionJavParsingProfile extends SiteParsingProfile {
 
 	@Override
 	public String createSearchString(File file) {
-		String fileNameNoExtension = findIDTagFromFile(file, isFirstWordOfFileIsID());
-		return fileNameNoExtension;
+		String idTag = findIDTagFromFile(file, isFirstWordOfFileIsID());
+		if (idTag != null)
+			return "http://www.actionjav.com/results_title.cfm?sortby=pub_idu&direction=ASC&searchterm=" + idTag.replace("-", "");
+		
+		return null;
 	}
 
 	@Override
 	public SearchResult[] getSearchResults(String searchString) throws IOException {
-		return getLinksFromGoogle(searchString, "actionjav.com/title.cfm?iid=");
+		if (searchString == null)
+			return new SearchResult[0];
+		
+		LinkedList<SearchResult> searchItems = new LinkedList<SearchResult>();
+		String searchId = searchString.replaceAll(".*searchterm=(\\D+)(\\d+)", "$1-$2").toUpperCase();
+		Document doc = Jsoup.connect(searchString).timeout(CONNECTION_TIMEOUT_VALUE).get();
+		Elements rows = doc.select("table table table tr:has(a[href^=title.cfm?iid=])");
+		
+		for(Element row: rows) {
+			String id = row.select("td:nth-child(2)").first().text().replaceAll("(\\D+)(\\d+)", "$1-$2").toUpperCase();
+			Element link = row.select("a[href^=title.cfm?iid=]").first();
+			Element actress = row.select("a[href^=model.cfm?actress_filename=]").first();
+			String title = "[" + id + "] " + link.text();
+			if (actress != null)
+				title = title + " - " + actress.ownText();
+			
+			String url = "http://www.actionjav.com/" + link.attr("href");
+			SearchResult result = new SearchResult(url, title);
+			
+			if (id.equals(searchId))
+				searchItems.addFirst(result);
+			else
+				searchItems.addLast(result);			
+		}
+		
+		return searchItems.toArray(new SearchResult[searchItems.size()]);
 	}
 
 	@Override
