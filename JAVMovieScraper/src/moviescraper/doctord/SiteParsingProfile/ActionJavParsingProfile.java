@@ -194,11 +194,8 @@ public class ActionJavParsingProfile extends SiteParsingProfile {
 
 	@Override
 	public Thumb[] scrapePosters() {
-		String coverLink = document.select("a[href$=&console=cover]").first()
-				.attr("abs:href");
 		try {
-			Document coverPage = Jsoup.connect(coverLink).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
-			Element posterImg = coverPage.select(
+			Element posterImg = document.select(
 					"img[src*=/web_img/covers_hires_full/]").first();
 			//Thumb coverImageCrop = new Thumb(posterImg.attr("src"), 52.7, 0, 0,0);
 			Thumb coverImageCrop = new Thumb(posterImg.attr("src"), true); 
@@ -214,11 +211,8 @@ public class ActionJavParsingProfile extends SiteParsingProfile {
 
 	@Override
 	public Thumb[] scrapeFanart() {
-		String coverLink = document.select("a[href$=&console=cover]").first()
-				.attr("abs:href");
 		try {
-			Document coverPage = Jsoup.connect(coverLink).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
-			Element posterImg = coverPage.select(
+			Element posterImg = document.select(
 					"img[src*=/web_img/covers_hires_full/]").first();
 			Thumb coverImageCrop = new Thumb(posterImg.attr("src"));
 			Thumb[] returnResult = new Thumb[1];
@@ -339,7 +333,7 @@ public class ActionJavParsingProfile extends SiteParsingProfile {
 			if (actress != null)
 				title = title + " - " + actress.ownText();
 			
-			String url = "http://www.actionjav.com/" + link.attr("href");
+			String url = "http://www.actionjav.com/" + link.attr("href") + "&console=cover";
 			SearchResult result = new SearchResult(url, title);
 			
 			if (id.equals(searchId))
