@@ -79,7 +79,10 @@ public class SquarePlusParsingProfile extends SiteParsingProfile implements Spec
 
 	@Override
 	public Set scrapeSet() {
-		// Site doesn't have any set information
+		Element setElement = document.select("th.label:containsOwn(Series) ~ td").first();
+		if (setElement != null)
+			return new Set(setElement.text());
+		
 		return Set.BLANK_SET;
 
 	}
@@ -229,6 +232,10 @@ public class SquarePlusParsingProfile extends SiteParsingProfile implements Spec
 
 	@Override
 	public Studio scrapeStudio() {
+		Element studioElement = document.select("th.label:containsOwn(Label) ~ td:not(:containsOwn(Other))").first();
+		if(studioElement != null)
+			return new Studio(studioElement.text());
+		
 		return Studio.BLANK_STUDIO;
 	}
 
