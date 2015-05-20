@@ -2,9 +2,12 @@ package moviescraper.doctord.SiteParsingProfile;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.LinkedList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
@@ -347,8 +350,24 @@ public class ActionJavParsingProfile extends SiteParsingProfile {
 
 	@Override
 	public Thumb[] scrapeExtraFanart() {
-		//No extrafanart from ActionJav, for now
-		return new Thumb[0];
+		ArrayList<Thumb> imageList = new ArrayList<Thumb>();
+		
+		Element script = document.select("head > script:nth-of-type(2)").first();
+		if (script != null) {
+			String data = script.data();
+			Pattern pattern = Pattern.compile("\"(http://images2.tsunami-ent.com/web_img/.*\\.jpg)\"");
+			Matcher matcher = pattern.matcher(data);
+			while(matcher.find()){
+				try {
+					imageList.add(new Thumb(matcher.group(1)));
+				} catch (MalformedURLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+
+		return imageList.toArray(new Thumb[imageList.size()]);
 	}
 	
 	public String toString(){
