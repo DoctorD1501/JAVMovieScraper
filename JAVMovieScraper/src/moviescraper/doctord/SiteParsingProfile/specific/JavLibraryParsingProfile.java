@@ -99,7 +99,20 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 
 	@Override
 	public OriginalTitle scrapeOriginalTitle() {
-		//Does not have original japanese title, so don't return anything
+
+		if (siteLanguageToScrape.equals(japaneseLanguageCode))
+			return new OriginalTitle(scrapeTitle().getTitle());
+		
+		try {
+			String japaneseUrl = document.location().replace("javlibrary.com/" + siteLanguageToScrape + "/", "javlibrary.com/" + japaneseLanguageCode + "/");			
+			Document japaneseDoc = Jsoup.connect(japaneseUrl).userAgent(getRandomUserAgent()).timeout(CONNECTION_TIMEOUT_VALUE).get();
+			JavLibraryParsingProfile profile = new JavLibraryParsingProfile(japaneseDoc, japaneseLanguageCode);
+			return profile.scrapeOriginalTitle();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		return OriginalTitle.BLANK_ORIGINALTITLE;
 	}
 
