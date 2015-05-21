@@ -495,9 +495,14 @@ public class GUIMainMenuBar extends JMenuBar{
 		for(SiteParsingProfileItem item: SpecificProfileFactory.getAll()){
 			JMenuItem menuItem = new JMenuItem(item.toString());
 			
-			if (++i < 10)
-				menuItem.setAccelerator(KeyStroke.getKeyStroke(Character.forDigit(i,  10), Event.CTRL_MASK | Event.SHIFT_MASK));
-			
+			if (++i < 10){
+				menuItem.setAccelerator(KeyStroke.getKeyStroke(Character.forDigit(i,  10), Event.CTRL_MASK));
+			}
+			else if(i < 20){
+				if(i==10)
+					++i;
+				menuItem.setAccelerator(KeyStroke.getKeyStroke(Character.forDigit(i%10,  10), Event.CTRL_MASK | Event.SHIFT_MASK));
+			}
 			menuItem.addActionListener(new ScrapeSpecificAction(guiMain, item.getParser()));
 			specificMenu.add(menuItem);
 		}
