@@ -27,7 +27,6 @@ import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.DataItemSource;
 import moviescraper.doctord.dataitem.Director;
-
 import moviescraper.doctord.dataitem.Genre;
 import moviescraper.doctord.dataitem.ID;
 import moviescraper.doctord.dataitem.MPAARating;
@@ -77,6 +76,8 @@ public abstract class SiteParsingProfile implements DataItemSource{
 	private boolean extraFanartScrapingEnabled = false;
 	
 	MoviescraperPreferences scrapingPreferences;
+	
+	boolean isDisabled;
 	
 	private boolean firstWordOfFileIsID = false;
 	
@@ -404,6 +405,23 @@ public abstract class SiteParsingProfile implements DataItemSource{
 	
 	public String getDataItemSourceName(){
 		return getParserName();
+	}
+	
+	@Override
+	public  DataItemSource createInstanceOfSameType(){
+		DataItemSource newInstance = newInstance();
+		newInstance.setDisabled(isDisabled());
+		return newInstance;
+	}
+	
+	@Override
+	public boolean isDisabled() {
+		return isDisabled;
+	}
+
+	@Override
+	public void setDisabled(boolean value) {
+		isDisabled = value;
 	}
 	
 

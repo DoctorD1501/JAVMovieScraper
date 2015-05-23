@@ -13,6 +13,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+
 import java.awt.BorderLayout;
 
 import javax.swing.JList;
@@ -20,6 +21,7 @@ import javax.swing.JList;
 import moviescraper.doctord.IconCache;
 import moviescraper.doctord.Movie;
 import moviescraper.doctord.SearchResult;
+import moviescraper.doctord.Amalgamation.AllAmalgamationOrderingPreferences;
 import moviescraper.doctord.GUI.renderer.FileRenderer;
 import moviescraper.doctord.controller.SelectFileListAction;
 import moviescraper.doctord.dataitem.Actor;
@@ -48,8 +50,8 @@ import java.awt.event.MouseListener;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import javax.swing.BoxLayout;
 
+import javax.swing.BoxLayout;
 import javax.swing.event.ListSelectionListener;
 
 public class GUIMain {
@@ -66,6 +68,7 @@ public class GUIMain {
 	private File defaultHomeDirectory;
 	private MoviescraperPreferences preferences;
 	private GuiSettings guiSettings;
+	private AllAmalgamationOrderingPreferences allAmalgamationOrderingPreferences;
 
 	//scraped movies
 	private Movie currentlySelectedMovieDMM;
@@ -213,6 +216,10 @@ public class GUIMain {
 		// restore gui state
 		buttonPanel.setVisible(guiSettings.getShowToolbar());
 		messageConsolePanel.setVisible(guiSettings.getShowOutputPanel());
+		
+		//restore amalgamation preferences
+		allAmalgamationOrderingPreferences = new AllAmalgamationOrderingPreferences();
+		allAmalgamationOrderingPreferences.initializeValuesFromPreferenceFile();
 	}
 
 	/**
@@ -829,8 +836,17 @@ public class GUIMain {
 	}
 	
 	public boolean showSelectScrapersDialog(List<String> options, List<String> selected) {
-		SelectScrapersDialog dialog =  new SelectScrapersDialog(frmMoviescraper, options, selected);
+		SelectScrapersDialog dialog =  new SelectScrapersDialog(frmMoviescraper, getAllAmalgamationOrderingPreferences(), options, selected);
 		return dialog.show();
+	}
+
+	public AllAmalgamationOrderingPreferences getAllAmalgamationOrderingPreferences() {
+		return allAmalgamationOrderingPreferences;
+	}
+
+	public void setAllAmalgamationOrderingPreferences(
+			AllAmalgamationOrderingPreferences allAmalgamationOrderingPreferences) {
+		this.allAmalgamationOrderingPreferences = allAmalgamationOrderingPreferences;
 	}
 	
 }

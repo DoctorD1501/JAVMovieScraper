@@ -45,14 +45,15 @@ public class MovieScrapeResultGroup {
 	
 	List<Movie> scrapedMovieObjectsForFile;
 	//This preference applies to all data items in a given movie. If we want a custom ordering per item, we look at the DataItemSourceAmalgationPreference within the data item itself
-	DataItemSourceAmalgamationPreference amalgamationPreferenceOrderForEntireMovieGroup; 
+	//DataItemSourceAmalgamationPreference amalgamationPreferenceOrderForEntireMovieGroup; 
+	ScraperGroupAmalgamationPreference amalgamationPreferenceOrderForEntireMovieGroup;
 	
 	/**
 	 * Constructor
 	 * @param scrapedMovieObjectsForFile - all the movies you wish to amalgamate
 	 * @param amalgamationPreferenceOrder - the preference of which field you prefer. Items earlier in the list have a higher preference to being picked when amalgamating,
 	 */
-	public MovieScrapeResultGroup(List<Movie> scrapedMovieObjectsForFile, DataItemSourceAmalgamationPreference amalgamationPreferenceOrder)
+	public MovieScrapeResultGroup(List<Movie> scrapedMovieObjectsForFile, ScraperGroupAmalgamationPreference amalgamationPreferenceOrder)
 	{
 		this.scrapedMovieObjectsForFile = scrapedMovieObjectsForFile;
 		this.amalgamationPreferenceOrderForEntireMovieGroup = amalgamationPreferenceOrder;
@@ -73,10 +74,12 @@ public class MovieScrapeResultGroup {
 		return result;
 	}
 	
+
+	
 	@SuppressWarnings("unchecked")
 	public Movie amalgamateMovie()
 	{
-		System.out.println("Amalgamating a movie between " + scrapedMovieObjectsForFile.size() + " Movie objects with preference order = " + amalgamationPreferenceOrderForEntireMovieGroup.getAmalgamationPreferenceOrder());
+		System.out.println("Amalgamating a movie between " + scrapedMovieObjectsForFile.size() + " Movie objects with preference order = " + amalgamationPreferenceOrderForEntireMovieGroup.toString());
 		try {
 			ArrayList<Actor> actors = (ArrayList<Actor>) getPreferredMovieDataItemAsArrayList(Actor.class);
 			ArrayList<Director> directors = (ArrayList<Director>) getPreferredMovieDataItemAsArrayList(Director.class);
@@ -114,7 +117,7 @@ public class MovieScrapeResultGroup {
 	
 	private Object[] getPreferredMovieDataItem(Class classOfMovieDataItem) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
 
-		Object[] preferredValueOrder = new Object[amalgamationPreferenceOrderForEntireMovieGroup.getAmalgamationPreferenceOrder().size()];
+		Object[] preferredValueOrder = new Object[amalgamationPreferenceOrderForEntireMovieGroup.getOverallAmalgamationPreference().getAmalgamationPreferenceOrder().size()];
 		boolean fieldIsArray = false;
 		boolean fieldIsArrayList = false;
 		boolean fieldIsMovieDataItem = false;
@@ -124,31 +127,20 @@ public class MovieScrapeResultGroup {
 		{
 			for (Field field : currentMovie.getClass().getDeclaredFields()) {
 				field.setAccessible(true);
-				String name = field.getName();
-				Object value = field.get(currentMovie);
-				if(value != null)
+				Object currentFieldValue = field.get(currentMovie);
+				if(currentFieldValue != null)
 				{
 
 					
 					//Case for MovieDataItem
-					if(value.getClass().equals(classOfMovieDataItem))
+					if(currentFieldValue.getClass().equals(classOfMovieDataItem))
 					{
 						
 						//System.out.printf("Field name: %s, Field value: %s%n", name, value);
-						Object item = (MovieDataItem) value;
+						Object item = (MovieDataItem) currentFieldValue;
 						
-						DataItemSourceAmalgamationPreference amalgamationPrefToUse = amalgamationPreferenceOrderForEntireMovieGroup;
-						DataItemSourceAmalgamationPreference itemAmalgamationPref = ((MovieDataItem) item).getDataItemAmalgamtionPreference();
-						//The data item itself has a preference it wants to amalgamate by, so we will use it instead of the Movie's one
-						if(itemAmalgamationPref != null)
-						{
-							amalgamationPrefToUse = itemAmalgamationPref;
-							//reset the array to get the correct size and fill it with null values so that there is room
-							if(preferredValueOrder.length != amalgamationPrefToUse.getAmalgamationPreferenceOrder().size())
-							{
-								preferredValueOrder = new Object[amalgamationPrefToUse.getAmalgamationPreferenceOrder().size()];
-							}
-						}
+						DataItemSourceAmalgamationPreference amalgamationPrefToUse = amalgamationPreferenceOrderForEntireMovieGroup.getAmalgamationPreference(field);
+
 						for (int i = 0; i < amalgamationPrefToUse.getAmalgamationPreferenceOrder().size(); i++)
 						{
 							//System.out.println("arry:" + amalgamationPreferenceOrder.getAmalgamationPreferenceOrder().get(i));
@@ -164,13 +156,13 @@ public class MovieScrapeResultGroup {
 
 					}
 					//Case for ArrayList
-					else if(value.getClass().equals(ArrayList.class))
+					else if(currentFieldValue.getClass().equals(ArrayList.class))
 					{
 
 						ParameterizedType paramType = (ParameterizedType) field.getGenericType();
 				    	Class<?> arrayListClass = (Class<?>) paramType.getActualTypeArguments()[0]; 
 						//System.out.println("ArrayList of " + arrayListClass + " compared to " + classOfMovieDataItem);
-						ArrayList<Object> arrayList = (ArrayList<Object>) value;
+						ArrayList<Object> arrayList = (ArrayList<Object>) currentFieldValue;
 
 				        if(arrayListClass.equals(classOfMovieDataItem))
 				        {
@@ -180,18 +172,18 @@ public class MovieScrapeResultGroup {
 					        //System.out.println("arr item = " + arrayList);
 				        	
 				        	//The data item itself has a preference it wants to amalgamate by, so we will use it instead of the Movie's one
-							DataItemSourceAmalgamationPreference amalgamationPrefToUse = amalgamationPreferenceOrderForEntireMovieGroup;
-							DataItemSourceAmalgamationPreference itemAmalgamationPref = null;
+				        	DataItemSourceAmalgamationPreference amalgamationPrefToUse = amalgamationPreferenceOrderForEntireMovieGroup.getAmalgamationPreference(field);
+							/*DataItemSourceAmalgamationPreference itemAmalgamationPref = null;
 							if(arrayList.size() > 0)
 							{
 								MovieDataItem firstItem = (MovieDataItem) arrayList.get(0);
 								if(firstItem != null){
 									itemAmalgamationPref = firstItem.getDataItemAmalgamtionPreference();
 								}						
-							}
+							}*/
 							
 							
-							if(itemAmalgamationPref != null)
+							/*if(itemAmalgamationPref != null)
 							{
 								amalgamationPrefToUse = itemAmalgamationPref;
 								//reset the array to get the correct size and fill it with null values so that there is room
@@ -199,7 +191,7 @@ public class MovieScrapeResultGroup {
 								{
 									preferredValueOrder = new Object[amalgamationPrefToUse.getAmalgamationPreferenceOrder().size()];
 								}
-							}
+							}*/
 				        	for (int i = 0; i < amalgamationPrefToUse.getAmalgamationPreferenceOrder().size(); i++)
 				        	{
 				        		if(arrayList.size() > 0)
@@ -218,7 +210,7 @@ public class MovieScrapeResultGroup {
 				      
 					}
 					//Case for Array
-					else if(value.getClass().isArray())
+					else if(currentFieldValue.getClass().isArray())
 					{
 						//need to change isArray to true somehow
 						//System.out.println("Array!");
@@ -272,8 +264,8 @@ public class MovieScrapeResultGroup {
 	
 	//used for thumb arrays and such
 	private Thumb[] getPreferredArrayMovieDataItem(String fieldName) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-		ArrayList<Thumb[]> preferredValueOrder = new ArrayList<Thumb[]>(amalgamationPreferenceOrderForEntireMovieGroup.getAmalgamationPreferenceOrder().size());
-		for(int i = 0; i < amalgamationPreferenceOrderForEntireMovieGroup.getAmalgamationPreferenceOrder().size(); i++)
+		ArrayList<Thumb[]> preferredValueOrder = new ArrayList<Thumb[]>(amalgamationPreferenceOrderForEntireMovieGroup.getOverallAmalgamationPreference().getAmalgamationPreferenceOrder().size());
+		for(int i = 0; i < amalgamationPreferenceOrderForEntireMovieGroup.getAmalgamationPreference(null).getAmalgamationPreferenceOrder().size(); i++)
 		{
 			preferredValueOrder.add(null);
 		}
@@ -288,21 +280,7 @@ public class MovieScrapeResultGroup {
 			Thumb[] value = (Thumb [])fieldByName.get(currentMovie);
 			if(value != null)
 			{
-				DataItemSourceAmalgamationPreference amalgamationPrefToUse = amalgamationPreferenceOrderForEntireMovieGroup;
-				//The data item itself has a preference it wants to amalgamate by, so we will use it instead of the Movie's one
-				if(value.length > 0 && value[0].getDataItemAmalgamtionPreference() != null)
-				{
-					amalgamationPrefToUse = value[0].getDataItemAmalgamtionPreference();
-					//reset the list to get the correct size and fill it with null values so that there is room
-					if(preferredValueOrder.size() != amalgamationPrefToUse.getAmalgamationPreferenceOrder().size())
-					{
-						preferredValueOrder = new ArrayList<Thumb[]>(amalgamationPrefToUse.getAmalgamationPreferenceOrder().size());
-						for(int i = 0; i < amalgamationPrefToUse.getAmalgamationPreferenceOrder().size(); i++)
-						{
-							preferredValueOrder.add(null);
-						}
-					}
-				}
+				DataItemSourceAmalgamationPreference amalgamationPrefToUse = amalgamationPreferenceOrderForEntireMovieGroup.getAmalgamationPreference(fieldByName);
 				for (int i = 0; i < amalgamationPrefToUse.getAmalgamationPreferenceOrder().size(); i++)
 				{
 					//System.out.println("arry:" + amalgamationPreferenceOrder.getAmalgamationPreferenceOrder().get(i));

@@ -462,33 +462,8 @@ public class FileDetailPanel extends JPanel {
 		return currentMovie;
 	}
 	public Movie getEmptyMovie() {
-
-		ArrayList<Actor> actors = new ArrayList<Actor>();
-		ArrayList<Director> directors = new ArrayList<>();
-		ArrayList<Genre> genres = new ArrayList<Genre>();
+		return Movie.getEmptyMovie();
 		
-		Thumb[] fanart = new Thumb[0]; 
-		Thumb[] extraFanart = new Thumb[0]; 
-		Thumb[] posters = new Thumb[0]; 
-		
-		ID id = new ID("");
-		MPAARating mpaa = new MPAARating("");
-		OriginalTitle originalTitle = OriginalTitle.BLANK_ORIGINALTITLE;
-		Outline outline = Outline.BLANK_OUTLINE;
-		Plot plot = Plot.BLANK_PLOT;
-		Rating rating = Rating.BLANK_RATING;
-		Runtime runtime = Runtime.BLANK_RUNTIME;
-		Set set = Set.BLANK_SET;
-		SortTitle sortTitle= SortTitle.BLANK_SORTTITLE;
-		Studio studio = Studio.BLANK_STUDIO;
-		Tagline tagline = Tagline.BLANK_TAGLINE;
-		Title title = new Title("");
-		Top250 top250 = Top250.BLANK_TOP250;
-		Trailer trailer = new Trailer(null);
-		Votes votes = Votes.BLANK_VOTES;
-		Year year = Year.BLANK_YEAR;
-		
-		return new Movie(actors, directors, fanart, extraFanart, genres, id, mpaa, originalTitle, outline, plot, posters, rating, runtime, set, sortTitle, studio, tagline, title, top250, trailer, votes, year);
 	}
 	
 	public void setTitleEditable(boolean value) {

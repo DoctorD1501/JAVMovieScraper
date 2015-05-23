@@ -31,6 +31,11 @@ public class DataItemSourceAmalgamationPreference {
 		if(!amalgamationPreferenceOrder.contains(DefaultDataItemSource.DEFAULT_DATA_ITEM_SOURCE))
 			amalgamationPreferenceOrder.add(DefaultDataItemSource.DEFAULT_DATA_ITEM_SOURCE);
 	}
+	
+	public DataItemSourceAmalgamationPreference(LinkedList<DataItemSource> amalgamationPreferenceOrder)
+	{
+		this.amalgamationPreferenceOrder = amalgamationPreferenceOrder;
+	}
 
 	public LinkedList<DataItemSource> getAmalgamationPreferenceOrder() {
 		return amalgamationPreferenceOrder;

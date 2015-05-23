@@ -6,5 +6,16 @@ package moviescraper.doctord.dataitem;
  */
 public interface DataItemSource {
 	public String getDataItemSourceName();
+	
+	/**
+	 * 
+	 * @return A new object of the same class as the caller. All fields are reinitialized
+	 * to default state except for the disabled field, which will have the same value as the caller
+	 */
+	public DataItemSource createInstanceOfSameType();
+
+	public boolean isDisabled();
+
+	public void setDisabled(boolean b);
 
 }

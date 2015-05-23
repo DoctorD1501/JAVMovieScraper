@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
@@ -16,6 +17,8 @@ import org.junit.Test;
 import moviescraper.doctord.Movie;
 import moviescraper.doctord.Amalgamation.DataItemSourceAmalgamationPreference;
 import moviescraper.doctord.Amalgamation.MovieScrapeResultGroup;
+import moviescraper.doctord.Amalgamation.ScraperGroupAmalgamationPreference;
+import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile.ScraperGroupName;
 import moviescraper.doctord.SiteParsingProfile.specific.AvEntertainmentParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.specific.DmmParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.specific.JavLibraryParsingProfile;
@@ -24,56 +27,60 @@ import moviescraper.doctord.controller.SpecificScraperAction;
 
 public class TestAmalgamation {
 	
-	static Movie movieOne;
-	static Movie movieTwo;
-	static Movie movieThree;
+	static Movie dmmSourcedMovie;
+	static Movie r18SourcedMovie;
+	static Movie javLibrarySourcedMovie;
 	static Movie amalgamatedMovie;
 	
 	@BeforeClass
-	public static void initialize() throws URISyntaxException {
+	public static void initialize() throws URISyntaxException, NoSuchFieldException, SecurityException {
 		System.out.println("Testing amalgamation");
-		DataItemSourceAmalgamationPreference allThree = new DataItemSourceAmalgamationPreference(new R18ParsingProfile(), new JavLibraryParsingProfile(), new DmmParsingProfile());
-		DataItemSourceAmalgamationPreference justTwo = new DataItemSourceAmalgamationPreference(new R18ParsingProfile(), new JavLibraryParsingProfile());
+		DataItemSourceAmalgamationPreference overallOrdering = new DataItemSourceAmalgamationPreference(new R18ParsingProfile(), new JavLibraryParsingProfile(), new DmmParsingProfile());
+		DataItemSourceAmalgamationPreference actorOdering = new DataItemSourceAmalgamationPreference(new DmmParsingProfile(), new JavLibraryParsingProfile(), new R18ParsingProfile());
+		DataItemSourceAmalgamationPreference posterOrdering = new DataItemSourceAmalgamationPreference(new DmmParsingProfile(), new JavLibraryParsingProfile(), new R18ParsingProfile());
+		DataItemSourceAmalgamationPreference titleOrdering = new DataItemSourceAmalgamationPreference(new JavLibraryParsingProfile(), new DmmParsingProfile(), new R18ParsingProfile());
+		
+		ScraperGroupAmalgamationPreference orderingPreference = new ScraperGroupAmalgamationPreference(ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP, overallOrdering);
+		
+		//test the field based version of this method
+		orderingPreference.setCustomOrderingForField(Movie.class.getDeclaredField("actors"), actorOdering);
+		orderingPreference.setCustomOrderingForField(Movie.class.getDeclaredField("posters"), posterOrdering);
+		//also test the one where you just pass in the name of the field by a string value
+		orderingPreference.setCustomOrderingForField("title", titleOrdering);
+		
 		try {
 			
 			URI movieOneURI = new Object().getClass().getResource("/res/testdata/Movie1.nfo").toURI();
 			URI movieTwoURI = new Object().getClass().getResource("/res/testdata/Movie2.nfo").toURI();
 			URI movieThreeURI = new Object().getClass().getResource("/res/testdata/Movie3.nfo").toURI();
 			
-			//3rd, except poster which should be 1st and also actors will be first
+			//3rd, except actors and posters will be first
 
 			System.out.println(movieOneURI);
-			movieOne = Movie.createMovieFromNfo(new File(movieOneURI));
-			movieOne.getTitle().setDataItemSource(new DmmParsingProfile());
-			movieOne.getActors().get(0).setDataItemSource(new DmmParsingProfile());
-			movieOne.getPosters()[0].setDataItemSource(new DmmParsingProfile());
-			movieOne.getPosters()[0].setDataItemAmalgamtionPreference(new DataItemSourceAmalgamationPreference(new DmmParsingProfile()));
-			movieOne.getTitle().setDataItemAmalgamtionPreference(new DataItemSourceAmalgamationPreference(new JavLibraryParsingProfile()));
-			movieOne.getActors().get(0).setDataItemAmalgamtionPreference(new DataItemSourceAmalgamationPreference(new DmmParsingProfile()));
+			dmmSourcedMovie = Movie.createMovieFromNfo(new File(movieOneURI));
+			dmmSourcedMovie.getTitle().setDataItemSource(new DmmParsingProfile());
+			dmmSourcedMovie.getActors().get(0).setDataItemSource(new DmmParsingProfile());
+			dmmSourcedMovie.getPosters()[0].setDataItemSource(new DmmParsingProfile());
 			
-			//1st, except poster
-			movieTwo = Movie.createMovieFromNfo(new File(movieTwoURI));
-			movieTwo.getTitle().setDataItemSource(new R18ParsingProfile());
-			movieTwo.getActors().get(0).setDataItemSource(new R18ParsingProfile());
-			movieTwo.getPosters()[0].setDataItemSource(new R18ParsingProfile());
-			movieTwo.getFanart()[0].setDataItemSource(new R18ParsingProfile());
-			movieTwo.getPlot().setDataItemSource(new R18ParsingProfile()); //plot will be the one returned from a global sort
-			movieTwo.getPosters()[0].setDataItemAmalgamtionPreference(new DataItemSourceAmalgamationPreference(new DmmParsingProfile()));
-			movieTwo.getTitle().setDataItemAmalgamtionPreference(new DataItemSourceAmalgamationPreference(new JavLibraryParsingProfile()));
-			movieTwo.getActors().get(0).setDataItemAmalgamtionPreference(new DataItemSourceAmalgamationPreference(new DmmParsingProfile()));
+			//1st
+			r18SourcedMovie = Movie.createMovieFromNfo(new File(movieTwoURI));
+			r18SourcedMovie.getTitle().setDataItemSource(new R18ParsingProfile());
+			r18SourcedMovie.getActors().get(0).setDataItemSource(new R18ParsingProfile());
+			r18SourcedMovie.getPosters()[0].setDataItemSource(new R18ParsingProfile());
+			r18SourcedMovie.getFanart()[0].setDataItemSource(new R18ParsingProfile());
+			r18SourcedMovie.getPlot().setDataItemSource(new R18ParsingProfile()); //plot will be the one returned from a global sort
+			
 			
 			
 			//2nd, except Title which should be first
-			movieThree = Movie.createMovieFromNfo(new File(movieThreeURI));
-			movieThree.getTitle().setDataItemSource(new JavLibraryParsingProfile());
-			movieThree.getActors().get(0).setDataItemSource(new JavLibraryParsingProfile());
-			movieThree.getPosters()[0].setDataItemSource(new JavLibraryParsingProfile());
-			movieThree.getPosters()[0].setDataItemAmalgamtionPreference(new DataItemSourceAmalgamationPreference(new DmmParsingProfile()));
-			movieThree.getTitle().setDataItemAmalgamtionPreference(new DataItemSourceAmalgamationPreference(new JavLibraryParsingProfile()));
-			movieThree.getActors().get(0).setDataItemAmalgamtionPreference(new DataItemSourceAmalgamationPreference(new DmmParsingProfile()));
+			javLibrarySourcedMovie = Movie.createMovieFromNfo(new File(movieThreeURI));
+			javLibrarySourcedMovie.getTitle().setDataItemSource(new JavLibraryParsingProfile());
+			javLibrarySourcedMovie.getActors().get(0).setDataItemSource(new JavLibraryParsingProfile());
+			javLibrarySourcedMovie.getPosters()[0].setDataItemSource(new JavLibraryParsingProfile());
 			
-			List<Movie> movieList = Arrays.asList(movieOne, movieTwo, movieThree);
-			MovieScrapeResultGroup movieScrapeResultGroup = new MovieScrapeResultGroup(movieList, allThree);
+			
+			List<Movie> movieList = Arrays.asList(dmmSourcedMovie, r18SourcedMovie, javLibrarySourcedMovie);
+			MovieScrapeResultGroup movieScrapeResultGroup = new MovieScrapeResultGroup(movieList, orderingPreference);
 			amalgamatedMovie = movieScrapeResultGroup.amalgamateMovie();
 			System.out.println("amalgamated movie is " + amalgamatedMovie);
 
@@ -86,23 +93,23 @@ public class TestAmalgamation {
 	@Test
 	public void testAmalgamatedTitleCustomDataItemSort()
 	{
-		assertEquals("Wrong amalgamated title using a custom data item sort", amalgamatedMovie.getTitle(), movieThree.getTitle());
+		assertEquals("Wrong amalgamated title using a custom data item sort", amalgamatedMovie.getTitle(), javLibrarySourcedMovie.getTitle());
 	}
 	
 	@Test
 	public void testAmalgamatedPosterCustomDataItemSort(){
-		assertEquals("Wrong amalgamated posters using a custom data item sort", amalgamatedMovie.getPosters()[0], movieOne.getPosters()[0]);
+		assertEquals("Wrong amalgamated posters using a custom data item sort", amalgamatedMovie.getPosters()[0], dmmSourcedMovie.getPosters()[0]);
 	}
 	
 	@Test
 	public void testActorsCustomDataItemSort(){
-		assertEquals("Wrong amalgamated actors using a custom data item sort", amalgamatedMovie.getActors(), movieOne.getActors());
+		assertEquals("Wrong amalgamated actors using a custom data item sort", amalgamatedMovie.getActors(), dmmSourcedMovie.getActors());
 	}
 	
 	@Test
 	public void testPlotGlobalSort()
 	{
-		assertEquals("Wrong plot using a standard amalgamation", amalgamatedMovie.getPlot(), movieTwo.getPlot());
+		assertEquals("Wrong plot using a standard amalgamation", amalgamatedMovie.getPlot(), r18SourcedMovie.getPlot());
 	}
 	
 }
