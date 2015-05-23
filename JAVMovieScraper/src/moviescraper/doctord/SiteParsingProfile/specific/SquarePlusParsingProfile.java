@@ -267,6 +267,12 @@ public class SquarePlusParsingProfile extends SiteParsingProfile implements Spec
 				searchList.addLast(searchResult);
 		}
 		
+		// if both DVD and Blue-Ray gets listed, pick the correct one
+		if (searchList.size() == 2)
+			if (searchList.get(0).getUrlPath().endsWith("/"+searchId+".html"))
+				if (searchList.get(1).getUrlPath().endsWith("/9"+searchId+".html"))
+					searchList.remove(1);
+		
 		return searchList.toArray(new SearchResult[searchList.size()]);
 	}
 
