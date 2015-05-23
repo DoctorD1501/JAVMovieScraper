@@ -239,19 +239,23 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 				{
 					int indexOfLastDash = imgThumbnailSrc.lastIndexOf('-');
 					String fullImagePath = imgThumbnailSrc.substring(0,indexOfLastDash)+ "jp" + imgThumbnailSrc.substring(indexOfLastDash);
-					//we could save time by not doing this check, but we might get broken images if the site changes their format
-					if(fileExistsAtURL(fullImagePath))
-					{
-						try {
-							thumbList.add(new Thumb(fullImagePath));
-						} catch (MalformedURLException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
+					try {
+						thumbList.add(new Thumb(fullImagePath));
+					} catch (MalformedURLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
 				}
 			}
 		}
+		
+		//we could save time by not doing this check, but we might get broken images if the site changes their format
+		//to speed things up a bit, we will check one image and assume the rest is OK
+		if(thumbList.size() > 0 && !fileExistsAtURL(thumbList.get(thumbList.size()/2).getThumbURL().toString()))  {
+			System.err.println("We expected to find extra fanart and did not at: " + document.location());
+			return new Thumb[0];
+		}
+		
 		return thumbList.toArray(new Thumb[thumbList.size()]);
 	}
 
@@ -398,7 +402,7 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 		String searchWordURLEncoded;
 		try {
 			searchWordURLEncoded = codec.encode(searchWord);
-			String searchPattern = "http://www.r18.com/common/search/floor=movies/searchword=" + searchWordURLEncoded;
+			String searchPattern = "http://www.r18.com/common/search/floor=movies/searchword=" + searchWordURLEncoded + "/";
 			System.out.println("Searching on R18 with this URL:" + searchPattern);
 			Document searchResultsPage = Jsoup.connect(searchPattern).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
 			Elements moviesFound = searchResultsPage.select(".cmn-list-product01 li");

@@ -137,7 +137,7 @@ public class SpecificScraperAction {
 					
 					if(results == null || results.length == 0)
 						return null;
-					SelectionDialog selectionDialog = new SelectionDialog(results, site);
+					
 					SearchResult searchResult = null;
 					//If there's only one item to choose from, save the user some work and just automatically choose it
 					if(results != null && results.length == 1)
@@ -147,6 +147,7 @@ public class SpecificScraperAction {
 					//otherwise, the user gets a dialog box where they can pick from the various search results
 					else
 					{
+						SelectionDialog selectionDialog = new SelectionDialog(results, site);
 						searchResult = getSearchResult(selectionDialog, site);
 					}
 					

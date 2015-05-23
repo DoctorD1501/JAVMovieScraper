@@ -26,7 +26,7 @@ import moviescraper.doctord.Movie;
 import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.GUI.GUIMain;
 import moviescraper.doctord.GUI.renderer.FanartPickerRenderer;
-import moviescraper.doctord.SiteParsingProfile.ActionJavParsingProfile;
+import moviescraper.doctord.SiteParsingProfile.specific.ActionJavParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.Data18MovieParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.Data18WebContentParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.IAFDParsingProfile;
@@ -1044,7 +1044,7 @@ public class ScrapeMovieAction extends AbstractAction {
 		Thumb[] fanartToUse = new Thumb[0];
 		
 		for(Movie m: bestContentForPosterAndFanart){
-			if (m.getFanart() != null && m.getFanart().length > 0){
+			if (m != null && m.getFanart() != null && m.getFanart().length > 0){
 				fanartToUse = m.getFanart();
 				break;
 			}
