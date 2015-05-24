@@ -393,6 +393,7 @@ public class GUIMain {
 		getCurrentlySelectedFanartFileList().clear();
 		getCurrentlySelectedTrailerFileList().clear();
 		getMovieToWriteToDiskList().clear();
+		removeOldScrapedMovieReferences();
 	}
 
 	public void updateFileListModel(File currentlySelectedDirectory, boolean keepSelectionsAndReferences) {
@@ -462,38 +463,7 @@ public class GUIMain {
 		return sortedList;
 	}
 
-	//try to fill in any holes in thumbnails from the sourceMovie by looking through movieToGetExtraInfoFrom and see if has them
-	//TODO: debug this
-	private ArrayList<Actor> amalgamateActor(Movie sourceMovie, Movie movieToGetExtraInfoFrom)
-	{
-		ArrayList<Actor> amalgamatedActorList = new ArrayList<Actor>();
-		boolean changeMade = false;
-		if(sourceMovie.getActors() != null && movieToGetExtraInfoFrom.getActors() != null)
-		{
-			for(Actor currentActor : sourceMovie.getActors())
-			{
-				if(currentActor.getThumb() == null || currentActor.getThumb().getThumbURL().getPath().length() < 1)
-				{
-					//Found an actor with no thumbnail in sourceMovie
-					for(Actor extraMovieActor: movieToGetExtraInfoFrom.getActors())
-					{
-						//scan through other movie and find actor with same name as the one we are currently on
-						if(currentActor.getName().equals(extraMovieActor.getName()) && (extraMovieActor.getThumb() != null) && extraMovieActor.getThumb().getThumbURL().getPath().length() > 1)
-						{
-							currentActor = extraMovieActor;
-							changeMade = true;
-						}
-					}
-				}
-				amalgamatedActorList.add(currentActor);
-			}
-		}
-		if(changeMade)
-		{
-			return amalgamatedActorList;
-		}
-		else return sourceMovie.getActors(); // we didn't find any changes needed so just return the source movie's actor list
-	}
+
 
 
 	
@@ -837,8 +807,8 @@ public class GUIMain {
 		this.originalJavLibraryMovieTitleBeforeAmalgamate = originalJavLibraryMovieTitleBeforeAmalgamate;
 	}
 	
-	public boolean showSelectScrapersDialog(List<String> options, List<String> selected) {
-		SelectScrapersDialog dialog =  new SelectScrapersDialog(frmMoviescraper, getAllAmalgamationOrderingPreferences(), options, selected);
+	public boolean showSelectScrapersDialog() {
+		SelectScrapersDialog dialog =  new SelectScrapersDialog(frmMoviescraper, getAllAmalgamationOrderingPreferences());
 		return dialog.show();
 	}
 

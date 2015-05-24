@@ -93,6 +93,7 @@ public class MovieScrapeResultGroup {
 	{
 		System.out.println("Amalgamating a movie between " + scrapedMovieObjectsForFile.size() + " Movie objects with preference order = " + amalgamationPreferenceOrderForEntireMovieGroup.toString());
 		try {
+			callAmalgamateActorOnAllTuples(scrapedMovieObjectsForFile);
 			ArrayList<Actor> actors = (ArrayList<Actor>) getPreferredMovieDataItemAsArrayList(Actor.class);
 			ArrayList<Director> directors = (ArrayList<Director>) getPreferredMovieDataItemAsArrayList(Director.class);
 			ArrayList<Genre> genres = (ArrayList<Genre>) getPreferredMovieDataItemAsArrayList(Genre.class);
@@ -124,6 +125,63 @@ public class MovieScrapeResultGroup {
 			e.printStackTrace();
 		}
 			return null;
+	}
+	
+	/**
+	 * Helper method to call amalgamateActor on all possible tuples (where order matters) of our scraped movie list
+	 * @param allScrapedMovies - the scraped movie list
+	 */
+	private void callAmalgamateActorOnAllTuples(List<Movie> allScrapedMovies)
+	{
+		if(allScrapedMovies != null && allScrapedMovies.size() >= 2)
+		{
+			for(int i = 0; i < allScrapedMovies.size(); i++){
+				for(int j = i + 1; j < allScrapedMovies.size(); j++)
+				{
+					Movie tupleValue1 = allScrapedMovies.get(i);
+					Movie tupleValue2 = allScrapedMovies.get(j);
+					amalgamateActor(tupleValue1, tupleValue2);
+					amalgamateActor(tupleValue2, tupleValue1);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * try to fill in any holes in thumbnails from the sourceMovie by looking through movieToGetExtraInfoFrom and see if it has them
+	 * @param sourceMovie - movie that has missing actor images
+	 * @param movieToGetExtraInfoFrom - other movie to try to get the missing actor images from
+	 * @return
+	 */
+	private ArrayList<Actor> amalgamateActor(Movie sourceMovie, Movie movieToGetExtraInfoFrom)
+	{
+		ArrayList<Actor> amalgamatedActorList = new ArrayList<Actor>();
+		boolean changeMade = false;
+		if(sourceMovie.getActors() != null && movieToGetExtraInfoFrom.getActors() != null)
+		{
+			for(Actor currentActor : sourceMovie.getActors())
+			{
+				if(currentActor.getThumb() == null || currentActor.getThumb().getThumbURL().getPath().length() < 1)
+				{
+					//Found an actor with no thumbnail in sourceMovie
+					for(Actor extraMovieActor: movieToGetExtraInfoFrom.getActors())
+					{
+						//scan through other movie and find actor with same name as the one we are currently on
+						if(currentActor.getName().equals(extraMovieActor.getName()) && (extraMovieActor.getThumb() != null) && extraMovieActor.getThumb().getThumbURL().getPath().length() > 1)
+						{
+							currentActor.setThumb(extraMovieActor.getThumb());
+							changeMade = true;
+						}
+					}
+				}
+				amalgamatedActorList.add(currentActor);
+			}
+		}
+		if(changeMade)
+		{
+			return amalgamatedActorList;
+		}
+		else return sourceMovie.getActors(); // we didn't find any changes needed so just return the source movie's actor list
 	}
 	
 	

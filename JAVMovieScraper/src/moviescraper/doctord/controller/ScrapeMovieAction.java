@@ -656,16 +656,8 @@ public class ScrapeMovieAction extends AbstractAction {
 		final int currentMovieNumberInList = movieNumberInList;
 		Movie movieAmalgamated = null;
 
-		List<String> selected = Arrays.asList(this.guiMain.getPreferences().getSelectedScrapers());
 
-		final int numberOfThreads;
-		if(!this.guiMain.getPreferences().getScrapeInJapanese())
-			numberOfThreads = selected.size();
-		else 
-			numberOfThreads = 1;
 
-		final int amountOfProgressToMakePerThread = (100 / numberOfThreads) - 1;
-		amountOfProgressPerSubtask = amountOfProgressToMakePerThread;
 		final ScrapeMovieAction thisScrapeAction = this;
 		Thread scrapeQueryDMMThread = new Thread("DMM") {
 			public void run() {
@@ -804,6 +796,11 @@ public class ScrapeMovieAction extends AbstractAction {
 				scrapeThreads.add(scrapeQueryR18Thread);
 			}
 		}
+		
+		final int numberOfThreads = scrapeThreads.size();
+
+		final int amountOfProgressToMakePerThread = (100 / numberOfThreads) - 1;
+		amountOfProgressPerSubtask = amountOfProgressToMakePerThread;
 
 
 

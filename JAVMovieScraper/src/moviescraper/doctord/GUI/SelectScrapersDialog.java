@@ -26,6 +26,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
+import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -43,8 +45,7 @@ import moviescraper.doctord.dataitem.DataItemSource;
 public class SelectScrapersDialog {
 	
 	//Begin View Objects
-	private List<JCheckBox> checkboxes;
-	private List<String> selected;
+
 	private JPanel panel;
 	JPanel overallAmalgamationPreferencePanel;
 	JPanel specificAmalgamationPreferencePanel;
@@ -69,6 +70,9 @@ public class SelectScrapersDialog {
 	
 	JLabel panelHeaderSpecificFieldAmalgamationPreference;
 	
+	private static final int layoutVerticalGap = 10;
+	private static final int layoutHorizontalGap = 10;
+	
 	//End View Objects
 	
 	//Model objects
@@ -82,23 +86,27 @@ public class SelectScrapersDialog {
 
 	
 	
-	public SelectScrapersDialog(JFrame parent, AllAmalgamationOrderingPreferences amalgamationPreferences, List<String> options, List<String> selected) {
+	public SelectScrapersDialog(JFrame parent, AllAmalgamationOrderingPreferences amalgamationPreferences) {
 		
-		this.checkboxes = new ArrayList<>();
 		this.parent = parent;
-		this.selected = selected;
 		BorderLayout panelLayoutManager = new BorderLayout();
-		panelLayoutManager.setHgap(10);
-		panelLayoutManager.setVgap(10);
+		panelLayoutManager.setHgap(layoutHorizontalGap);
+		panelLayoutManager.setVgap(layoutVerticalGap);
 		this.panel = new JPanel(panelLayoutManager);
 		this.amalgamationPreferences = amalgamationPreferences;
 		this.amalgamationPreferencesOriginal = (AllAmalgamationOrderingPreferences) cloneObject(this.amalgamationPreferences);
 		
-		panelHeaderSpecificFieldAmalgamationPreference = new JLabel("Specific Field");
+		panelHeaderSpecificFieldAmalgamationPreference = new JLabel("Specific Field", SwingConstants.CENTER);
 		
 		//Begin Scraper Groups
 		scraperGroupNameComboBox = createScraperGroupDropDown();
-		panel.add(scraperGroupNameComboBox, BorderLayout.NORTH);
+		BorderLayout northPanelLayoutManager = new BorderLayout();
+		northPanelLayoutManager.setVgap(layoutVerticalGap);
+		JPanel northPanel = new JPanel(northPanelLayoutManager);
+		JLabel helpMessage = new JLabel("<html>Select the scrapers you wish to use and the preferred order of each item to use when amalgamating data from the same scraping group.<br>Higher numbered items have precedence over lower numbered items.<br> Any scrapers disabled under \"Default Ordering\" will not scrape at all, even if enabled in the specific ordering section</html>");
+		northPanel.add(helpMessage, BorderLayout.SOUTH);
+		northPanel.add(scraperGroupNameComboBox, BorderLayout.NORTH);
+		panel.add(northPanel, BorderLayout.NORTH);
 		//End Scraper Groups
 		
 		
@@ -130,9 +138,7 @@ public class SelectScrapersDialog {
 		upDownDisablePanel.add(downButtonOverall);
 		
 		overallAmalgamationPreferencePanel.add(upDownDisablePanel, BorderLayout.EAST);
-		JLabel panelHeaderOverallAmalgamationPreference = new JLabel("Default Ordering");
-		overallAmalgamationPreferencePanel.add(panelHeaderOverallAmalgamationPreference,BorderLayout.NORTH);
-		overallAmalgamationPreferencePanel.setBorder(BorderFactory.createLineBorder(Color.black));
+		overallAmalgamationPreferencePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black), "Default Ordering",TitledBorder.CENTER, TitledBorder.TOP));
 		panel.add(overallAmalgamationPreferencePanel, BorderLayout.WEST);
 		
 		//Scraper Panel End
@@ -166,7 +172,7 @@ public class SelectScrapersDialog {
 		allSpecificFieldPanels.add(panelHeaderSpecificFieldAmalgamationPreference,BorderLayout.NORTH);
 		allSpecificFieldPanels.add(movieFieldPanel, BorderLayout.WEST);
 		allSpecificFieldPanels.add(specificAmalgamationPreferencePanel, BorderLayout.EAST);
-		allSpecificFieldPanels.setBorder(BorderFactory.createLineBorder(Color.black));
+		allSpecificFieldPanels.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black), "Specific Ordering",TitledBorder.CENTER, TitledBorder.TOP));
 		panel.add(allSpecificFieldPanels, BorderLayout.EAST);
 		
 		//Specific Scraper Field Panel End
@@ -501,11 +507,7 @@ public class SelectScrapersDialog {
 		int result = JOptionPane.showOptionDialog(parent, panel, "Select JAV sites to scrape", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
 
 		if (result == JOptionPane.OK_OPTION) {
-			selected.clear();
-			
-			for(JCheckBox checkbox : checkboxes)
-				if (checkbox.isSelected())
-					selected.add(checkbox.getText());
+
 			
 			try {
 				amalgamationPreferences.saveToPreferencesFile();

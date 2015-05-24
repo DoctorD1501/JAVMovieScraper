@@ -25,14 +25,7 @@ public class SelectScrapersAction implements ActionListener {
 	
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		List<String> scrapers = Arrays.asList("DMM.co.jp","ActionJav","SquarePlus","JavLibrary", "JavZoo", "R18.com");
-		List<String> saved = Arrays.asList(guiMain.getPreferences().getSelectedScrapers());
-		List<String> selected = new ArrayList<String>(saved);
-		
-		selected.retainAll(scrapers);
-		
-		if (guiMain.showSelectScrapersDialog(scrapers, selected))
-			guiMain.getPreferences().setSelectedScrapers(selected.toArray(new String[0]));
+		guiMain.showSelectScrapersDialog();
 		
 	}
 
