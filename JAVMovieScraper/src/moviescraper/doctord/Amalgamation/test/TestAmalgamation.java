@@ -4,13 +4,11 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
 
-import org.jsoup.nodes.Document;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -19,11 +17,9 @@ import moviescraper.doctord.Amalgamation.DataItemSourceAmalgamationPreference;
 import moviescraper.doctord.Amalgamation.MovieScrapeResultGroup;
 import moviescraper.doctord.Amalgamation.ScraperGroupAmalgamationPreference;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile.ScraperGroupName;
-import moviescraper.doctord.SiteParsingProfile.specific.AvEntertainmentParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.specific.DmmParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.specific.JavLibraryParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.specific.R18ParsingProfile;
-import moviescraper.doctord.controller.SpecificScraperAction;
 
 public class TestAmalgamation {
 	

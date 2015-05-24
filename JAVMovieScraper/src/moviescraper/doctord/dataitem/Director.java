@@ -18,4 +18,8 @@ public class Director extends Person {
 		return "Director [toString()=" + super.toString() + " ,\"" +dataItemSourceToString() + "\"]";
 	}
 
+	public Director(){
+		super();
+	}
+
 }

@@ -77,7 +77,7 @@ public abstract class SiteParsingProfile implements DataItemSource{
 	
 	MoviescraperPreferences scrapingPreferences;
 	
-	boolean isDisabled;
+	private boolean isDisabled = false;
 	
 	private boolean firstWordOfFileIsID = false;
 	
@@ -111,12 +111,14 @@ public abstract class SiteParsingProfile implements DataItemSource{
 		scrapingLanguage = Language.ENGLISH;
 		scrapingPreferences = MoviescraperPreferences.getInstance();
 		this.firstWordOfFileIsID = scrapingPreferences.getIsFirstWordOfFileID();
+		this.isDisabled = false;
 	}
 	
 	public SiteParsingProfile(){
 		scrapingLanguage = Language.ENGLISH;
 		scrapingPreferences = MoviescraperPreferences.getInstance();
 		this.firstWordOfFileIsID = scrapingPreferences.getIsFirstWordOfFileID();
+		this.isDisabled = false;
 	}
 
 	public Document getDocument() {

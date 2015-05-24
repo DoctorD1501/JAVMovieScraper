@@ -29,4 +29,8 @@ public class Votes extends MovieDataItem {
 		return null;
 	}
 
+	public Votes(){
+		votes = "";
+	}
+
 }

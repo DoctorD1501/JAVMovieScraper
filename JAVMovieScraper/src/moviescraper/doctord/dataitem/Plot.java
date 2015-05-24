@@ -29,4 +29,10 @@ public class Plot extends MovieDataItem {
 		return null;
 	}
 
+	public Plot() {
+		plot = "";
+	}
+
+
+
 }

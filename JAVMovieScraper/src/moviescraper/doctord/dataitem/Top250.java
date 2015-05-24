@@ -31,4 +31,9 @@ public class Top250 extends MovieDataItem {
 		return null;
 	}
 
+	public Top250()
+	{
+		top250 = "";
+	}
+
 }

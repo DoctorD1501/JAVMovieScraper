@@ -66,5 +66,11 @@ public abstract class Person extends MovieDataItem {
 	public void setThumbEdited(boolean thumbEdited) {
 		this.thumbEdited = thumbEdited;
 	}
+	
+	public Person(){
+		name = "";
+		thumb = null;
+		thumbEdited = false;
+	}
 
 }

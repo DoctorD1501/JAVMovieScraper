@@ -45,4 +45,8 @@ public class Trailer extends MovieDataItem {
 		return null;
 	}
 
+	public Trailer(){
+		trailer = "";
+	}
+
 }

@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileNotFoundException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,16 +29,14 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import com.sun.xml.internal.bind.v2.schemagen.xmlschema.Appinfo;
+import com.cedarsoftware.util.io.JsonReader;
+import com.cedarsoftware.util.io.JsonWriter;
 
 import moviescraper.doctord.Amalgamation.AllAmalgamationOrderingPreferences;
 import moviescraper.doctord.Amalgamation.DataItemSourceAmalgamationPreference;
 import moviescraper.doctord.Amalgamation.ScraperGroupAmalgamationPreference;
 import moviescraper.doctord.GUI.renderer.MovieFieldCellRenderer;
 import moviescraper.doctord.GUI.renderer.DataItemSourceRenderer;
-import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
-import moviescraper.doctord.SiteParsingProfile.SiteParsingProfileItem;
-import moviescraper.doctord.SiteParsingProfile.SpecificProfileFactory;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile.ScraperGroupName;
 import moviescraper.doctord.dataitem.DataItemSource;
 
@@ -65,6 +64,8 @@ public class SelectScrapersDialog {
 	JButton upButtonSpecific;
 	JButton downButtonSpecific;
 	JButton disableButtonSpecific;
+	JButton useDefaultOrderingForSelectedItem;
+	JButton resetToDefaultSettings;
 	
 	JLabel panelHeaderSpecificFieldAmalgamationPreference;
 	
@@ -72,6 +73,7 @@ public class SelectScrapersDialog {
 	
 	//Model objects
 	AllAmalgamationOrderingPreferences amalgamationPreferences; //state of our choices stored here when outside this dialog
+	AllAmalgamationOrderingPreferences amalgamationPreferencesOriginal; //restore us to original state of our object before opening this dialog if we hit cancel
 	
 	private DefaultListModel<DataItemSource> overallAmalgamationPreferenceListModel;
 	private DefaultListModel<DataItemSource> specificFieldAmalgamationPreferenceListModel;
@@ -83,15 +85,20 @@ public class SelectScrapersDialog {
 	public SelectScrapersDialog(JFrame parent, AllAmalgamationOrderingPreferences amalgamationPreferences, List<String> options, List<String> selected) {
 		
 		this.checkboxes = new ArrayList<>();
+		this.parent = parent;
 		this.selected = selected;
-		this.panel = new JPanel();
+		BorderLayout panelLayoutManager = new BorderLayout();
+		panelLayoutManager.setHgap(10);
+		panelLayoutManager.setVgap(10);
+		this.panel = new JPanel(panelLayoutManager);
 		this.amalgamationPreferences = amalgamationPreferences;
+		this.amalgamationPreferencesOriginal = (AllAmalgamationOrderingPreferences) cloneObject(this.amalgamationPreferences);
 		
 		panelHeaderSpecificFieldAmalgamationPreference = new JLabel("Specific Field");
 		
 		//Begin Scraper Groups
 		scraperGroupNameComboBox = createScraperGroupDropDown();
-		panel.add(scraperGroupNameComboBox);
+		panel.add(scraperGroupNameComboBox, BorderLayout.NORTH);
 		//End Scraper Groups
 		
 		
@@ -123,10 +130,10 @@ public class SelectScrapersDialog {
 		upDownDisablePanel.add(downButtonOverall);
 		
 		overallAmalgamationPreferencePanel.add(upDownDisablePanel, BorderLayout.EAST);
-		JLabel panelHeaderOverallAmalgamationPreference = new JLabel("Overall");
+		JLabel panelHeaderOverallAmalgamationPreference = new JLabel("Default Ordering");
 		overallAmalgamationPreferencePanel.add(panelHeaderOverallAmalgamationPreference,BorderLayout.NORTH);
 		overallAmalgamationPreferencePanel.setBorder(BorderFactory.createLineBorder(Color.black));
-		panel.add(overallAmalgamationPreferencePanel);
+		panel.add(overallAmalgamationPreferencePanel, BorderLayout.WEST);
 		
 		//Scraper Panel End
 		
@@ -135,21 +142,23 @@ public class SelectScrapersDialog {
 		specificFieldAmalgamationPreferenceList = createSpecificFieldAmalgamationPreferenceList();
 		JScrollPane specificFieldScraperScrollPane = new JScrollPane(specificFieldAmalgamationPreferenceList);
 		specificAmalgamationPreferencePanel = new JPanel(new BorderLayout());
-		specificAmalgamationPreferencePanel.setPreferredSize(new Dimension(200,200));
+		specificAmalgamationPreferencePanel.setPreferredSize(new Dimension(300,200));
 		specificAmalgamationPreferencePanel.add(specificFieldScraperScrollPane, BorderLayout.CENTER);
 		
 		
-		Box upDownDisablePanelSpecifc = Box.createVerticalBox();
+		Box upDownDisablePanelSpecific = Box.createVerticalBox();
 		upButtonSpecific = createUpButton(specificFieldAmalgamationPreferenceList, specificFieldAmalgamationPreferenceListModel, false);
 		disableButtonSpecific = createDisableButton(specificFieldAmalgamationPreferenceList, specificFieldAmalgamationPreferenceListModel, false);
 		downButtonSpecific = createDownButton(specificFieldAmalgamationPreferenceList, specificFieldAmalgamationPreferenceListModel, false);
+		useDefaultOrderingForSelectedItem = useDefaultOrderingForSelectedItemButton();
+		
+		upDownDisablePanelSpecific.add(upButtonSpecific);
+		upDownDisablePanelSpecific.add(disableButtonSpecific);
+		upDownDisablePanelSpecific.add(downButtonSpecific);
+		upDownDisablePanelSpecific.add(useDefaultOrderingForSelectedItem);
 		
 		
-		upDownDisablePanelSpecifc.add(upButtonSpecific);
-		upDownDisablePanelSpecifc.add(disableButtonSpecific);
-		upDownDisablePanelSpecifc.add(downButtonSpecific);
-		
-		specificAmalgamationPreferencePanel.add(upDownDisablePanelSpecifc, BorderLayout.EAST);
+		specificAmalgamationPreferencePanel.add(upDownDisablePanelSpecific, BorderLayout.EAST);
 		
 		
 		JPanel allSpecificFieldPanels = new JPanel(new BorderLayout());
@@ -158,24 +167,55 @@ public class SelectScrapersDialog {
 		allSpecificFieldPanels.add(movieFieldPanel, BorderLayout.WEST);
 		allSpecificFieldPanels.add(specificAmalgamationPreferencePanel, BorderLayout.EAST);
 		allSpecificFieldPanels.setBorder(BorderFactory.createLineBorder(Color.black));
-		panel.add(allSpecificFieldPanels);
+		panel.add(allSpecificFieldPanels, BorderLayout.EAST);
 		
 		//Specific Scraper Field Panel End
 		
-		JLabel helpLabel = new JLabel("<html>Any scrapers selected here will be used to amalgamate data when using either the<br> \"Scrape JAV\" or \"Scrape JAV (Automatic)\" scrapers</html>");
-		panel.add(helpLabel);
-		this.parent = parent;
+		resetToDefaultSettings = createResetDefaultSettingsButton();
+		
+		panel.add(resetToDefaultSettings, BorderLayout.SOUTH);
+		
+		//JLabel helpLabel = new JLabel("<html>Any scrapers selected here will be used to amalgamate data when using either the<br> \"Scrape JAV\" or \"Scrape JAV (Automatic)\" scrapers</html>");
+		//panel.add(helpLabel);
+		
 
-		for (String option : options) {
+		/*for (String option : options) {
 			boolean isSelected = selected.contains(option);
 			JCheckBox cb = new JCheckBox(option, isSelected);
 			checkboxes.add(cb);
 			panel.add(cb);
-		}
+		}*/
 		
 		
 	}
 	
+	private JButton useDefaultOrderingForSelectedItemButton() {
+		JButton button = new JButton("Use Default Ordering");
+		button.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				amalgamationPreferences.getScraperGroupAmalgamationPreference((ScraperGroupName) scraperGroupNameComboBox.getSelectedItem()).removeCustomOrderingForField(selectedMovieField);
+				createSpecificFieldAmalgamationPreferenceList();
+			}
+		});
+		return button;
+	}
+
+	private JButton createResetDefaultSettingsButton() {
+		resetToDefaultSettings = new JButton("Reset All To Default Settings");
+		resetToDefaultSettings.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				amalgamationPreferences.reinitializeDefaultPreferences();
+				createOverallAmalgamationPreferenceList();
+				createSpecificFieldAmalgamationPreferenceList();
+			}
+		});
+		return resetToDefaultSettings;
+	}
+
 	private void synchronizeAmalgamationPreferenceListToDataItemSourceAmalgamationPreference(final DefaultListModel<DataItemSource> amalgamationPreferenceListModel, boolean isOverallPrefSync)
 	{
 		System.out.println("Current state before sync " + amalgamationPreferences);
@@ -200,7 +240,7 @@ public class SelectScrapersDialog {
 				DataItemSourceAmalgamationPreference preferenceToSet = new DataItemSourceAmalgamationPreference(sppiAllValues);
 				amalgamationPreferences.getScraperGroupAmalgamationPreference((ScraperGroupName) scraperGroupNameComboBox
 								.getSelectedItem()).setCustomOrderingForField(selectedMovieField, preferenceToSet);
-				panelHeaderSpecificFieldAmalgamationPreference.setText("Specific Field Value Set");
+				panelHeaderSpecificFieldAmalgamationPreference.setText("<html> Using <b>Specific</b> Ordering for " + getNameOfCurrentMovieFieldSelected() + "</html>");
 			}
 		}
 		System.out.println("Current state after sync " + amalgamationPreferences);
@@ -336,9 +376,22 @@ public class SelectScrapersDialog {
 	private JList<DataItemSource> createSpecificFieldAmalgamationPreferenceList()
 	{
 		if(specificFieldAmalgamationPreferenceListModel == null)
+		{
 			specificFieldAmalgamationPreferenceListModel = new DefaultListModel<DataItemSource>();
+		}
 		else
+		{
 			specificFieldAmalgamationPreferenceListModel.clear();
+		}
+		//case when no item is selected
+		if(selectedMovieField == null)
+		{
+			specificFieldAmalgamationPreferenceListModel.clear();
+			panelHeaderSpecificFieldAmalgamationPreference.setText("No movie field selected.");
+			specificFieldAmalgamationPreferenceList.updateUI();
+			return specificFieldAmalgamationPreferenceList;
+			
+		}
 		
 		if(jListMovieFields == null)
 			jListMovieFields = createMovieFieldsList();
@@ -351,17 +404,22 @@ public class SelectScrapersDialog {
 		}
 		
 		Collection<DataItemSource> listData;
+		System.err.println("amalg prefs = " + amalgamationPreferences);
+		System.err.println("Selected movie field = " + selectedMovieField.getName());
+		ScraperGroupAmalgamationPreference debugVal1 = amalgamationPreferences.getScraperGroupAmalgamationPreference((ScraperGroupName) scraperGroupNameComboBox.getSelectedItem());
+		DataItemSourceAmalgamationPreference debugVal2 = debugVal1.getSpecificAmalgamationPreference(selectedMovieField);
 		DataItemSourceAmalgamationPreference orderingForField = amalgamationPreferences.getScraperGroupAmalgamationPreference((ScraperGroupName) scraperGroupNameComboBox.getSelectedItem()).getSpecificAmalgamationPreference(selectedMovieField);
+		
 		if(orderingForField != null)
 		{
 			System.out.println("Found an existing ordering");
-			panelHeaderSpecificFieldAmalgamationPreference.setText("Specific Ordering Set");
+			panelHeaderSpecificFieldAmalgamationPreference.setText("<html> Using <b>Specific</b> Ordering for " + getNameOfCurrentMovieFieldSelected() + "</html>");
 			listData = orderingForField.getAmalgamationPreferenceOrder();
 		}
 		else
 		{
 			System.out.println("No existing ordering found - creating a new one");
-			panelHeaderSpecificFieldAmalgamationPreference.setText("No Specific Ordering Set");
+			panelHeaderSpecificFieldAmalgamationPreference.setText("<html>Using <b>Default</b> Ordering for " + getNameOfCurrentMovieFieldSelected() + "</html>");
 			//we need to create a new object for this field copied from the overall ordering using the same type as the original items
 			listData = new LinkedList<DataItemSource>();
 			DataItemSourceAmalgamationPreference overallPrefs = amalgamationPreferences.getScraperGroupAmalgamationPreference((ScraperGroupName) scraperGroupNameComboBox.getSelectedItem()).getOverallAmalgamationPreference();
@@ -383,6 +441,13 @@ public class SelectScrapersDialog {
 		return specificFieldAmalgamationPreferenceList;
 	}
 	
+	private String getNameOfCurrentMovieFieldSelected()
+	{
+		if(selectedMovieField == null)
+			return "";
+		else return MovieFieldCellRenderer.formatFieldText(selectedMovieField.getName());
+	}
+	
 	private JList<Field> createMovieFieldsList()
 	{
 		movieFieldsListModel = new DefaultListModel<Field>();
@@ -397,8 +462,15 @@ public class SelectScrapersDialog {
 			@SuppressWarnings("unchecked")
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
+					//no item selected
+					if (((JList<Field>) e.getSource()).getSelectedIndex() == -1)
+					{
+						selectedMovieField = null;
+						createSpecificFieldAmalgamationPreferenceList();
+						specificFieldAmalgamationPreferenceList.updateUI();
+					}
 					Field newSelectedField = ((JList<Field>) e.getSource()).getSelectedValue();
-					if(!newSelectedField.equals(selectedMovieField))
+					if(newSelectedField != null && !newSelectedField.equals(selectedMovieField))
 					{
 						selectedMovieField = newSelectedField;
 						createSpecificFieldAmalgamationPreferenceList();
@@ -414,6 +486,16 @@ public class SelectScrapersDialog {
 		return jListMovieFields;
 	}
 	
+	private Object cloneObject(Object root)
+	{
+	    return JsonReader.jsonToJava(JsonWriter.objectToJson(root));    
+	}
+	
+	private void restorePreferencesBeforeDialogOpened()
+	{
+		amalgamationPreferences.setAllAmalgamationOrderingPreferences(amalgamationPreferencesOriginal.getAllAmalgamationOrderingPreferences());
+
+	}
 	
 	public boolean show(){
 		int result = JOptionPane.showOptionDialog(parent, panel, "Select JAV sites to scrape", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
@@ -425,10 +507,19 @@ public class SelectScrapersDialog {
 				if (checkbox.isSelected())
 					selected.add(checkbox.getText());
 			
+			try {
+				amalgamationPreferences.saveToPreferencesFile();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+			
 			return true;
 		}
-		
-		return false;
+		else //hit cancel, undo our changes
+		{
+			restorePreferencesBeforeDialogOpened();
+			return false;
+		}
 	}
 	
 }

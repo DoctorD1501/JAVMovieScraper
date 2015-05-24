@@ -26,26 +26,11 @@ import moviescraper.doctord.GUI.AbstractFileDetailPanelEditGUI.Operation;
 import moviescraper.doctord.GUI.renderer.ActressListRenderer;
 import moviescraper.doctord.GUI.renderer.GenreListRenderer;
 import moviescraper.doctord.dataitem.Actor;
-import moviescraper.doctord.dataitem.Director;
-
 import moviescraper.doctord.dataitem.Genre;
-import moviescraper.doctord.dataitem.ID;
-import moviescraper.doctord.dataitem.MPAARating;
-import moviescraper.doctord.dataitem.OriginalTitle;
-import moviescraper.doctord.dataitem.Outline;
 import moviescraper.doctord.dataitem.Plot;
-import moviescraper.doctord.dataitem.Rating;
-import moviescraper.doctord.dataitem.Runtime;
 import moviescraper.doctord.dataitem.Set;
-import moviescraper.doctord.dataitem.SortTitle;
 import moviescraper.doctord.dataitem.Studio;
-import moviescraper.doctord.dataitem.Tagline;
-import moviescraper.doctord.dataitem.Thumb;
 import moviescraper.doctord.dataitem.Title;
-import moviescraper.doctord.dataitem.Top250;
-import moviescraper.doctord.dataitem.Trailer;
-import moviescraper.doctord.dataitem.Votes;
-import moviescraper.doctord.dataitem.Year;
 import moviescraper.doctord.preferences.MoviescraperPreferences;
 
 import com.jgoodies.forms.factories.FormFactory;

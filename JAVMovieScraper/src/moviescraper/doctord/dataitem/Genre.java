@@ -44,6 +44,10 @@ public class Genre extends MovieDataItem {
 			return false;
 		return true;
 	}
+
+	public Genre(){
+		genre = "";
+	}
 	
 	
 

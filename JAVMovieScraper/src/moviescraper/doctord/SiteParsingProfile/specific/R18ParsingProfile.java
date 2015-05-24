@@ -17,11 +17,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import com.sun.org.apache.xalan.internal.xsltc.compiler.Parser;
-
 import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
-import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile.ScraperGroupName;
 import moviescraper.doctord.controller.SpecificScraperAction;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Director;

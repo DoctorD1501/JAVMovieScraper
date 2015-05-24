@@ -12,6 +12,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -24,21 +25,24 @@ import javax.swing.SwingWorker;
 
 import moviescraper.doctord.Movie;
 import moviescraper.doctord.SearchResult;
+import moviescraper.doctord.Amalgamation.MovieScrapeResultGroup;
+import moviescraper.doctord.Amalgamation.ScraperGroupAmalgamationPreference;
 import moviescraper.doctord.GUI.GUIMain;
 import moviescraper.doctord.GUI.renderer.FanartPickerRenderer;
-import moviescraper.doctord.SiteParsingProfile.specific.ActionJavParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.Data18MovieParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.Data18WebContentParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.IAFDParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
+import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile.ScraperGroupName;
+import moviescraper.doctord.SiteParsingProfile.specific.ActionJavParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.specific.DmmParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.specific.JavLibraryParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.specific.JavZooParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.specific.R18ParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.specific.SquarePlusParsingProfile;
 import moviescraper.doctord.dataitem.Actor;
+import moviescraper.doctord.dataitem.DataItemSource;
 import moviescraper.doctord.dataitem.Director;
-
 import moviescraper.doctord.dataitem.Genre;
 import moviescraper.doctord.dataitem.ID;
 import moviescraper.doctord.dataitem.MPAARating;
@@ -98,6 +102,38 @@ public class ScrapeMovieAction extends AbstractAction {
 		progress = 0;
 		amountOfProgressPerSubtask = 0;
 		scrapeCanceled = false;
+	}
+	
+	/**
+	 * 
+	 * @param parsingProfile - item to check if scraping is enabled for this parsing profile
+	 * @return true if scraper should scrape for parsingProfile, false otherwise
+	 */
+	protected boolean shouldScrapeThread(DataItemSource parsingProfile) {
+		for (ScraperGroupName currentName : ScraperGroupName.values()) {
+			ScraperGroupAmalgamationPreference currentPref = this.guiMain
+					.getAllAmalgamationOrderingPreferences()
+					.getScraperGroupAmalgamationPreference(currentName);
+			
+			LinkedList<DataItemSource> overallPrefs = currentPref
+					.getOverallAmalgamationPreference()
+					.getAmalgamationPreferenceOrder();
+			
+			for(DataItemSource currentDataItemSource : overallPrefs)
+			{
+				System.out.println("Comparing "
+						+ currentDataItemSource.getDataItemSourceName()
+						+ " disabled=" + currentDataItemSource.isDisabled()
+						+ " to " + parsingProfile.getDataItemSourceName());
+				
+				if(currentDataItemSource.getDataItemSourceName().equals(parsingProfile.getDataItemSourceName()))
+				{
+					boolean disabled = currentDataItemSource.isDisabled();
+					return !disabled;
+				}
+			}
+		}
+		return false;
 	}
 
 	public void makeProgress(int amount, String note)
@@ -738,27 +774,35 @@ public class ScrapeMovieAction extends AbstractAction {
 
 
 		
-		scrapeThreads = new ArrayList<Thread>(numberOfThreads);
+		scrapeThreads = new LinkedList<Thread>();
 		
-		if (selected.contains("DMM.co.jp"))
+		if (shouldScrapeThread(new DmmParsingProfile()) || this.guiMain.getPreferences().getScrapeInJapanese())
 			scrapeThreads.add(scrapeQueryDMMThread);
 		
 		if(!this.guiMain.getPreferences().getScrapeInJapanese())
 		{
-			if (selected.contains("ActionJav"))
+			if(shouldScrapeThread(new ActionJavParsingProfile()))
+			{
+				System.out.println("ActionJav is go");
+			}
+			if (shouldScrapeThread(new ActionJavParsingProfile())) {
 				scrapeThreads.add(scrapeQueryActionJavThread);
-			
-			if (selected.contains("SquarePlus"))
+			}
+			if (shouldScrapeThread(new SquarePlusParsingProfile())) {
+				
 				scrapeThreads.add(scrapeQuerySquarePlusThread);
-			
-			if (selected.contains("JavLibrary"))
+			}
+			if (shouldScrapeThread(new JavLibraryParsingProfile())) {
+				
 				scrapeThreads.add(scrapeQueryJavLibraryThread);
-			
-			if (selected.contains("JavZoo"))
+			}
+			if (shouldScrapeThread(new JavZooParsingProfile())) {
+				
 				scrapeThreads.add(scrapeQueryJavZooThread);
-			
-			if (selected.contains("R18.com"))
+			}
+			if (shouldScrapeThread(new R18ParsingProfile())) {
 				scrapeThreads.add(scrapeQueryR18Thread);
+			}
 		}
 
 
@@ -786,13 +830,39 @@ public class ScrapeMovieAction extends AbstractAction {
 		if(this.guiMain.getPreferences().getScrapeInJapanese())
 			movieAmalgamated = this.guiMain.getCurrentlySelectedMovieDMM();
 		else{
-			movieAmalgamated = amalgamateJAVMovie(this.guiMain.getCurrentlySelectedMovieDMM(),
+			//old method
+			/*movieAmalgamated = amalgamateJAVMovie(this.guiMain.getCurrentlySelectedMovieDMM(),
 					this.guiMain.getCurrentlySelectedMovieActionJav(),
 					this.guiMain.getCurrentlySelectedMovieSquarePlus(),
 					this.guiMain.getCurrentlySelectedMovieJavLibrary(),
 					this.guiMain.getCurrentlySelectedMovieJavZoo(),
 					this.guiMain.getCurrentlySelectedMovieR18(),
 					movieNumberInList);
+					*/
+			List<Movie> scrapedMovies = new LinkedList<Movie>();
+			if (this.guiMain.getCurrentlySelectedMovieDMM() != null)
+				scrapedMovies.add(this.guiMain.getCurrentlySelectedMovieDMM());
+			
+			if (this.guiMain.getCurrentlySelectedMovieActionJav() != null)
+				scrapedMovies.add(this.guiMain.getCurrentlySelectedMovieActionJav());
+			
+			if (this.guiMain.getCurrentlySelectedMovieSquarePlus() != null)
+				scrapedMovies.add(this.guiMain.getCurrentlySelectedMovieSquarePlus());
+			
+			if (this.guiMain.getCurrentlySelectedMovieJavLibrary() != null)
+				scrapedMovies.add(this.guiMain.getCurrentlySelectedMovieJavLibrary());
+			
+			if (this.guiMain.getCurrentlySelectedMovieJavZoo() != null)
+				scrapedMovies.add(this.guiMain.getCurrentlySelectedMovieJavZoo());
+			
+			if (this.guiMain.getCurrentlySelectedMovieR18() != null)
+				scrapedMovies.add(this.guiMain.getCurrentlySelectedMovieR18());
+			
+			ScraperGroupAmalgamationPreference javPrefs = this.guiMain.getAllAmalgamationOrderingPreferences().getScraperGroupAmalgamationPreference(ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP);
+			
+			MovieScrapeResultGroup scrapedResultGroup = new MovieScrapeResultGroup(scrapedMovies, javPrefs);
+			
+			movieAmalgamated = scrapedResultGroup.amalgamateMovie();
 		}
 		//if we didn't get a result from the general jav db's, then maybe this is from a webonly type scraper
 		if(movieAmalgamated == null && this.guiMain.getCurrentlySelectedMovieCaribbeancomPremium() != null)
@@ -834,6 +904,8 @@ public class ScrapeMovieAction extends AbstractAction {
 	public int getAmountOfProgressPerSubtask() {
 		return amountOfProgressPerSubtask;
 	}
+	
+
 	
 	/**
 	 *  Look through the fields in the various scraped movies and try to automatically guess what the best data is and construct a Movie based on

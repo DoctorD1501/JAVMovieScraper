@@ -436,4 +436,5 @@ public class Thumb extends MovieDataItem {
 	    // Return the buffered image
 	    return bimage;
 	}
+
 }

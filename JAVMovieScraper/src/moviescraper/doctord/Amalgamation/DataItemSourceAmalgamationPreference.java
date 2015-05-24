@@ -36,6 +36,7 @@ public class DataItemSourceAmalgamationPreference {
 	{
 		this.amalgamationPreferenceOrder = amalgamationPreferenceOrder;
 	}
+	
 
 	public LinkedList<DataItemSource> getAmalgamationPreferenceOrder() {
 		return amalgamationPreferenceOrder;

@@ -11,8 +11,6 @@ import javax.swing.ListCellRenderer;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
 
-import moviescraper.doctord.SiteParsingProfile.SiteParsingProfileItem;
-
 public class MovieFieldCellRenderer implements ListCellRenderer<Field> {
 	
 	protected DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();

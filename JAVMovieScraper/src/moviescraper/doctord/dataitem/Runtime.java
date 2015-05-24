@@ -29,4 +29,10 @@ public class Runtime extends MovieDataItem {
 		return null;
 	}
 
+	public Runtime() {
+		runtime = "";
+	}
+
+
+
 }

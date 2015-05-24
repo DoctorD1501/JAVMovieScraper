@@ -129,6 +129,12 @@ public class ID extends MovieDataItem {
 		return true;
 	}
 
+	public ID()
+	{
+		id = "";
+	}
+	
+
 
 	
 

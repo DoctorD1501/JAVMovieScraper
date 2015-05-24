@@ -55,6 +55,11 @@ public class Actor extends Person {
 			return false;
 		return true;
 	}
+
+	public Actor(){
+		super();
+		role = "";
+	}
 	
 	
 

@@ -20,7 +20,7 @@ public class ScraperGroupAmalgamationPreference {
 	
 	ScraperGroupName scraperGroupName;
 	DataItemSourceAmalgamationPreference overallOrdering;
-	Map<Field, DataItemSourceAmalgamationPreference> customAmalgamationOrderPerField;
+	Map<String, DataItemSourceAmalgamationPreference> customAmalgamationOrderPerField;
 	
 
 	
@@ -38,15 +38,11 @@ public class ScraperGroupAmalgamationPreference {
 	 */
 	public DataItemSourceAmalgamationPreference getAmalgamationPreference(Field field)
 	{
-		System.out.println("Field is " + field);
-		System.out.println(customAmalgamationOrderPerField);
-		if(field != null && customAmalgamationOrderPerField != null && customAmalgamationOrderPerField.containsKey(field))
+		if(field != null && customAmalgamationOrderPerField != null && customAmalgamationOrderPerField.containsKey(field.getName()))
 		{
-			System.out.println("Returning amalgamation pref for field: " + field);
-			return customAmalgamationOrderPerField.get(field);
+			return customAmalgamationOrderPerField.get(field.getName());
 		}
 		else {
-			System.out.println("Returning genero field order");
 			return overallOrdering;
 		}
 	}
@@ -57,10 +53,9 @@ public class ScraperGroupAmalgamationPreference {
 	 */
 	public DataItemSourceAmalgamationPreference getSpecificAmalgamationPreference(Field field)
 	{
-		if(field != null && customAmalgamationOrderPerField != null && customAmalgamationOrderPerField.containsKey(field))
+		if(field != null && customAmalgamationOrderPerField != null && customAmalgamationOrderPerField.containsKey(field.getName()))
 		{
-			System.out.println("Returning amalgamation pref for field: " + field);
-			return customAmalgamationOrderPerField.get(field);
+			return customAmalgamationOrderPerField.get(field.getName());
 		}
 		return null;
 	}
@@ -74,15 +69,20 @@ public class ScraperGroupAmalgamationPreference {
 	public void setCustomOrderingForField(Field field, DataItemSourceAmalgamationPreference newValue)
 	{
 		if (customAmalgamationOrderPerField == null) {
-			customAmalgamationOrderPerField = new Hashtable<Field, DataItemSourceAmalgamationPreference>(
+			customAmalgamationOrderPerField = new Hashtable<String, DataItemSourceAmalgamationPreference>(
 					Movie.class.getDeclaredFields().length);
 		}
-		customAmalgamationOrderPerField.put(field, newValue);
+		customAmalgamationOrderPerField.put(field.getName(), newValue);
 	}
 	
 	public void setCustomOrderingForField(String fieldName, DataItemSourceAmalgamationPreference newValue) throws NoSuchFieldException, SecurityException
 	{
 		setCustomOrderingForField(Movie.class.getDeclaredField(fieldName), newValue);
+	}
+	
+	public void removeCustomOrderingForField(Field field)
+	{
+		customAmalgamationOrderPerField.remove(field.getName());
 	}
 	
 	public static List<Field> getMoviefieldNames()

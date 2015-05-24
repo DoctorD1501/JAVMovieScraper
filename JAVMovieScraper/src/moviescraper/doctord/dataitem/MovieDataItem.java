@@ -1,7 +1,5 @@
 package moviescraper.doctord.dataitem;
 
-import moviescraper.doctord.Amalgamation.DataItemSourceAmalgamationPreference;
-
 public abstract class MovieDataItem {
 	
 	protected final static int connectionTimeout = 10000; //10 seconds
@@ -31,11 +29,5 @@ public abstract class MovieDataItem {
 	public String dataItemSourceToString(){
 		return " source=\"" + getDataItemSource() + "\"";
 	}
-
-
-
-
-	
-	
 
 }

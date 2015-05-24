@@ -1,6 +1,5 @@
 package moviescraper.doctord.GUI.renderer;
 
-import java.awt.Color;
 import java.awt.Component;
 
 import javax.swing.DefaultListCellRenderer;
@@ -8,18 +7,14 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
-import moviescraper.doctord.SearchResult;
-import moviescraper.doctord.SiteParsingProfile.SiteParsingProfileItem;
 import moviescraper.doctord.dataitem.DataItemSource;
 
 
 
 public class DataItemSourceRenderer implements ListCellRenderer<DataItemSource> {
 	
-	private static final long serialVersionUID = 1L;
-	private static final Color HIGHLIGHT_COLOR = new Color(0, 0, 128);
 	private static final String strikeOpen = "<strike>";
-	private static final String stikeClose = "</strike>";
+	private static final String strikeClose = "</strike>";
 	private static final String emptyString = "";
 	private static final String enabledItemFontTag = "<font color='green'>";
 	private static final String disabledItemFontTag = "<font color='red'>";
@@ -33,7 +28,8 @@ public class DataItemSourceRenderer implements ListCellRenderer<DataItemSource> 
 		        isSelected, cellHasFocus);
 		
 		renderer.setText("<html>" + getConditionalFontOpenTag(value) + getConditionalStrikeOpen(value) + 
-				value.toString() + getConditionalStrikeClose(value) + fontCloseTag + "</html>");
+				(index + 1) + ". " + value.toString() + getConditionalStrikeClose(value) + fontCloseTag + "</html>");
+		
 		return renderer;
 	}
 	
@@ -54,7 +50,7 @@ public class DataItemSourceRenderer implements ListCellRenderer<DataItemSource> 
 	private String getConditionalStrikeClose(DataItemSource value)
 	{
 		if(value.isDisabled())
-			return strikeOpen;
+			return strikeClose;
 		else return emptyString;
 	}
 

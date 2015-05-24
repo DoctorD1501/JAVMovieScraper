@@ -219,7 +219,9 @@ public class GUIMain {
 		
 		//restore amalgamation preferences
 		allAmalgamationOrderingPreferences = new AllAmalgamationOrderingPreferences();
-		allAmalgamationOrderingPreferences.initializeValuesFromPreferenceFile();
+		
+		allAmalgamationOrderingPreferences = allAmalgamationOrderingPreferences.initializeValuesFromPreferenceFile();
+		System.out.println("File: " + allAmalgamationOrderingPreferences);
 	}
 
 	/**

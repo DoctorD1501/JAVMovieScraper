@@ -29,4 +29,10 @@ public class Outline extends MovieDataItem {
 		return null;
 	}
 
+	public Outline() {
+		outline = "";
+	}
+
+
+
 }

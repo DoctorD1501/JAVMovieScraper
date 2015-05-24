@@ -30,4 +30,8 @@ public class Year extends MovieDataItem {
 		return null;
 	}
 
+	public Year(){
+		year = "";
+	}
+
 }

@@ -2,9 +2,6 @@ package moviescraper.doctord.dataitem;
 
 import java.text.DecimalFormat;
 
-
-
-
 public class Rating extends MovieDataItem {
 	
 	private double maxRating;
@@ -63,5 +60,13 @@ public class Rating extends MovieDataItem {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	public Rating() {
+		super();
+		maxRating = 0;
+		rating = "";
+	}
+
+
 
 }

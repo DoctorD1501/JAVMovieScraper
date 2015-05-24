@@ -28,4 +28,10 @@ public class Set extends MovieDataItem {
 		return null;
 	}
 
+	public Set() {
+		set = "";
+	}
+
+
+
 }

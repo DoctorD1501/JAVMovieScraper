@@ -30,4 +30,8 @@ public class Tagline extends MovieDataItem {
 		return null;
 	}
 
+	public Tagline(){
+		tagline = "";
+	}
+
 }

@@ -30,4 +30,8 @@ public class SortTitle extends MovieDataItem {
 		return null;
 	}
 
+	public SortTitle(){
+		sortTitle = "";
+	}
+
 }

@@ -3,16 +3,12 @@ package moviescraper.doctord.Amalgamation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.io.File;
-import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 
 import moviescraper.doctord.Movie;
-import moviescraper.doctord.SiteParsingProfile.specific.DmmParsingProfile;
-import moviescraper.doctord.SiteParsingProfile.specific.JavLibraryParsingProfile;
-import moviescraper.doctord.SiteParsingProfile.specific.R18ParsingProfile;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Director;
 import moviescraper.doctord.dataitem.Genre;
@@ -69,7 +65,23 @@ public class MovieScrapeResultGroup {
 	
 	private MovieDataItem getPreferredMovieDataItemAsMovieDataItem(Class<?> classOfMovieDataItem) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
 	{
-		MovieDataItem result = getPreferredMovieDataItem(classOfMovieDataItem).length > 0 ? (MovieDataItem) getPreferredMovieDataItem(classOfMovieDataItem)[0] : null; 
+		MovieDataItem result = getPreferredMovieDataItem(classOfMovieDataItem).length > 0 ? (MovieDataItem) getPreferredMovieDataItem(classOfMovieDataItem)[0] : null;
+		if(result == null)
+		{
+			//call the default constructor
+			Constructor<?>[] ctors = classOfMovieDataItem.getDeclaredConstructors();
+			for(Constructor<?> currentConstructor : ctors)
+			{
+				if(currentConstructor.getParameters().length == 0)
+				{
+					//We are the default zero param constructor
+					System.out.println("Calling default constructor " + currentConstructor);
+					return (MovieDataItem)currentConstructor.newInstance();
+				}
+			}
+			throw new NoSuchMethodException("Didn't find default constructor of class = " + classOfMovieDataItem);
+		}
+			
 		System.out.println("Amalgamated " + classOfMovieDataItem.toString().replace("class moviescraper.doctord.dataitem.", "") + " is " + result);
 		return result;
 	}
@@ -115,105 +127,84 @@ public class MovieScrapeResultGroup {
 	}
 	
 	
-	private Object[] getPreferredMovieDataItem(Class classOfMovieDataItem) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+	private Object[] getPreferredMovieDataItem(Class classOfMovieDataItem)
+			throws NoSuchMethodException, SecurityException,
+			InstantiationException, IllegalAccessException,
+			IllegalArgumentException, InvocationTargetException {
 
-		Object[] preferredValueOrder = new Object[amalgamationPreferenceOrderForEntireMovieGroup.getOverallAmalgamationPreference().getAmalgamationPreferenceOrder().size()];
+		Object[] preferredValueOrder = new Object[amalgamationPreferenceOrderForEntireMovieGroup
+				.getOverallAmalgamationPreference()
+				.getAmalgamationPreferenceOrder().size()];
 		boolean fieldIsArray = false;
 		boolean fieldIsArrayList = false;
 		boolean fieldIsMovieDataItem = false;
-		//For each movie, find the field that matches the class passed in
-		//	for that Field, put it in the index matching the preference order
-		for(Movie currentMovie : scrapedMovieObjectsForFile)
-		{
+		// For each movie, find the field that matches the class passed in
+		// for that Field, put it in the index matching the preference order
+		for (Movie currentMovie : scrapedMovieObjectsForFile) {
 			for (Field field : currentMovie.getClass().getDeclaredFields()) {
 				field.setAccessible(true);
 				Object currentFieldValue = field.get(currentMovie);
-				if(currentFieldValue != null)
-				{
+				if (currentFieldValue != null) {
 
-					
-					//Case for MovieDataItem
-					if(currentFieldValue.getClass().equals(classOfMovieDataItem))
-					{
-						
-						//System.out.printf("Field name: %s, Field value: %s%n", name, value);
+					// Case for MovieDataItem
+					if (currentFieldValue.getClass().equals(
+							classOfMovieDataItem)) {
+
 						Object item = (MovieDataItem) currentFieldValue;
-						
-						DataItemSourceAmalgamationPreference amalgamationPrefToUse = amalgamationPreferenceOrderForEntireMovieGroup.getAmalgamationPreference(field);
 
-						for (int i = 0; i < amalgamationPrefToUse.getAmalgamationPreferenceOrder().size(); i++)
-						{
-							//System.out.println("arry:" + amalgamationPreferenceOrder.getAmalgamationPreferenceOrder().get(i));
-							if(((MovieDataItem) item).getDataItemSource().toString().equals(amalgamationPrefToUse.getAmalgamationPreferenceOrder().get(i).toString()))
-							{
-								//System.out.println("ds: " + ((MovieDataItem) item).getDataItemSource());
+						DataItemSourceAmalgamationPreference amalgamationPrefToUse = amalgamationPreferenceOrderForEntireMovieGroup
+								.getAmalgamationPreference(field);
+
+						for (int i = 0; i < amalgamationPrefToUse
+								.getAmalgamationPreferenceOrder().size(); i++) {
+							if (((MovieDataItem) item)
+									.getDataItemSource()
+									.toString()
+									.equals(amalgamationPrefToUse
+											.getAmalgamationPreferenceOrder()
+											.get(i).toString())) {
 								preferredValueOrder[i] = item;
 								fieldIsMovieDataItem = true;
 							}
 						}
-						
-						
 
 					}
-					//Case for ArrayList
-					else if(currentFieldValue.getClass().equals(ArrayList.class))
-					{
+					// Case for ArrayList
+					else if (currentFieldValue.getClass().equals(
+							ArrayList.class)) {
 
-						ParameterizedType paramType = (ParameterizedType) field.getGenericType();
-				    	Class<?> arrayListClass = (Class<?>) paramType.getActualTypeArguments()[0]; 
-						//System.out.println("ArrayList of " + arrayListClass + " compared to " + classOfMovieDataItem);
+						ParameterizedType paramType = (ParameterizedType) field
+								.getGenericType();
+						Class<?> arrayListClass = (Class<?>) paramType
+								.getActualTypeArguments()[0];
 						ArrayList<Object> arrayList = (ArrayList<Object>) currentFieldValue;
 
-				        if(arrayListClass.equals(classOfMovieDataItem))
-				        {
-				        	
-					        //System.out.println("Parameterized type :" + arrayListClass); 
-					        //System.out.printf("Field name: %s, Field value: %s%n", name, value);
-					        //System.out.println("arr item = " + arrayList);
-				        	
-				        	//The data item itself has a preference it wants to amalgamate by, so we will use it instead of the Movie's one
-				        	DataItemSourceAmalgamationPreference amalgamationPrefToUse = amalgamationPreferenceOrderForEntireMovieGroup.getAmalgamationPreference(field);
-							/*DataItemSourceAmalgamationPreference itemAmalgamationPref = null;
-							if(arrayList.size() > 0)
-							{
-								MovieDataItem firstItem = (MovieDataItem) arrayList.get(0);
-								if(firstItem != null){
-									itemAmalgamationPref = firstItem.getDataItemAmalgamtionPreference();
-								}						
-							}*/
-							
-							
-							/*if(itemAmalgamationPref != null)
-							{
-								amalgamationPrefToUse = itemAmalgamationPref;
-								//reset the array to get the correct size and fill it with null values so that there is room
-								if(preferredValueOrder.length != amalgamationPrefToUse.getAmalgamationPreferenceOrder().size())
-								{
-									preferredValueOrder = new Object[amalgamationPrefToUse.getAmalgamationPreferenceOrder().size()];
+						if (arrayListClass.equals(classOfMovieDataItem)) {
+
+							// The data item itself has a preference it wants to
+							// amalgamate by, so we will use it instead of the
+							// Movie's one
+							DataItemSourceAmalgamationPreference amalgamationPrefToUse = amalgamationPreferenceOrderForEntireMovieGroup
+									.getAmalgamationPreference(field);
+
+							for (int i = 0; i < amalgamationPrefToUse
+									.getAmalgamationPreferenceOrder().size(); i++) {
+								if (arrayList.size() > 0) {
+									MovieDataItem firstItem = (MovieDataItem) arrayList
+											.get(0);
+									if (firstItem
+											.getDataItemSource()
+											.toString()
+											.equals(amalgamationPrefToUse
+													.getAmalgamationPreferenceOrder()
+													.get(i).toString())) {
+										preferredValueOrder[i] = arrayList;
+										fieldIsArrayList = true;
+									}
 								}
-							}*/
-				        	for (int i = 0; i < amalgamationPrefToUse.getAmalgamationPreferenceOrder().size(); i++)
-				        	{
-				        		if(arrayList.size() > 0)
-				        		{
-				        			MovieDataItem firstItem = (MovieDataItem) arrayList.get(0);
-				        			//System.out.println("arry:" + amalgamationPreferenceOrder.getAmalgamationPreferenceOrder().get(i));
-				        			if(firstItem.getDataItemSource().toString().equals(amalgamationPrefToUse.getAmalgamationPreferenceOrder().get(i).toString()))
-				        			{
-				        				//System.out.println("ds: " + firstItem.getDataItemSource());
-				        				preferredValueOrder[i] = arrayList;
-				        				fieldIsArrayList = true;
-				        			}
-				        		}
-				        	}
-				        }
-				      
-					}
-					//Case for Array
-					else if(currentFieldValue.getClass().isArray())
-					{
-						//need to change isArray to true somehow
-						//System.out.println("Array!");
+							}
+						}
+
 					}
 				}
 			}

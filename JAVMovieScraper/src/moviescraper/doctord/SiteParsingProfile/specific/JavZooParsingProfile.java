@@ -20,7 +20,6 @@ import moviescraper.doctord.JapaneseCharacter;
 import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.TranslateString;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
-import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile.ScraperGroupName;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Director;
 import moviescraper.doctord.dataitem.Genre;
