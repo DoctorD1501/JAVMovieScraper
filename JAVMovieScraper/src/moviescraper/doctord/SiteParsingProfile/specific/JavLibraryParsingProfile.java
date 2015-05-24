@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
@@ -109,7 +110,20 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 
 	@Override
 	public OriginalTitle scrapeOriginalTitle() {
-		//Does not have original japanese title, so don't return anything
+
+		if (siteLanguageToScrape.equals(japaneseLanguageCode))
+			return new OriginalTitle(scrapeTitle().getTitle());
+		
+		try {
+			String japaneseUrl = document.location().replace("javlibrary.com/" + siteLanguageToScrape + "/", "javlibrary.com/" + japaneseLanguageCode + "/");			
+			Document japaneseDoc = Jsoup.connect(japaneseUrl).userAgent(getRandomUserAgent()).timeout(CONNECTION_TIMEOUT_VALUE).get();
+			JavLibraryParsingProfile profile = new JavLibraryParsingProfile(japaneseDoc, japaneseLanguageCode);
+			return profile.scrapeOriginalTitle();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		return OriginalTitle.BLANK_ORIGINALTITLE;
 	}
 
@@ -406,7 +420,11 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 		else
 		{
 			//The search didn't find an exact match and took us to the search results page
-			Elements videoLinksElements = doc.select("div.video");
+			//We're filtering out anything that does not exactly match the id from the search query
+			
+			String searchId = new URLCodec().decode(searchString.replaceAll(".*\\?keyword=(.*)$", "$1")).toUpperCase();
+			Elements videoLinksElements = doc.select("div.video:has(div.id:matchesOwn(^"+Pattern.quote(searchId)+"$))");
+			
 			for(Element videoLink : videoLinksElements)
 			{
 				String currentLink = videoLink.select("a").attr("href");
@@ -421,12 +439,14 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 			}
 			return linksList.toArray(new SearchResult[linksList.size()]);
 		}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (DecoderException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-	 catch (IOException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
 		return new SearchResult[0];
-	}
 	}
 
 	@Override
