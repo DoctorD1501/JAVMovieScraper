@@ -4,10 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
-import org.apache.commons.lang3.StringUtils;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
+import java.util.LinkedList;
 
 import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.Thumb;
@@ -30,6 +27,12 @@ import moviescraper.doctord.dataitem.Title;
 import moviescraper.doctord.dataitem.Top250;
 import moviescraper.doctord.dataitem.Votes;
 import moviescraper.doctord.dataitem.Year;
+
+import org.apache.commons.lang3.StringUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 public class SquarePlusParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
@@ -76,7 +79,10 @@ public class SquarePlusParsingProfile extends SiteParsingProfile implements Spec
 
 	@Override
 	public Set scrapeSet() {
-		// Site doesn't have any set information
+		Element setElement = document.select("th.label:containsOwn(Series) ~ td").first();
+		if (setElement != null)
+			return new Set(setElement.text());
+		
 		return Set.BLANK_SET;
 
 	}
@@ -200,7 +206,7 @@ public class SquarePlusParsingProfile extends SiteParsingProfile implements Spec
 	public ArrayList<Actor> scrapeActors() {
 		ArrayList<Actor> actorList = new ArrayList<Actor>();
 		
-		Element featuringElement = document.select("th.label:containsOwn(Featuring) ~ td").first();
+		Element featuringElement = document.select("th.label:containsOwn(Featuring) ~ td:not(:containsOwn(Various))").first();
 		if(featuringElement != null)
 		{
 			String [] actorSplitList = featuringElement.text().split(",");
@@ -208,7 +214,7 @@ public class SquarePlusParsingProfile extends SiteParsingProfile implements Spec
 				actorList.add(new Actor(actorToAdd,"",null));
 		}
 		
-		Element starringElement = document.select("th.label:containsOwn(Starring) ~ td").first();
+		Element starringElement = document.select("th.label:containsOwn(Starring) ~ td:not(:containsOwn(Various))").first();
 		if(starringElement != null)
 		{
 			String [] actorSplitList = starringElement.text().split(",");
@@ -226,50 +232,48 @@ public class SquarePlusParsingProfile extends SiteParsingProfile implements Spec
 
 	@Override
 	public Studio scrapeStudio() {
+		Element studioElement = document.select("th.label:containsOwn(Label) ~ td:not(:containsOwn(Other))").first();
+		if(studioElement != null)
+			return new Studio(studioElement.text());
+		
 		return Studio.BLANK_STUDIO;
 	}
 
 	@Override
 	public String createSearchString(File file) {
-		String fileNameNoExtension = findIDTagFromFile(file, isFirstWordOfFileIsID());
-		return fileNameNoExtension;
-		/*URLCodec codec = new URLCodec();
-		try {
-			String fileNameURLEncoded = codec.encode(fileNameNoExtension);
-			return fileNameURLEncoded;
-		} catch (EncoderException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
-		*/
-		
+		String searchId = findIDTagFromFile(file, isFirstWordOfFileIsID());
+		return "http://www.squareplus.co.jp/catalogsearch/result/?q=" + searchId;
 	}
 
 	@Override
 	public SearchResult[] getSearchResults(String searchString) throws IOException {
-		/*//System.out.println("searchString = " + searchString);
-		Document searchResultsPage = Jsoup.connect(searchString).referrer("http://google.com").userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:5.0) Gecko/20100101 Firefox/5.0").get();
-		Elements dvdLinks = searchResultsPage
-				.select("h3.r a");
-		//String[] searchResults = new String[dvdLinks.size()];
-		ArrayList<String> searchResults = new ArrayList<String>();
-		for (int i = 0; i < dvdLinks.size() ; i++) {
-			String currentLink = dvdLinks.get(i).attr("href");
-			//don't add in things from the gallery, these aren't the movie page
-			if (!currentLink.contains("gallery"))
-			{
-				System.out.println("adding in " + currentLink);
-				searchResults.add(currentLink);
-				//searchResults[i] = currentLink;
-			}
-			//System.out.println("currentLink: " + currentLink);
+		if (searchString == null)
+			return new SearchResult[0];
+				
+		Document doc = Jsoup.connect(searchString).timeout(CONNECTION_TIMEOUT_VALUE).get();
+		Elements foundMovies = doc.select("ul.products-grid>li");
+		String searchId = searchString.replaceAll(".*\\?q=(.*)$", "$1").replace("-", "").toLowerCase();
+		LinkedList<SearchResult> searchList = new LinkedList<SearchResult>();
+		
+		for(Element movie: foundMovies){
+			String urlPath = movie.select("a").first().attr("href");
+			String thumb = movie.select("img").first().attr("src");
+			String label = movie.select(".product-name,.actresslist").text();
+			SearchResult searchResult = new SearchResult(urlPath, label, new Thumb(thumb));
+			
+			if (urlPath.endsWith("/" + searchId + ".html"))
+				searchList.addFirst(searchResult);
+			else
+				searchList.addLast(searchResult);
 		}
-		//System.out.println("dvdlinks: " + dvdLinks);
-		//System.out.println("searchResults: " + searchResults);
-		return searchResults.toArray(new String [searchResults.size()]);
-		*/
-		return getLinksFromGoogle(searchString, "squareplus.co.jp");
+		
+		// if both DVD and Blue-Ray gets listed, pick the correct one
+		if (searchList.size() == 2)
+			if (searchList.get(0).getUrlPath().endsWith("/"+searchId+".html"))
+				if (searchList.get(1).getUrlPath().endsWith("/9"+searchId+".html"))
+					searchList.remove(1);
+		
+		return searchList.toArray(new SearchResult[searchList.size()]);
 	}
 
 	@Override
