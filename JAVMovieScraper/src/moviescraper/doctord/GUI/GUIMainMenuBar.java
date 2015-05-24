@@ -28,7 +28,7 @@ import moviescraper.doctord.controller.ScrapeMovieActionAutomatic;
 import moviescraper.doctord.controller.ScrapeMovieActionData18Movie;
 import moviescraper.doctord.controller.ScrapeMovieActionData18WebContent;
 import moviescraper.doctord.controller.ScrapeSpecificAction;
-import moviescraper.doctord.controller.SelectScrapersAction;
+import moviescraper.doctord.controller.SelectAmalgamationSettingsAction;
 import moviescraper.doctord.controller.WriteFileDataAction;
 import moviescraper.doctord.preferences.MoviescraperPreferences;
 
@@ -310,8 +310,8 @@ public class GUIMainMenuBar extends JMenuBar{
 		settingsMenu.setMnemonic(KeyEvent.VK_S);
 
 		// This is a scraping preference but fits better under the Settings menu
-		JMenuItem scrapersMenuItem = new JMenuItem("Select JAV sites to scrape...");
-		scrapersMenuItem.addActionListener(new SelectScrapersAction(guiMain));
+		JMenuItem scrapersMenuItem = new JMenuItem("Amalgamation Settings...");
+		scrapersMenuItem.addActionListener(new SelectAmalgamationSettingsAction(guiMain));
 		settingsMenu.add(scrapersMenuItem);
 		
 		JMenuItem renameSettings = new JMenuItem("Rename Settings...");

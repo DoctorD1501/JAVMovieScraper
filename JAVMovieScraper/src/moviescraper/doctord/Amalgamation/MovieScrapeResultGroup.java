@@ -75,7 +75,6 @@ public class MovieScrapeResultGroup {
 				if(currentConstructor.getParameters().length == 0)
 				{
 					//We are the default zero param constructor
-					System.out.println("Calling default constructor " + currentConstructor);
 					return (MovieDataItem)currentConstructor.newInstance();
 				}
 			}
@@ -318,8 +317,6 @@ public class MovieScrapeResultGroup {
 		{
 			preferredValueOrder.add(null);
 		}
-		//System.out.println(amalgamationPreferenceOrder.getAmalgamationPreferenceOrder().size());
-		//System.out.println("preferredValueOrder size = " + preferredValueOrder.size());
 		
 
 		for(Movie currentMovie : scrapedMovieObjectsForFile)
@@ -332,12 +329,9 @@ public class MovieScrapeResultGroup {
 				DataItemSourceAmalgamationPreference amalgamationPrefToUse = amalgamationPreferenceOrderForEntireMovieGroup.getAmalgamationPreference(fieldByName);
 				for (int i = 0; i < amalgamationPrefToUse.getAmalgamationPreferenceOrder().size(); i++)
 				{
-					//System.out.println("arry:" + amalgamationPreferenceOrder.getAmalgamationPreferenceOrder().get(i));
 					if(value.length > 0 && value[0].getDataItemSource().toString().equals(amalgamationPrefToUse.getAmalgamationPreferenceOrder().get(i).toString()))
 					{
-						//System.out.println("Adding " + value[0]);
 						preferredValueOrder.set(i, value);
-						//System.out.println("PreferredValueOrder = " + preferredValueOrder);
 					}
 				}
 			}

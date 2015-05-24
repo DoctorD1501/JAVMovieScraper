@@ -221,7 +221,6 @@ public class GUIMain {
 		allAmalgamationOrderingPreferences = new AllAmalgamationOrderingPreferences();
 		
 		allAmalgamationOrderingPreferences = allAmalgamationOrderingPreferences.initializeValuesFromPreferenceFile();
-		System.out.println("File: " + allAmalgamationOrderingPreferences);
 	}
 
 	/**
@@ -807,8 +806,8 @@ public class GUIMain {
 		this.originalJavLibraryMovieTitleBeforeAmalgamate = originalJavLibraryMovieTitleBeforeAmalgamate;
 	}
 	
-	public boolean showSelectScrapersDialog() {
-		SelectScrapersDialog dialog =  new SelectScrapersDialog(frmMoviescraper, getAllAmalgamationOrderingPreferences());
+	public boolean showAmalgamationSettingsDialog() {
+		AmalgamationSettingsDialog dialog =  new AmalgamationSettingsDialog(frmMoviescraper, getAllAmalgamationOrderingPreferences());
 		return dialog.show();
 	}
 

@@ -42,7 +42,7 @@ import moviescraper.doctord.GUI.renderer.DataItemSourceRenderer;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile.ScraperGroupName;
 import moviescraper.doctord.dataitem.DataItemSource;
 
-public class SelectScrapersDialog {
+public class AmalgamationSettingsDialog {
 	
 	//Begin View Objects
 
@@ -86,7 +86,7 @@ public class SelectScrapersDialog {
 
 	
 	
-	public SelectScrapersDialog(JFrame parent, AllAmalgamationOrderingPreferences amalgamationPreferences) {
+	public AmalgamationSettingsDialog(JFrame parent, AllAmalgamationOrderingPreferences amalgamationPreferences) {
 		
 		this.parent = parent;
 		BorderLayout panelLayoutManager = new BorderLayout();
@@ -224,7 +224,6 @@ public class SelectScrapersDialog {
 
 	private void synchronizeAmalgamationPreferenceListToDataItemSourceAmalgamationPreference(final DefaultListModel<DataItemSource> amalgamationPreferenceListModel, boolean isOverallPrefSync)
 	{
-		System.out.println("Current state before sync " + amalgamationPreferences);
 		if(amalgamationPreferenceListModel != null)
 		{
 			LinkedList<DataItemSource> sppiAllValues = new LinkedList<DataItemSource>();
@@ -234,22 +233,17 @@ public class SelectScrapersDialog {
 			}
 			if(isOverallPrefSync)
 			{
-				System.out.println("overall case");
 				DataItemSourceAmalgamationPreference overallAmalgamationPreference = amalgamationPreferences.getScraperGroupAmalgamationPreference((ScraperGroupName) scraperGroupNameComboBox.getSelectedItem()).getOverallAmalgamationPreference();
 				overallAmalgamationPreference.setAmalgamationPreferenceOrder(sppiAllValues);
-				System.out.println("overall=" + overallAmalgamationPreference);
 			}
 			else
 			{
-				System.out.println("Specific case");
-				System.out.println("selectedMovieField in sync= " + selectedMovieField);
 				DataItemSourceAmalgamationPreference preferenceToSet = new DataItemSourceAmalgamationPreference(sppiAllValues);
 				amalgamationPreferences.getScraperGroupAmalgamationPreference((ScraperGroupName) scraperGroupNameComboBox
 								.getSelectedItem()).setCustomOrderingForField(selectedMovieField, preferenceToSet);
 				panelHeaderSpecificFieldAmalgamationPreference.setText("<html> Using <b>Specific</b> Ordering for " + getNameOfCurrentMovieFieldSelected() + "</html>");
 			}
 		}
-		System.out.println("Current state after sync " + amalgamationPreferences);
 	}
 	
 	
@@ -294,7 +288,6 @@ public class SelectScrapersDialog {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				 int indexOfSelected = amalgamationPreferenceList.getSelectedIndex();
-				 System.out.println("selected index in down is " + indexOfSelected);
 				 //We don't want to be able to move either the last item in the list or the one before that down
 				 //this is because the last item in the list is always the default item, and we always want that to be last
 				 if(indexOfSelected >= 0 && indexOfSelected < amalgamationPreferenceListModel.getSize() - 2)
@@ -348,8 +341,6 @@ public class SelectScrapersDialog {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				 JComboBox<ScraperGroupName> cbEventSource = (JComboBox<ScraperGroupName>)e.getSource();
-				System.out.println("Now selected " + cbEventSource.getSelectedItem());
-				//filterSiteParsingProfileItemsByActiveScraperGroup();
 				synchronizeAmalgamationPreferenceListToDataItemSourceAmalgamationPreference(overallAmalgamationPreferenceListModel, true);
 				synchronizeAmalgamationPreferenceListToDataItemSourceAmalgamationPreference(specificFieldAmalgamationPreferenceListModel, false);
 			}
@@ -410,21 +401,17 @@ public class SelectScrapersDialog {
 		}
 		
 		Collection<DataItemSource> listData;
-		System.err.println("amalg prefs = " + amalgamationPreferences);
-		System.err.println("Selected movie field = " + selectedMovieField.getName());
 		ScraperGroupAmalgamationPreference debugVal1 = amalgamationPreferences.getScraperGroupAmalgamationPreference((ScraperGroupName) scraperGroupNameComboBox.getSelectedItem());
 		DataItemSourceAmalgamationPreference debugVal2 = debugVal1.getSpecificAmalgamationPreference(selectedMovieField);
 		DataItemSourceAmalgamationPreference orderingForField = amalgamationPreferences.getScraperGroupAmalgamationPreference((ScraperGroupName) scraperGroupNameComboBox.getSelectedItem()).getSpecificAmalgamationPreference(selectedMovieField);
 		
 		if(orderingForField != null)
 		{
-			System.out.println("Found an existing ordering");
 			panelHeaderSpecificFieldAmalgamationPreference.setText("<html> Using <b>Specific</b> Ordering for " + getNameOfCurrentMovieFieldSelected() + "</html>");
 			listData = orderingForField.getAmalgamationPreferenceOrder();
 		}
 		else
 		{
-			System.out.println("No existing ordering found - creating a new one");
 			panelHeaderSpecificFieldAmalgamationPreference.setText("<html>Using <b>Default</b> Ordering for " + getNameOfCurrentMovieFieldSelected() + "</html>");
 			//we need to create a new object for this field copied from the overall ordering using the same type as the original items
 			listData = new LinkedList<DataItemSource>();
@@ -434,15 +421,12 @@ public class SelectScrapersDialog {
 			{
 				listData.add(currentItem.createInstanceOfSameType());
 			}
-			System.out.println("List data is now " + listData);
 		}
-		System.out.println("Selected movie field = " + selectedMovieField);
 		for(DataItemSource currentItem : listData)
 		{
 			specificFieldAmalgamationPreferenceListModel.addElement(currentItem);
 		}
 
-		System.out.println("specific list moidel is now " + specificFieldAmalgamationPreferenceListModel);
 		specificFieldAmalgamationPreferenceList.updateUI();
 		return specificFieldAmalgamationPreferenceList;
 	}
@@ -504,7 +488,7 @@ public class SelectScrapersDialog {
 	}
 	
 	public boolean show(){
-		int result = JOptionPane.showOptionDialog(parent, panel, "Select JAV sites to scrape", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+		int result = JOptionPane.showOptionDialog(parent, panel, "Amalgamation Settings", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
 
 		if (result == JOptionPane.OK_OPTION) {
 

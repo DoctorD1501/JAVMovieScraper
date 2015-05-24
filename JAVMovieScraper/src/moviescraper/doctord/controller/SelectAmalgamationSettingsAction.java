@@ -12,20 +12,20 @@ import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfileItem;
 import moviescraper.doctord.SiteParsingProfile.SpecificProfileFactory;
 
-public class SelectScrapersAction implements ActionListener {
+public class SelectAmalgamationSettingsAction implements ActionListener {
 
 	private final GUIMain guiMain;
 
 	/**
 	 * @param guiMain
 	 */
-	public SelectScrapersAction(GUIMain guiMain) {
+	public SelectAmalgamationSettingsAction(GUIMain guiMain) {
 		this.guiMain = guiMain;
 	}
 	
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		guiMain.showSelectScrapersDialog();
+		guiMain.showAmalgamationSettingsDialog();
 		
 	}
 

@@ -47,13 +47,12 @@ public class AllAmalgamationOrderingPreferences {
 	
 	public AllAmalgamationOrderingPreferences initializeValuesFromPreferenceFile()
 	{
-		//Do nothing for now, but I need to do this eventually
-		System.out.println("Pretending to initialize the amalgamation values from a preferences file. For now I'm not actually doing this and just initializing some default preferences");
 		
 		File inputFile = new File(settingsFileName);
 		if(!inputFile.exists())
 		{
-			initializeDefaultPreferences();
+			boolean saveToDisk = true;
+			initializeDefaultPreferences(saveToDisk);
 			System.out.println("No file existed for amalgamation preferences. Used default preferences.");
 			return this;
 		}
@@ -82,7 +81,7 @@ public class AllAmalgamationOrderingPreferences {
 		System.out.println("Saved amalgamation preferences to " + settingsFileName);
 	}
 	
-	public void initializeDefaultPreferences(){
+	public void initializeDefaultPreferences(boolean saveToDisk){
 		if(!allAmalgamationOrderingPreferences.containsKey(ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP))
 		{
 			System.out.println("Initializing default jav preferences");
@@ -208,17 +207,20 @@ public class AllAmalgamationOrderingPreferences {
 		}
 		//TODO: define a default ordering for all other scraper types
 		
-		//Save our preferences to disk
-		try {
-			saveToPreferencesFile();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+		if (saveToDisk) {
+			// Save our preferences to disk
+			try {
+				saveToPreferencesFile();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
 	public void reinitializeDefaultPreferences(){
 		allAmalgamationOrderingPreferences.clear();
-		initializeDefaultPreferences();
+		boolean saveToDisk = false;
+		initializeDefaultPreferences(saveToDisk);
 	}
 
 
