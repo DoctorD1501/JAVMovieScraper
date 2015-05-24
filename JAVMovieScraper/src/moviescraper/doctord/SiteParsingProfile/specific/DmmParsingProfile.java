@@ -697,7 +697,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 	@Override
 	public SearchResult[] getSearchResults(String searchString) throws IOException {
 		boolean firstPageScraping = true;
-		Document searchResultsPage = Jsoup.connect(searchString).get();
+		Document searchResultsPage = Jsoup.connect(searchString).timeout(CONNECTION_TIMEOUT_VALUE).get();
 		Element nextPageLink = searchResultsPage.select("div.list-capt div.list-boxcaptside.list-boxpagenation ul li:not(.terminal) a").last();
 		ArrayList<SearchResult> searchResults = new ArrayList<SearchResult>();
 		ArrayList<String> pagesVisited = new ArrayList<String>();
