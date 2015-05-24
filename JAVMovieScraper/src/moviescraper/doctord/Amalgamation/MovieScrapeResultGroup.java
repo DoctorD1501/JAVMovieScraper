@@ -72,7 +72,7 @@ public class MovieScrapeResultGroup {
 			Constructor<?>[] ctors = classOfMovieDataItem.getDeclaredConstructors();
 			for(Constructor<?> currentConstructor : ctors)
 			{
-				if(currentConstructor.getParameters().length == 0)
+				if(currentConstructor.getParameterTypes().length == 0)
 				{
 					//We are the default zero param constructor
 					return (MovieDataItem)currentConstructor.newInstance();
