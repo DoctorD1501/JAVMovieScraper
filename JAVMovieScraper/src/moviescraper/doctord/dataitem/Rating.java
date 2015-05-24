@@ -1,6 +1,7 @@
 package moviescraper.doctord.dataitem;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 
 public class Rating extends MovieDataItem {
 	
@@ -26,13 +27,15 @@ public class Rating extends MovieDataItem {
 	 * @return
 	 */
 	public String getRatingOutOfTen(){
-			if (this == null || rating.equals(""))
+			if (this == null || rating.equals("") || maxRating == 0.0)
 				return "";
 			try{
 			double ratingValue = Double.valueOf(rating).doubleValue();
 			double ratingOutOfTenValue = 10 * (ratingValue/((double)maxRating));
-			DecimalFormat oneDigit = new DecimalFormat("#,##0.0");//format to 1 decimal place
-			return Double.valueOf(oneDigit.format(ratingOutOfTenValue)).toString();
+			DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+			symbols.setDecimalSeparator('.');
+			DecimalFormat oneDigit = new DecimalFormat("###0.0", symbols);//format to 1 decimal place
+			return oneDigit.format(ratingOutOfTenValue);
 			}
 			catch (NumberFormatException e)
 			{

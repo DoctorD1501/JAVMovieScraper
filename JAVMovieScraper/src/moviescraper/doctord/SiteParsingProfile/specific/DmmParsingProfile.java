@@ -143,10 +143,10 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 
 	@Override
 	public Rating scrapeRating() {
-		Element ratingElement = document.select("[itemprop=ratingValue]")
+		Element ratingElement = document.select(".d-review__average strong")
 				.first();
 		if (ratingElement != null)
-			return new Rating(dmmMaxRating, ratingElement.text());
+			return new Rating(dmmMaxRating, ratingElement.text().replace("点", ""));
 		else
 			return Rating.BLANK_RATING;
 	}
@@ -176,8 +176,12 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 
 	@Override
 	public Votes scrapeVotes() {
-		// TODO Auto-generated method stub
-		return Votes.BLANK_VOTES;
+		Element votesElement = document.select(".d-review__evaluates strong")
+				.first();
+		if (votesElement != null)
+			return new Votes(votesElement.text());
+		else
+			return Votes.BLANK_VOTES;
 	}
 
 	@Override
