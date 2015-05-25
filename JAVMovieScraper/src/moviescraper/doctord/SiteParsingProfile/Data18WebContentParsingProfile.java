@@ -75,7 +75,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile{
 			return new Set(relatedMovie.text());
 		}
 		//setElement used below is for web downloads
-		Element setElement = document.select("div.main.gre1 div#centered.main2 div.dloc a").last();
+		Element setElement = document.select("div.main.gre1 div#centered.main2 div.p8.dloc a[href*=/sites/").last();
 		if(setElement != null)
 			return new Set(setElement.text());
 		else return Set.BLANK_SET;
@@ -270,6 +270,14 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile{
 
 	@Override
 	public ID scrapeID() {
+		//Get numerical ID that is at end of URL
+		if(document.location().matches(".*/content/[0-9]+"))
+		{
+			String id = document.location().substring(document.location().lastIndexOf('/'));
+			id = id.replace("/","");
+			if(id != null && id.length() > 0)
+				return new ID(id);
+		}
 		return ID.BLANK_ID;
 	}
 
@@ -372,7 +380,8 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile{
 
 	@Override
 	public Studio scrapeStudio() {
-		Element studioElement = document.select("div.main.gre1 div#centered.main2 a:contains(Sites) ~ a").first();
+		//Element studioElement = document.select("div.main.gre1 div#centered.main2 a:contains(Sites) ~ a").first();
+		Element studioElement = document.select("div.main.gre1 div#centered.main2 div.p8.dloc a[href*=/sites/").first();
 		if(studioElement != null)
 		{
 			String studioText = studioElement.text();
