@@ -159,6 +159,7 @@ public class ScrapeMovieAction extends AbstractAction {
 		}
 	}
 
+	@Override
 	public void actionPerformed(ActionEvent e) {
 
 		resetScrapeMovieActionCounters();
@@ -602,6 +603,7 @@ public class ScrapeMovieAction extends AbstractAction {
 		final String overriddenURL = overrideURLData18Movie;
 
 		Thread scrapeQueryData18MovieThread = new Thread() {
+			@Override
 			public void run() {
 				try {
 					SiteParsingProfile data18MoviePP;
@@ -660,6 +662,7 @@ public class ScrapeMovieAction extends AbstractAction {
 
 		final ScrapeMovieAction thisScrapeAction = this;
 		Thread scrapeQueryDMMThread = new Thread("DMM") {
+			@Override
 			public void run() {
 				try {
 					DmmParsingProfile dmmPP = new DmmParsingProfile(!ScrapeMovieAction.this.guiMain.getPreferences().getScrapeInJapanese());
@@ -678,6 +681,7 @@ public class ScrapeMovieAction extends AbstractAction {
 		};
 		// Scrape ActionJav.com for currently selected movie
 		Thread scrapeQueryActionJavThread = new Thread("ActionJav") {
+			@Override
 			public void run() {
 				try {
 					ScrapeMovieAction.this.guiMain.setCurrentlySelectedMovieActionJav(Movie.scrapeMovie(
@@ -695,6 +699,7 @@ public class ScrapeMovieAction extends AbstractAction {
 
 		// Scrape SquarePlus.co.jp for currently selected movie
 		Thread scrapeQuerySquarePlusThread = new Thread("SquarePlus") {
+			@Override
 			public void run() {
 				try {
 					ScrapeMovieAction.this.guiMain.setCurrentlySelectedMovieSquarePlus(Movie.scrapeMovie(
@@ -712,6 +717,7 @@ public class ScrapeMovieAction extends AbstractAction {
 
 		// Scrape JavLibrary for currently selected movie
 		Thread scrapeQueryJavLibraryThread = new Thread("JavLibrary") {
+			@Override
 			public void run() {
 				try {
 					JavLibraryParsingProfile jlParsingProfile = new JavLibraryParsingProfile();
@@ -731,6 +737,7 @@ public class ScrapeMovieAction extends AbstractAction {
 		
 		//Scrape Javzoo for currently selected movie
 		Thread scrapeQueryJavZooThread = new Thread("JavZoo") {
+			@Override
 			public void run() {
 				try {
 					ScrapeMovieAction.this.guiMain.setCurrentlySelectedMovieJavZoo(Movie.scrapeMovie(
@@ -748,6 +755,7 @@ public class ScrapeMovieAction extends AbstractAction {
 		
 		//Scrape R18 for currently selected movie
 		Thread scrapeQueryR18Thread = new Thread("R18.com") {
+			@Override
 			public void run() {
 				try {
 					ScrapeMovieAction.this.guiMain.setCurrentlySelectedMovieR18(Movie.scrapeMovie(

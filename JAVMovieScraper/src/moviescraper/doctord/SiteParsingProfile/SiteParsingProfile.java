@@ -54,8 +54,10 @@ public abstract class SiteParsingProfile implements DataItemSource{
 	 * will be compatible for amalgamation should return the same ScraperGroupName by implementing getScraperGroupName()
 	 */
 	public enum ScraperGroupName{
-		JAV_CENSORED_SCRAPER_GROUP {public String toString() {return "JAV Censored Group";}}, 
-		DEFAULT_SCRAPER_GROUP {public String toString() {return "Default Group";}}
+		JAV_CENSORED_SCRAPER_GROUP {@Override
+		public String toString() {return "JAV Censored Group";}}, 
+		DEFAULT_SCRAPER_GROUP {@Override
+		public String toString() {return "Default Group";}}
 	}
 	
 	public List<ScraperGroupName> getScraperGroupNames()
@@ -390,6 +392,7 @@ public abstract class SiteParsingProfile implements DataItemSource{
 	 */
 	public abstract String getParserName();
 	
+	@Override
 	public String toString(){
 		return getParserName();
 	}
@@ -420,6 +423,7 @@ public abstract class SiteParsingProfile implements DataItemSource{
 		this.firstWordOfFileIsID = firstWordOfFileIsID;
 	}
 	
+	@Override
 	public String getDataItemSourceName(){
 		return getParserName();
 	}

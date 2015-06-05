@@ -31,7 +31,7 @@ public class FileDetailPanelPopup extends JPopupMenu {
 		editItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				editor.showGUI(Operation.EDIT);;
+				editor.showGUI(Operation.EDIT);
 			}
 		});
 		

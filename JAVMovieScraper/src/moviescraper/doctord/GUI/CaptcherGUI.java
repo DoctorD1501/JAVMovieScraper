@@ -26,6 +26,7 @@ public class CaptcherGUI extends JFrame {
 	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				try {
 					CaptcherGUI frame = new CaptcherGUI("");

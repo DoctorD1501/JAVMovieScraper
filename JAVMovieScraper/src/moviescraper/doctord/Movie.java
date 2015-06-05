@@ -739,14 +739,6 @@ public class Movie {
 		else return getTargetFilePath(file, "-fanart.jpg");
 	}
 	
-	private static String getLastWordOfFile(File file)
-	{
-		String [] fileNameParts = file.getName().split("\\s+");
-		String lastWord = fileNameParts[fileNameParts .length-1];
-		return lastWord;
-		
-	}
-	
 	private static String getTargetFilePath(File file, String extension)
 	{
 		if(!file.isDirectory())
@@ -760,7 +752,8 @@ public class Movie {
 			final String extensionFromParameter = extension;
 			//getting the nfo files in this directory, if any
 			File [] directoryContents = file.listFiles(new FilenameFilter() {
-			    public boolean accept(File directory, String fileName) {
+			    @Override
+				public boolean accept(File directory, String fileName) {
 			        return fileName.endsWith(extensionFromParameter);
 			    }
 			});

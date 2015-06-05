@@ -11,7 +11,6 @@ import java.util.LinkedList;
 
 import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
-import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile.ScraperGroupName;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Director;
 
@@ -311,6 +310,7 @@ public class SquarePlusParsingProfile extends SiteParsingProfile implements Spec
 		return new Thumb[0];
 	}
 	
+	@Override
 	public String toString(){
 		return "SquarePlus";
 	}

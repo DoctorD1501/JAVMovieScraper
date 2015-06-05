@@ -20,6 +20,7 @@ public class ScrapeMovieActionData18Movie extends ScrapeMovieAction
 		this.scrapeData18Movie = true;
 		this.scrapeJAV = false;
 	}
+	@Override
 	public void actionPerformed(ActionEvent e){
 		super.actionPerformed(e);
 	}

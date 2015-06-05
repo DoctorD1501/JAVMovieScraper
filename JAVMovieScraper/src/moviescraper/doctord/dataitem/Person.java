@@ -29,6 +29,7 @@ public abstract class Person extends MovieDataItem {
 		this.thumbEdited = false;
 	}
 
+	@Override
 	abstract public String toXML();
 
 	@Override

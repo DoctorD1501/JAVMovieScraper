@@ -120,6 +120,7 @@ public class GUIMain {
 	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				try {
 					UIManager.setLookAndFeel(UIManager
@@ -408,7 +409,7 @@ public class GUIMain {
 			if(keepSelectionsAndReferences)
 			{
 				fileListSelectionListener = getFileList().getListSelectionListeners();
-				getFileList().removeListSelectionListener(getFileList().getListSelectionListeners()[0]);;
+				getFileList().removeListSelectionListener(getFileList().getListSelectionListeners()[0]);
 			}
 			listModelFiles.removeAllElements();
 			for (File file : filesToList) {
@@ -440,6 +441,7 @@ public class GUIMain {
 		File[] sortedList = currentlySelectedDirectory.listFiles();
 		//Make a comparator so we get alphabetic order, with all directories first, then all the files (Like Windows Explorer)
 		Comparator<File> comp = new Comparator<File>() {
+			@Override
 			public int compare(File file1, File file2) {
 				// Directory before non-directory
 				if (file1.isDirectory() && !file2.isDirectory()) {

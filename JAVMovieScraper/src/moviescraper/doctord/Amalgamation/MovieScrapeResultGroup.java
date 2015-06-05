@@ -194,7 +194,7 @@ public class MovieScrapeResultGroup {
 	}
 	
 	
-	private Object[] getPreferredMovieDataItem(Class classOfMovieDataItem)
+	private Object[] getPreferredMovieDataItem(@SuppressWarnings("rawtypes") Class classOfMovieDataItem)
 			throws NoSuchMethodException, SecurityException,
 			InstantiationException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
@@ -244,6 +244,7 @@ public class MovieScrapeResultGroup {
 								.getGenericType();
 						Class<?> arrayListClass = (Class<?>) paramType
 								.getActualTypeArguments()[0];
+						@SuppressWarnings("unchecked")
 						ArrayList<Object> arrayList = (ArrayList<Object>) currentFieldValue;
 
 						if (arrayListClass.equals(classOfMovieDataItem)) {
@@ -301,6 +302,7 @@ public class MovieScrapeResultGroup {
 			{
 				if(preferredValueOrder[i] != null)
 				{
+					@SuppressWarnings("rawtypes")
 					Object[] returnValue = {(ArrayList)preferredValueOrder[i]};
 					return returnValue;
 				}

@@ -12,6 +12,7 @@ public class TestingHelper {
 	
 	public static void showImage(final String title, final Image image) {
 		EventQueue.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				try {
 					JFrame jFrame = new JFrame(title);

@@ -58,7 +58,7 @@ public class SpecificProfileFactory {
 			public int compare(SiteParsingProfileItem arg0, SiteParsingProfileItem arg1) {
 				return arg0.toString().compareTo(arg1.toString());
 			}
-		});;	
+		});
 		
 		return items;
 	}

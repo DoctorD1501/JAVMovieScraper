@@ -26,6 +26,7 @@ public class FanartPickerRenderer extends JLabel implements ListCellRenderer<Thu
 		setIconTextGap(12);
 	}
 
+	@Override
 	public Component getListCellRendererComponent(JList<? extends Thumb> list, Thumb value,
 			int index, boolean isSelected, boolean cellHasFocus) {
 		Thumb entry = (Thumb) value;

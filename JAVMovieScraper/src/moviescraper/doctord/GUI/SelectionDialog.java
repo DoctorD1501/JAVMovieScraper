@@ -59,7 +59,8 @@ public class SelectionDialog extends JPanel {
          bwin.pack();
        
          labelList.addMouseListener(new MouseAdapter() {
-        	 public void mouseClicked(MouseEvent evt) {
+        	 @Override
+			public void mouseClicked(MouseEvent evt) {
         		 //capture left-double mouse click and dispose frame
         		 if ( evt.getButton() == MouseEvent.BUTTON1 ){
         			 if ( evt.getClickCount() == 2 ) {

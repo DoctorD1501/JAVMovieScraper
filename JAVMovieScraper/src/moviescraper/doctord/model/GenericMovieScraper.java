@@ -11,6 +11,7 @@ public class GenericMovieScraper extends AbstractMovieScraper {
 		this.profile = spp;
 	}
 	
+	@Override
 	public Movie createMovie() {
 		return new Movie(profile);
 	}

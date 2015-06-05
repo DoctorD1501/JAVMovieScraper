@@ -372,6 +372,7 @@ public class ActionJavParsingProfile extends SiteParsingProfile implements Speci
 		return imageList.toArray(new Thumb[imageList.size()]);
 	}
 	
+	@Override
 	public String toString(){
 		return "ActionJav";
 	}

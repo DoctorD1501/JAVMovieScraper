@@ -7,7 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.LinkedList;
@@ -17,7 +16,6 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -337,10 +335,8 @@ public class AmalgamationSettingsDialog {
 								.size()]));
 		comboBox.addActionListener(new ActionListener() {
 			
-			@SuppressWarnings("unchecked")
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				 JComboBox<ScraperGroupName> cbEventSource = (JComboBox<ScraperGroupName>)e.getSource();
 				synchronizeAmalgamationPreferenceListToDataItemSourceAmalgamationPreference(overallAmalgamationPreferenceListModel, true);
 				synchronizeAmalgamationPreferenceListToDataItemSourceAmalgamationPreference(specificFieldAmalgamationPreferenceListModel, false);
 			}
@@ -401,8 +397,6 @@ public class AmalgamationSettingsDialog {
 		}
 		
 		Collection<DataItemSource> listData;
-		ScraperGroupAmalgamationPreference debugVal1 = amalgamationPreferences.getScraperGroupAmalgamationPreference((ScraperGroupName) scraperGroupNameComboBox.getSelectedItem());
-		DataItemSourceAmalgamationPreference debugVal2 = debugVal1.getSpecificAmalgamationPreference(selectedMovieField);
 		DataItemSourceAmalgamationPreference orderingForField = amalgamationPreferences.getScraperGroupAmalgamationPreference((ScraperGroupName) scraperGroupNameComboBox.getSelectedItem()).getSpecificAmalgamationPreference(selectedMovieField);
 		
 		if(orderingForField != null)

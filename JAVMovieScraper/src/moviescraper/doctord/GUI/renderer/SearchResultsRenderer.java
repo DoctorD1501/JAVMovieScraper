@@ -23,6 +23,7 @@ public class SearchResultsRenderer extends JLabel implements ListCellRenderer<Se
 		setIconTextGap(12);
 	}
 
+	@Override
 	public Component getListCellRendererComponent(JList<? extends SearchResult> list, SearchResult value,
 			int index, boolean isSelected, boolean cellHasFocus) {
 		SearchResult entry = (SearchResult) value;

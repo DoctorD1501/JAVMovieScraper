@@ -23,6 +23,7 @@ public class BrowseDirectoryAction implements ActionListener {
 		this.guiMain = guiMain;
 	}
 
+	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		this.guiMain.setChooser(new JFileChooser());
 		//remember our last used directory and start the search there

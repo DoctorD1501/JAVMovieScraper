@@ -1,7 +1,5 @@
 package moviescraper.doctord.preferences;
 
-import org.apache.commons.lang3.StringUtils;
-
 
 public class MoviescraperPreferences extends Settings {
 	

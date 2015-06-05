@@ -307,7 +307,8 @@ public class FileDetailPanel extends JPanel {
 		    	 actorList.setSelectedIndex(actorList.locationToIndex(e.getPoint()));
 		     }
 		     //double or triple click the actor list to open the editor on the item you clicked
-		     public void mouseClicked(MouseEvent evt) {
+		     @Override
+			public void mouseClicked(MouseEvent evt) {
 			        if (evt.getClickCount() == 2 || evt.getClickCount() == 3) {
 			            // Double-click detected
 			            FileDetailPanelActorEditor actorEditor = new FileDetailPanelActorEditor(FileDetailPanel.this);
@@ -328,6 +329,7 @@ public class FileDetailPanel extends JPanel {
 		genreList = new JList<Genre>(new GenreItemListModel());
 		//double or triple click the genre list to open the editor on the item you clicked
 		genreList.addMouseListener(new MouseAdapter() {
+			@Override
 			public void mouseClicked(MouseEvent evt) {
 		        if (evt.getClickCount() == 2 || evt.getClickCount() == 3) {
 

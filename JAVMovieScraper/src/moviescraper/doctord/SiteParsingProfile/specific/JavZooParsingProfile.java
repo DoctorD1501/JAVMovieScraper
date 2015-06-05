@@ -411,6 +411,7 @@ public class JavZooParsingProfile extends SiteParsingProfile implements Specific
 		return imageList.toArray(new Thumb[imageList.size()]);
 	}
 	
+	@Override
 	public String toString(){
 		return "JavZoo";
 	}

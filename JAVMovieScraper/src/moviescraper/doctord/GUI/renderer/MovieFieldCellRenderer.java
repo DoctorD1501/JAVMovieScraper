@@ -15,6 +15,7 @@ public class MovieFieldCellRenderer implements ListCellRenderer<Field> {
 	
 	protected DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
 	
+	@Override
 	public Component getListCellRendererComponent(JList<? extends Field> list, Field value,
 			int index, boolean isSelected, boolean cellHasFocus) {
 		JLabel renderer = (JLabel) defaultRenderer.getListCellRendererComponent(list, value, index,

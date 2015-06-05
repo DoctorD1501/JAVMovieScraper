@@ -146,6 +146,7 @@ public class MessageConsole
 		 *  The message will be treated differently depending on whether the line
 		 *  will be appended or inserted into the Document
 		 */
+		@Override
 		public void flush()
 		{
 			String message = toString();
@@ -234,7 +235,9 @@ public class MessageConsole
 					textComponent.setCaretPosition( 0 );
 				}
 			}
-			catch (BadLocationException ble) {}
+			catch (BadLocationException ble) {
+				ble.printStackTrace();
+			}
 
 			if (printStream != null)
 			{

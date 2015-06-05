@@ -15,6 +15,7 @@ public class GenreListRenderer extends DefaultListCellRenderer {
 	private static final long serialVersionUID = 3855101965030097525L;
 	private static final Font font = new Font("helvitica", Font.PLAIN, 12);
 
+	@Override
 	public Component getListCellRendererComponent(JList<?> list, Object value,
 			int index, boolean isSelected, boolean cellHasFocus) {
 		JLabel label = (JLabel) super.getListCellRendererComponent(list,

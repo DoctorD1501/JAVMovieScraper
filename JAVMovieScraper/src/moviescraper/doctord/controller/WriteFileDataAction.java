@@ -11,6 +11,7 @@ import javax.swing.SwingWorker;
 import moviescraper.doctord.Movie;
 import moviescraper.doctord.GUI.GUIMain;
 import moviescraper.doctord.model.Renamer;
+import moviescraper.doctord.preferences.MoviescraperPreferences;
 
 public class WriteFileDataAction implements ActionListener {
 
@@ -28,6 +29,7 @@ public class WriteFileDataAction implements ActionListener {
 		this.guiMain = guiMain;
 	}
 
+	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		this.guiMain.setMainGUIEnabled(false);
 		worker = new SwingWorker<Void, String>() {
@@ -59,8 +61,10 @@ public class WriteFileDataAction implements ActionListener {
 							File oldMovieFile = guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList);
 							Movie movie = guiMain.movieToWriteToDiskList.get(movieNumberInList);
 
-							String sanitizerString = guiMain.getPreferences().getSanitizerForFilename();
-							String renameString = guiMain.getPreferences().getRenamerString(); 
+							guiMain.getPreferences();
+							String sanitizerString = MoviescraperPreferences.getSanitizerForFilename();
+							guiMain.getPreferences();
+							String renameString = MoviescraperPreferences.getRenamerString(); 
 							Renamer renamer = new Renamer(renameString, sanitizerString, movie, oldMovieFile);
 							String newMovieFilename = renamer.getNewFileName();
 							System.out.println( "New Filename : " + newMovieFilename );

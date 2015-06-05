@@ -65,6 +65,7 @@ public class LimitLinesDocumentListener implements DocumentListener
 
 	//  Handle insertion of new text into the Document
 
+	@Override
 	public void insertUpdate(final DocumentEvent e)
 	{
 		//  Changes to the Document can not be done within the listener
@@ -72,6 +73,7 @@ public class LimitLinesDocumentListener implements DocumentListener
 
 		SwingUtilities.invokeLater( new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				removeLines(e);
@@ -79,7 +81,9 @@ public class LimitLinesDocumentListener implements DocumentListener
 		});
 	}
 
+	@Override
 	public void removeUpdate(DocumentEvent e) {}
+	@Override
 	public void changedUpdate(DocumentEvent e) {}
 
 	/*

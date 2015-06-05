@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.SiteParsingProfile.specific.TheMovieDatabaseParsingProfile;
 import moviescraper.doctord.controller.SpecificScraperAction;
-import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Director;
 import moviescraper.doctord.dataitem.Genre;
 import moviescraper.doctord.dataitem.ID;
@@ -139,16 +138,13 @@ public class TheMovieDatabaseParsingProfileTest {
 	@Test
 	public void testActor()
 	{
-		ArrayList<Actor> testActor = profile.scrapeActors();
-		//System.out.println("actor = " + testActor.get(0));
-		//assertEquals("Found wrong actor", "Yuma Asami", testActor.get(0).getName());
+		//ArrayList<Actor> testActor = profile.scrapeActors();
 	}
 	
 	@Test
 	public void testExtraFanart() throws IOException
 	{
-		Thumb  [] extraFanart = profile.scrapeExtraFanart();
-		//TestGenericProfile.showImage("Extrafanart", extraFanart[0].getThumbImage());
+		//Thumb  [] extraFanart = profile.scrapeExtraFanart();
 	}
 	
 	@Test

@@ -30,7 +30,6 @@ import javax.swing.JScrollPane;
 import moviescraper.doctord.Movie;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Director;
-
 import moviescraper.doctord.dataitem.Genre;
 import moviescraper.doctord.dataitem.ID;
 import moviescraper.doctord.dataitem.MPAARating;
@@ -51,6 +50,7 @@ import moviescraper.doctord.dataitem.Votes;
 import moviescraper.doctord.dataitem.Year;
 import moviescraper.doctord.model.Renamer;
 import moviescraper.doctord.preferences.MoviescraperPreferences;
+import moviescraper.doctord.preferences.Settings;
 
 public class RenamerGUI extends JFrame {
 
@@ -73,6 +73,7 @@ public class RenamerGUI extends JFrame {
 	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				try {
 					RenamerGUI frame = new RenamerGUI(MoviescraperPreferences.getInstance(),null);
@@ -110,7 +111,7 @@ public class RenamerGUI extends JFrame {
 		gbc_lblRenamestring.gridy = 0;
 		contentPane.add(lblRenamestring, gbc_lblRenamestring);
 		
-		textFieldRenameString = new JTextField(preferences.getRenamerString());
+		textFieldRenameString = new JTextField(MoviescraperPreferences.getRenamerString());
 		GridBagConstraints gbc_textFieldRenameString = new GridBagConstraints();
 		gbc_textFieldRenameString.insets = new Insets(0, 0, 5, 0);
 		gbc_textFieldRenameString.fill = GridBagConstraints.HORIZONTAL;
@@ -119,6 +120,7 @@ public class RenamerGUI extends JFrame {
 		contentPane.add(textFieldRenameString, gbc_textFieldRenameString);
 		textFieldRenameString.setColumns(10);
 		textFieldRenameString.addKeyListener(new KeyAdapter() {
+			@Override
 			public void keyReleased(KeyEvent e) {
 				preferences.setRenamerString( textFieldRenameString.getText() );
 				updateExample();
@@ -151,7 +153,7 @@ public class RenamerGUI extends JFrame {
 		gbc_lblSanitizerString.gridy = 2;
 		contentPane.add(lblSanitizerString, gbc_lblSanitizerString);
 		
-		textFieldSanitizerString = new JTextField(preferences.getSanitizerForFilename());
+		textFieldSanitizerString = new JTextField(MoviescraperPreferences.getSanitizerForFilename());
 		GridBagConstraints gbc_textFieldSanitizerString = new GridBagConstraints();
 		gbc_textFieldSanitizerString.insets = new Insets(0, 0, 5, 0);
 		gbc_textFieldSanitizerString.fill = GridBagConstraints.HORIZONTAL;
@@ -160,6 +162,7 @@ public class RenamerGUI extends JFrame {
 		contentPane.add(textFieldSanitizerString, gbc_textFieldSanitizerString);
 		textFieldSanitizerString.setColumns(10);
 		textFieldSanitizerString.addKeyListener(new KeyAdapter() {
+			@Override
 			public void keyReleased(KeyEvent e) {
 				preferences.setSanitizerForFilename( textFieldSanitizerString.getText() );
 				updateExample();
@@ -210,7 +213,7 @@ public class RenamerGUI extends JFrame {
 		btnOk.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				preferences.savePreferences();
+				Settings.savePreferences();
 				RenamerGUI.this.dispose();
 			}
 		});

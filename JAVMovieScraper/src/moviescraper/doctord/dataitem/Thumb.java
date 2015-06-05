@@ -334,6 +334,7 @@ public class Thumb extends MovieDataItem {
 		return previewThumbImage;
 	}
 
+	@Override
 	public String toXML()
 	{
 		return "<thumb>"+thumbURL.getPath()+"</thumb>";

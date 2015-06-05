@@ -22,6 +22,7 @@ public class DataItemSourceRenderer implements ListCellRenderer<DataItemSource> 
 	protected DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
 
 
+	@Override
 	public Component getListCellRendererComponent(JList<? extends DataItemSource> list, DataItemSource value,
 			int index, boolean isSelected, boolean cellHasFocus) {
 		JLabel renderer = (JLabel) defaultRenderer.getListCellRendererComponent(list, value, index,

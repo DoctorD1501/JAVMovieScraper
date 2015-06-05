@@ -125,7 +125,7 @@ public class Renamer {
 			Movie movieReadFromNfo = Movie.createMovieFromNfo(nfoFile);
 			if(movieReadFromNfo != null && movieReadFromNfo.getTitle() != null)
 			{
-				Renamer renamer = new Renamer(preferences.getRenamerString(), preferences.getSanitizerForFilename(), movieReadFromNfo, fileToRename);
+				Renamer renamer = new Renamer(MoviescraperPreferences.getRenamerString(), MoviescraperPreferences.getSanitizerForFilename(), movieReadFromNfo, fileToRename);
 				
 				//Figure out all the new names
 			    File newMovieFilename = new File(renamer.getNewFileName());

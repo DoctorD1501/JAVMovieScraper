@@ -16,6 +16,7 @@ public class ScrapeMovieActionAutomatic extends ScrapeMovieAction
 		promptUserForURLWhenScraping = false;
 		manuallyPickFanart = false;
 	}
+	@Override
 	public void actionPerformed(ActionEvent e){
 		super.actionPerformed(e);
 	}

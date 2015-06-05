@@ -16,7 +16,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import moviescraper.doctord.Movie;
 import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
 import moviescraper.doctord.dataitem.Actor;
@@ -456,6 +455,7 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 		return new Thumb[0];
 	}
 	
+	@Override
 	public String toString(){
 		return "JavLibrary";
 	}

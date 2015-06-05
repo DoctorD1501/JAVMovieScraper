@@ -45,15 +45,6 @@ import moviescraper.doctord.dataitem.Year;
 
 public class AvEntertainmentParsingProfile extends SiteParsingProfile implements SpecificProfile {
 	
-	private Document downloadDocument(String url) {
-		try {
-			return Jsoup.connect(url).userAgent("Mozilla").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
 	@Override
 	public Title scrapeTitle() {
 		Elements elements = document.select("#mini-tabet h2");
@@ -330,14 +321,6 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 		if(getScrapingLanguage() == Language.JAPANESE)
 			languageID = "2";
 		return "http://www.aventertainments.com/search_Products.aspx?languageID="+ languageID + "&dept_id=29&keyword="
-				+ id + "&searchby=item_no";
-	}
-	
-	private String getSearchStringPPV(String id) {
-		String languageID = "1";
-		if(getScrapingLanguage() == Language.JAPANESE)
-			languageID = "2";
-		return "http://www.aventertainments.com/ppv/ppv_searchproducts.aspx?languageID=" + languageID + "&VODTypeID=1&keyword="
 				+ id + "&searchby=item_no";
 	}
 
