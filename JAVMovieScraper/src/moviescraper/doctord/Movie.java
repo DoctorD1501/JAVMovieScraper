@@ -184,7 +184,6 @@ public class Movie {
 		String fileNameOfScrapedMovie = siteToScrapeFrom.getFileNameOfScrapedMovie();
 		if(fileNameOfScrapedMovie != null && fileNameOfScrapedMovie.trim().length() > 0)
 		{
-			System.out.println("filename is " + fileNameOfScrapedMovie);
 			fileName = fileNameOfScrapedMovie;
 		}
 		

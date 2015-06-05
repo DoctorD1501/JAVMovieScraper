@@ -229,7 +229,7 @@ public class MovieScrapeResultGroup {
 									.toString()
 									.equals(amalgamationPrefToUse
 											.getAmalgamationPreferenceOrder()
-											.get(i).toString())) {
+											.get(i).toString()) && ((MovieDataItem) item).isStringValueEmpty()) {
 								preferredValueOrder[i] = item;
 								fieldIsMovieDataItem = true;
 							}

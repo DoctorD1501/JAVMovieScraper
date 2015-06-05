@@ -29,5 +29,14 @@ public abstract class MovieDataItem {
 	public String dataItemSourceToString(){
 		return " source=\"" + getDataItemSource() + "\"";
 	}
+	
+	public boolean isStringValueEmpty()
+	{
+		String toStringValue = this.toString();
+		toStringValue.replace("source=\"", "");
+		if(toStringValue.contains("=\"\""))
+			return false;
+		else return true;
+	}
 
 }

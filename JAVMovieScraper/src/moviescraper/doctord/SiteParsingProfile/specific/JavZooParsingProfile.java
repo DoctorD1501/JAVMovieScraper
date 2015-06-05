@@ -280,7 +280,6 @@ public class JavZooParsingProfile extends SiteParsingProfile implements Specific
 	@Override
 	public ArrayList<Actor> scrapeActors() {
 		Elements actorElements = document.select("div#avatar-waterfall a.avatar-box");
-		System.out.println(actorElements);
 		if(actorElements != null)
 		{
 			ArrayList<Actor> actorList = new ArrayList<Actor>(actorElements.size());
