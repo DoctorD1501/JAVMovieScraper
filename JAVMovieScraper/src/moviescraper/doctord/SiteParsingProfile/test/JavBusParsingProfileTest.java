@@ -142,7 +142,7 @@ public class JavBusParsingProfileTest {
 		Thumb[] poster = profile.scrapePosters();
 		assertTrue("There should be 1 Fanart.", poster.length == 1);
 		
-		GenericProfileTest.showImage("Poster", poster[0].getThumbImage());
+		TestingHelper.showImage("Poster", poster[0].getThumbImage());
 	}
 	
 

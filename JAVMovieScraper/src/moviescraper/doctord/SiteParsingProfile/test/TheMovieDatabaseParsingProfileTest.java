@@ -119,7 +119,7 @@ public class TheMovieDatabaseParsingProfileTest {
 	@Test
 	public void testStudio() {
 		Studio scrapeStudio = profile.scrapeStudio();	
-		assertEquals("Found wrong Studio", "Digital Playground", scrapeStudio.getStudio());
+		assertEquals("Found wrong Studio", "Adam & Eve", scrapeStudio.getStudio());
 	}
 	
 	@Test
@@ -156,7 +156,7 @@ public class TheMovieDatabaseParsingProfileTest {
 		Thumb[] poster = profile.scrapePosters();
 		assertTrue("There should be 1 Poster or more.", poster.length > 1);
 		
-		GenericProfileTest.showImage("Poster", poster[0].getThumbImage());
+		TestingHelper.showImage("Poster", poster[0].getThumbImage());
 	}
 	
 

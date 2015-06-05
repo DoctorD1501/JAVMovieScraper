@@ -76,7 +76,7 @@ public class Kin8tengokuParsingProfileTest {
 		Thumb[] fanart = profile.scrapeFanart();
 		assertTrue("There should be 1 Fanart.", fanart.length == 1);
 		
-		GenericProfileTest.showImage("Fanart", fanart[0].getThumbImage());
+		TestingHelper.showImage("Fanart", fanart[0].getThumbImage());
 	}
 
 }

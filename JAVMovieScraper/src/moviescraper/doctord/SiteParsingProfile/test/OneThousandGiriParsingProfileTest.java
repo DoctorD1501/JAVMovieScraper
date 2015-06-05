@@ -67,7 +67,7 @@ public class OneThousandGiriParsingProfileTest {
 	@Test
 	public void testTitle(){
 		Title testEnglishTitle = englishProfile.scrapeTitle();
-		assertEquals("Wrong title", "Lesbian Colleagues Fetishism - Work Is Each Other Comfort Forget OL~", testEnglishTitle.getTitle());
+		assertEquals("Wrong title", "Lesbian Colleagues Fetishism - Work Is Each Other Comfort To Forget OL~", testEnglishTitle.getTitle());
 		Title testJapaneseTitle = japaneseProfile.scrapeTitle();
 		assertEquals("Wrong title", "レズフェティシズム 〜仕事は忘れて慰め合う同僚ＯＬ〜", testJapaneseTitle.getTitle());
 	}
@@ -89,7 +89,7 @@ public class OneThousandGiriParsingProfileTest {
 	@Test
 	public void testPlot(){
 		Plot testEnglishPlot = englishProfile.scrapePlot();
-		assertTrue("Wrong plot", testEnglishPlot.getPlot().startsWith("Senior OL Rio-chan to try"));
+		assertTrue("Wrong plot", testEnglishPlot.getPlot().length() > 0);
 		Plot testJapanesePlot = japaneseProfile.scrapePlot();
 		assertTrue("Wrong plot", testJapanesePlot.getPlot().startsWith("仕事でミスをして落ち込むOLラン"));
 	}
@@ -116,6 +116,6 @@ public class OneThousandGiriParsingProfileTest {
 	public void testPoster() throws IOException {
 		Thumb[] posters = englishProfile.scrapePosters();
 		assertTrue("There should be 1 poster.", posters.length == 1);
-		GenericProfileTest.showImage("Fanart", posters[0].getThumbImage());
+		TestingHelper.showImage("Fanart", posters[0].getThumbImage());
 	}
 }
