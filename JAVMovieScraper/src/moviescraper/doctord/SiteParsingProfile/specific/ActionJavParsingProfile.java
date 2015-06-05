@@ -312,6 +312,7 @@ public class ActionJavParsingProfile extends SiteParsingProfile implements Speci
 
 	@Override
 	public String createSearchString(File file) {
+		scrapedMovieFile = file;
 		String idTag = findIDTagFromFile(file, isFirstWordOfFileIsID());
 		if (idTag != null)
 			return "http://www.actionjav.com/results_title.cfm?sortby=pub_idu&direction=ASC&searchterm=" + idTag.replace("-", "");

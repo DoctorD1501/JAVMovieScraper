@@ -365,6 +365,8 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 
 	@Override
 	public String createSearchString(File file) {
+		
+		scrapedMovieFile = file;
 
 		// The general approach is search for 'tag' + '5-digit 0-padded number'.
 		// This gets pretty good results, usually a perfect match, 

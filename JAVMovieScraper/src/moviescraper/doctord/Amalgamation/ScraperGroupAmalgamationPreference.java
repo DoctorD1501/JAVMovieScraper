@@ -89,7 +89,7 @@ public class ScraperGroupAmalgamationPreference {
 	{
 		LinkedList<Field> fieldNames = new LinkedList<Field>();
 		Movie currentMovie = Movie.getEmptyMovie();
-		String[] disallowedFieldNames = {"readTimeout","connectionTimeout","preferredFanartToWriteToDisk","allTitles"};
+		String[] disallowedFieldNames = {"readTimeout","connectionTimeout","preferredFanartToWriteToDisk","allTitles", "fileName"};
 		ArrayList<String> disallowedFieldNamesArrayList = new ArrayList<String>(Arrays.asList(disallowedFieldNames));
 		for (Field field : currentMovie.getClass().getDeclaredFields()) {
 			String fieldName = field.getName();

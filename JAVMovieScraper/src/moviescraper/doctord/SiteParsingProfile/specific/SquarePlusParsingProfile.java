@@ -254,6 +254,7 @@ public class SquarePlusParsingProfile extends SiteParsingProfile implements Spec
 
 	@Override
 	public String createSearchString(File file) {
+		scrapedMovieFile = file;
 		String searchId = findIDTagFromFile(file, isFirstWordOfFileIsID());
 		return "http://www.squareplus.co.jp/catalogsearch/result/?q=" + searchId;
 	}

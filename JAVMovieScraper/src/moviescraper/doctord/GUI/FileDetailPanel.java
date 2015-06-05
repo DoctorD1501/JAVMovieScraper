@@ -319,7 +319,7 @@ public class FileDetailPanel extends JPanel {
 
 		JScrollPane actorListScroller = new JScrollPane(actorList);
 		actorListScroller.setPreferredSize(new Dimension(250, 250));
-		actorList.setSize(new Dimension(250, 250));
+		
 		fileDetailsPanel.add(actorListScroller, "4, 16");
 
 		JLabel lblGenres = new JLabel("Genres:");
@@ -341,7 +341,9 @@ public class FileDetailPanel extends JPanel {
 		JScrollPane listScrollerGenres = new JScrollPane(genreList);
 		genreList.setComponentPopupMenu(new FileDetailPanelPopup(new FileDetailPanelGenreEditor(this)));
 		
-		genreList.setSize(new Dimension(200, 200));
+		//genreList.setSize(new Dimension(200, 200));
+		//genreList.setPreferredSize(new Dimension(200,200));
+		listScrollerGenres.setPreferredSize(new Dimension(200,125));
 		fileDetailsPanel.add(listScrollerGenres, "4, 18");
 		
 		artWorkPanel = new ArtWorkPanel();
@@ -393,7 +395,13 @@ public class FileDetailPanel extends JPanel {
 
 			//All the titles from the various versions scraped of this movie from the different sites
 			if(movieToWriteToDiskList != null)
-				this.getCurrentMovie().getAllTitles().add( getCurrentMovie().getTitle() );
+			{
+				this.getCurrentMovie().getAllTitles().add(getCurrentMovie().getTitle());
+				String fileName = this.getCurrentMovie().getFileName();
+				if(fileName != null && fileName.trim().length() > 0)
+					this.getCurrentMovie().getAllTitles().add(new Title(fileName));
+			}
+			
 			if(gui.getCurrentlySelectedMovieR18() != null)
 				this.getCurrentMovie().getAllTitles().add( gui.getCurrentlySelectedMovieR18().getTitle() );
 			if(gui.getCurrentlySelectedMovieDMM() != null)

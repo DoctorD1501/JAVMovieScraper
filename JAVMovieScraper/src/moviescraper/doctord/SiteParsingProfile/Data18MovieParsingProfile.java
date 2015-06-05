@@ -368,6 +368,7 @@ public class Data18MovieParsingProfile extends SiteParsingProfile {
 
 	@Override
 	public String createSearchString(File file) {
+		scrapedMovieFile = file;
 		String fileBaseName;
 		if(file.isFile())
 			fileBaseName = FilenameUtils.getBaseName(Movie.getUnstackedMovieName(file));

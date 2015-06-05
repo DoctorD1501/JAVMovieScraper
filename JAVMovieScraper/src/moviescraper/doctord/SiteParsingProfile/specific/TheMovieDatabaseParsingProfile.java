@@ -427,6 +427,7 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 
 	@Override
 	public String createSearchString(File file) {
+		scrapedMovieFile = file;
 		URLCodec codec = new URLCodec();
 			try {
 				String movieName = getMovieNameFromFileWithYear(file);

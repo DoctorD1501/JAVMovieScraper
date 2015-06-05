@@ -117,7 +117,17 @@ public class MovieScrapeResultGroup {
 			Trailer trailer = (Trailer) getPreferredMovieDataItemAsMovieDataItem(Trailer.class);
 			Votes votes = (Votes) getPreferredMovieDataItemAsMovieDataItem(Votes.class);
 			Year year = (Year) getPreferredMovieDataItemAsMovieDataItem(Year.class);
-			return new Movie(actors, directors, fanart, extraFanart, genres, id, mpaa, originalTitle, outline, plot, posters, rating, runtime, set, sortTitle, studio, tagline, title, top250, trailer, votes, year);
+			
+			Movie amalgamatedMovie = new Movie(actors, directors, fanart,
+					extraFanart, genres, id, mpaa, originalTitle, outline,
+					plot, posters, rating, runtime, set, sortTitle, studio,
+					tagline, title, top250, trailer, votes, year);
+			//The all titles at this point is just the file name, which is the same for all so we can just use the first one
+			if(scrapedMovieObjectsForFile != null  && scrapedMovieObjectsForFile.size() > 0){
+				amalgamatedMovie.setFileName(scrapedMovieObjectsForFile.get(0).getFileName());
+			}
+			
+			return amalgamatedMovie;
 		} catch (NoSuchMethodException | SecurityException
 				| InstantiationException | IllegalAccessException
 				| IllegalArgumentException | InvocationTargetException | NoSuchFieldException e) {

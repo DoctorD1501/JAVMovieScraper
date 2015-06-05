@@ -294,6 +294,7 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 
 	@Override
 	public String createSearchString(File file) {
+		scrapedMovieFile = file;
 		String fileID = findIDTagFromFile(file).toLowerCase();
 
 		if (fileID != null) {

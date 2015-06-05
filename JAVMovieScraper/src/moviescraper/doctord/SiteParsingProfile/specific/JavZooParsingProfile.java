@@ -64,7 +64,7 @@ public class JavZooParsingProfile extends SiteParsingProfile implements Specific
 
 	@Override
 	public Title scrapeTitle() {
-		Element titleElement = document.select("div div.container div.row-fluid h3").first();
+		Element titleElement = document.select("div.container h3").first();
 		if(titleElement != null)
 		{
 			//remove the ID number off beginning of the title, if it exists (and it usually always does on JavLibrary)
@@ -90,7 +90,7 @@ public class JavZooParsingProfile extends SiteParsingProfile implements Specific
 	@Override
 	public OriginalTitle scrapeOriginalTitle() {
 		try {
-			Element titleElement = document.select("div div.container div.row-fluid h3").first();
+			Element titleElement = document.select("div.container h3").first();
 			if(titleElement != null)
 			{
 				//remove the ID number off beginning of the title, if it exists (and it usually always does on JavLibrary)
@@ -131,7 +131,7 @@ public class JavZooParsingProfile extends SiteParsingProfile implements Specific
 
 	@Override
 	public Set scrapeSet() {
-		Element setElement = document.select("div.span3.info p:contains(Series:) ~ p a").first();
+		Element setElement = document.select("div.container p:contains(Series:) ~ p a").first();
 		if(setElement != null)
 		{
 			return new Set(setElement.text().trim());
@@ -147,7 +147,7 @@ public class JavZooParsingProfile extends SiteParsingProfile implements Specific
 
 	@Override
 	public Year scrapeYear() {
-		Element yearElement = document.select("div.span3.info p:contains(Release Date:)").first();
+		Element yearElement = document.select("div.container p:contains(Release Date:)").first();
 		if(yearElement != null)
 		{
 			String yearText = yearElement.text().trim();
@@ -196,7 +196,7 @@ public class JavZooParsingProfile extends SiteParsingProfile implements Specific
 
 	@Override
 	public Runtime scrapeRuntime() {
-		Element runtimeElement = document.select("div.span3.info p:contains(Length:)").first();
+		Element runtimeElement = document.select("div.container p:contains(Length:)").first();
 		if(runtimeElement != null)
 		{
 			String lengthText = runtimeElement.text().trim();
@@ -252,7 +252,7 @@ public class JavZooParsingProfile extends SiteParsingProfile implements Specific
 
 	@Override
 	public ID scrapeID() {
-		Element idElement = document.select("div.span3.info p:contains(ID:)").first();
+		Element idElement = document.select("div.container p:contains(ID:)").first();
 		if(idElement != null)
 		{
 			String idText = idElement.text().trim();
@@ -279,16 +279,17 @@ public class JavZooParsingProfile extends SiteParsingProfile implements Specific
 
 	@Override
 	public ArrayList<Actor> scrapeActors() {
-		Elements actorElements = document.select("div.row-fluid.star-box li a img");
+		Elements actorElements = document.select("div#avatar-waterfall a.avatar-box");
+		System.out.println(actorElements);
 		if(actorElements != null)
 		{
 			ArrayList<Actor> actorList = new ArrayList<Actor>(actorElements.size());
 			for(Element currentActor : actorElements)
 			{
-				String actorName = currentActor.attr("title").trim();
-				String actorThumbURL = currentActor.attr("src").trim();
+				String actorName = currentActor.select("span").first().text().trim();
+				String actorThumbURL = currentActor.select("img").first().attr("src");
 				//we want the full resolution thumbnail, so replace the "medium" from the URL to get it
-				actorThumbURL = actorThumbURL.replaceFirst(Pattern.quote("/medium/"), "/");
+				//actorThumbURL = actorThumbURL.replaceFirst(Pattern.quote("/medium/"), "/");
 				try {
 					//we can add the actor with their thumbnail so long as we aren't using a placeholder image
 					if(!actorThumbURL.contains("nowprinting.gif"))
@@ -311,7 +312,7 @@ public class JavZooParsingProfile extends SiteParsingProfile implements Specific
 
 	@Override
 	public ArrayList<Director> scrapeDirectors() {
-		Element directorElement = document.select("div.span3.info p:contains(Director:)").first();
+		Element directorElement = document.select("div.row.movie p:contains(Director:)").first();
 		if(directorElement != null)
 		{
 			ArrayList<Director> directorList = new ArrayList<Director>(1);
@@ -325,7 +326,7 @@ public class JavZooParsingProfile extends SiteParsingProfile implements Specific
 
 	@Override
 	public Studio scrapeStudio() {
-		Element studioElement = document.select("div.span3.info p:contains(Studio:) ~ p a").first();
+		Element studioElement = document.select("div.row.movie p:contains(Studio:) ~ p a").first();
 		if(studioElement != null)
 		{
 			String studioText = studioElement.text().trim();
@@ -337,13 +338,14 @@ public class JavZooParsingProfile extends SiteParsingProfile implements Specific
 
 	@Override
 	public String createSearchString(File file) {
+		scrapedMovieFile = file;
 		String fileNameNoExtension = findIDTagFromFile(file, isFirstWordOfFileIsID());
 		
 		//return fileNameNoExtension;
 		URLCodec codec = new URLCodec();
 		try {
 			String fileNameURLEncoded = codec.encode(fileNameNoExtension);
-			String searchTerm = "http://www.avsow.net/" + siteLanguageToScrape  + "/search/" + fileNameURLEncoded;
+			String searchTerm = "http://www.javdog.com/" + siteLanguageToScrape  + "/search/" + fileNameURLEncoded;
 			
 			return searchTerm;
 					

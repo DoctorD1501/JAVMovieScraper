@@ -324,6 +324,7 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 
 	@Override
 	public String createSearchString(File file) {
+		scrapedMovieFile = file;
 		String fileNameNoExtension = findIDTagFromFile(file, isFirstWordOfFileIsID());
 		
 		URLCodec codec = new URLCodec();

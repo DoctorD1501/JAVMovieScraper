@@ -261,6 +261,7 @@ public class IAFDParsingProfile extends SiteParsingProfile {
 
 	@Override
 	public String createSearchString(File file) {
+		scrapedMovieFile = file;
 		String fileBaseName;
 		if(file.isFile())
 			fileBaseName = FilenameUtils.getBaseName(file.getName());

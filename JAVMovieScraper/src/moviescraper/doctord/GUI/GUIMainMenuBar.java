@@ -300,6 +300,24 @@ public class GUIMainMenuBar extends JMenuBar{
 		});
 		preferenceMenu.add(appendIDToStartOfTitle);
 		
+		//Checkbox for option to use file name as the scraped title every time
+		JCheckBoxMenuItem useFilenameAsScrapedMovieTitle = new JCheckBoxMenuItem("Use Filename as Title When Scraping");
+		useFilenameAsScrapedMovieTitle.setState(getPreferences().getUseFileNameAsTitle());
+		useFilenameAsScrapedMovieTitle.addItemListener(new ItemListener() {
+
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				//save the menu choice off to the preference object (and the disk based settings file)
+				if(e.getStateChange() == ItemEvent.SELECTED)
+					getPreferences().setUseFileNameAsTitle(true);
+				else if(e.getStateChange() == ItemEvent.DESELECTED)
+					getPreferences().setUseFileNameAsTitle(false);
+
+			}
+		});
+		preferenceMenu.add(useFilenameAsScrapedMovieTitle);
+		
+		
 		add(preferenceMenu);
 
 	}

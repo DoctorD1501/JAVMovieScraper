@@ -1184,7 +1184,7 @@ public class ScrapeMovieAction extends AbstractAction {
 	}
 	
 	/**
-	 * Displays a dialog where the user can enter in a specific user to scrape from
+	 * Displays a dialog where the user can enter in a specific url to scrape from
 	 * Does some minimal checking on the input before setting the overriden search result
 	 * @param spp the {@link SiteParsingProfile} object to set the overriden search result on
 	 */

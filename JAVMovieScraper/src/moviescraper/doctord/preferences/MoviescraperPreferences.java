@@ -24,6 +24,7 @@ public class MoviescraperPreferences extends Settings {
 		promptForUserProvidedURLWhenScraping,
 		isFirstWordOfFileID,
 		appendIDToStartOfTitle,
+		useFilenameAsTitle
 		;
 
 		@Override
@@ -182,6 +183,14 @@ public class MoviescraperPreferences extends Settings {
 	
 	public void setAppendIDToStartOfTitle(boolean preferenceValue){
 		setBooleanValue(Key.appendIDToStartOfTitle, preferenceValue);
+	}
+	
+	public boolean getUseFileNameAsTitle(){
+		return getBooleanValue(Key.useFilenameAsTitle, false);
+	}
+	
+	public void setUseFileNameAsTitle(boolean preferenceValue){
+		setBooleanValue(Key.useFilenameAsTitle, preferenceValue);
 	}
 
 

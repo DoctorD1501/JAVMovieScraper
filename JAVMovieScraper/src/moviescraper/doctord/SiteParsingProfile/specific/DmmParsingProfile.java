@@ -677,6 +677,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 
 	@Override
 	public String createSearchString(File file) {
+		scrapedMovieFile = file;
 		String fileNameNoExtension = findIDTagFromFile(file, isFirstWordOfFileIsID());
 		//System.out.println("fileNameNoExtension in DMM: " + fileNameNoExtension);
 		URLCodec codec = new URLCodec();

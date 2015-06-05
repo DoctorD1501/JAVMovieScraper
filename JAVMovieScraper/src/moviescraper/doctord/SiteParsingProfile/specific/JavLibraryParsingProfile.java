@@ -369,6 +369,7 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 
 	@Override
 	public String createSearchString(File file) {
+		scrapedMovieFile = file;
 		String fileNameNoExtension = findIDTagFromFile(file, isFirstWordOfFileIsID());
 		
 		//return fileNameNoExtension;

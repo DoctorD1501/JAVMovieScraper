@@ -103,7 +103,7 @@ public class AmalgamationSettingsDialog {
 		BorderLayout northPanelLayoutManager = new BorderLayout();
 		northPanelLayoutManager.setVgap(layoutVerticalGap);
 		JPanel northPanel = new JPanel(northPanelLayoutManager);
-		JLabel helpMessage = new JLabel("<html>Select the scrapers you wish to use and the preferred order of each item to use when amalgamating data from the same scraping group.<br>Higher numbered items have precedence over lower numbered items.<br> Any scrapers disabled under \"Default Ordering\" will not scrape at all, even if enabled in the specific ordering section</html>");
+		JLabel helpMessage = new JLabel("<html>Select the scrapers you wish to use and the preferred order of each item to use when amalgamating data from the same scraping group.<br>Higher numbered items have precedence over lower numbered items.<br> Any scrapers disabled under \"Default Ordering\" will not scrape at all, even if enabled in the specific ordering section.</html>");
 		northPanel.add(helpMessage, BorderLayout.SOUTH);
 		northPanel.add(scraperGroupNameComboBox, BorderLayout.NORTH);
 		panel.add(northPanel, BorderLayout.NORTH);
@@ -124,7 +124,7 @@ public class AmalgamationSettingsDialog {
 		overallAmalgamationPreferenceList = createOverallAmalgamationPreferenceList();
 		JScrollPane overallAmalgamationPreferenceScrollPane = new JScrollPane(overallAmalgamationPreferenceList);
 		overallAmalgamationPreferencePanel = new JPanel(new BorderLayout());
-		overallAmalgamationPreferencePanel.setPreferredSize(new Dimension(200,200));
+		overallAmalgamationPreferencePanel.setPreferredSize(new Dimension(300,200));
 		overallAmalgamationPreferencePanel.add(overallAmalgamationPreferenceScrollPane, BorderLayout.CENTER);
 		
 		Box upDownDisablePanel = Box.createVerticalBox();

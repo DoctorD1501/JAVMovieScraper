@@ -83,6 +83,8 @@ public abstract class SiteParsingProfile implements DataItemSource{
 	
 	public static final int CONNECTION_TIMEOUT_VALUE = 13000;
 	
+	protected File scrapedMovieFile;
+	
 	/**
 	 * If this has a value when scraping, will use overridenSearchResult 
 	 * from a user provided URL without looking at file name
@@ -92,6 +94,8 @@ public abstract class SiteParsingProfile implements DataItemSource{
 	public boolean isExtraFanartScrapingEnabled() {
 		return extraFanartScrapingEnabled;
 	}
+	
+
 
 	public void setExtraFanartScrapingEnabled(boolean extraFanartScrapingEnabled) {
 		this.extraFanartScrapingEnabled = extraFanartScrapingEnabled;
@@ -348,6 +352,17 @@ public abstract class SiteParsingProfile implements DataItemSource{
 		movieName = movieName.replaceFirst("\\(\\d{4}\\)$", "").trim();
 		return movieName;
 	}
+	
+	/**
+	 * 
+	 * @return - null if no file has been scraped yet or the file name of the scraped movie used in {@link #createSearchString(File)} method
+	 */
+	public String getFileNameOfScrapedMovie(){
+		if(scrapedMovieFile == null)
+			return null;
+		return FilenameUtils.removeExtension(FilenameUtils.getName(scrapedMovieFile.getName()));
+	}
+	
 	
 	/**
 	 * If your file is called "Movie Name Here (2001)" this method returns "2001"

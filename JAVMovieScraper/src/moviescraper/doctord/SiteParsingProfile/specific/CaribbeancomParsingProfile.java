@@ -346,6 +346,7 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements
 
 	@Override
 	public String createSearchString(File file) {
+		scrapedMovieFile = file;
 		this.id = findIDTagFromFile(file);
 		String englishPage = "http://en.caribbeancom.com/eng/moviepages/" + id + "/index.html";
 		return englishPage;

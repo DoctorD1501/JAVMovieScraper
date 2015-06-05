@@ -312,6 +312,7 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 
 	@Override
 	public String createSearchString(File file) {
+		scrapedMovieFile = file;
 		String fileID = findIDTagFromFile(file).toLowerCase();
 		if(fileID == null)
 			return null;

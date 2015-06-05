@@ -78,6 +78,7 @@ public class Movie {
 	
 	private final static int connectionTimeout = 10000; //10 seconds
 	private final static int  readTimeout = 10000; //10 seconds
+	private String fileName;
 	
 	public Movie(ArrayList<Actor> actors, ArrayList<Director> directors,
 			Thumb[] fanart, Thumb[] extraFanart, ArrayList<Genre> genres, ID id, MPAARating mpaa,
@@ -180,13 +181,30 @@ public class Movie {
 		for(Director director : directors)
 			director.setDataItemSource(siteToScrapeFrom);
 		
+		String fileNameOfScrapedMovie = siteToScrapeFrom.getFileNameOfScrapedMovie();
+		if(fileNameOfScrapedMovie != null && fileNameOfScrapedMovie.trim().length() > 0)
+		{
+			System.out.println("filename is " + fileNameOfScrapedMovie);
+			fileName = fileNameOfScrapedMovie;
+		}
+		
+		
 		MoviescraperPreferences scraperPreferences = MoviescraperPreferences.getInstance();
+		if(scraperPreferences.getUseFileNameAsTitle() && fileName != null && fileName.length() > 0)
+		{
+			title = new Title(fileName);
+			title.setDataItemSource(new DefaultDataItemSource());
+		}
+		
 		if(scraperPreferences.getAppendIDToStartOfTitle() && id != null && 
 				id.getId() != null && id.getId().trim().length() > 0 && title != null &&
 				title.getTitle() != null && title.getTitle().length() > 0)
 		{
 			title.setTitle(id.getId() + " - " + title.getTitle());
 		}
+		
+
+			
 		
 	}
 	
@@ -972,6 +990,14 @@ public class Movie {
 		Year year = Year.BLANK_YEAR;
 		
 		return new Movie(actors, directors, fanart, extraFanart, genres, id, mpaa, originalTitle, outline, plot, posters, rating, runtime, set, sortTitle, studio, tagline, title, top250, trailer, votes, year);
+	}
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
 
 
