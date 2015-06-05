@@ -120,12 +120,7 @@ public class ScrapeMovieAction extends AbstractAction {
 					.getAmalgamationPreferenceOrder();
 			
 			for(DataItemSource currentDataItemSource : overallPrefs)
-			{
-				System.out.println("Comparing "
-						+ currentDataItemSource.getDataItemSourceName()
-						+ " disabled=" + currentDataItemSource.isDisabled()
-						+ " to " + parsingProfile.getDataItemSourceName());
-				
+			{	
 				if(currentDataItemSource.getDataItemSourceName().equals(parsingProfile.getDataItemSourceName()))
 				{
 					boolean disabled = currentDataItemSource.isDisabled();

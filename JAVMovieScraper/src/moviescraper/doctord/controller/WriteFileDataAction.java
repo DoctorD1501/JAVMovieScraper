@@ -61,9 +61,7 @@ public class WriteFileDataAction implements ActionListener {
 							File oldMovieFile = guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList);
 							Movie movie = guiMain.movieToWriteToDiskList.get(movieNumberInList);
 
-							guiMain.getPreferences();
 							String sanitizerString = MoviescraperPreferences.getSanitizerForFilename();
-							guiMain.getPreferences();
 							String renameString = MoviescraperPreferences.getRenamerString(); 
 							Renamer renamer = new Renamer(renameString, sanitizerString, movie, oldMovieFile);
 							String newMovieFilename = renamer.getNewFileName();

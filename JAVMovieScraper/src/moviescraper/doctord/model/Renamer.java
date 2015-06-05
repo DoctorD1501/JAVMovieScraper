@@ -4,9 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.regex.Pattern;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import moviescraper.doctord.Movie;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
@@ -54,7 +54,6 @@ public class Renamer {
 		if(oldFile.isDirectory())
 			dot = "";
 		String newName = getSanitizedString (replace());
-		
 		newName = path + newName + getAppendix() + getPosterFanartTrailerEnder() + dot + extension;
 		
 		return newName;
@@ -94,9 +93,9 @@ public class Renamer {
 	private String renameReplaceAll(String replacementString, String tagName, String movieContentOfTag)
 	{
 		String replacedString = replacementString;
-		if(replacedString.contains(tagName))
-			replacedString = replacedString.replaceAll(tagName, movieContentOfTag);
-		
+		if(replacedString.contains(tagName)){
+			replacedString = StringUtils.replace(replacedString, tagName, movieContentOfTag);
+		}
 		if(movieContentOfTag == null || movieContentOfTag.trim().equals(""))
 		{
 			replacedString = replacedString.replaceAll("\\[\\]|\\(\\)", "");
