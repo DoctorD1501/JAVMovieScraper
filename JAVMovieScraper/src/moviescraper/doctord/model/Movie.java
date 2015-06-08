@@ -1,4 +1,4 @@
-package moviescraper.doctord;
+package moviescraper.doctord.model;
 
 import java.awt.image.RenderedImage;
 import java.io.File;
@@ -37,6 +37,7 @@ import moviescraper.doctord.controller.ScrapeMovieAction;
 import moviescraper.doctord.dataitem.*;
 import moviescraper.doctord.dataitem.Runtime;
 import moviescraper.doctord.preferences.MoviescraperPreferences;
+import moviescraper.doctord.xmlserialization.XbmcXmlMovieBean;
 
 public class Movie {
 
@@ -57,6 +58,7 @@ public class Movie {
 	private Plot plot;
 	private Thumb[] posters;
 	private Rating rating;
+	private ReleaseDate releaseDate;
 	private Runtime runtime;
 	private Set set;
 	private SortTitle sortTitle;
@@ -83,7 +85,7 @@ public class Movie {
 	public Movie(ArrayList<Actor> actors, ArrayList<Director> directors,
 			Thumb[] fanart, Thumb[] extraFanart, ArrayList<Genre> genres, ID id, MPAARating mpaa,
 			OriginalTitle originalTitle, Outline outline, Plot plot,
-			Thumb[] posters, Rating rating, Runtime runtime, Set set,
+			Thumb[] posters, Rating rating, ReleaseDate releaseDate, Runtime runtime, Set set,
 			SortTitle sortTitle, Studio studio, Tagline tagline, Title title,
 			Top250 top250, Trailer trailer, Votes votes, Year year) {
 		super();
@@ -99,6 +101,7 @@ public class Movie {
 		this.plot = plot;
 		this.posters = posters;
 		this.rating = rating;
+		this.releaseDate = releaseDate;
 		this.runtime = runtime;
 		this.set = set;
 		this.sortTitle = sortTitle;
@@ -150,6 +153,9 @@ public class Movie {
 		
 		studio = siteToScrapeFrom.scrapeStudio();
 		studio.setDataItemSource(siteToScrapeFrom);
+		
+		releaseDate = siteToScrapeFrom.scrapeReleaseDate();
+		releaseDate.setDataItemSource(siteToScrapeFrom);
 		
 		runtime = siteToScrapeFrom.scrapeRuntime();
 		runtime.setDataItemSource(siteToScrapeFrom);
@@ -422,7 +428,7 @@ public class Movie {
 				+ ", sortTitle=" + sortTitle + ", set=" + set + ", rating="
 				+ rating + ", year=" + year + ", top250=" + top250 + ", trailer = " + trailer + ", votes="
 				+ votes + ", outline=" + outline + ", plot=" + plot
-				+ ", tagline=" + tagline + ", studio=" + studio + ", runtime="
+				+ ", tagline=" + tagline + ", studio=" + studio + "releaseDate=" + releaseDate + ", runtime="
 				+ runtime + ", posters=" + Arrays.toString(posters)
 				+ ", fanart=" + Arrays.toString(fanart) + ", extrafanart = " 
 				+ Arrays.toString(extraFanart) + ", mpaa=" + mpaa
@@ -970,6 +976,7 @@ public class Movie {
 		Outline outline = Outline.BLANK_OUTLINE;
 		Plot plot = Plot.BLANK_PLOT;
 		Rating rating = Rating.BLANK_RATING;
+		ReleaseDate releaseDate = ReleaseDate.BLANK_RELEASEDATE;
 		Runtime runtime = Runtime.BLANK_RUNTIME;
 		Set set = Set.BLANK_SET;
 		SortTitle sortTitle= SortTitle.BLANK_SORTTITLE;
@@ -981,7 +988,7 @@ public class Movie {
 		Votes votes = Votes.BLANK_VOTES;
 		Year year = Year.BLANK_YEAR;
 		
-		return new Movie(actors, directors, fanart, extraFanart, genres, id, mpaa, originalTitle, outline, plot, posters, rating, runtime, set, sortTitle, studio, tagline, title, top250, trailer, votes, year);
+		return new Movie(actors, directors, fanart, extraFanart, genres, id, mpaa, originalTitle, outline, plot, posters, rating, releaseDate, runtime, set, sortTitle, studio, tagline, title, top250, trailer, votes, year);
 	}
 
 	public String getFileName() {
@@ -990,6 +997,14 @@ public class Movie {
 
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
+	}
+
+	public ReleaseDate getReleaseDate() {
+		return releaseDate;
+	}
+
+	public void setReleaseDate(ReleaseDate releaseDate) {
+		this.releaseDate = releaseDate;
 	}
 
 

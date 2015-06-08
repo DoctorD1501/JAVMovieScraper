@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,13 +17,11 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import moviescraper.doctord.Language;
-import moviescraper.doctord.SearchResult;
-import moviescraper.doctord.TranslateString;
+import moviescraper.doctord.LanguageTranslation.Language;
+import moviescraper.doctord.LanguageTranslation.TranslateString;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Director;
-
 import moviescraper.doctord.dataitem.Genre;
 import moviescraper.doctord.dataitem.ID;
 import moviescraper.doctord.dataitem.MPAARating;
@@ -30,6 +29,7 @@ import moviescraper.doctord.dataitem.OriginalTitle;
 import moviescraper.doctord.dataitem.Outline;
 import moviescraper.doctord.dataitem.Plot;
 import moviescraper.doctord.dataitem.Rating;
+import moviescraper.doctord.dataitem.ReleaseDate;
 import moviescraper.doctord.dataitem.Runtime;
 import moviescraper.doctord.dataitem.Set;
 import moviescraper.doctord.dataitem.SortTitle;
@@ -41,11 +41,13 @@ import moviescraper.doctord.dataitem.Top250;
 import moviescraper.doctord.dataitem.Trailer;
 import moviescraper.doctord.dataitem.Votes;
 import moviescraper.doctord.dataitem.Year;
+import moviescraper.doctord.model.SearchResult;
 
 public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implements SpecificProfile {
 	
 	private Document japaneseDocument;
 	private Thumb[] scrapedPosters;
+	private static final SimpleDateFormat caribbeanReleaseDateFormat = new SimpleDateFormat("yyyy-mm-dd");
 
 	@Override
 	public Title scrapeTitle() {
@@ -105,14 +107,20 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 
 	@Override
 	public Year scrapeYear() {
+		return scrapeReleaseDate().getYear();
+	}
+	
+	@Override
+	public ReleaseDate scrapeReleaseDate()
+	{
 		Element yearElement = document
 				.select("tr td:contains(Update:) ~ td:contains(-)")
 				.first();
-		if(yearElement != null && yearElement.text().length() >= 4)
+		if(yearElement != null && yearElement.text().length() > 4)
 		{
-			return new Year(yearElement.text().substring(0,4));
+			return new ReleaseDate(yearElement.text(), caribbeanReleaseDateFormat);
 		}
-		else return Year.BLANK_YEAR;
+		else return ReleaseDate.BLANK_RELEASEDATE;
 	}
 
 	@Override

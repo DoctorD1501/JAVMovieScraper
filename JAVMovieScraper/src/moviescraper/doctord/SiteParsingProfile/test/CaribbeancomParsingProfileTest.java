@@ -7,7 +7,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.SiteParsingProfile.specific.CaribbeancomParsingProfile;
 import moviescraper.doctord.controller.SpecificScraperAction;
 import moviescraper.doctord.dataitem.Actor;
@@ -16,10 +15,12 @@ import moviescraper.doctord.dataitem.ID;
 import moviescraper.doctord.dataitem.OriginalTitle;
 import moviescraper.doctord.dataitem.Plot;
 import moviescraper.doctord.dataitem.Rating;
+import moviescraper.doctord.dataitem.ReleaseDate;
 import moviescraper.doctord.dataitem.Thumb;
 import moviescraper.doctord.dataitem.Title;
 import moviescraper.doctord.dataitem.Trailer;
 import moviescraper.doctord.dataitem.Year;
+import moviescraper.doctord.model.SearchResult;
 
 import org.jsoup.nodes.Document;
 import org.junit.BeforeClass;
@@ -77,6 +78,13 @@ public class CaribbeancomParsingProfileTest {
 	public void testScrapeYear(){
 		Year year = parser.scrapeYear();
 		assertEquals("Wrong year", "2014", year.getYear());
+	}
+	
+	@Test
+	public void testScrapeReleaseDate()
+	{
+		ReleaseDate releaseDate = parser.scrapeReleaseDate();
+		assertEquals("Wrong release date", "2014-01-05", releaseDate.getReleaseDate());
 	}
 	
 	@Test

@@ -19,7 +19,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import moviescraper.doctord.Movie;
+import moviescraper.doctord.model.Movie;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.imgscalr.Scalr;

@@ -12,7 +12,6 @@ import java.util.List;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import moviescraper.doctord.Movie;
 import moviescraper.doctord.Amalgamation.DataItemSourceAmalgamationPreference;
 import moviescraper.doctord.Amalgamation.MovieScrapeResultGroup;
 import moviescraper.doctord.Amalgamation.ScraperGroupAmalgamationPreference;
@@ -20,6 +19,7 @@ import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile.ScraperGroupNa
 import moviescraper.doctord.SiteParsingProfile.specific.DmmParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.specific.JavLibraryParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.specific.R18ParsingProfile;
+import moviescraper.doctord.model.Movie;
 
 public class TestAmalgamation {
 	

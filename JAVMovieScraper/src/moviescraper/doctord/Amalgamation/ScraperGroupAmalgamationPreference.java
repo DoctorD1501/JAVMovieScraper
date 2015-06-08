@@ -8,8 +8,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import moviescraper.doctord.Movie;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile.ScraperGroupName;
+import moviescraper.doctord.model.Movie;
 
 /**
  * A ScraperGroupAmalgamtionPreference is the preferred order of scrapers to use when amalgamating data

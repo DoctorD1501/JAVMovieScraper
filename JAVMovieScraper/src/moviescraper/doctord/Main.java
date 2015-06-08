@@ -30,6 +30,7 @@ import moviescraper.doctord.SiteParsingProfile.specific.OnePondoParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.specific.OneThousandGiriParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.specific.TheMovieDatabaseParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.specific.TokyoHotParsingProfile;
+import moviescraper.doctord.model.Movie;
 import moviescraper.doctord.model.Renamer;
 import moviescraper.doctord.preferences.MoviescraperPreferences;
 

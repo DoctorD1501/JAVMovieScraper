@@ -4,11 +4,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.regex.Pattern;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import moviescraper.doctord.Movie;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Genre;
@@ -259,7 +259,6 @@ public class Renamer {
 		{
 			tags= tags + " " + tag;
 		}
-		System.out.println("tags = " + tags);
 		return tags.trim();
 	}
 
@@ -270,60 +269,5 @@ public class Renamer {
 	public void setOldFilename(File oldFile) {
 		this.oldFile = oldFile;
 	}
-	
-	//This code was used by the old buggy method and is no longer used
-	
-	
-	/*private String replace(Pattern pattern, String string, String replacement) {
-		String match = getMatch(pattern, string);
-		String prefix = getPrefix(match, pattern.pattern());
-		String suffix = getSuffix(match, pattern.pattern());
-		String rep = "";
-		if (replacement == null || replacement.isEmpty()) {
-			rep = replacement;
-		} else {
-			rep = prefix + replacement + suffix;
-		}
-				
-		String result = string.replace(match, rep);
-		return result;
-	}
-	
-	private String getPrefix(String foundPattern, String pattern) {
-		if (foundPattern.length() > 0) {
-			String s = foundPattern.substring(1, 2);
-			String b = pattern.substring(3,4);
-			if (!s.equals( b ))
-				return s;
-		}
-		return "";
-	}
-	
-	private String getSuffix(String foundPattern, String pattern) {
-		int length = foundPattern.length();
-		if (foundPattern.length() > 0) {
-			String s = foundPattern.substring(length - 2,length - 1);
-			int patternLength = pattern.length();
-			String b = pattern.substring(patternLength-4,patternLength-3);
-			if (!s.equals( b ))
-				return s;
-		}
-		return "";
-	}
-	
-	private String substring(String string, int maxLength) {
-		if (string.length() > maxLength)
-			return string.substring(0, maxLength);
-		return string;
-	}
-	
-		Matcher matcher = pattern.matcher(toMatch);
-		if (matcher.find()) {
-			return matcher.group();
-		}
-		return "";
-	}
-	
-	*/
 	
 }

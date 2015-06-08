@@ -1,4 +1,4 @@
-package moviescraper.doctord;
+package moviescraper.doctord.LanguageTranslation;
 
 /**
  * JapaneseCharacter contains static functions to do various tests

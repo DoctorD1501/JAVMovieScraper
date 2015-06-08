@@ -21,7 +21,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import moviescraper.doctord.Movie;
 import moviescraper.doctord.GUI.AbstractFileDetailPanelEditGUI.Operation;
 import moviescraper.doctord.GUI.renderer.ActressListRenderer;
 import moviescraper.doctord.GUI.renderer.GenreListRenderer;
@@ -31,6 +30,7 @@ import moviescraper.doctord.dataitem.Plot;
 import moviescraper.doctord.dataitem.Set;
 import moviescraper.doctord.dataitem.Studio;
 import moviescraper.doctord.dataitem.Title;
+import moviescraper.doctord.model.Movie;
 import moviescraper.doctord.preferences.MoviescraperPreferences;
 
 import com.jgoodies.forms.factories.FormFactory;
@@ -59,6 +59,8 @@ public class FileDetailPanel extends JPanel {
 	
 	GUIMain gui;
 
+	private JLabel lblReleaseDateText;
+
 	/**
 	 * Create the panel.
 	 */
@@ -84,18 +86,20 @@ public class FileDetailPanel extends JPanel {
 				FormFactory.RELATED_GAP_ROWSPEC,//5 - empty space
 				FormFactory.DEFAULT_ROWSPEC,//6 - Year
 				FormFactory.RELATED_GAP_ROWSPEC,//7 - empty space
-				FormFactory.DEFAULT_ROWSPEC,//8 - ID
-				FormFactory.RELATED_GAP_ROWSPEC,//9 - empty space
-				FormFactory.DEFAULT_ROWSPEC,//10 - Studio
-				FormFactory.RELATED_GAP_ROWSPEC,//11 - empty space
-				FormFactory.DEFAULT_ROWSPEC,//12 - Movie set
-				FormFactory.RELATED_GAP_ROWSPEC,//13 - empty space
-				FormFactory.DEFAULT_ROWSPEC,//14 - Plot
-				FormFactory.RELATED_GAP_ROWSPEC,//15 - empty space
-				RowSpec.decode("default:grow"),//16 - actors
-				FormFactory.RELATED_GAP_ROWSPEC,//17 - empty space
-				RowSpec.decode("default:grow"),//18 - genres
-				FormFactory.RELATED_GAP_ROWSPEC//19 - empty space
+				FormFactory.DEFAULT_ROWSPEC,//8 - Release Date
+				FormFactory.RELATED_GAP_ROWSPEC,//8 - empty space
+				FormFactory.DEFAULT_ROWSPEC,//9 - ID
+				FormFactory.RELATED_GAP_ROWSPEC,//10 - empty space
+				FormFactory.DEFAULT_ROWSPEC,//11 - Studio
+				FormFactory.RELATED_GAP_ROWSPEC,//12 - empty space
+				FormFactory.DEFAULT_ROWSPEC,//13 - Movie set
+				FormFactory.RELATED_GAP_ROWSPEC,//14 - empty space
+				FormFactory.DEFAULT_ROWSPEC,//15 - Plot
+				FormFactory.RELATED_GAP_ROWSPEC,//16 - empty space
+				RowSpec.decode("default:grow"),//17 - actors
+				FormFactory.RELATED_GAP_ROWSPEC,//18 - empty space
+				RowSpec.decode("default:grow"),//19 - genres
+				FormFactory.RELATED_GAP_ROWSPEC//20 - empty space
 				});
 		
 		
@@ -169,11 +173,18 @@ public class FileDetailPanel extends JPanel {
 		lblScrapedYearText = new JLabel("");
 		fileDetailsPanel.add(lblScrapedYearText, "4, 6");
 		
+		
+		JLabel lblReleaseDate = new JLabel("Release Date:");
+		fileDetailsPanel.add(lblReleaseDate, "2, 8");
+		
+		lblReleaseDateText = new JLabel("");
+		fileDetailsPanel.add(lblReleaseDateText, "4, 8");
+		
 		JLabel lblID = new JLabel("ID:");
-		fileDetailsPanel.add(lblID, "2, 8");
+		fileDetailsPanel.add(lblID, "2, 10");
 		
 		lblIDCurrentMovie = new JLabel("");
-		fileDetailsPanel.add(lblIDCurrentMovie,"4, 8");
+		fileDetailsPanel.add(lblIDCurrentMovie,"4, 10");
 		
 		JLabel lblStudio = new JLabel("Studio:");
 		txtFieldStudio = new JTextField("");
@@ -213,11 +224,11 @@ public class FileDetailPanel extends JPanel {
 			
 		});
 		
-		fileDetailsPanel.add(lblStudio,"2,10");
-		fileDetailsPanel.add(txtFieldStudio,"4,10");
+		fileDetailsPanel.add(lblStudio,"2,12");
+		fileDetailsPanel.add(txtFieldStudio,"4,12");
 		
 		JLabel lblSet = new JLabel("Movie Set:");
-		fileDetailsPanel.add(lblSet,"2, 12");
+		fileDetailsPanel.add(lblSet,"2, 14");
 		txtFieldMovieSet = new JTextField("");
 		txtFieldMovieSet.addActionListener(new ActionListener(){
 	        @Override
@@ -254,10 +265,10 @@ public class FileDetailPanel extends JPanel {
 			}
 			
 		});
-		fileDetailsPanel.add(txtFieldMovieSet,"4,12");
+		fileDetailsPanel.add(txtFieldMovieSet,"4,14");
 		
 		JLabel lblPlot = new JLabel("Plot:");
-		fileDetailsPanel.add(lblPlot, "2,14");
+		fileDetailsPanel.add(lblPlot, "2,16");
 		
 
 		moviePlotTextField = new JTextArea(3,35);
@@ -288,11 +299,11 @@ public class FileDetailPanel extends JPanel {
 		JScrollPane plotPanelScrollPane = new JScrollPane(moviePlotTextField, 
 				   JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-		fileDetailsPanel.add(plotPanelScrollPane,"4,14");
+		fileDetailsPanel.add(plotPanelScrollPane,"4,16");
 		
 
 		JLabel lblActors = new JLabel("Actors:");
-		fileDetailsPanel.add(lblActors, "2, 16");
+		fileDetailsPanel.add(lblActors, "2, 18");
 
 		actorList = new JList<Actor>(new ActorItemListModel());
 		List<File> currentlySelectedActorsFolderList = new ArrayList<File>();
@@ -321,10 +332,10 @@ public class FileDetailPanel extends JPanel {
 		JScrollPane actorListScroller = new JScrollPane(actorList);
 		actorListScroller.setPreferredSize(new Dimension(250, 250));
 		
-		fileDetailsPanel.add(actorListScroller, "4, 16");
+		fileDetailsPanel.add(actorListScroller, "4, 18");
 
 		JLabel lblGenres = new JLabel("Genres:");
-		fileDetailsPanel.add(lblGenres, "2, 18");
+		fileDetailsPanel.add(lblGenres, "2, 20");
 
 		genreList = new JList<Genre>(new GenreItemListModel());
 		//double or triple click the genre list to open the editor on the item you clicked
@@ -346,11 +357,11 @@ public class FileDetailPanel extends JPanel {
 		//genreList.setSize(new Dimension(200, 200));
 		//genreList.setPreferredSize(new Dimension(200,200));
 		listScrollerGenres.setPreferredSize(new Dimension(200,125));
-		fileDetailsPanel.add(listScrollerGenres, "4, 18");
+		fileDetailsPanel.add(listScrollerGenres, "4, 20");
 		
 		artWorkPanel = new ArtWorkPanel();
 		//frmMoviescraper.getContentPane().add(artworkPanelScrollPane, BorderLayout.EAST);
-		fileDetailsPanel.add(artWorkPanel,"6,2,1,18");
+		fileDetailsPanel.add(artWorkPanel,"6,2,1,20");
 	}
 	/**
 	 * Sets a new movie and updates a view
@@ -436,6 +447,7 @@ public class FileDetailPanel extends JPanel {
 		comboBoxMovieTitleText.setEditable(true);
 		lblOriginalTitleText.setText( currentMovie.getOriginalTitle().getOriginalTitle() );
 		lblScrapedYearText.setText( currentMovie.getYear().getYear() );
+		lblReleaseDateText.setText(currentMovie.getReleaseDate().getReleaseDate());
 		lblIDCurrentMovie.setText( currentMovie.getId().getId() );
 		txtFieldStudio.setText( currentMovie.getStudio().getStudio() );
 		txtFieldMovieSet.setText( currentMovie.getSet().getSet() );

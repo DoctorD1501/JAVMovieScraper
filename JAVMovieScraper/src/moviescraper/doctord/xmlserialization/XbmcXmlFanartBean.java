@@ -1,9 +1,12 @@
-package moviescraper.doctord;
+package moviescraper.doctord.xmlserialization;
 
 import java.io.IOException;
 
 import moviescraper.doctord.dataitem.Thumb;
 
+/**
+ * Helper class for serializing a fanart object to and from XML
+ */
 public class XbmcXmlFanartBean {
 	private String [] thumb;
 

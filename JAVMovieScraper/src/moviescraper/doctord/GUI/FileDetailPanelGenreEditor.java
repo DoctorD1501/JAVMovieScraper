@@ -8,8 +8,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import moviescraper.doctord.Movie;
 import moviescraper.doctord.dataitem.Genre;
+import moviescraper.doctord.model.Movie;
 
 public class FileDetailPanelGenreEditor extends AbstractFileDetailPanelEditGUI {
 	

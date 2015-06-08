@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -15,13 +16,11 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import moviescraper.doctord.Language;
-import moviescraper.doctord.SearchResult;
+import moviescraper.doctord.LanguageTranslation.Language;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
 import moviescraper.doctord.controller.SpecificScraperAction;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Director;
-
 import moviescraper.doctord.dataitem.Genre;
 import moviescraper.doctord.dataitem.ID;
 import moviescraper.doctord.dataitem.MPAARating;
@@ -29,6 +28,7 @@ import moviescraper.doctord.dataitem.OriginalTitle;
 import moviescraper.doctord.dataitem.Outline;
 import moviescraper.doctord.dataitem.Plot;
 import moviescraper.doctord.dataitem.Rating;
+import moviescraper.doctord.dataitem.ReleaseDate;
 import moviescraper.doctord.dataitem.Runtime;
 import moviescraper.doctord.dataitem.Set;
 import moviescraper.doctord.dataitem.SortTitle;
@@ -40,11 +40,13 @@ import moviescraper.doctord.dataitem.Top250;
 import moviescraper.doctord.dataitem.Trailer;
 import moviescraper.doctord.dataitem.Votes;
 import moviescraper.doctord.dataitem.Year;
+import moviescraper.doctord.model.SearchResult;
 
 public class MyTokyoHotParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
 	private boolean scrapeInEnglish = true;
 	Document japaneseDocument;
+	private static final SimpleDateFormat myTokyoHotReleaseDateFormat = new SimpleDateFormat("yyyy/MM/dd");
 	
 	@Override
 	public String getParserName() {
@@ -108,13 +110,18 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 
 	@Override
 	public Year scrapeYear() {
+		return scrapeReleaseDate().getYear();
+	}
+	
+	@Override
+	public ReleaseDate scrapeReleaseDate() {
 		Element releaseDateElement = document.select("dl.info dt:contains(Release Date) + dd, dl.info dt:contains(配信開始日) + dd").first();
-		if(releaseDateElement != null && releaseDateElement.text().length() >= 4)
+		if(releaseDateElement != null && releaseDateElement.text().length() > 4)
 		{
-			String yearText = releaseDateElement.text().substring(0, 4);
-			return new Year(yearText);
+			String releaseDateText = releaseDateElement.text().trim();
+			return new ReleaseDate(releaseDateText, myTokyoHotReleaseDateFormat);
 		}
-		return Year.BLANK_YEAR;
+		return ReleaseDate.BLANK_RELEASEDATE;
 	}
 
 	@Override
@@ -313,7 +320,10 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 	@Override
 	public String createSearchString(File file) {
 		scrapedMovieFile = file;
-		String fileID = findIDTagFromFile(file).toLowerCase();
+		String fileID = findIDTagFromFile(file);
+		if(fileID == null)
+			return null;
+		fileID = fileID.toLowerCase();
 		if(fileID == null)
 			return null;
 		String searchURL = "http://my.tokyo-hot.com/product/?q=" + fileID + "&x=0&y=0";

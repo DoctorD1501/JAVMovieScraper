@@ -8,9 +8,9 @@ import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
-import moviescraper.doctord.Movie;
 import moviescraper.doctord.GUI.GUIMain;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
+import moviescraper.doctord.model.Movie;
 
 public class ScrapeSpecificAction extends AbstractAction {
 	

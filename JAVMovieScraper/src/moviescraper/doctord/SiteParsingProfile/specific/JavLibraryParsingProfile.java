@@ -3,6 +3,7 @@ package moviescraper.doctord.SiteParsingProfile.specific;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -16,11 +17,9 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Director;
-
 import moviescraper.doctord.dataitem.Genre;
 import moviescraper.doctord.dataitem.ID;
 import moviescraper.doctord.dataitem.MPAARating;
@@ -28,6 +27,7 @@ import moviescraper.doctord.dataitem.OriginalTitle;
 import moviescraper.doctord.dataitem.Outline;
 import moviescraper.doctord.dataitem.Plot;
 import moviescraper.doctord.dataitem.Rating;
+import moviescraper.doctord.dataitem.ReleaseDate;
 import moviescraper.doctord.dataitem.Runtime;
 import moviescraper.doctord.dataitem.Set;
 import moviescraper.doctord.dataitem.SortTitle;
@@ -38,6 +38,7 @@ import moviescraper.doctord.dataitem.Title;
 import moviescraper.doctord.dataitem.Top250;
 import moviescraper.doctord.dataitem.Votes;
 import moviescraper.doctord.dataitem.Year;
+import moviescraper.doctord.model.SearchResult;
 
 public class JavLibraryParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
@@ -49,6 +50,8 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 	public static final String chineseLanguageCode = "cn";
 	private static final boolean reverseAsianNameInEnglish = true;
 	private String overrideURLJavLibrary;
+	
+	private static final SimpleDateFormat javLibraryReleaseDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 	
 	@Override
 	public List<ScraperGroupName> getScraperGroupNames()
@@ -161,17 +164,22 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 
 	@Override
 	public Year scrapeYear() {
+		return scrapeReleaseDate().getYear();
+	}
+	
+	@Override
+	public ReleaseDate scrapeReleaseDate() {
 		Element dateElement = document
 				.select("div#video_date tr td.header + td.text")
 				.first();
 		String dateText = dateElement.text();
-		//The dateText is in format YYYY-MM-DD and we just want the YYYY part
+		//The dateText is in format YYYY-MM-DD
 		if(dateText.length() > 0)
 		{
-			dateText = dateText.trim().substring(0,4);
-			return new Year(dateText);
+			dateText = dateText.trim();
+			return new ReleaseDate(dateText, javLibraryReleaseDateFormat);
 		}
-		else return Year.BLANK_YEAR;
+		else return ReleaseDate.BLANK_RELEASEDATE;
 	}
 
 	@Override

@@ -13,10 +13,10 @@ import javax.swing.event.ListSelectionListener;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
-import moviescraper.doctord.Movie;
-import moviescraper.doctord.XbmcXmlMovieBean;
 import moviescraper.doctord.GUI.GUIMain;
 import moviescraper.doctord.dataitem.Thumb;
+import moviescraper.doctord.model.Movie;
+import moviescraper.doctord.xmlserialization.XbmcXmlMovieBean;
 
 public class SelectFileListAction implements ListSelectionListener {
 	/**

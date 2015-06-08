@@ -22,8 +22,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import moviescraper.doctord.Language;
-import moviescraper.doctord.SearchResult;
+import moviescraper.doctord.LanguageTranslation.Language;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.DataItemSource;
 import moviescraper.doctord.dataitem.Director;
@@ -34,6 +33,7 @@ import moviescraper.doctord.dataitem.OriginalTitle;
 import moviescraper.doctord.dataitem.Outline;
 import moviescraper.doctord.dataitem.Plot;
 import moviescraper.doctord.dataitem.Rating;
+import moviescraper.doctord.dataitem.ReleaseDate;
 import moviescraper.doctord.dataitem.Set;
 import moviescraper.doctord.dataitem.SortTitle;
 import moviescraper.doctord.dataitem.Studio;
@@ -46,6 +46,7 @@ import moviescraper.doctord.dataitem.Votes;
 import moviescraper.doctord.dataitem.Year;
 import moviescraper.doctord.model.AbstractMovieScraper;
 import moviescraper.doctord.model.GenericMovieScraper;
+import moviescraper.doctord.model.SearchResult;
 import moviescraper.doctord.preferences.MoviescraperPreferences;
 
 public abstract class SiteParsingProfile implements DataItemSource{
@@ -206,6 +207,8 @@ public abstract class SiteParsingProfile implements DataItemSource{
 	public abstract Set scrapeSet();
 
 	public abstract Rating scrapeRating();
+	
+	public  abstract ReleaseDate scrapeReleaseDate();
 
 	public abstract Year scrapeYear();
 
@@ -444,6 +447,10 @@ public abstract class SiteParsingProfile implements DataItemSource{
 	public void setDisabled(boolean value) {
 		isDisabled = value;
 	}
+
+
+
+
 	
 
 	

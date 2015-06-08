@@ -10,6 +10,7 @@ import moviescraper.doctord.SiteParsingProfile.specific.TokyoHotParsingProfile;
 import moviescraper.doctord.controller.SpecificScraperAction;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Plot;
+import moviescraper.doctord.dataitem.ReleaseDate;
 import moviescraper.doctord.dataitem.Thumb;
 import moviescraper.doctord.dataitem.Title;
 import moviescraper.doctord.dataitem.Year;
@@ -67,6 +68,13 @@ public class TokyoHotParsingProfileTest {
 		Year scrapeYear = profile.scrapeYear();
 		
 		assertEquals("Found wrong year", "2012", scrapeYear.getYear());
+	}
+	
+	@Test
+	public void testReleaseDate()
+	{
+		ReleaseDate releaseDate = profile.scrapeReleaseDate();
+		assertEquals("Found wrong release date ", "2012-06-15", releaseDate.getReleaseDate());
 	}
 
 	@Test

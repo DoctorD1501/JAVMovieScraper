@@ -12,6 +12,7 @@ import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Genre;
 import moviescraper.doctord.dataitem.OriginalTitle;
 import moviescraper.doctord.dataitem.Rating;
+import moviescraper.doctord.dataitem.ReleaseDate;
 import moviescraper.doctord.dataitem.Runtime;
 import moviescraper.doctord.dataitem.Thumb;
 import moviescraper.doctord.dataitem.Title;
@@ -84,6 +85,12 @@ public class HeyzoParsingProfileTest {
 		Year year = profile.scrapeYear();
 		System.out.println("year = " + year);
 		assertEquals("Wrong year", "2012", year.getYear());
+	}
+	
+	@Test
+	public void testReleaseDate(){
+		ReleaseDate scrapeReleaseDate = profile.scrapeReleaseDate();
+		assertEquals("Found wrong releaseDate", "2012-12-16", scrapeReleaseDate.getReleaseDate());
 	}
 	
 	@Test public void testPoster(){

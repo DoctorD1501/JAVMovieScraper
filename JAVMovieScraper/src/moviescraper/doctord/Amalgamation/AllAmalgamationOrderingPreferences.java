@@ -184,12 +184,13 @@ public class AllAmalgamationOrderingPreferences {
 				javPreferences.setCustomOrderingForField("rating", bestContentForRating);
 
 
-				// Non localized data: release date, runtime...
+				// Non localized data: year, release date, runtime...
 				DataItemSourceAmalgamationPreference bestContentForDateAndTime = new DataItemSourceAmalgamationPreference(
 						new R18ParsingProfile(), new DmmParsingProfile(),
 						new JavLibraryParsingProfile(), new ActionJavParsingProfile(),
 						new SquarePlusParsingProfile(), new JavZooParsingProfile());
 				javPreferences.setCustomOrderingForField("year", bestContentForDateAndTime);
+				javPreferences.setCustomOrderingForField("releaseDate", bestContentForDateAndTime);
 				javPreferences.setCustomOrderingForField("runtime", bestContentForDateAndTime);
 				
 				allAmalgamationOrderingPreferences

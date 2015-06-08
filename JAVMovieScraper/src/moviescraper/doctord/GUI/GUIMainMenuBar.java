@@ -13,7 +13,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
-import moviescraper.doctord.Movie;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfileItem;
 import moviescraper.doctord.SiteParsingProfile.SpecificProfileFactory;
 import moviescraper.doctord.controller.BrowseDirectoryAction;
@@ -30,6 +29,7 @@ import moviescraper.doctord.controller.ScrapeMovieActionData18WebContent;
 import moviescraper.doctord.controller.ScrapeSpecificAction;
 import moviescraper.doctord.controller.SelectAmalgamationSettingsAction;
 import moviescraper.doctord.controller.WriteFileDataAction;
+import moviescraper.doctord.model.Movie;
 import moviescraper.doctord.preferences.MoviescraperPreferences;
 
 public class GUIMainMenuBar extends JMenuBar{

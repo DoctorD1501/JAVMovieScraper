@@ -8,7 +8,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 
-import moviescraper.doctord.Movie;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Director;
 import moviescraper.doctord.dataitem.Genre;
@@ -19,6 +18,7 @@ import moviescraper.doctord.dataitem.OriginalTitle;
 import moviescraper.doctord.dataitem.Outline;
 import moviescraper.doctord.dataitem.Plot;
 import moviescraper.doctord.dataitem.Rating;
+import moviescraper.doctord.dataitem.ReleaseDate;
 import moviescraper.doctord.dataitem.Runtime;
 import moviescraper.doctord.dataitem.Set;
 import moviescraper.doctord.dataitem.SortTitle;
@@ -30,6 +30,7 @@ import moviescraper.doctord.dataitem.Top250;
 import moviescraper.doctord.dataitem.Trailer;
 import moviescraper.doctord.dataitem.Votes;
 import moviescraper.doctord.dataitem.Year;
+import moviescraper.doctord.model.Movie;
 
 
 /**
@@ -106,7 +107,8 @@ public class MovieScrapeResultGroup {
 			OriginalTitle originalTitle = (OriginalTitle) getPreferredMovieDataItemAsMovieDataItem(OriginalTitle.class);
 			Outline outline = (Outline) getPreferredMovieDataItemAsMovieDataItem(Outline.class);
 			Plot plot = (Plot) getPreferredMovieDataItemAsMovieDataItem(Plot.class);
-			Rating rating = (Rating) getPreferredMovieDataItemAsMovieDataItem(Rating.class); 
+			Rating rating = (Rating) getPreferredMovieDataItemAsMovieDataItem(Rating.class);
+			ReleaseDate releaseDate = (ReleaseDate) getPreferredMovieDataItemAsMovieDataItem(ReleaseDate.class);
 			Runtime runtime = (Runtime) getPreferredMovieDataItemAsMovieDataItem(Runtime.class); 
 			Set set = (Set) getPreferredMovieDataItemAsMovieDataItem(Set.class); 
 			SortTitle sortTitle = (SortTitle) getPreferredMovieDataItemAsMovieDataItem(SortTitle.class); 
@@ -120,7 +122,7 @@ public class MovieScrapeResultGroup {
 			
 			Movie amalgamatedMovie = new Movie(actors, directors, fanart,
 					extraFanart, genres, id, mpaa, originalTitle, outline,
-					plot, posters, rating, runtime, set, sortTitle, studio,
+					plot, posters, rating, releaseDate, runtime, set, sortTitle, studio,
 					tagline, title, top250, trailer, votes, year);
 			//The all titles at this point is just the file name, which is the same for all so we can just use the first one
 			if(scrapedMovieObjectsForFile != null  && scrapedMovieObjectsForFile.size() > 0){

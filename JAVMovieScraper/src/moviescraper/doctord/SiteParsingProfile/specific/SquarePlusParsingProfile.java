@@ -3,17 +3,15 @@ package moviescraper.doctord.SiteParsingProfile.specific;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import java.util.LinkedList;
 
-import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Director;
-
 import moviescraper.doctord.dataitem.Genre;
 import moviescraper.doctord.dataitem.ID;
 import moviescraper.doctord.dataitem.MPAARating;
@@ -21,6 +19,7 @@ import moviescraper.doctord.dataitem.OriginalTitle;
 import moviescraper.doctord.dataitem.Outline;
 import moviescraper.doctord.dataitem.Plot;
 import moviescraper.doctord.dataitem.Rating;
+import moviescraper.doctord.dataitem.ReleaseDate;
 import moviescraper.doctord.dataitem.Runtime;
 import moviescraper.doctord.dataitem.Set;
 import moviescraper.doctord.dataitem.SortTitle;
@@ -31,6 +30,7 @@ import moviescraper.doctord.dataitem.Title;
 import moviescraper.doctord.dataitem.Top250;
 import moviescraper.doctord.dataitem.Votes;
 import moviescraper.doctord.dataitem.Year;
+import moviescraper.doctord.model.SearchResult;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
@@ -39,6 +39,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 public class SquarePlusParsingProfile extends SiteParsingProfile implements SpecificProfile {
+	
+	private static final SimpleDateFormat squarePlusReleaseDateFormat = new SimpleDateFormat("MMM dd, yyyy"); 
 	
 	@Override
 	public List<ScraperGroupName> getScraperGroupNames()
@@ -107,14 +109,18 @@ public class SquarePlusParsingProfile extends SiteParsingProfile implements Spec
 
 	@Override
 	public Year scrapeYear() {
-		Element yearElement = document.select("th.label:containsOwn(Release date) ~ td").first();
-		if(yearElement != null && yearElement.text().length() >= 4)
+		return scrapeReleaseDate().getYear();
+	}
+	
+	@Override
+	public ReleaseDate scrapeReleaseDate() {
+		Element releaseDateElement = document.select("th.label:containsOwn(Release date) ~ td").first();
+		if(releaseDateElement != null && releaseDateElement.text().length() > 4)
 		{
-			String yearText = yearElement.text();
-			yearText = yearText.substring(yearText.length()-4);
-			return new Year(yearText);
+			String releaseDateText = releaseDateElement.text().trim();
+			return new ReleaseDate(releaseDateText, squarePlusReleaseDateFormat);
 		}
-		return Year.BLANK_YEAR;
+		return ReleaseDate.BLANK_RELEASEDATE;
 	}
 
 	@Override

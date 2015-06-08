@@ -5,16 +5,15 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormatSymbols;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Director;
-
 import moviescraper.doctord.dataitem.Genre;
 import moviescraper.doctord.dataitem.ID;
 import moviescraper.doctord.dataitem.MPAARating;
@@ -22,6 +21,7 @@ import moviescraper.doctord.dataitem.OriginalTitle;
 import moviescraper.doctord.dataitem.Outline;
 import moviescraper.doctord.dataitem.Plot;
 import moviescraper.doctord.dataitem.Rating;
+import moviescraper.doctord.dataitem.ReleaseDate;
 import moviescraper.doctord.dataitem.Runtime;
 import moviescraper.doctord.dataitem.Set;
 import moviescraper.doctord.dataitem.SortTitle;
@@ -32,6 +32,7 @@ import moviescraper.doctord.dataitem.Title;
 import moviescraper.doctord.dataitem.Top250;
 import moviescraper.doctord.dataitem.Votes;
 import moviescraper.doctord.dataitem.Year;
+import moviescraper.doctord.model.SearchResult;
 
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
@@ -46,6 +47,8 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile{
 	String yearFromFilename = "";
 	String fileName;
 	Thumb[] scrapedPosters;
+	private static final SimpleDateFormat data18ReleaseDateFormat = new SimpleDateFormat("MMMM dd, yyyy");
+	
 	@Override
 	public Title scrapeTitle() {
 		Element titleElement = document.select("div#centered.main2 div div h1.h1big, div#centered.main2 div h1").first();
@@ -104,6 +107,23 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile{
 			}
 		}
 		return Year.BLANK_YEAR;
+	}
+	
+	@Override
+	public ReleaseDate scrapeReleaseDate() {
+		Element releaseDateElement = document.select("div p:contains(Date:) a").first();
+		//case where the date is not a hyperlink, but just a month and a year
+		if(releaseDateElement!= null & releaseDateElement.text().contains("errors"))
+			releaseDateElement = document.select("div p:contains(Date:) b").first();
+		if(releaseDateElement != null)
+		{
+			String releaseDateText = releaseDateElement.text().trim();
+			if(releaseDateText.length() > 4)
+			{
+				return new ReleaseDate(releaseDateText, data18ReleaseDateFormat);
+			}
+		}
+		return ReleaseDate.BLANK_RELEASEDATE;
 	}
 
 	@Override

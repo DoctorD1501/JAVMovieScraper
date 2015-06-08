@@ -11,11 +11,9 @@ import org.apache.commons.io.FilenameUtils;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Director;
-
 import moviescraper.doctord.dataitem.Genre;
 import moviescraper.doctord.dataitem.ID;
 import moviescraper.doctord.dataitem.MPAARating;
@@ -23,6 +21,7 @@ import moviescraper.doctord.dataitem.OriginalTitle;
 import moviescraper.doctord.dataitem.Outline;
 import moviescraper.doctord.dataitem.Plot;
 import moviescraper.doctord.dataitem.Rating;
+import moviescraper.doctord.dataitem.ReleaseDate;
 import moviescraper.doctord.dataitem.Runtime;
 import moviescraper.doctord.dataitem.Set;
 import moviescraper.doctord.dataitem.SortTitle;
@@ -33,6 +32,7 @@ import moviescraper.doctord.dataitem.Title;
 import moviescraper.doctord.dataitem.Top250;
 import moviescraper.doctord.dataitem.Votes;
 import moviescraper.doctord.dataitem.Year;
+import moviescraper.doctord.model.SearchResult;
 
 public class Kin8tengokuParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
@@ -65,6 +65,12 @@ public class Kin8tengokuParsingProfile extends SiteParsingProfile implements Spe
 
 	@Override
 	public Year scrapeYear() {
+		return scrapeReleaseDate().getYear();
+	}
+	
+	@Override
+	public ReleaseDate scrapeReleaseDate()
+	{
 		Pattern pattern = Pattern.compile("\\d{4}-\\d{2}-\\d{2}");
 		Elements elements = document.select("td[class^=movie_table] ");
 		for (Element element : elements) {
@@ -72,11 +78,10 @@ public class Kin8tengokuParsingProfile extends SiteParsingProfile implements Spe
 			Matcher matcher = pattern.matcher(time);
 			if (matcher.find()) {
 				String timeString = matcher.group();
-				String[] split = timeString.split("-");
-				return new Year(split[0]);
+				return new ReleaseDate(timeString);
 			}
 		}
-		return Year.BLANK_YEAR;
+		return ReleaseDate.BLANK_RELEASEDATE;
 	}
 
 	@Override

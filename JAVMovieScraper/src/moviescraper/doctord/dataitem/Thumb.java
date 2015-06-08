@@ -13,7 +13,7 @@ import java.net.URL;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
-import moviescraper.doctord.ImageCache;
+import moviescraper.doctord.model.ImageCache;
 
 import org.apache.commons.io.FileUtils;
 

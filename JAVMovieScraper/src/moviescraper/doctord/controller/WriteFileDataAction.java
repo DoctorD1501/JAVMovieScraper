@@ -8,8 +8,8 @@ import java.io.IOException;
 
 import javax.swing.SwingWorker;
 
-import moviescraper.doctord.Movie;
 import moviescraper.doctord.GUI.GUIMain;
+import moviescraper.doctord.model.Movie;
 import moviescraper.doctord.model.Renamer;
 import moviescraper.doctord.preferences.MoviescraperPreferences;
 

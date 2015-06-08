@@ -24,8 +24,8 @@ import org.apache.commons.io.FilenameUtils;
 import org.imgscalr.Scalr;
 import org.imgscalr.Scalr.Method;
 
-import moviescraper.doctord.ImageCache;
 import moviescraper.doctord.dataitem.Actor;
+import moviescraper.doctord.model.ImageCache;
 
 @SuppressWarnings("serial")
 public class ActressListRenderer extends DefaultListCellRenderer {

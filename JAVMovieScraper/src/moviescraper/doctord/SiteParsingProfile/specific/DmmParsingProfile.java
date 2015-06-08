@@ -14,13 +14,11 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import moviescraper.doctord.Language;
-import moviescraper.doctord.SearchResult;
-import moviescraper.doctord.TranslateString;
+import moviescraper.doctord.LanguageTranslation.Language;
+import moviescraper.doctord.LanguageTranslation.TranslateString;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Director;
-
 import moviescraper.doctord.dataitem.Genre;
 import moviescraper.doctord.dataitem.ID;
 import moviescraper.doctord.dataitem.MPAARating;
@@ -28,6 +26,7 @@ import moviescraper.doctord.dataitem.OriginalTitle;
 import moviescraper.doctord.dataitem.Outline;
 import moviescraper.doctord.dataitem.Plot;
 import moviescraper.doctord.dataitem.Rating;
+import moviescraper.doctord.dataitem.ReleaseDate;
 import moviescraper.doctord.dataitem.Set;
 import moviescraper.doctord.dataitem.SortTitle;
 import moviescraper.doctord.dataitem.Studio;
@@ -38,6 +37,7 @@ import moviescraper.doctord.dataitem.Top250;
 import moviescraper.doctord.dataitem.Trailer;
 import moviescraper.doctord.dataitem.Votes;
 import moviescraper.doctord.dataitem.Year;
+import moviescraper.doctord.model.SearchResult;
 import moviescraper.doctord.preferences.MoviescraperPreferences;
 
 import org.apache.commons.codec.net.URLCodec;
@@ -153,19 +153,22 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 
 	@Override
 	public Year scrapeYear() {
-		// format of the year tag to find is:
-		// <td align="right" valign="top" class="nw">貸出開始日：</td>
-		// <td width="100%">2011/12/25</td>
-		try {
-			Element releaseDateElement = document
-					.select("table.mg-b20 tr td:contains(貸出開始日：) + td, table.mg-b20 tr td:contains(発売日：) + td, table.mg-b20 tr td:contains(配信開始日：) + td")
-					.first();
-			String year = releaseDateElement.text().substring(0, 4);
-			return new Year(year);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
+		return scrapeReleaseDate().getYear();
+	}
+	
+	@Override
+	public ReleaseDate scrapeReleaseDate(){
+		Element releaseDateElement = document
+				.select("table.mg-b20 tr td:contains(貸出開始日：) + td, table.mg-b20 tr td:contains(発売日：) + td, table.mg-b20 tr td:contains(配信開始日：) + td")
+				.first();
+		if(releaseDateElement != null)
+		{
+			String releaseDate = releaseDateElement.text();
+			//we want to convert something like 2015/04/25 to 2015-04-25 
+			releaseDate = StringUtils.replace(releaseDate, "/", "-");
+			return new ReleaseDate(releaseDate);
 		}
+		return ReleaseDate.BLANK_RELEASEDATE;
 	}
 
 	@Override

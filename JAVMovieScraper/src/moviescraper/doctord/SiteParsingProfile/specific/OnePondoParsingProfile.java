@@ -12,12 +12,10 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
-import moviescraper.doctord.Language;
-import moviescraper.doctord.SearchResult;
+import moviescraper.doctord.LanguageTranslation.Language;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Director;
-
 import moviescraper.doctord.dataitem.Genre;
 import moviescraper.doctord.dataitem.ID;
 import moviescraper.doctord.dataitem.MPAARating;
@@ -25,6 +23,7 @@ import moviescraper.doctord.dataitem.OriginalTitle;
 import moviescraper.doctord.dataitem.Outline;
 import moviescraper.doctord.dataitem.Plot;
 import moviescraper.doctord.dataitem.Rating;
+import moviescraper.doctord.dataitem.ReleaseDate;
 import moviescraper.doctord.dataitem.Runtime;
 import moviescraper.doctord.dataitem.Set;
 import moviescraper.doctord.dataitem.SortTitle;
@@ -36,6 +35,7 @@ import moviescraper.doctord.dataitem.Top250;
 import moviescraper.doctord.dataitem.Trailer;
 import moviescraper.doctord.dataitem.Votes;
 import moviescraper.doctord.dataitem.Year;
+import moviescraper.doctord.model.SearchResult;
 
 public class OnePondoParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
@@ -110,15 +110,23 @@ public class OnePondoParsingProfile extends SiteParsingProfile implements Specif
 
 	@Override
 	public Year scrapeYear() {
+		return scrapeReleaseDate().getYear();
+	}
+	
+	@Override
+	public ReleaseDate scrapeReleaseDate(){
 		//Get year from last 2 digits before the underscore in the ID of the movie
-		//Add "20" to these digits, so "14" becomes 2014, for example
-		//(this is ok because there are no scenes on 1pondo from 1999 or earlier)
-		ID movieID = scrapeID();
-		if(movieID != null)
-		{
-			return new Year("20" + movieID.getId().substring(4,6));
-		}
-		return null;
+				//Add "20" to these digits, so "14" becomes 2014, for example
+				//(this is ok because there are no scenes on 1pondo from 1999 or earlier)
+				ID movieID = scrapeID();
+				if(movieID != null)
+				{
+					String year = "20" + movieID.getId().substring(4,6);
+					String month = movieID.getId().substring(0,2);
+					String day = movieID.getId().substring(2,4);
+					return new ReleaseDate(year + "-" + month + "-" + day);
+				}
+				return ReleaseDate.BLANK_RELEASEDATE;
 	}
 
 	@Override

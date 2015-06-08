@@ -7,6 +7,7 @@ import java.io.File;
 import moviescraper.doctord.SiteParsingProfile.specific.OnePondoParsingProfile;
 import moviescraper.doctord.controller.SpecificScraperAction;
 import moviescraper.doctord.dataitem.ID;
+import moviescraper.doctord.dataitem.ReleaseDate;
 import moviescraper.doctord.dataitem.Year;
 
 import org.jsoup.nodes.Document;
@@ -50,5 +51,11 @@ public class OnePondoParsingProfileTest {
 		Year scrapeYear = profile.scrapeYear();
 		
 		assertEquals("Found wrong year", "2014", scrapeYear.getYear());
+	}
+	
+	@Test
+	public void testReleaseDate(){
+		ReleaseDate scrapeReleaseDate = profile.scrapeReleaseDate();
+		assertEquals("Found wrong releaseDate", "2014-06-13", scrapeReleaseDate.getReleaseDate());
 	}
 }

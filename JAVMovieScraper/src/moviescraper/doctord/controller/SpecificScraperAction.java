@@ -11,14 +11,14 @@ import javax.swing.JOptionPane;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-import moviescraper.doctord.Movie;
-import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.GUI.SelectionDialog;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfileJSON;
 import moviescraper.doctord.SiteParsingProfile.specific.SpecificProfile;
 import moviescraper.doctord.dataitem.Thumb;
 import moviescraper.doctord.model.AbstractMovieScraper;
+import moviescraper.doctord.model.Movie;
+import moviescraper.doctord.model.SearchResult;
 import moviescraper.doctord.preferences.MoviescraperPreferences;
 
 public class SpecificScraperAction {

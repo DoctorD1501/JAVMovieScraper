@@ -1,4 +1,4 @@
-package moviescraper.doctord;
+package moviescraper.doctord.LanguageTranslation;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;

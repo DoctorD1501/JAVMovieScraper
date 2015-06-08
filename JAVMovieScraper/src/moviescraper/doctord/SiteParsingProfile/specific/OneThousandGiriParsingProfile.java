@@ -10,14 +10,12 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import moviescraper.doctord.Language;
-import moviescraper.doctord.SearchResult;
-import moviescraper.doctord.TranslateString;
+import moviescraper.doctord.LanguageTranslation.Language;
+import moviescraper.doctord.LanguageTranslation.TranslateString;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
 import moviescraper.doctord.controller.SpecificScraperAction;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Director;
-
 import moviescraper.doctord.dataitem.Genre;
 import moviescraper.doctord.dataitem.ID;
 import moviescraper.doctord.dataitem.MPAARating;
@@ -25,6 +23,7 @@ import moviescraper.doctord.dataitem.OriginalTitle;
 import moviescraper.doctord.dataitem.Outline;
 import moviescraper.doctord.dataitem.Plot;
 import moviescraper.doctord.dataitem.Rating;
+import moviescraper.doctord.dataitem.ReleaseDate;
 import moviescraper.doctord.dataitem.Runtime;
 import moviescraper.doctord.dataitem.Set;
 import moviescraper.doctord.dataitem.SortTitle;
@@ -35,6 +34,7 @@ import moviescraper.doctord.dataitem.Title;
 import moviescraper.doctord.dataitem.Top250;
 import moviescraper.doctord.dataitem.Votes;
 import moviescraper.doctord.dataitem.Year;
+import moviescraper.doctord.model.SearchResult;
 
 public class OneThousandGiriParsingProfile extends SiteParsingProfile implements
 		SpecificProfile {
@@ -130,14 +130,19 @@ public class OneThousandGiriParsingProfile extends SiteParsingProfile implements
 
 	@Override
 	public Year scrapeYear() {
+		return scrapeReleaseDate().getYear();
+	}
+	
+	@Override
+	public ReleaseDate scrapeReleaseDate()
+	{
 		initializeJapaneseDocument();
-		Element yearElement = japaneseDocument.select("table.detail tbody tr th:contains(配信日) + td").first();
-		if(yearElement != null && yearElement.text().length() >= 4)
+		Element releaseDateElement = japaneseDocument.select("table.detail tbody tr th:contains(配信日) + td").first();
+		if(releaseDateElement != null && releaseDateElement.text().length() > 4)
 		{
-			String year = yearElement.text().substring(0,4);
-			return new Year(year);
+			return new ReleaseDate(releaseDateElement.text().trim());
 		}
-		return Year.BLANK_YEAR;
+		return ReleaseDate.BLANK_RELEASEDATE;
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package moviescraper.doctord.SiteParsingProfile.specific;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.LinkedList;
@@ -16,7 +17,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.dataitem.Thumb;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
 import moviescraper.doctord.dataitem.Actor;
@@ -28,6 +28,7 @@ import moviescraper.doctord.dataitem.OriginalTitle;
 import moviescraper.doctord.dataitem.Outline;
 import moviescraper.doctord.dataitem.Plot;
 import moviescraper.doctord.dataitem.Rating;
+import moviescraper.doctord.dataitem.ReleaseDate;
 import moviescraper.doctord.dataitem.Runtime;
 import moviescraper.doctord.dataitem.Set;
 import moviescraper.doctord.dataitem.SortTitle;
@@ -37,9 +38,11 @@ import moviescraper.doctord.dataitem.Title;
 import moviescraper.doctord.dataitem.Top250;
 import moviescraper.doctord.dataitem.Votes;
 import moviescraper.doctord.dataitem.Year;
+import moviescraper.doctord.model.SearchResult;
 
 public class ActionJavParsingProfile extends SiteParsingProfile implements SpecificProfile {
-
+	
+	private static final SimpleDateFormat actionJavReleaseDateFormat = new SimpleDateFormat("MMM dd, yyyy");
 
 
 	@Override
@@ -92,12 +95,23 @@ public class ActionJavParsingProfile extends SiteParsingProfile implements Speci
 
 	@Override
 	public Year scrapeYear() {
-		Element yearElement = document
+		return scrapeReleaseDate().getYear();
+	}
+	
+	@Override
+	public ReleaseDate scrapeReleaseDate(){
+		Element releaseDateElement = document
 				.select("body table tbody tr td table tbody tr td div table tbody tr td table tbody tr td table tbody tr:contains(Date Added) td ~ td p")
 				.first();
-		String yearText = yearElement.text().toString().trim();
-		yearText = yearText.substring(yearText.length() - 4);
-		return new Year(yearText);
+		if(releaseDateElement != null && releaseDateElement.text().length() > 4)
+		{
+			String releaseDateText = releaseDateElement.text().trim();
+			if(!Character.isAlphabetic(releaseDateText.charAt(0))) //fix for weird white space trim() is not getting rid of
+					releaseDateText = releaseDateText.substring(1);
+			if(releaseDateText.length() > 4)
+				return new ReleaseDate(releaseDateText.trim(), actionJavReleaseDateFormat);
+		}
+		return ReleaseDate.BLANK_RELEASEDATE;
 	}
 
 	@Override

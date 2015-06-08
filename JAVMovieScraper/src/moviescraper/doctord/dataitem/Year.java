@@ -1,7 +1,9 @@
 package moviescraper.doctord.dataitem;
 
 
-
+/**
+ * The year in which a movie is released. The correct format for this variable is YYYY where YYYY is the 4 digit year.
+ */
 public class Year extends MovieDataItem {
 	
 	private String year;

@@ -10,7 +10,7 @@ import javax.swing.JList;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
-import moviescraper.doctord.IconCache;
+import moviescraper.doctord.model.IconCache;
 
 public class FileRenderer extends DefaultListCellRenderer {
 

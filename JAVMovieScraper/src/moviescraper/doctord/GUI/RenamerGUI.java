@@ -27,7 +27,6 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
 
-import moviescraper.doctord.Movie;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Director;
 import moviescraper.doctord.dataitem.Genre;
@@ -37,6 +36,7 @@ import moviescraper.doctord.dataitem.OriginalTitle;
 import moviescraper.doctord.dataitem.Outline;
 import moviescraper.doctord.dataitem.Plot;
 import moviescraper.doctord.dataitem.Rating;
+import moviescraper.doctord.dataitem.ReleaseDate;
 import moviescraper.doctord.dataitem.Runtime;
 import moviescraper.doctord.dataitem.Set;
 import moviescraper.doctord.dataitem.SortTitle;
@@ -48,6 +48,7 @@ import moviescraper.doctord.dataitem.Top250;
 import moviescraper.doctord.dataitem.Trailer;
 import moviescraper.doctord.dataitem.Votes;
 import moviescraper.doctord.dataitem.Year;
+import moviescraper.doctord.model.Movie;
 import moviescraper.doctord.model.Renamer;
 import moviescraper.doctord.preferences.MoviescraperPreferences;
 import moviescraper.doctord.preferences.Settings;
@@ -273,6 +274,7 @@ public class RenamerGUI extends JFrame {
 		Thumb[] posters = new Thumb[0]; 
 
 		Rating rating = new Rating(6.0, "Rating");
+		ReleaseDate releaseDate = new ReleaseDate("1999-08-25");
 		Runtime runtime = new Runtime("60 min");
 		Set set = new Set("Set");
 		SortTitle sortTitle= new SortTitle("SortTitle");
@@ -284,6 +286,6 @@ public class RenamerGUI extends JFrame {
 		Votes votes = new Votes("Votes");
 		Year year = new Year("1999");
 		
-		return new Movie(actors, directors, fanart, extraFanart, genres, id, mpaa, originalTitle, outline, plot, posters, rating, runtime, set, sortTitle, studio, tagline, title, top250, trailer, votes, year);
+		return new Movie(actors, directors, fanart, extraFanart, genres, id, mpaa, originalTitle, outline, plot, posters, rating, releaseDate, runtime, set, sortTitle, studio, tagline, title, top250, trailer, votes, year);
 	}
 }

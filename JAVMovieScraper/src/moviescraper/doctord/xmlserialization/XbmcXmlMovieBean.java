@@ -1,4 +1,4 @@
-package moviescraper.doctord;
+package moviescraper.doctord.xmlserialization;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -8,7 +8,11 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 
 import moviescraper.doctord.dataitem.*;
 import moviescraper.doctord.dataitem.Runtime;
+import moviescraper.doctord.model.Movie;
 
+/**
+ * Class which handles serializing a Movie object to and from XML
+ */
 public class XbmcXmlMovieBean {
 
 	private String title;
@@ -24,6 +28,7 @@ public class XbmcXmlMovieBean {
 	private String plot;
 	private String tagline;
 	private String runtime;
+	private String releasedate;
 	private String studio;
 	private String[] thumb;
 	private XbmcXmlFanartBean fanart;
@@ -64,6 +69,7 @@ public class XbmcXmlMovieBean {
 		plot = movie.getPlot().getPlot();
 		tagline = movie.getTagline().getTagline();
 		runtime = movie.getRuntime().getRuntime();
+		releasedate = movie.getReleaseDate().getReleaseDate();
 		studio = movie.getStudio().getStudio();
 		// thumb
 		thumb = new String[movie.getPosters().length];
@@ -158,7 +164,7 @@ public class XbmcXmlMovieBean {
 		Thumb [] emptyExtraFanrt = new Thumb[0];
 		Movie movie = new Movie(actors, directors, fanartThumbs, emptyExtraFanrt, genres, new ID(id),
 				new MPAARating(mpaa), new OriginalTitle(originaltitle),
-				new Outline(outline), new Plot(plot), posterThumbs, new Rating(10,rating),
+				new Outline(outline), new Plot(plot), posterThumbs, new Rating(10,rating), new ReleaseDate(releasedate),
 				new Runtime(runtime), new Set(set), new SortTitle(sorttitle),
 				new Studio(studio), new Tagline(tagline), new Title(title),
 				new Top250(top250), new Trailer(trailer), new Votes(votes), new Year(year));

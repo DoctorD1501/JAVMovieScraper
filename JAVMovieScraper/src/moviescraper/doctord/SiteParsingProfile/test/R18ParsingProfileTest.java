@@ -7,17 +7,18 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.SiteParsingProfile.specific.R18ParsingProfile;
 import moviescraper.doctord.controller.SpecificScraperAction;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Genre;
 import moviescraper.doctord.dataitem.ID;
 import moviescraper.doctord.dataitem.Plot;
+import moviescraper.doctord.dataitem.ReleaseDate;
 import moviescraper.doctord.dataitem.Set;
 import moviescraper.doctord.dataitem.Thumb;
 import moviescraper.doctord.dataitem.Title;
 import moviescraper.doctord.dataitem.Year;
+import moviescraper.doctord.model.SearchResult;
 
 import org.jsoup.nodes.Document;
 import org.junit.BeforeClass;
@@ -90,6 +91,12 @@ public class R18ParsingProfileTest {
 	public void testYear() {
 		Year scrapeYear = profile.scrapeYear();	
 		assertEquals("Found wrong year", "2012", scrapeYear.getYear());
+	}
+	
+	@Test
+	public void testReleaseDate() {
+		ReleaseDate scrapeReleaseDate = profile.scrapeReleaseDate();
+		assertEquals("Wrong release date", "2012-10-04", scrapeReleaseDate.getReleaseDate());
 	}
 	
 	@Test

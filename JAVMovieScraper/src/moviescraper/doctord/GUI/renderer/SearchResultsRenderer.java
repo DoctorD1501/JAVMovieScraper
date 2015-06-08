@@ -7,7 +7,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
-import moviescraper.doctord.SearchResult;
+import moviescraper.doctord.model.SearchResult;
 
 
 

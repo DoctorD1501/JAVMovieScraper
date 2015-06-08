@@ -23,8 +23,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingWorker;
 
-import moviescraper.doctord.Movie;
-import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.Amalgamation.MovieScrapeResultGroup;
 import moviescraper.doctord.Amalgamation.ScraperGroupAmalgamationPreference;
 import moviescraper.doctord.GUI.GUIMain;
@@ -50,6 +48,7 @@ import moviescraper.doctord.dataitem.OriginalTitle;
 import moviescraper.doctord.dataitem.Outline;
 import moviescraper.doctord.dataitem.Plot;
 import moviescraper.doctord.dataitem.Rating;
+import moviescraper.doctord.dataitem.ReleaseDate;
 import moviescraper.doctord.dataitem.Runtime;
 import moviescraper.doctord.dataitem.Set;
 import moviescraper.doctord.dataitem.SortTitle;
@@ -61,6 +60,8 @@ import moviescraper.doctord.dataitem.Top250;
 import moviescraper.doctord.dataitem.Trailer;
 import moviescraper.doctord.dataitem.Votes;
 import moviescraper.doctord.dataitem.Year;
+import moviescraper.doctord.model.Movie;
+import moviescraper.doctord.model.SearchResult;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -1166,6 +1167,15 @@ public class ScrapeMovieAction extends AbstractAction {
 				break;
 			}
 		}
+		
+		ReleaseDate releaseDateToUse = ReleaseDate.BLANK_RELEASEDATE;
+		
+		for(Movie m: bestContentForDateAndTime){
+			if (m != null && m.getReleaseDate() != null && m.getReleaseDate().getReleaseDate().length() > 1){
+				releaseDateToUse = m.getReleaseDate();
+				break;
+			}
+		}
 
 		// This items are not really scraped on those sites
 
@@ -1179,7 +1189,7 @@ public class ScrapeMovieAction extends AbstractAction {
 		Movie amalgamatedMovie = new Movie(actorsToUse, directorsToUse,
 					fanartToUse, extraFanartToUse, genresToUse, idsToUse,
 					mpaaToUse, originalTitleToUse, outlineToUse, plotToUse,
-					postersToUse, ratingToUse, runtimeToUse, setToUse,
+					postersToUse, ratingToUse, releaseDateToUse, runtimeToUse, setToUse,
 					sortTitleToUse, studioToUse, taglineToUse, titleToUse,
 					top250ToUse, trailerToUse, votesToUse, yearToUse);
 		

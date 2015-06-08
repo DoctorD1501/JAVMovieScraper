@@ -1,4 +1,4 @@
-package moviescraper.doctord;
+package moviescraper.doctord.model;
 
 import moviescraper.doctord.dataitem.Thumb;
 

@@ -18,13 +18,13 @@ import java.awt.BorderLayout;
 
 import javax.swing.JList;
 
-import moviescraper.doctord.IconCache;
-import moviescraper.doctord.Movie;
-import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.Amalgamation.AllAmalgamationOrderingPreferences;
 import moviescraper.doctord.GUI.renderer.FileRenderer;
 import moviescraper.doctord.controller.SelectFileListAction;
 import moviescraper.doctord.dataitem.Actor;
+import moviescraper.doctord.model.IconCache;
+import moviescraper.doctord.model.Movie;
+import moviescraper.doctord.model.SearchResult;
 import moviescraper.doctord.preferences.GuiSettings;
 import moviescraper.doctord.preferences.MoviescraperPreferences;
 

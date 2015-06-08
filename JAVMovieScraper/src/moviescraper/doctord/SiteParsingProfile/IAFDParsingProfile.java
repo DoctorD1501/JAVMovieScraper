@@ -14,10 +14,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Director;
-
 import moviescraper.doctord.dataitem.Genre;
 import moviescraper.doctord.dataitem.ID;
 import moviescraper.doctord.dataitem.MPAARating;
@@ -25,6 +23,7 @@ import moviescraper.doctord.dataitem.OriginalTitle;
 import moviescraper.doctord.dataitem.Outline;
 import moviescraper.doctord.dataitem.Plot;
 import moviescraper.doctord.dataitem.Rating;
+import moviescraper.doctord.dataitem.ReleaseDate;
 import moviescraper.doctord.dataitem.Runtime;
 import moviescraper.doctord.dataitem.Set;
 import moviescraper.doctord.dataitem.SortTitle;
@@ -35,6 +34,7 @@ import moviescraper.doctord.dataitem.Title;
 import moviescraper.doctord.dataitem.Top250;
 import moviescraper.doctord.dataitem.Votes;
 import moviescraper.doctord.dataitem.Year;
+import moviescraper.doctord.model.SearchResult;
 
 public class IAFDParsingProfile extends SiteParsingProfile {
 	
@@ -87,6 +87,12 @@ public class IAFDParsingProfile extends SiteParsingProfile {
 			return new Year(releaseDateText);
 		}
 		else return Year.BLANK_YEAR;
+	}
+	
+	@Override
+	public ReleaseDate scrapeReleaseDate() {
+		//I don't think IAFD has the month or day a movie was released - only the year
+		return ReleaseDate.BLANK_RELEASEDATE;
 	}
 
 	@Override

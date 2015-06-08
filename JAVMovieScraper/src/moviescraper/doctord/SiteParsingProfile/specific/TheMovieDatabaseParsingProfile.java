@@ -12,12 +12,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfileJSON;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Director;
-
 import moviescraper.doctord.dataitem.Genre;
 import moviescraper.doctord.dataitem.ID;
 import moviescraper.doctord.dataitem.MPAARating;
@@ -25,6 +23,7 @@ import moviescraper.doctord.dataitem.OriginalTitle;
 import moviescraper.doctord.dataitem.Outline;
 import moviescraper.doctord.dataitem.Plot;
 import moviescraper.doctord.dataitem.Rating;
+import moviescraper.doctord.dataitem.ReleaseDate;
 import moviescraper.doctord.dataitem.Runtime;
 import moviescraper.doctord.dataitem.Set;
 import moviescraper.doctord.dataitem.SortTitle;
@@ -35,6 +34,7 @@ import moviescraper.doctord.dataitem.Title;
 import moviescraper.doctord.dataitem.Top250;
 import moviescraper.doctord.dataitem.Votes;
 import moviescraper.doctord.dataitem.Year;
+import moviescraper.doctord.model.SearchResult;
 
 public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON implements SpecificProfile {
 	
@@ -141,18 +141,23 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 
 	@Override
 	public Year scrapeYear() {
+		return scrapeReleaseDate().getYear();
+	}
+	
+	@Override
+	public ReleaseDate scrapeReleaseDate() {
 		JSONObject pageJSON = getMovieJSON();
 		if(pageJSON != null)
 		{
 			try {
 				String releaseDate = pageJSON.getString("release_date");
-				if(releaseDate != null && releaseDate.length() >= 4)
-					return new Year(releaseDate.substring(0,4));
+				if(releaseDate != null && releaseDate.length() > 4)
+					return new ReleaseDate(releaseDate);
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
 		}
-		return Year.BLANK_YEAR;
+		return ReleaseDate.BLANK_RELEASEDATE;
 	}
 
 	@Override

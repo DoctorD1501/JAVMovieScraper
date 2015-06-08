@@ -1,6 +1,5 @@
 package moviescraper.doctord.model;
 
-import moviescraper.doctord.Movie;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
 
 public class GenericMovieScraper extends AbstractMovieScraper {

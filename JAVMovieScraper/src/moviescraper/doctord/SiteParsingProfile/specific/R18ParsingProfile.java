@@ -3,6 +3,7 @@ package moviescraper.doctord.SiteParsingProfile.specific;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -17,12 +18,10 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
 import moviescraper.doctord.controller.SpecificScraperAction;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Director;
-
 import moviescraper.doctord.dataitem.Genre;
 import moviescraper.doctord.dataitem.ID;
 import moviescraper.doctord.dataitem.MPAARating;
@@ -30,6 +29,7 @@ import moviescraper.doctord.dataitem.OriginalTitle;
 import moviescraper.doctord.dataitem.Outline;
 import moviescraper.doctord.dataitem.Plot;
 import moviescraper.doctord.dataitem.Rating;
+import moviescraper.doctord.dataitem.ReleaseDate;
 import moviescraper.doctord.dataitem.Runtime;
 import moviescraper.doctord.dataitem.Set;
 import moviescraper.doctord.dataitem.SortTitle;
@@ -41,8 +41,11 @@ import moviescraper.doctord.dataitem.Top250;
 import moviescraper.doctord.dataitem.Trailer;
 import moviescraper.doctord.dataitem.Votes;
 import moviescraper.doctord.dataitem.Year;
+import moviescraper.doctord.model.SearchResult;
 
 public class R18ParsingProfile extends SiteParsingProfile implements SpecificProfile {
+	
+	private static final SimpleDateFormat r18ReleaseDateFormat = new SimpleDateFormat("MMM. dd,yyyy");
 	
 	@Override
 	public String getParserName() {
@@ -116,13 +119,17 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 
 	@Override
 	public Year scrapeYear() {
+		return scrapeReleaseDate().getYear();
+	}
+	
+	@Override
+	public ReleaseDate scrapeReleaseDate() {
 		Element releaseDateElement = document.select("div.product-details dl dt:contains(Release Date) ~ dd").first();
-		if(releaseDateElement != null && releaseDateElement.text().length() >= 4)
+		if(releaseDateElement != null && releaseDateElement.text().length() > 4)
 		{
-			//just grab the last 4 letters of the text - that should be the year
-			return new Year(releaseDateElement.text().substring(releaseDateElement.text().length() - 4));
+			return new ReleaseDate(releaseDateElement.text().trim(), r18ReleaseDateFormat);
 		}
-		return Year.BLANK_YEAR;
+		return ReleaseDate.BLANK_RELEASEDATE;
 	}
 
 	@Override

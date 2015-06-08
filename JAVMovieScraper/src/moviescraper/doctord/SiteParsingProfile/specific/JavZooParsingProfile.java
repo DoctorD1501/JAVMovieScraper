@@ -16,9 +16,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import moviescraper.doctord.JapaneseCharacter;
-import moviescraper.doctord.SearchResult;
-import moviescraper.doctord.TranslateString;
+import moviescraper.doctord.LanguageTranslation.JapaneseCharacter;
+import moviescraper.doctord.LanguageTranslation.TranslateString;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Director;
@@ -29,6 +28,7 @@ import moviescraper.doctord.dataitem.OriginalTitle;
 import moviescraper.doctord.dataitem.Outline;
 import moviescraper.doctord.dataitem.Plot;
 import moviescraper.doctord.dataitem.Rating;
+import moviescraper.doctord.dataitem.ReleaseDate;
 import moviescraper.doctord.dataitem.Runtime;
 import moviescraper.doctord.dataitem.Set;
 import moviescraper.doctord.dataitem.SortTitle;
@@ -39,6 +39,7 @@ import moviescraper.doctord.dataitem.Title;
 import moviescraper.doctord.dataitem.Top250;
 import moviescraper.doctord.dataitem.Votes;
 import moviescraper.doctord.dataitem.Year;
+import moviescraper.doctord.model.SearchResult;
 
 public class JavZooParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
@@ -147,21 +148,21 @@ public class JavZooParsingProfile extends SiteParsingProfile implements Specific
 
 	@Override
 	public Year scrapeYear() {
-		Element yearElement = document.select("div.container p:contains(Release Date:)").first();
-		if(yearElement != null)
+		return scrapeReleaseDate().getYear();
+	}
+	
+	@Override
+	public ReleaseDate scrapeReleaseDate() {
+		Element releaseDateElement = document.select("div.container p:contains(Release Date:), div.container p:contains(發行日期:)").first();
+		if(releaseDateElement != null)
 		{
-			String yearText = yearElement.text().trim();
-			try{
-				yearText = yearText.substring(14,18);
-			}
-			catch(StringIndexOutOfBoundsException e)
-			{
-				//the site didn't have a release date, even though it had a row where it should be, so return an empty year
-				return Year.BLANK_YEAR;
-			}
-			return new Year(yearText);
+			String releaseDateText = releaseDateElement.text().trim();
+			releaseDateText = releaseDateText.replace("Release Date:", "");
+			releaseDateText = releaseDateText.replace("發行日期:", "");
+			if(releaseDateText != null && releaseDateText.length() > 4)
+				return new ReleaseDate(releaseDateText.trim());
 		}
-		else return Year.BLANK_YEAR;
+		return ReleaseDate.BLANK_RELEASEDATE;
 	}
 
 	@Override

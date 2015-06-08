@@ -14,12 +14,10 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import moviescraper.doctord.Language;
-import moviescraper.doctord.SearchResult;
+import moviescraper.doctord.LanguageTranslation.Language;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Director;
-
 import moviescraper.doctord.dataitem.Genre;
 import moviescraper.doctord.dataitem.ID;
 import moviescraper.doctord.dataitem.MPAARating;
@@ -27,6 +25,7 @@ import moviescraper.doctord.dataitem.OriginalTitle;
 import moviescraper.doctord.dataitem.Outline;
 import moviescraper.doctord.dataitem.Plot;
 import moviescraper.doctord.dataitem.Rating;
+import moviescraper.doctord.dataitem.ReleaseDate;
 import moviescraper.doctord.dataitem.Runtime;
 import moviescraper.doctord.dataitem.Set;
 import moviescraper.doctord.dataitem.SortTitle;
@@ -38,6 +37,7 @@ import moviescraper.doctord.dataitem.Top250;
 import moviescraper.doctord.dataitem.Trailer;
 import moviescraper.doctord.dataitem.Votes;
 import moviescraper.doctord.dataitem.Year;
+import moviescraper.doctord.model.SearchResult;
 
 public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
@@ -65,7 +65,7 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 			String titleElementText = titleElement.text().trim().replaceAll("[ ]+", " ");
 			return new Title(titleElementText);
 		}
-		return null;
+		return new Title("");
 	}
 
 	@Override
@@ -104,19 +104,24 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 
 	@Override
 	public Year scrapeYear() {
-		Element yearElement = japaneseDocument.select("div.movieInfo span.release-day + span.dataInfo").first();
-		if(yearElement != null)
+		return scrapeReleaseDate().getYear();
+	}
+	
+	@Override
+	public ReleaseDate scrapeReleaseDate()
+	{
+		Element releaseDateElement = japaneseDocument.select("div.movieInfo span.release-day + span.dataInfo").first();
+		if(releaseDateElement != null)
 		{
 			//System.out.println("year = " + yearElement.text());
-			String yearText = yearElement.text();
-			if(yearText.length() >= 4)
+			String yearText = releaseDateElement.text().trim();
+			if(yearText.length() > 4)
 			{
-				yearText = yearText.substring(0,4);
-				return new Year(yearText);
+				return new ReleaseDate(yearText);
 			}
 			
 		}
-		return Year.BLANK_YEAR;
+		return ReleaseDate.BLANK_RELEASEDATE;
 	}
 
 	@Override
@@ -225,7 +230,7 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 			String idFromBaseUri = baseUri.substring(baseUri.lastIndexOf('/')+1);
 			return new ID(idFromBaseUri);
 		}
-		return null;
+		return ID.BLANK_ID;
 	}
 
 	@Override

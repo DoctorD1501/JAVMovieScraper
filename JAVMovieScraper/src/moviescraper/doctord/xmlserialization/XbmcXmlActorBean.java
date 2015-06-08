@@ -1,10 +1,13 @@
-package moviescraper.doctord;
+package moviescraper.doctord.xmlserialization;
 
 import java.io.IOException;
 
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Thumb;
 
+/**
+ * Helper class for serializing a actor object to and from XML
+ */
 public class XbmcXmlActorBean {
 	
 	public String name;

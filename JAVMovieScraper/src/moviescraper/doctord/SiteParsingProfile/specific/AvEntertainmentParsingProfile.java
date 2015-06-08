@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -19,12 +20,10 @@ import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 
-import moviescraper.doctord.Language;
-import moviescraper.doctord.SearchResult;
+import moviescraper.doctord.LanguageTranslation.Language;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Director;
-
 import moviescraper.doctord.dataitem.Genre;
 import moviescraper.doctord.dataitem.ID;
 import moviescraper.doctord.dataitem.MPAARating;
@@ -32,6 +31,7 @@ import moviescraper.doctord.dataitem.OriginalTitle;
 import moviescraper.doctord.dataitem.Outline;
 import moviescraper.doctord.dataitem.Plot;
 import moviescraper.doctord.dataitem.Rating;
+import moviescraper.doctord.dataitem.ReleaseDate;
 import moviescraper.doctord.dataitem.Runtime;
 import moviescraper.doctord.dataitem.Set;
 import moviescraper.doctord.dataitem.SortTitle;
@@ -42,8 +42,11 @@ import moviescraper.doctord.dataitem.Title;
 import moviescraper.doctord.dataitem.Top250;
 import moviescraper.doctord.dataitem.Votes;
 import moviescraper.doctord.dataitem.Year;
+import moviescraper.doctord.model.SearchResult;
 
 public class AvEntertainmentParsingProfile extends SiteParsingProfile implements SpecificProfile {
+	
+	private static final SimpleDateFormat avEntertainmentReleaseDateFormat = new SimpleDateFormat("MM/dd/yyyy");
 	
 	@Override
 	public Title scrapeTitle() {
@@ -75,28 +78,21 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 
 	@Override
 	public Year scrapeYear() {
-		String year = "";
+		return scrapeReleaseDate().getYear();
+	}
+	
+	@Override
+	public ReleaseDate scrapeReleaseDate()
+	{
 		
-		Elements elements = document.select("div[id=titlebox] ul li");
-		for (Element element : elements) {
-			if (element.childNodeSize() >= 3) {
-				Node childNode = element.childNode(2);
-				if (childNode instanceof TextNode
-						&& (element.childNode(1).childNode(0).toString()
-								.startsWith("Release Date") || element
-								.childNode(1).childNode(0).toString()
-								.startsWith("発売日"))) {
-					String data = element.childNode(2).toString();
-					Pattern pattern = Pattern.compile("\\d{4}");
-					Matcher matcher = pattern.matcher(data);
-					if (matcher.find()) {
-						year = matcher.group();
-						break;
-					}
-				}
-			}
+		Elements elements = document.select("div[id=titlebox] ul li:contains(Release Date:), div[id=titlebox] ul li:contains(発売日:)");
+		if(elements != null)
+		{
+			String releaseDateText = elements.first().ownText();
+			return new ReleaseDate(releaseDateText, avEntertainmentReleaseDateFormat);
 		}
-		return new Year(year);
+		return ReleaseDate.BLANK_RELEASEDATE;
+		
 	}
 
 	@Override
@@ -193,8 +189,7 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 
 	@Override
 	public Thumb[] scrapeExtraFanart() {
-		// TODO Auto-generated method stub
-		return null;
+		return new Thumb[0];
 	}
 
 	@Override

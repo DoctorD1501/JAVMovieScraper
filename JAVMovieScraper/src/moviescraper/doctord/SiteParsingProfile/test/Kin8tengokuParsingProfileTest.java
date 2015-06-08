@@ -10,6 +10,7 @@ import moviescraper.doctord.SiteParsingProfile.specific.Kin8tengokuParsingProfil
 import moviescraper.doctord.controller.SpecificScraperAction;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Genre;
+import moviescraper.doctord.dataitem.ReleaseDate;
 import moviescraper.doctord.dataitem.Runtime;
 import moviescraper.doctord.dataitem.Thumb;
 import moviescraper.doctord.dataitem.Year;
@@ -53,6 +54,12 @@ public class Kin8tengokuParsingProfileTest {
 	public void testYear() {
 		Year year = profile.scrapeYear();
 		assertEquals("Wrong Year", "2014", year.getYear());
+	}
+	
+	@Test
+	public void testReleaseDate(){
+		ReleaseDate scrapeReleaseDate = profile.scrapeReleaseDate();
+		assertEquals("Found wrong releaseDate", "2014-03-05", scrapeReleaseDate.getReleaseDate());
 	}
 	
 	@Test

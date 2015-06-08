@@ -3,6 +3,7 @@ package moviescraper.doctord.SiteParsingProfile.specific;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.regex.Matcher;
@@ -14,12 +15,10 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
 import moviescraper.doctord.controller.SpecificScraperAction;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Director;
-
 import moviescraper.doctord.dataitem.Genre;
 import moviescraper.doctord.dataitem.ID;
 import moviescraper.doctord.dataitem.MPAARating;
@@ -27,6 +26,7 @@ import moviescraper.doctord.dataitem.OriginalTitle;
 import moviescraper.doctord.dataitem.Outline;
 import moviescraper.doctord.dataitem.Plot;
 import moviescraper.doctord.dataitem.Rating;
+import moviescraper.doctord.dataitem.ReleaseDate;
 import moviescraper.doctord.dataitem.Runtime;
 import moviescraper.doctord.dataitem.Set;
 import moviescraper.doctord.dataitem.SortTitle;
@@ -37,6 +37,7 @@ import moviescraper.doctord.dataitem.Title;
 import moviescraper.doctord.dataitem.Top250;
 import moviescraper.doctord.dataitem.Votes;
 import moviescraper.doctord.dataitem.Year;
+import moviescraper.doctord.model.SearchResult;
 
 public class TokyoHotParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
@@ -46,6 +47,7 @@ public class TokyoHotParsingProfile extends SiteParsingProfile implements Specif
 	private String siteLink;
 	private String imageLink;
 	private String id;
+	private static final SimpleDateFormat tokyoHotReleaseDateFormat = new SimpleDateFormat("dd-MMM-yyyy hh:mm");
 
 	public TokyoHotParsingProfile() {
 	}
@@ -87,16 +89,31 @@ public class TokyoHotParsingProfile extends SiteParsingProfile implements Specif
 
 	@Override
 	public Year scrapeYear() {
-		Elements e = docImage.select("td[align=right]");
-		if (e.size() > 2) {
-			Pattern pattern = Pattern.compile("[0-9]{4}");
-			String timecode = e.get(1).ownText();
-			Matcher matcher = pattern.matcher(timecode);
-			if (matcher.find()) {
-				return new Year( matcher.group() );
+		return scrapeReleaseDate().getYear();
+	}
+	
+	@Override
+	public ReleaseDate scrapeReleaseDate()
+	{
+		ReleaseDate releaseDate = ReleaseDate.BLANK_RELEASEDATE;
+		Elements releaseDateElements = docImage.select("td[align=right]");
+		for(Element currentElement : releaseDateElements)
+		{
+			if (releaseDateElements.size() > 2) {
+				Pattern pattern = Pattern.compile("[0-9]{4}");
+				String timecode = currentElement.ownText();
+				Matcher matcher = pattern.matcher(timecode);
+				if (matcher.find()) {
+					// the last element we find seems to be the most accurate
+					// date, but I'm not 100% sure what each of these dates
+					// represents
+					// since they seem to vary by a few days usually
+					releaseDate = new ReleaseDate(timecode,
+							tokyoHotReleaseDateFormat);
+				}
 			}
 		}
-		return null;
+		return releaseDate;
 	}
 
 	@Override

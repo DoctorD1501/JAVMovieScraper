@@ -1,10 +1,12 @@
 eclipse.preferences.version=1
 encoding//src/moviescraper/doctord/GUI/AmalgamationSettingsDialog.java=UTF-8
+encoding//src/moviescraper/doctord/LanguageTranslation/TranslateString.java=UTF-8
 encoding//src/moviescraper/doctord/SiteParsingProfile/specific/AvEntertainmentParsingProfile.java=UTF-8
 encoding//src/moviescraper/doctord/SiteParsingProfile/specific/CaribbeancomParsingProfile.java=UTF-8
 encoding//src/moviescraper/doctord/SiteParsingProfile/specific/CaribbeancomPremiumParsingProfile.java=UTF-8
 encoding//src/moviescraper/doctord/SiteParsingProfile/specific/DmmParsingProfile.java=UTF-8
 encoding//src/moviescraper/doctord/SiteParsingProfile/specific/JavBusParsingProfile.java=UTF-8
+encoding//src/moviescraper/doctord/SiteParsingProfile/specific/JavZooParsingProfile.java=UTF-8
 encoding//src/moviescraper/doctord/SiteParsingProfile/specific/MyTokyoHotParsingProfile.java=UTF-8
 encoding//src/moviescraper/doctord/SiteParsingProfile/specific/OneThousandGiriParsingProfile.java=UTF-8
 encoding//src/moviescraper/doctord/SiteParsingProfile/test/CaribbeancomParsingProfileTest.java=UTF-8
@@ -13,4 +15,3 @@ encoding//src/moviescraper/doctord/SiteParsingProfile/test/HeyzoParsingProfileTe
 encoding//src/moviescraper/doctord/SiteParsingProfile/test/JavBusParsingProfileTest.java=UTF-8
 encoding//src/moviescraper/doctord/SiteParsingProfile/test/MyTokyoHotParsingProfileTest.java=UTF-8
 encoding//src/moviescraper/doctord/SiteParsingProfile/test/OneThousandGiriParsingProfileTest.java=UTF-8
-encoding//src/moviescraper/doctord/TranslateString.java=UTF-8

@@ -7,17 +7,18 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import moviescraper.doctord.Language;
-import moviescraper.doctord.SearchResult;
+import moviescraper.doctord.LanguageTranslation.Language;
 import moviescraper.doctord.SiteParsingProfile.specific.OneThousandGiriParsingProfile;
 import moviescraper.doctord.controller.SpecificScraperAction;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Genre;
 import moviescraper.doctord.dataitem.OriginalTitle;
 import moviescraper.doctord.dataitem.Plot;
+import moviescraper.doctord.dataitem.ReleaseDate;
 import moviescraper.doctord.dataitem.Thumb;
 import moviescraper.doctord.dataitem.Title;
 import moviescraper.doctord.dataitem.Year;
+import moviescraper.doctord.model.SearchResult;
 
 import org.jsoup.nodes.Document;
 import org.junit.BeforeClass;
@@ -84,6 +85,12 @@ public class OneThousandGiriParsingProfileTest {
 	public void testYear(){
 		Year testYear = englishProfile.scrapeYear();
 		assertEquals("Wrong year", "2015", testYear.getYear());
+	}
+	
+	@Test
+	public void testReleaseDate(){
+		ReleaseDate scrapeReleaseDate = englishProfile.scrapeReleaseDate();
+		assertEquals("Found wrong releaseDate", "2015-01-30", scrapeReleaseDate.getReleaseDate());
 	}
 	
 	@Test

@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.SiteParsingProfile.specific.MyTokyoHotParsingProfile;
 import moviescraper.doctord.controller.SpecificScraperAction;
 import moviescraper.doctord.dataitem.Actor;
@@ -14,10 +13,12 @@ import moviescraper.doctord.dataitem.Genre;
 import moviescraper.doctord.dataitem.ID;
 import moviescraper.doctord.dataitem.OriginalTitle;
 import moviescraper.doctord.dataitem.Plot;
+import moviescraper.doctord.dataitem.ReleaseDate;
 import moviescraper.doctord.dataitem.Thumb;
 import moviescraper.doctord.dataitem.Title;
 import moviescraper.doctord.dataitem.Trailer;
 import moviescraper.doctord.dataitem.Year;
+import moviescraper.doctord.model.SearchResult;
 
 import org.jsoup.nodes.Document;
 import org.junit.BeforeClass;
@@ -107,5 +108,11 @@ public class MyTokyoHotParsingProfileTest {
 	@Test public void testScrapeTrailer(){
 		Trailer trailer = parser.scrapeTrailer();
 		assertEquals("Trailer not correct", "http://my.cdn.tokyo-hot.com/media/samples/20876.mp4", trailer.getTrailer());
+	}
+	
+	@Test
+	public void testReleaseDate() {
+		ReleaseDate scrapeReleaseDate = parser.scrapeReleaseDate();
+		assertEquals("Wrong release date", "2012-06-15", scrapeReleaseDate.getReleaseDate());
 	}
 }

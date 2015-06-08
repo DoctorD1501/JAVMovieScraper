@@ -1,4 +1,4 @@
-package moviescraper.doctord;
+package moviescraper.doctord.model;
 
 import java.io.File;
 import java.io.FilenameFilter;

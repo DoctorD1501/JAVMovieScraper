@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,11 +17,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import moviescraper.doctord.Movie;
-import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.dataitem.Actor;
 import moviescraper.doctord.dataitem.Director;
-
 import moviescraper.doctord.dataitem.Genre;
 import moviescraper.doctord.dataitem.ID;
 import moviescraper.doctord.dataitem.MPAARating;
@@ -28,6 +26,7 @@ import moviescraper.doctord.dataitem.OriginalTitle;
 import moviescraper.doctord.dataitem.Outline;
 import moviescraper.doctord.dataitem.Plot;
 import moviescraper.doctord.dataitem.Rating;
+import moviescraper.doctord.dataitem.ReleaseDate;
 import moviescraper.doctord.dataitem.Runtime;
 import moviescraper.doctord.dataitem.Set;
 import moviescraper.doctord.dataitem.SortTitle;
@@ -38,12 +37,18 @@ import moviescraper.doctord.dataitem.Title;
 import moviescraper.doctord.dataitem.Top250;
 import moviescraper.doctord.dataitem.Votes;
 import moviescraper.doctord.dataitem.Year;
+import moviescraper.doctord.model.Movie;
+import moviescraper.doctord.model.SearchResult;
 
 public class Data18MovieParsingProfile extends SiteParsingProfile {
 	
 	boolean useSiteSearch = true;
 	String yearFromFilename = "";
 	String fileName;
+	//I've unfortunately had to make this static due to the current mess of a way this type of scraping is done where the object used
+	//to create the search results is not the same as the object used to actually scrape the document.
+	private static HashMap<String, String> releaseDateMap; 
+
 
 	@Override
 	public Title scrapeTitle() {
@@ -165,7 +170,6 @@ public class Data18MovieParsingProfile extends SiteParsingProfile {
 			String runtimeElementText = runtimeElement.text().replaceFirst(Pattern.quote("Length:"), "").replaceFirst(Pattern.quote(" min."), "").trim();
 			return new Runtime(runtimeElementText);
 		}
-		//System.out.println("runtime " + runtimeElement.text());
 		else return Runtime.BLANK_RUNTIME;
 	}
 
@@ -207,7 +211,6 @@ public class Data18MovieParsingProfile extends SiteParsingProfile {
 	public Thumb[] scrapeExtraFanart() {
 		//find split scene links from a full movie
 		Elements sceneContentLinks = document.select("div[onmouseout]:matches(Scene \\d\\d?)");
-		//System.out.println("Scenecontentlinsk " + sceneContentLinks);
 		ArrayList<String> contentLinks = new ArrayList<String>();
 		ArrayList<Thumb> extraFanart = new ArrayList<Thumb>();
 		if(sceneContentLinks != null)
@@ -222,7 +225,6 @@ public class Data18MovieParsingProfile extends SiteParsingProfile {
 					if(linkElementURL.contains("/"))
 					{
 						String contentID = linkElementURL.substring(linkElementURL.lastIndexOf("/")+1,linkElementURL.length());
-						//System.out.println(contentID);
 						contentLinks.add(contentID);
 					}
 				}
@@ -235,9 +237,7 @@ public class Data18MovieParsingProfile extends SiteParsingProfile {
 			//int viewerPageNumber = 1;
 			for(int viewerPageNumber = 1; viewerPageNumber <= 15; viewerPageNumber++)
 			{
-				//System.out.println("viewerPageNumber: " + String.format("%02d", viewerPageNumber));
 				String currentViewerPageURL = "http://www.data18.com/viewer/" + contentID + "/" + String.format("%02d", viewerPageNumber);
-				//System.out.println("currentVIewerPageURL + " + currentViewerPageURL);
 				try {
 					
 					Document viewerDocument = Jsoup.connect(currentViewerPageURL).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:5.0) Gecko/20100101 Firefox/5.0").get();
@@ -278,14 +278,7 @@ public class Data18MovieParsingProfile extends SiteParsingProfile {
 	@Override
 	public ArrayList<Genre> scrapeGenres() {
 		ArrayList<Genre> genreList = new ArrayList<Genre>();
-		//Elements genreElements = document.select("span.gensmall ~ a");
 		Elements genreElements = document.select("div.gen12:contains(Categories:) a, div.p8 div:contains(Categories:) a");
-		//alternate version data18 sometimes uses with "Categories" perhaps?
-		/*if(genreElements == null || genreElements.size() == 0)
-		{
-			System.out.println("alt genre method");
-			genreElements = document.select("div.gen12:contains(Categories:) a");
-		}*/
 		if (genreElements != null)
 		{
 			for(Element currentGenreElement : genreElements)
@@ -426,6 +419,11 @@ public class Data18MovieParsingProfile extends SiteParsingProfile {
 						currentMovieTitle = currentMovieTitle + " (" + releaseDateText + ")";
 					Thumb currentMovieThumb = new Thumb(currentMovie.select("img").attr("src"));
 					linksList.add(new SearchResult(currentMovieURL, currentMovieTitle, currentMovieThumb));
+					if(releaseDateMap == null)
+						releaseDateMap = new HashMap<String, String>();
+					//I'm putting into a static variable that never gets freed, so this could be a potential memory leak
+					//TODO: find a better way to do this without a global variable
+					releaseDateMap.put(currentMovieURL, releaseDateText);
 				}
 				return linksList.toArray(new SearchResult[linksList.size()]);
 			}
@@ -449,6 +447,19 @@ public class Data18MovieParsingProfile extends SiteParsingProfile {
 	@Override
 	public String getParserName() {
 		return "Data18 Movie";
+	}
+
+	@Override
+	public ReleaseDate scrapeReleaseDate() {
+		//Unfortunately this data is not available on full on the page we are scraping, so we store the info from the search result
+		//creation and retrieve it here
+		if(releaseDateMap != null && releaseDateMap.containsKey(document.location()))
+		{
+			String releaseDate = releaseDateMap.get(document.location());
+			if(releaseDate != null && releaseDate.length() > 4)
+				return new ReleaseDate(releaseDate);
+		}
+		return ReleaseDate.BLANK_RELEASEDATE;
 	}
 
 }

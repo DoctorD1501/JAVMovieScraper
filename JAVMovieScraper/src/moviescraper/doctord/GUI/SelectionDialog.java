@@ -13,8 +13,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
-import moviescraper.doctord.SearchResult;
 import moviescraper.doctord.GUI.renderer.SearchResultsRenderer;
+import moviescraper.doctord.model.SearchResult;
 
 /**
  * Generating a dialog for selecting a specific element.
