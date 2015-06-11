@@ -6,8 +6,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import moviescraper.doctord.GUI.GUIMain;
-import moviescraper.doctord.ReleaseRenamer.WebReleaseRenamer;
+import moviescraper.doctord.controller.releaserenamer.WebReleaseRenamer;
+import moviescraper.doctord.view.GUIMain;
 
 public class FileNameCleanupAction implements ActionListener {
 	

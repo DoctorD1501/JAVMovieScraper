@@ -5,7 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
-import moviescraper.doctord.GUI.GUIMain;
+import moviescraper.doctord.view.GUIMain;
 
 public class RefreshDirectoryAction implements ActionListener {
 

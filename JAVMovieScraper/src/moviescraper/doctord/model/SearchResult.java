@@ -1,6 +1,6 @@
 package moviescraper.doctord.model;
 
-import moviescraper.doctord.dataitem.Thumb;
+import moviescraper.doctord.model.dataitem.Thumb;
 
 public class SearchResult {
 	

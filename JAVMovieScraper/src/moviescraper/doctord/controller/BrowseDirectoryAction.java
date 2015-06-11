@@ -8,7 +8,7 @@ import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 
-import moviescraper.doctord.GUI.GUIMain;
+import moviescraper.doctord.view.GUIMain;
 
 public class BrowseDirectoryAction implements ActionListener {
 	/**

@@ -5,8 +5,8 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JFileChooser;
 
-import moviescraper.doctord.GUI.GUIMain;
-import moviescraper.doctord.preferences.GuiSettings;
+import moviescraper.doctord.model.preferences.GuiSettings;
+import moviescraper.doctord.view.GUIMain;
 
 public class ChooseExternalMediaPlayerAction implements ActionListener {
 	

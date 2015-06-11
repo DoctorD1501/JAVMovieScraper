@@ -12,27 +12,27 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-import moviescraper.doctord.GUI.GUIMain;
-import moviescraper.doctord.ReleaseRenamer.WebReleaseRenamer;
-import moviescraper.doctord.SiteParsingProfile.Data18MovieParsingProfile;
-import moviescraper.doctord.SiteParsingProfile.Data18WebContentParsingProfile;
-import moviescraper.doctord.SiteParsingProfile.IAFDParsingProfile;
-import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
-import moviescraper.doctord.SiteParsingProfile.specific.AvEntertainmentParsingProfile;
-import moviescraper.doctord.SiteParsingProfile.specific.CaribbeancomParsingProfile;
-import moviescraper.doctord.SiteParsingProfile.specific.CaribbeancomPremiumParsingProfile;
-import moviescraper.doctord.SiteParsingProfile.specific.DmmParsingProfile;
-import moviescraper.doctord.SiteParsingProfile.specific.HeyzoParsingProfile;
-import moviescraper.doctord.SiteParsingProfile.specific.JavBusParsingProfile;
-import moviescraper.doctord.SiteParsingProfile.specific.Kin8tengokuParsingProfile;
-import moviescraper.doctord.SiteParsingProfile.specific.MyTokyoHotParsingProfile;
-import moviescraper.doctord.SiteParsingProfile.specific.OnePondoParsingProfile;
-import moviescraper.doctord.SiteParsingProfile.specific.OneThousandGiriParsingProfile;
-import moviescraper.doctord.SiteParsingProfile.specific.TheMovieDatabaseParsingProfile;
-import moviescraper.doctord.SiteParsingProfile.specific.TokyoHotParsingProfile;
+import moviescraper.doctord.controller.Renamer;
+import moviescraper.doctord.controller.releaserenamer.WebReleaseRenamer;
+import moviescraper.doctord.controller.siteparsingprofile.Data18MovieParsingProfile;
+import moviescraper.doctord.controller.siteparsingprofile.Data18WebContentParsingProfile;
+import moviescraper.doctord.controller.siteparsingprofile.IAFDParsingProfile;
+import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
+import moviescraper.doctord.controller.siteparsingprofile.specific.AvEntertainmentParsingProfile;
+import moviescraper.doctord.controller.siteparsingprofile.specific.CaribbeancomParsingProfile;
+import moviescraper.doctord.controller.siteparsingprofile.specific.CaribbeancomPremiumParsingProfile;
+import moviescraper.doctord.controller.siteparsingprofile.specific.DmmParsingProfile;
+import moviescraper.doctord.controller.siteparsingprofile.specific.HeyzoParsingProfile;
+import moviescraper.doctord.controller.siteparsingprofile.specific.JavBusParsingProfile;
+import moviescraper.doctord.controller.siteparsingprofile.specific.Kin8tengokuParsingProfile;
+import moviescraper.doctord.controller.siteparsingprofile.specific.MyTokyoHotParsingProfile;
+import moviescraper.doctord.controller.siteparsingprofile.specific.OnePondoParsingProfile;
+import moviescraper.doctord.controller.siteparsingprofile.specific.OneThousandGiriParsingProfile;
+import moviescraper.doctord.controller.siteparsingprofile.specific.TheMovieDatabaseParsingProfile;
+import moviescraper.doctord.controller.siteparsingprofile.specific.TokyoHotParsingProfile;
 import moviescraper.doctord.model.Movie;
-import moviescraper.doctord.model.Renamer;
-import moviescraper.doctord.preferences.MoviescraperPreferences;
+import moviescraper.doctord.model.preferences.MoviescraperPreferences;
+import moviescraper.doctord.view.GUIMain;
 
 public class Main {
 

@@ -8,10 +8,9 @@ import java.io.IOException;
 
 import javax.swing.SwingWorker;
 
-import moviescraper.doctord.GUI.GUIMain;
 import moviescraper.doctord.model.Movie;
-import moviescraper.doctord.model.Renamer;
-import moviescraper.doctord.preferences.MoviescraperPreferences;
+import moviescraper.doctord.model.preferences.MoviescraperPreferences;
+import moviescraper.doctord.view.GUIMain;
 
 public class WriteFileDataAction implements ActionListener {
 

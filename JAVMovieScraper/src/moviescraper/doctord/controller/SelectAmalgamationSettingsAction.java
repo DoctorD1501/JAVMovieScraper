@@ -2,7 +2,8 @@ package moviescraper.doctord.controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import moviescraper.doctord.GUI.GUIMain;
+
+import moviescraper.doctord.view.GUIMain;
 
 public class SelectAmalgamationSettingsAction implements ActionListener {
 

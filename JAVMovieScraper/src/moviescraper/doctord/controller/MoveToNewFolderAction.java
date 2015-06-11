@@ -8,9 +8,9 @@ import java.io.IOException;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
-import moviescraper.doctord.GUI.GUIMain;
-import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
+import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.model.Movie;
+import moviescraper.doctord.view.GUIMain;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;

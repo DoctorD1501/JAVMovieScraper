@@ -27,17 +27,17 @@ import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-import moviescraper.doctord.SiteParsingProfile.Data18MovieParsingProfile;
-import moviescraper.doctord.SiteParsingProfile.Data18WebContentParsingProfile;
-import moviescraper.doctord.SiteParsingProfile.IAFDParsingProfile;
-import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
-import moviescraper.doctord.SiteParsingProfile.specific.DmmParsingProfile;
-import moviescraper.doctord.SiteParsingProfile.specific.JavLibraryParsingProfile;
 import moviescraper.doctord.controller.ScrapeMovieAction;
-import moviescraper.doctord.dataitem.*;
-import moviescraper.doctord.dataitem.Runtime;
-import moviescraper.doctord.preferences.MoviescraperPreferences;
-import moviescraper.doctord.xmlserialization.XbmcXmlMovieBean;
+import moviescraper.doctord.controller.siteparsingprofile.Data18MovieParsingProfile;
+import moviescraper.doctord.controller.siteparsingprofile.Data18WebContentParsingProfile;
+import moviescraper.doctord.controller.siteparsingprofile.IAFDParsingProfile;
+import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
+import moviescraper.doctord.controller.siteparsingprofile.specific.DmmParsingProfile;
+import moviescraper.doctord.controller.siteparsingprofile.specific.JavLibraryParsingProfile;
+import moviescraper.doctord.controller.xmlserialization.XbmcXmlMovieBean;
+import moviescraper.doctord.model.dataitem.*;
+import moviescraper.doctord.model.dataitem.Runtime;
+import moviescraper.doctord.model.preferences.MoviescraperPreferences;
 
 public class Movie {
 

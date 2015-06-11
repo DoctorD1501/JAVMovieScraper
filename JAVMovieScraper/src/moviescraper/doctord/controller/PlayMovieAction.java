@@ -12,10 +12,10 @@ import javax.swing.JOptionPane;
 
 import org.apache.commons.io.FilenameUtils;
 
-import moviescraper.doctord.GUI.GUIMain;
-import moviescraper.doctord.SiteParsingProfile.SiteParsingProfile;
+import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.model.MovieFilenameFilter;
-import moviescraper.doctord.preferences.GuiSettings;
+import moviescraper.doctord.model.preferences.GuiSettings;
+import moviescraper.doctord.view.GUIMain;
 
 public class PlayMovieAction implements ActionListener {
 

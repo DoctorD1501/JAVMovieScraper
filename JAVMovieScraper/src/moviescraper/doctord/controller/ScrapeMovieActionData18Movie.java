@@ -2,7 +2,7 @@ package moviescraper.doctord.controller;
 
 import java.awt.event.ActionEvent;
 
-import moviescraper.doctord.GUI.GUIMain;
+import moviescraper.doctord.view.GUIMain;
 
 public class ScrapeMovieActionData18Movie extends ScrapeMovieAction
 {
