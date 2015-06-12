@@ -105,7 +105,6 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile{
 			releaseDateElement = document.select("div p:contains(Date:) b, div p:contains(Release date:) b").first();
 			dateFormatToUse = new SimpleDateFormat("MMMM, yyyy");
 		}
-		System.out.println("releaseDateElement: " + releaseDateElement);
 		if(releaseDateElement != null)
 		{
 			String releaseDateText = releaseDateElement.text().trim();

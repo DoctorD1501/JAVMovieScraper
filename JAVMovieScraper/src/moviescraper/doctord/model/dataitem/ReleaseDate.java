@@ -25,6 +25,10 @@ public class ReleaseDate extends MovieDataItem {
 		this.releaseDate = releaseDate;
 	}
 	
+	public ReleaseDate(){
+		releaseDate = "";
+	}
+	
 	public ReleaseDate(String releaseDate, SimpleDateFormat format) {
 		if (releaseDate.length() > 0) {
 			try {

@@ -91,6 +91,8 @@ public class MovieScrapeResultGroup {
 	@SuppressWarnings("unchecked")
 	public Movie amalgamateMovie()
 	{
+		if(scrapedMovieObjectsForFile == null || scrapedMovieObjectsForFile.size() == 0)
+			return null;
 		System.out.println("Amalgamating a movie between " + scrapedMovieObjectsForFile.size() + " Movie objects with preference order = " + amalgamationPreferenceOrderForEntireMovieGroup.toString());
 		try {
 			callAmalgamateActorOnAllTuples(scrapedMovieObjectsForFile);
