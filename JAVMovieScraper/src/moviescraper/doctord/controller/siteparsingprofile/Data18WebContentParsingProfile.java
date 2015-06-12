@@ -92,35 +92,26 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile{
 
 	@Override
 	public Year scrapeYear() {
-		Element releaseDateElement = document.select("div p:contains(Date:) a").first();
-		//case where the date is not a hyperlink, but just a month and a year
-		if(releaseDateElement!= null & releaseDateElement.text().contains("errors"))
-			releaseDateElement = document.select("div p:contains(Date:) b").first();
-		if(releaseDateElement != null)
-		{
-			String releaseDateText = releaseDateElement.text().trim();
-			//just get the last 4 letters which is the year
-			if(releaseDateText.length() >= 4)
-			{
-				releaseDateText = releaseDateText.substring(releaseDateText.length()-4,releaseDateText.length());
-				return new Year(releaseDateText);
-			}
-		}
-		return Year.BLANK_YEAR;
+		return scrapeReleaseDate().getYear();
 	}
 	
 	@Override
 	public ReleaseDate scrapeReleaseDate() {
+		SimpleDateFormat dateFormatToUse = data18ReleaseDateFormat;
 		Element releaseDateElement = document.select("div p:contains(Date:) a").first();
 		//case where the date is not a hyperlink, but just a month and a year
-		if(releaseDateElement!= null & releaseDateElement.text().contains("errors"))
-			releaseDateElement = document.select("div p:contains(Date:) b").first();
+		if ((releaseDateElement != null && releaseDateElement.text() != null && releaseDateElement
+				.text().contains("errors")) || releaseDateElement == null) {
+			releaseDateElement = document.select("div p:contains(Date:) b, div p:contains(Release date:) b").first();
+			dateFormatToUse = new SimpleDateFormat("MMMM, yyyy");
+		}
+		System.out.println("releaseDateElement: " + releaseDateElement);
 		if(releaseDateElement != null)
 		{
 			String releaseDateText = releaseDateElement.text().trim();
 			if(releaseDateText.length() > 4)
 			{
-				return new ReleaseDate(releaseDateText, data18ReleaseDateFormat);
+				return new ReleaseDate(releaseDateText, dateFormatToUse);
 			}
 		}
 		return ReleaseDate.BLANK_RELEASEDATE;
