@@ -159,8 +159,9 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile{
 		ArrayList<Thumb> posters = new ArrayList<Thumb>();
 		ArrayList<Thumb> trailerImages = new ArrayList<Thumb>();
 		
-		Elements trailerImgElements = document.select("img.noborder[title=Scene Preview], img.noborder[alt=Play this video]:not(img.noborder[src*=play.png]), div#pretrailer a[href*=/trailer] img.noborder:not(img.noborder[src*=play.png])");
+		Elements trailerImgElements = document.select("img.noborder[title=Scene Preview], div#moviewrap img[src*=/big.jpg], img.noborder[alt=Play this video]:not(img.noborder[src*=play.png]), div#pretrailer a[href*=/trailer] img.noborder:not(img.noborder[src*=play.png])");
 		Elements videoStills = document.select("div:containsOwn(Video Stills:) ~ div img");
+		//System.out.println("Video stills = " + videoStills);
 		if(trailerImgElements != null && trailerImgElements.size() > 0 && (videoStills == null || videoStills.size() == 0))
 		{
 			//add the trailer image
@@ -193,8 +194,29 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile{
 		//otherwise, find split scene links from a full movie
 		ArrayList<String> contentLinks = new ArrayList<String>();
 		String docLocation = document.location();
-		String contentIDFromPage = docLocation.substring(docLocation.lastIndexOf("/")+1,docLocation.length());
-		contentLinks.add(contentIDFromPage);
+		//in rare cases the content id used on the viewer page is not the same as that of the url of the page itself
+		String contentIDFromViewerFoundOnPage = "";
+		Element viewerElementOnPage = document.select("a[href*=/viewer/").first();
+		if(viewerElementOnPage != null)
+		{
+			String hrefContent = viewerElementOnPage.attr("href");
+			int startingIndex = hrefContent.indexOf("viewer") + "viewer".length()+1;
+			int endingIndex = hrefContent.lastIndexOf("/");
+			if(startingIndex != -1 && endingIndex != -1)
+			{
+				contentIDFromViewerFoundOnPage = hrefContent.substring(startingIndex,endingIndex);
+			}
+		}
+
+		//originally get it from the url
+		String contentIDToUse = docLocation.substring(docLocation.lastIndexOf("/")+1,docLocation.length());
+		//if we found a better id from a link on the specified page, use it instead
+		if(contentIDFromViewerFoundOnPage != null && contentIDFromViewerFoundOnPage.length() > 0)
+		{
+			contentIDToUse = contentIDFromViewerFoundOnPage;
+		}
+			
+		contentLinks.add(contentIDToUse);
 		//for each id, go to the viewer page for that ID
 		for(String contentID : contentLinks)
 		{
