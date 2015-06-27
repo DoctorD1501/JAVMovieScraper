@@ -25,7 +25,7 @@ public class Renamer {
 	private String extension;
 	private String filename;
 	private String path;
-	private static final int maxFileNameLength = 250;
+	private static final int maxFileNameLength = 248;
 
 	private final static String ID = "<ID>";
 	private final static String TITLE = "<TITLE>";
@@ -35,6 +35,7 @@ public class Renamer {
 	private final static String SET = "<SET>";
 	private final static String STUDIO = "<STUDIO>";
 	private final static String GENRES = "<GENRES>";
+	private final static String period = ".";
 	private final static String[] availableRenameTags = {ID, TITLE, ACTORS, GENRES, SET, STUDIO, YEAR, ORIGINALTITLE};
 	
 	public Renamer(String renameString, String sanitizer, Movie toRename, File oldFile) {
@@ -56,6 +57,11 @@ public class Renamer {
 			dot = "";
 		String newName = getSanitizedString (replace());
 		newName = path + newName + getAppendix() + getPosterFanartTrailerEnder() + dot + extension;
+		//shorten the string if it still doesn't fit
+		while(newName.length() > maxFileNameLength)
+		{
+			newName = path + newName.substring(0,newName.length()-1) + getAppendix() + getPosterFanartTrailerEnder() + dot + extension;
+		}
 		
 		return newName;
 	}
@@ -83,7 +89,7 @@ public class Renamer {
 		//we need to watch out when renaming a file that a large number of actors doesn't create
 		//a movie name that is too long
 		String potentialNameWithActors =  renameReplaceAll(newName, ACTORS, movieActors);
-		if(potentialNameWithActors.length() < maxFileNameLength )
+		if(potentialNameWithActors.length() + path.length() + getAppendix().length() + getPosterFanartTrailerEnder().length() + period.length() + extension.length() < maxFileNameLength )
 			newName = potentialNameWithActors;
 		else
 			newName = renameReplaceAll(newName, ACTORS, "");
