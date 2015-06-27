@@ -31,12 +31,13 @@ public class Renamer {
 	private final static String TITLE = "<TITLE>";
 	private final static String ACTORS = "<ACTORS>";
 	private final static String YEAR = "<YEAR>";
+	private final static String RELEASEDATE = "<RELEASEDATE>";
 	private final static String ORIGINALTITLE = "<ORIGINALTITLE>";
 	private final static String SET = "<SET>";
 	private final static String STUDIO = "<STUDIO>";
 	private final static String GENRES = "<GENRES>";
 	private final static String period = ".";
-	private final static String[] availableRenameTags = {ID, TITLE, ACTORS, GENRES, SET, STUDIO, YEAR, ORIGINALTITLE};
+	private final static String[] availableRenameTags = {ID, TITLE, ACTORS, GENRES, SET, STUDIO, YEAR, RELEASEDATE, ORIGINALTITLE};
 	
 	public Renamer(String renameString, String sanitizer, Movie toRename, File oldFile) {
 		this.renameString = renameString;
@@ -72,6 +73,7 @@ public class Renamer {
 		List<Actor> movieActorsList = movie.getActors();
 		String movieActors = combineActorList(movieActorsList);
 		String movieYear = movie.getYear().getYear();
+		String movieReleaseDate = movie.getReleaseDate().getReleaseDate();
 		String movieOriginalTitle = movie.getOriginalTitle().getOriginalTitle();
 		String movieSet = movie.getSet().getSet();
 		String movieStudio = movie.getStudio().getStudio();
@@ -81,6 +83,7 @@ public class Renamer {
 		newName = renameReplaceAll(newName, ID, movieID);
 		newName = renameReplaceAll(newName, TITLE, movieTitle);
 		newName = renameReplaceAll(newName, YEAR, movieYear);
+		newName = renameReplaceAll(newName, RELEASEDATE, movieReleaseDate);
 		newName = renameReplaceAll(newName, ORIGINALTITLE, movieOriginalTitle);
 		newName = renameReplaceAll(newName, SET, movieSet);
 		newName = renameReplaceAll(newName, STUDIO, movieStudio);
