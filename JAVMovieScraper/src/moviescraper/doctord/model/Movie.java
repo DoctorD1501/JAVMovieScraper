@@ -515,9 +515,9 @@ public class Movie {
 					posterFileOutput.close();
 				}
 				//write out the poster file without reencoding it and resizing it
-				else if((!posterFile.exists() ||  writePosterIfAlreadyExists) && posterToSaveToDisk != null && posterToSaveToDisk.getThumbURL() != null && !posterToSaveToDisk.isLoadedFromDisk())
+				else if((!posterFile.exists() ||  writePosterIfAlreadyExists) && posterToSaveToDisk != null && posterToSaveToDisk.getThumbURL() != null)
 				{
-					System.out.println("Writing poster file with no changes to " + posterFile);
+					System.out.println("Writing poster file from nfo: " + posterFile);
 					FileUtils.copyURLToFile(posterToSaveToDisk.getThumbURL(), posterFile, connectionTimeout, readTimeout);
 				}
 				if(createFolderJpgEnabledPreference && currentlySelectedFolderJpgFile != null)
