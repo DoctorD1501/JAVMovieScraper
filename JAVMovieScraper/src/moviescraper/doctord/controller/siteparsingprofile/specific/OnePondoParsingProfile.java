@@ -169,12 +169,13 @@ public class OnePondoParsingProfile extends SiteParsingProfile implements Specif
 	public Thumb[] scrapePosters() {
 		try {
 			ArrayList<Thumb> thumbList = new ArrayList<Thumb>();
-			String bannerURL = "http://www.1pondo.tv/moviepages/" + scrapeID().getId() + "/images/str.jpg";
-			String backgroundURLTwo = "http://www.1pondo.tv/moviepages/" + scrapeID().getId() + "/images/2.jpg";
-			String popupOneURL = "http://www.1pondo.tv/moviepages/" + scrapeID().getId() + "/images/popu/1.jpg";
-			String popupTwoURL = "http://www.1pondo.tv/moviepages/" + scrapeID().getId() + "/images/popu/2.jpg";
-			String popupThreeURL = "http://www.1pondo.tv/moviepages/" + scrapeID().getId() + "/images/popu/3.jpg";
-			String popupFourURL = "http://www.1pondo.tv/moviepages/" + scrapeID().getId() + "/images/popu.jpg";
+			String bannerURL = "http://www.1pondo.tv/assets/sample/" + scrapeID().getId() + "/str.jpg";
+			System.out.println("bannerURL = " + bannerURL);
+			String backgroundURLTwo = "http://www.1pondo.tv/assets/sample/" + scrapeID().getId() + "/2.jpg";
+			String popupOneURL = "http://www.1pondo.tv/assets/sample/" + scrapeID().getId() + "/popu/1.jpg";
+			String popupTwoURL = "http://www.1pondo.tv/assets/sample/" + scrapeID().getId() + "/popu/2.jpg";
+			String popupThreeURL = "http://www.1pondo.tv/assets/sample/" + scrapeID().getId() + "/popu/3.jpg";
+			String popupFourURL = "http://www.1pondo.tv/assets/sample/" + scrapeID().getId() + "/popu.jpg";
 			if(SiteParsingProfile.fileExistsAtURL(popupOneURL))
 				thumbList.add(new Thumb(popupOneURL));
 			if(SiteParsingProfile.fileExistsAtURL(popupTwoURL))
