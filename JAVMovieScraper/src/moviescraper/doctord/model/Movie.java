@@ -24,14 +24,13 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import moviescraper.doctord.controller.ScrapeMovieAction;
-import moviescraper.doctord.controller.siteparsingprofile.Data18MovieParsingProfile;
-import moviescraper.doctord.controller.siteparsingprofile.Data18WebContentParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.IAFDParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
+import moviescraper.doctord.controller.siteparsingprofile.specific.Data18MovieParsingProfile;
+import moviescraper.doctord.controller.siteparsingprofile.specific.Data18WebContentParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.DmmParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.JavLibraryParsingProfile;
 import moviescraper.doctord.controller.xmlserialization.XbmcXmlMovieBean;
@@ -176,16 +175,16 @@ public class Movie {
 		id.setDataItemSource(siteToScrapeFrom);
 		
 		actors = siteToScrapeFrom.scrapeActors();
-		for(Actor actor : actors)
-			actor.setDataItemSource(siteToScrapeFrom);
+		for(Actor currentActor : actors)
+			currentActor.setDataItemSource(siteToScrapeFrom);
 		
 		genres = siteToScrapeFrom.scrapeGenres();
-		for(Genre genre : genres)
-			genre.setDataItemSource(siteToScrapeFrom);
+		for(Genre currentGenre : genres)
+			currentGenre.setDataItemSource(siteToScrapeFrom);
 		
 		directors = siteToScrapeFrom.scrapeDirectors();
-		for(Director director : directors)
-			director.setDataItemSource(siteToScrapeFrom);
+		for(Director currentDirector : directors)
+			currentDirector.setDataItemSource(siteToScrapeFrom);
 		
 		String fileNameOfScrapedMovie = siteToScrapeFrom.getFileNameOfScrapedMovie();
 		if(fileNameOfScrapedMovie != null && fileNameOfScrapedMovie.trim().length() > 0)
@@ -821,6 +820,10 @@ public class Movie {
 	//Version that allows us to update the GUI while scraping
 	public static Movie scrapeMovie(File movieFile, SiteParsingProfile siteToParseFrom, String urlToScrapeFromDMM, boolean useURLtoScrapeFrom, ScrapeMovieAction scrapeMovieAction) throws IOException{
 		//System.out.println("movieFile = " + movieFile);
+		
+		//If the user manually canceled the results on this scraper in a dialog box, just return a null movie
+		if(siteToParseFrom.getDiscardResults())
+			return null;
 		String searchString = siteToParseFrom.createSearchString(movieFile);
 		SearchResult [] searchResults = null;
 		int searchResultNumberToUse = 0;
@@ -889,7 +892,8 @@ public class Movie {
 		{
 			System.out.println("Scraping this webpage for movie: " + searchResults[searchResultNumberToUse].getUrlPath());
 			//for now just set the movie to the first thing found unless we found a link which had something close to the ID
-			Document searchMatch = Jsoup.connect(searchResults[searchResultNumberToUse].getUrlPath()).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:5.0) Gecko/20100101 Firefox/5.0").get();
+			SearchResult searchResultToUse = searchResults[searchResultNumberToUse];
+			Document searchMatch = SiteParsingProfile.downloadDocument(searchResultToUse);
 			siteToParseFrom.setDocument(searchMatch);
 			siteToParseFrom.setOverrideURLDMM(urlToScrapeFromDMM);
 			if(scrapeMovieAction != null)
@@ -1005,6 +1009,52 @@ public class Movie {
 
 	public void setReleaseDate(ReleaseDate releaseDate) {
 		this.releaseDate = releaseDate;
+	}
+	
+	/**
+	 * remove the item from the picked from the existing poster list and put it at
+	 * the front of the list. if the movie does not contain the poster, no change will be made
+	 * @param posterToGoToFront - poster to put in front
+	 */
+	public void moveExistingPosterToFront(Thumb posterToGoToFront)
+	{
+		if (posterToGoToFront != null) {
+
+			ArrayList<Thumb> existingPosters = new ArrayList<Thumb>(
+					Arrays.asList(getPosters()));
+			boolean didListContainPoster = existingPosters.remove(posterToGoToFront);
+			if(didListContainPoster)
+			{
+				existingPosters.add(0, posterToGoToFront);
+				Thumb[] posterArray = new Thumb[existingPosters
+				                                .size()];
+				setPosters(existingPosters
+						.toArray(posterArray));
+			}
+		}
+	}
+	
+	/**
+	 * remove the item from the picked from the existing fanart list and put it at
+	 * the front of the list. if the movie does not contain the fanart, no change will be made
+	 * @param fanartToGoToFront - fanart to put in front
+	 */
+	public void moveExistingFanartToFront(Thumb fanartToGoToFront)
+	{
+		if (fanartToGoToFront != null) {
+
+			ArrayList<Thumb> existingFanarts = new ArrayList<Thumb>(
+					Arrays.asList(getFanart()));
+			boolean didListContainPoster = existingFanarts.remove(fanartToGoToFront);
+			if(didListContainPoster)
+			{
+				existingFanarts.add(0, fanartToGoToFront);
+				Thumb[] fanartArray = new Thumb[existingFanarts
+				                                .size()];
+				setFanart(existingFanarts
+						.toArray(fanartArray));
+			}
+		}
 	}
 
 

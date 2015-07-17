@@ -7,8 +7,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import moviescraper.doctord.controller.SpecificScraperAction;
 import moviescraper.doctord.controller.languagetranslation.Language;
+import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.OneThousandGiriParsingProfile;
 import moviescraper.doctord.model.SearchResult;
 import moviescraper.doctord.model.dataitem.Actor;
@@ -42,12 +42,12 @@ public class OneThousandGiriParsingProfileTest {
 		System.out.println("searchString = " + searchString);
 		try {
 			SearchResult[] searchResults = englishProfile.getSearchResults(searchString);
-			Document document = SpecificScraperAction.downloadDocument(searchResults[0]);
+			Document document = SiteParsingProfile.downloadDocument(searchResults[0]);
 			System.out.println("document of english profile set to " + document.baseUri());
 			englishProfile.setDocument(document);
 			
 			searchResults = japaneseProfile.getSearchResults(searchString);
-			document = SpecificScraperAction.downloadDocument(searchResults[0]);
+			document = SiteParsingProfile.downloadDocument(searchResults[0]);
 			System.out.println("document of japanese profile set to " + document.baseUri());
 			japaneseProfile.setDocument(document);
 		} catch (IOException e) {
@@ -70,15 +70,15 @@ public class OneThousandGiriParsingProfileTest {
 		Title testEnglishTitle = englishProfile.scrapeTitle();
 		assertEquals("Wrong title", "Lesbian Colleagues Fetishism - Work Is Each Other Comfort To Forget OL~", testEnglishTitle.getTitle());
 		Title testJapaneseTitle = japaneseProfile.scrapeTitle();
-		assertEquals("Wrong title", "レズフェティシズム 〜仕事�?�忘れ�?�慰�?�?��?��?�僚ＯＬ〜", testJapaneseTitle.getTitle());
+		assertEquals("Wrong title", "レズフェティシズム 〜仕事�?�忘れ�?�慰�?�?��?��?�僚ＯＬ〜", testJapaneseTitle.getTitle());
 	}
 	
 	@Test
 	public void testOriginalTitle(){
 		OriginalTitle testEnglishTitle = englishProfile.scrapeOriginalTitle();
-		assertEquals("Wrong original title", "レズフェティシズム 〜仕事�?�忘れ�?�慰�?�?��?��?�僚ＯＬ〜", testEnglishTitle.getOriginalTitle());
+		assertEquals("Wrong original title", "レズフェティシズム 〜仕事�?�忘れ�?�慰�?�?��?��?�僚ＯＬ〜", testEnglishTitle.getOriginalTitle());
 		OriginalTitle testJapaneseTitle = japaneseProfile.scrapeOriginalTitle();
-		assertEquals("Wrong original title", "レズフェティシズム 〜仕事�?�忘れ�?�慰�?�?��?��?�僚ＯＬ〜", testJapaneseTitle.getOriginalTitle());
+		assertEquals("Wrong original title", "レズフェティシズム 〜仕事�?�忘れ�?�慰�?�?��?��?�僚ＯＬ〜", testJapaneseTitle.getOriginalTitle());
 	}
 	
 	@Test
@@ -98,7 +98,7 @@ public class OneThousandGiriParsingProfileTest {
 		Plot testEnglishPlot = englishProfile.scrapePlot();
 		assertTrue("Wrong plot", testEnglishPlot.getPlot().length() > 0);
 		Plot testJapanesePlot = japaneseProfile.scrapePlot();
-		assertTrue("Wrong plot", testJapanesePlot.getPlot().startsWith("仕事�?�ミスを�?��?��?��?�込むOLラン"));
+		assertTrue("Wrong plot", testJapanesePlot.getPlot().startsWith("仕事�?�ミスを�?��?��?��?�込むOLラン"));
 	}
 	
 	@Test

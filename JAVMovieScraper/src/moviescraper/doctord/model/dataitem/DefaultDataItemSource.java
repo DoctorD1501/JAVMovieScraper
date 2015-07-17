@@ -1,9 +1,12 @@
 package moviescraper.doctord.model.dataitem;
 
+import javax.swing.ImageIcon;
+
 public class DefaultDataItemSource implements DataItemSource{
 	
 	public static final DefaultDataItemSource DEFAULT_DATA_ITEM_SOURCE = new DefaultDataItemSource();
 	private boolean isDisabled;
+	ImageIcon profileIcon;
 	
 	@Override
 	public String getDataItemSourceName() {
@@ -31,6 +34,12 @@ public class DefaultDataItemSource implements DataItemSource{
 	@Override
 	public void setDisabled(boolean value) {
 		isDisabled = value;
+	}
+
+	@Override
+	public ImageIcon getProfileIcon() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

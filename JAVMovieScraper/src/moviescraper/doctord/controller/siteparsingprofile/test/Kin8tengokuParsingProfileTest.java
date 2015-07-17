@@ -6,7 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import moviescraper.doctord.controller.SpecificScraperAction;
+import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.Kin8tengokuParsingProfile;
 import moviescraper.doctord.model.dataitem.Actor;
 import moviescraper.doctord.model.dataitem.Genre;
@@ -28,7 +28,7 @@ public class Kin8tengokuParsingProfileTest {
 	public static void initialize() {
 		profile = new Kin8tengokuParsingProfile( );
 		String url = profile.createSearchString(file);
-		Document document = SpecificScraperAction.downloadDocument(url);
+		Document document = SiteParsingProfile.downloadDocumentFromURLString(url);
 		profile.setDocument(document);
 	}
 	

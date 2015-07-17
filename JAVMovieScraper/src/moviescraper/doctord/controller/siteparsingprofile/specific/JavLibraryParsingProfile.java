@@ -17,6 +17,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import moviescraper.doctord.controller.languagetranslation.Language;
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.model.SearchResult;
 import moviescraper.doctord.model.dataitem.Actor;
@@ -327,7 +328,7 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 			
 			//JavLibrary has asian names in Lastname, first format. Reverse it, if we specify it with the option to do so
 			//but only do this if we're scraping in english
-			if(reverseAsianNameInEnglish && siteLanguageToScrape == englishLanguageCode && actressName.contains(" "))
+			if(reverseAsianNameInEnglish && (siteLanguageToScrape == englishLanguageCode || scrapingLanguage == Language.ENGLISH) && actressName.contains(" "))
 			{
 				actressName = StringUtils.reverseDelimited(actressName, ' ');
 				

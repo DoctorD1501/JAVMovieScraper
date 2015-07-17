@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 
-import moviescraper.doctord.controller.SpecificScraperAction;
+import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.OnePondoParsingProfile;
 import moviescraper.doctord.model.dataitem.ID;
 import moviescraper.doctord.model.dataitem.ReleaseDate;
@@ -27,7 +27,7 @@ public class OnePondoParsingProfileTest {
 		profile = new OnePondoParsingProfile();
 		String searchString = profile.createSearchString(file);
 		System.out.println(searchString);
-		Document document = SpecificScraperAction.downloadDocument(searchString);
+		Document document = SiteParsingProfile.downloadDocumentFromURLString(searchString);
 		profile.setDocument(document);
 	}
 

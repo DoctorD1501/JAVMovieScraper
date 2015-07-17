@@ -16,7 +16,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import moviescraper.doctord.controller.SpecificScraperAction;
 import moviescraper.doctord.controller.languagetranslation.Language;
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.model.SearchResult;
@@ -61,7 +60,7 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 		if(document != null && japaneseDocument == null)
 		{
 			String url = document.baseUri().replaceFirst(Pattern.quote("lang=en"), Pattern.quote("lang=ja"));
-			japaneseDocument = SpecificScraperAction.downloadDocument(url);
+			japaneseDocument = SiteParsingProfile.downloadDocumentFromURLString(url);
 		}
 	}
 
@@ -115,7 +114,7 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 	
 	@Override
 	public ReleaseDate scrapeReleaseDate() {
-		Element releaseDateElement = document.select("dl.info dt:contains(Release Date) + dd, dl.info dt:contains(�?信開始日) + dd").first();
+		Element releaseDateElement = document.select("dl.info dt:contains(Release Date) + dd, dl.info dt:contains(�?信開始日) + dd").first();
 		if(releaseDateElement != null && releaseDateElement.text().length() > 4)
 		{
 			String releaseDateText = releaseDateElement.text().trim();
@@ -161,7 +160,7 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 
 	@Override
 	public Runtime scrapeRuntime() {
-		Element durationElement = document.select("dl.info dt:contains(Duration) + dd, dl.info dt:contains(�?�録時間) + dd").first();
+		Element durationElement = document.select("dl.info dt:contains(Duration) + dd, dl.info dt:contains(�?�録時間) + dd").first();
 		if(durationElement != null && durationElement.text().trim().length() > 0)
 		{
 			String [] durationSplitByTimeUnit = durationElement.text().split(":");
@@ -241,7 +240,7 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 
 	@Override
 	public ID scrapeID() {
-		Element idElement = document.select("dl.info dt:contains(Product ID) + dd, dl.info dt:contains(作�?番�?�) + dd").first();
+		Element idElement = document.select("dl.info dt:contains(Product ID) + dd, dl.info dt:contains(作�?番�?�) + dd").first();
 		if(idElement != null && idElement.text().length() > 0)
 			return new ID(idElement.text().trim());
 		else return new ID("");

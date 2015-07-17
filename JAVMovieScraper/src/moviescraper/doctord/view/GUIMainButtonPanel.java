@@ -31,16 +31,13 @@ import moviescraper.doctord.controller.MoveToNewFolderAction;
 import moviescraper.doctord.controller.OpenFileAction;
 import moviescraper.doctord.controller.PlayMovieAction;
 import moviescraper.doctord.controller.RefreshDirectoryAction;
-import moviescraper.doctord.controller.ScrapeMovieAction;
-import moviescraper.doctord.controller.ScrapeMovieActionAutomatic;
-import moviescraper.doctord.controller.ScrapeMovieActionData18Movie;
-import moviescraper.doctord.controller.ScrapeMovieActionData18WebContent;
-import moviescraper.doctord.controller.ScrapeSpecificAction;
 import moviescraper.doctord.controller.UpDirectoryAction;
 import moviescraper.doctord.controller.WriteFileDataAction;
+import moviescraper.doctord.controller.amalgamation.ScrapeAmalgamatedAction;
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfileItem;
 import moviescraper.doctord.controller.siteparsingprofile.SpecificProfileFactory;
+import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile.ScraperGroupName;
 
 import org.imgscalr.Scalr;
 import org.imgscalr.Scalr.Method;
@@ -66,17 +63,11 @@ public class GUIMainButtonPanel extends JPanel {
 		initializeButtons();
 	}
 	
-	private ImageIcon initializeImageIcon(String iconName) {
+	public static ImageIcon initializeImageIcon(String iconName) {
 		return initializeResourceIcon("/res/" + iconName + "Icon.png");
 	}
 	
-	private ImageIcon initializeProfileIcon(SiteParsingProfile profile)	{
-		String profileName = profile.getClass().getSimpleName();
-		String siteName = profileName.replace("ParsingProfile", "");
-		return initializeResourceIcon("/res/sites/" + siteName + ".png");
-	}
-	
-	private ImageIcon initializeResourceIcon(String resourceName) {
+	private static ImageIcon initializeResourceIcon(String resourceName) {
 		try {
 			URL url = GUIMain.class.getResource(resourceName);
 			if(url != null)
@@ -165,7 +156,7 @@ public class GUIMainButtonPanel extends JPanel {
 			JMenuItem menuItem = (JMenuItem)scrapeMenu;
 			Action action = menuItem.getAction();
 			if (action != null){
-				String key = (String)action.getValue(ScrapeMovieAction.SCRAPE_KEY);
+				String key = (String)action.getValue(ScrapeAmalgamatedAction.SCRAPE_KEY);
 				if (key != null && key.equals(scraperKey)){
 					return action;
 				}
@@ -260,7 +251,8 @@ public class GUIMainButtonPanel extends JPanel {
 
 		ImageIcon arrowIcon = initializeImageIcon("Arrow");
 		ImageIcon japanIcon = initializeImageIcon("Japan");
-		ImageIcon data18Icon = initializeImageIcon("Data18");
+		//ImageIcon data18Icon = initializeImageIcon("Data18");
+		ImageIcon appIcon = initializeImageIcon("App");
 		
 		final JButton scrapeButton = new JButton();
 		final JButton arrowButton =  new JButton(arrowIcon);
@@ -278,25 +270,36 @@ public class GUIMainButtonPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				Action action = ((JMenuItem)e.getSource()).getAction(); 
 				scrapeButton.setAction(action);
-				String scraperKey = (String)action.getValue(ScrapeMovieAction.SCRAPE_KEY);
+				String scraperKey = (String)action.getValue(ScrapeAmalgamatedAction.SCRAPE_KEY);
+				//FIXME: fix error with below line of code for specific scraper
 				guiMain.getGuiSettings().setLastUsedScraper(scraperKey);
 			}
 		};
 		
+		/*
+		 * Depracated method
 		Action scrapeJavAction = new ScrapeMovieAction(guiMain);
 		Action scrapeJavAutoAction = new ScrapeMovieActionAutomatic(guiMain);
 		Action scrapeData18MovieAction = new ScrapeMovieActionData18Movie(guiMain);
 		Action scrapeData18WebContentAction = new ScrapeMovieActionData18WebContent(guiMain);
-		
 		scrapeJavAction.putValue(Action.SMALL_ICON, japanIcon);	
 		scrapeJavAutoAction.putValue(Action.SMALL_ICON, japanIcon);	
 		scrapeData18MovieAction.putValue(Action.SMALL_ICON, data18Icon);
 		scrapeData18WebContentAction.putValue(Action.SMALL_ICON, data18Icon);
-
 		scrapeMenu.add(scrapeJavAction).addActionListener(scrapeActionListener);
 		scrapeMenu.add(scrapeJavAutoAction).addActionListener(scrapeActionListener);
 		scrapeMenu.add(scrapeData18MovieAction).addActionListener(scrapeActionListener);
 		scrapeMenu.add(scrapeData18WebContentAction).addActionListener(scrapeActionListener);
+		*/
+		Action scrapeAdultDVDAmalgamatedAction = new ScrapeAmalgamatedAction(guiMain, guiMain.getAllAmalgamationOrderingPreferences().getScraperGroupAmalgamationPreference(ScraperGroupName.AMERICAN_ADULT_DVD_SCRAPER_GROUP));
+		Action scrapeJAVAmalgamatedAction = new ScrapeAmalgamatedAction(guiMain, guiMain.getAllAmalgamationOrderingPreferences().getScraperGroupAmalgamationPreference(ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP));
+		
+		scrapeAdultDVDAmalgamatedAction.putValue(Action.SMALL_ICON, appIcon);
+		scrapeJAVAmalgamatedAction.putValue(Action.SMALL_ICON, japanIcon);
+
+		
+		scrapeMenu.add(scrapeAdultDVDAmalgamatedAction).addActionListener(scrapeActionListener);
+		scrapeMenu.add(scrapeJAVAmalgamatedAction).addActionListener(scrapeActionListener);
 		
 		JMenu specificMenu = new JMenu("Specific Scrape");
 		scrapeMenu.add(specificMenu);
@@ -304,10 +307,10 @@ public class GUIMainButtonPanel extends JPanel {
 		for(SiteParsingProfileItem item: SpecificProfileFactory.getAll()){
 			JMenuItem menuItem = new JMenuItem();
 			SiteParsingProfile profile = item.getParser();
-			ImageIcon icon = initializeProfileIcon(profile);
-			Action scrapeAction = new ScrapeSpecificAction(guiMain, profile);
+			ImageIcon icon = profile.getProfileIcon();
+			Action scrapeAction = new ScrapeAmalgamatedAction(guiMain, profile);
 			String siteName = item.toString();
-			scrapeAction.putValue(Action.NAME, "Scrape " + siteName);
+			//scrapeAction.putValue(Action.NAME, "Scrape " + siteName);
 			scrapeAction.putValue(Action.SMALL_ICON, icon);
 			menuItem.setAction(scrapeAction);
 			menuItem.setText(siteName);
@@ -316,7 +319,7 @@ public class GUIMainButtonPanel extends JPanel {
 		}
 		
 		String lastUsedScraper = guiMain.getGuiSettings().getLastUsedScraper();
-		Action scrapeAction = scrapeJavAutoAction;
+		Action scrapeAction = scrapeJAVAmalgamatedAction;
 		
 		if (lastUsedScraper != null){
 			Action lastScrapeAction = findScraperAction(scrapeMenu, lastUsedScraper);

@@ -88,9 +88,11 @@ public class ArtWorkPanel extends JPanel implements ComponentListener {
 	}
 
 	private Image createEmptyImage(int x, int y) {
+		int xToUse = Math.max(x, 1);
+		int yToUse = Math.max(y, y);
 		return GraphicsEnvironment.getLocalGraphicsEnvironment()
 				.getDefaultScreenDevice().getDefaultConfiguration()
-				.createCompatibleImage(x, y, Transparency.TRANSLUCENT);
+				.createCompatibleImage(xToUse, yToUse, Transparency.TRANSLUCENT);
 	}
 
 	public void clearPictures() {
@@ -141,8 +143,11 @@ public class ArtWorkPanel extends JPanel implements ComponentListener {
 	private void updatePosterAndFanartSizes(){
 		updatingPosterAndFanartSizes = true;
 		BufferedImage fanartImg = (BufferedImage)(fanartImage);
-		BufferedImage fanartScaledImage = ArtWorkPanel.resizeToFanart(fanartImg);
-		this.setNewFanart(fanartScaledImage, false);
+		if(fanartImg != null)
+		{
+			BufferedImage fanartScaledImage = ArtWorkPanel.resizeToFanart(fanartImg);
+			this.setNewFanart(fanartScaledImage, false);
+		}
 
 		BufferedImage posterImg = (BufferedImage)(posterImage);
 		BufferedImage posterScaledImage = ArtWorkPanel.resizeToPoster(posterImg);
@@ -180,7 +185,9 @@ public class ArtWorkPanel extends JPanel implements ComponentListener {
 	}
 
 	public static BufferedImage resizePicture(BufferedImage image, int newWidth, int newHeight) {
-		return Scalr.resize(image, Method.QUALITY, newWidth, newHeight, Scalr.OP_ANTIALIAS);
+		if(image != null && newWidth > 0 && newHeight > 0)
+			return Scalr.resize(image, Method.QUALITY, newWidth, newHeight, Scalr.OP_ANTIALIAS);
+		else return image;
 	}
 
 	public void updateView(boolean forceUpdatePoster, GUIMain gui) {
@@ -219,8 +226,11 @@ public class ArtWorkPanel extends JPanel implements ComponentListener {
 						//we're doing a resize so store off the original img so if we resize again we don't lose quality
 						fanartImage = img;
 						BufferedImage scaledImage = ArtWorkPanel.resizeToFanart(img);
-						this.setNewFanart(scaledImage, false);
-						fanartFileUpdateOccured = true;
+						if(scaledImage != null)
+						{
+							this.setNewFanart(scaledImage, false);
+							fanartFileUpdateOccured = true;
+						}
 					}
 				} catch (IOException e) {
 					e.printStackTrace();

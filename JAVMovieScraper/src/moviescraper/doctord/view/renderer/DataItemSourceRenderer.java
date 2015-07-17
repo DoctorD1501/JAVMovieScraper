@@ -27,10 +27,11 @@ public class DataItemSourceRenderer implements ListCellRenderer<DataItemSource> 
 			int index, boolean isSelected, boolean cellHasFocus) {
 		JLabel renderer = (JLabel) defaultRenderer.getListCellRendererComponent(list, value, index,
 		        isSelected, cellHasFocus);
+		renderer.setHorizontalTextPosition(JLabel.LEFT);
 		
 		renderer.setText("<html>" + getConditionalFontOpenTag(value) + getConditionalStrikeOpen(value) + 
 				(index + 1) + ". " + value.toString() + getConditionalStrikeClose(value) + fontCloseTag + "</html>");
-		
+		renderer.setIcon(value.getProfileIcon());
 		return renderer;
 	}
 	

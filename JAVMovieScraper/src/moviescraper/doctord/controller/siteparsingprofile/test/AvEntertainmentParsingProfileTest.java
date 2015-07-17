@@ -6,7 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import moviescraper.doctord.controller.SpecificScraperAction;
+import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.AvEntertainmentParsingProfile;
 import moviescraper.doctord.model.SearchResult;
 import moviescraper.doctord.model.dataitem.Actor;
@@ -32,7 +32,7 @@ public class AvEntertainmentParsingProfileTest {
 	@BeforeClass
 	public static void initialize() {
 		String url = "http://www.aventertainments.com/product_lists.aspx?product_id=81366&languageID=1&dept_id=29";
-		Document document = SpecificScraperAction.downloadDocument(url);
+		Document document = SiteParsingProfile.downloadDocumentFromURLString(url);
 		profile = new AvEntertainmentParsingProfile();
 		profile.setDocument(document);
 	}

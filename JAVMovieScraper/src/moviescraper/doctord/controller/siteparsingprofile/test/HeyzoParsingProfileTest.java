@@ -6,7 +6,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 
-import moviescraper.doctord.controller.SpecificScraperAction;
+import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.HeyzoParsingProfile;
 import moviescraper.doctord.model.dataitem.Actor;
 import moviescraper.doctord.model.dataitem.Genre;
@@ -32,7 +32,7 @@ public class HeyzoParsingProfileTest {
 	public static void initialize() {
 		profile = new HeyzoParsingProfile( );
 		String url = profile.createSearchString(file);
-		Document document = SpecificScraperAction.downloadDocument(url);
+		Document document = SiteParsingProfile.downloadDocumentFromURLString(url);
 		profile.setDocument(document);
 	}
 	
@@ -68,7 +68,7 @@ public class HeyzoParsingProfileTest {
 	@Test public void testOriginalTitle(){
 		OriginalTitle originalTitle = profile.scrapeOriginalTitle();
 		System.out.println("originalTitle = " + originalTitle);
-		assertEquals("Wrong original title", "ロリカワ�?人気絶頂コスドルを撮影会�?�ヤッ�?�ゃ�?��?��?��?� - �?��??り�?��??", originalTitle.getOriginalTitle());
+		assertEquals("Wrong original title", "ロリカワ�?人気絶頂コスドルを撮影会�?�ヤッ�?�ゃ�?��?��?��?� - �?��??り�?��??", originalTitle.getOriginalTitle());
 	}
 	
 	@Test public void testRating(){

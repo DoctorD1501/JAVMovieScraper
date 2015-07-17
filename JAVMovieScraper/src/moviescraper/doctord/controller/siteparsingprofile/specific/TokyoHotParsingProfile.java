@@ -15,7 +15,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import moviescraper.doctord.controller.SpecificScraperAction;
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.model.SearchResult;
 import moviescraper.doctord.model.dataitem.Actor;
@@ -56,7 +55,7 @@ public class TokyoHotParsingProfile extends SiteParsingProfile implements Specif
 	public void setDocument(Document document) {
 		super.setDocument(document);
 		docSite = document;
-		docImage = SpecificScraperAction.downloadDocument(imageLink);
+		docImage = SiteParsingProfile.downloadDocumentFromURLString(imageLink);
 	}
 	
 	@Override

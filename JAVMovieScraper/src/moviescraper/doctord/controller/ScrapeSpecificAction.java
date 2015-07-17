@@ -16,23 +16,22 @@ public class ScrapeSpecificAction extends AbstractAction {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private GUIMain main;
+	private GUIMain guiMain;
 	private SiteParsingProfile profile;
 	
 	public ScrapeSpecificAction(GUIMain main, SiteParsingProfile profile) {
-		this.main = main;
+		this.guiMain = main;
 		this.profile = profile;
 		
 		putValue(ScrapeMovieAction.SCRAPE_KEY, profile.getClass().getName());
 	}
-	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		try
 		{
-			main.setMainGUIEnabled(false);
-			main.removeOldScrapedMovieReferences();
-			List<File> toScrape = main.getCurrentFile();
+			guiMain.setMainGUIEnabled(false);
+			guiMain.removeOldScrapedMovieReferences();
+			List<File> toScrape = guiMain.getCurrentFile();
 			List<File> noMovieFoundList = new LinkedList<File>();
 			List<File> foundMovieMatch = new LinkedList<File>();
 			if (toScrape != null) {
@@ -42,25 +41,25 @@ public class ScrapeSpecificAction extends AbstractAction {
 					//we want it to be of the same type, so we use the newInstance() method which will automatically
 					//return a new object of the type the SiteParsingProfile actually is
 					SiteParsingProfile spp = profile.newInstance();
-					spp.setScrapingLanguage(main.getPreferences());
+					spp.setScrapingLanguage(guiMain.getPreferences());
 					SpecificScraperAction action = new SpecificScraperAction(spp, spp.getMovieScraper(), currentFile );
-					Movie scrapedMovie = action.scrape(main.getPreferences());
+					Movie scrapedMovie = action.scrape(guiMain.getPreferences());
 					if(scrapedMovie != null)
 					{
-						main.movieToWriteToDiskList.add(scrapedMovie);
-						main.getFileDetailPanel().setNewMovie( scrapedMovie , true);
+						guiMain.movieToWriteToDiskList.add(scrapedMovie);
+						guiMain.getFileDetailPanel().setNewMovie( scrapedMovie , true);
 						foundMovieMatch.add(currentFile);
 					}
 					else
 					{
-						main.movieToWriteToDiskList.add(null);
+						guiMain.movieToWriteToDiskList.add(null);
 						noMovieFoundList.add(currentFile);
 					}
 					
 				}
 				//Display a list of all the movies not found while scraping if we didn't match any of the files
 				if(noMovieFoundList.size() == toScrape.size())
-					JOptionPane.showMessageDialog(main.getFrmMoviescraper(), 
+					JOptionPane.showMessageDialog(guiMain.getFrmMoviescraper(), 
 							"No Matches found for: \n " + noMovieFoundList, 
 							"No Movies Found", JOptionPane.ERROR_MESSAGE);
 				else
@@ -74,12 +73,12 @@ public class ScrapeSpecificAction extends AbstractAction {
 				}
 
 			} else {
-				JOptionPane.showMessageDialog(main.getFrmMoviescraper(), "No file selected.", "No file selected.", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(guiMain.getFrmMoviescraper(), "No file selected.", "No file selected.", JOptionPane.ERROR_MESSAGE);
 			}
 		}
 		finally
 		{
-			main.setMainGUIEnabled(true);
+			guiMain.setMainGUIEnabled(true);
 		}
 	}
 }

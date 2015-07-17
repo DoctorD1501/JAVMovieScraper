@@ -10,6 +10,7 @@ import java.util.Map;
 
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile.ScraperGroupName;
 import moviescraper.doctord.model.Movie;
+import moviescraper.doctord.model.dataitem.DataItemSource;
 
 /**
  * A ScraperGroupAmalgamtionPreference is the preferred order of scrapers to use when amalgamating data
@@ -18,7 +19,7 @@ import moviescraper.doctord.model.Movie;
  */
 public class ScraperGroupAmalgamationPreference {
 	
-	ScraperGroupName scraperGroupName;
+	private ScraperGroupName scraperGroupName;
 	DataItemSourceAmalgamationPreference overallOrdering;
 	Map<String, DataItemSourceAmalgamationPreference> customAmalgamationOrderPerField;
 	
@@ -45,6 +46,27 @@ public class ScraperGroupAmalgamationPreference {
 		else {
 			return overallOrdering;
 		}
+	}
+	
+	/**
+	 * 
+	 * @return the list of scrapers this scraper group should scrape when doing amalgamating
+	 */
+	public LinkedList<DataItemSource> getActiveScrapersUsedInOverallPreference()
+	{
+		LinkedList<DataItemSource> activeScrapers = new LinkedList<>();
+		for(DataItemSource currentItemSource : overallOrdering.getAmalgamationPreferenceOrder())
+		{
+			System.out.println("currentItemSource = " + currentItemSource + " with disabled = " + currentItemSource.isDisabled());
+			//create a new instance may cause a problem if we depend on local state set in the parsing profile
+			//so I may need to revisit this. I did this because there was a problem with the TMDB scraper saving local state inside itself as it was scraping
+			
+			if(!currentItemSource.isDisabled())
+			{
+				activeScrapers.add(currentItemSource.createInstanceOfSameType());
+			}
+		}
+		return activeScrapers;
 	}
 	
 	/**
@@ -112,6 +134,15 @@ public class ScraperGroupAmalgamationPreference {
 				+ scraperGroupName.toString() + " overallOrdering = "
 				+ overallOrdering.toString() + " customAmalgamationPerField "
 				+ customAmalgamationOrderPerField + "]";
+	}
+	
+	public String toFriendlyString()
+	{
+		return scraperGroupName.toString();
+	}
+
+	public ScraperGroupName getScraperGroupName() {
+		return scraperGroupName;
 	}
 
 }

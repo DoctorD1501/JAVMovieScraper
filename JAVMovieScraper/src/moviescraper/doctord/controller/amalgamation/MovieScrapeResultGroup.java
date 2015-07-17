@@ -93,6 +93,15 @@ public class MovieScrapeResultGroup {
 	{
 		if(scrapedMovieObjectsForFile == null || scrapedMovieObjectsForFile.size() == 0)
 			return null;
+		if(scrapedMovieObjectsForFile.size() == 1)
+		{
+			System.out.println("Skipping amalgamation process as there is only one movie");
+			Movie amalgamatedMovie = scrapedMovieObjectsForFile.get(0);
+			if(scrapedMovieObjectsForFile != null  && scrapedMovieObjectsForFile.size() > 0){
+				amalgamatedMovie.setFileName(scrapedMovieObjectsForFile.get(0).getFileName());
+			}
+			return amalgamatedMovie;
+		}
 		System.out.println("Amalgamating a movie between " + scrapedMovieObjectsForFile.size() + " Movie objects with preference order = " + amalgamationPreferenceOrderForEntireMovieGroup.toString());
 		try {
 			callAmalgamateActorOnAllTuples(scrapedMovieObjectsForFile);

@@ -1,4 +1,4 @@
-package moviescraper.doctord.controller.siteparsingprofile;
+package moviescraper.doctord.controller.siteparsingprofile.specific;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,6 +12,7 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.model.SearchResult;
 import moviescraper.doctord.model.dataitem.Actor;
 import moviescraper.doctord.model.dataitem.Director;
@@ -42,7 +43,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-public class Data18WebContentParsingProfile extends SiteParsingProfile{
+public class Data18WebContentParsingProfile extends SiteParsingProfile implements SpecificProfile{
 	boolean useSiteSearch = true;
 	String yearFromFilename = "";
 	String fileName;
@@ -593,6 +594,6 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile{
 
 	@Override
 	public String getParserName() {
-		return "Data 18 Web Content";
+		return "Data18 Web Content";
 	}
 }

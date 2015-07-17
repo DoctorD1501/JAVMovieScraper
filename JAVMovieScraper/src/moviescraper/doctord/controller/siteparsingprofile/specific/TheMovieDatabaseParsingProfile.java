@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
@@ -51,6 +53,14 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 	private final String movieImageFanartThumbnailPathPrefix = "https://image.tmdb.org/t/p/w300";
 	private final String movieImagePosterThumbnailPathPrefix = "https://image.tmdb.org/t/p/w185";
 	private JSONObject movieJSON;
+	
+	@Override
+	public List<ScraperGroupName> getScraperGroupNames()
+	{
+		if(groupNames == null)
+			groupNames = Arrays.asList(ScraperGroupName.AMERICAN_ADULT_DVD_SCRAPER_GROUP);
+		return groupNames;
+	}
 	
 	
 	private JSONObject getMovieJSON()

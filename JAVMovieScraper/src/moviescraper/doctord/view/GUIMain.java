@@ -151,7 +151,18 @@ public class GUIMain {
 	}
 
 
+	/**
+	 * Restore amalgamation preferences from what is saved on disk
+	 */
+	public void reinitializeAmalgamationPreferencesFromFile()
+	{
+		
 
+		allAmalgamationOrderingPreferences = new AllAmalgamationOrderingPreferences();
+				
+		allAmalgamationOrderingPreferences = allAmalgamationOrderingPreferences.initializeValuesFromPreferenceFile();
+		
+	}
 	/**
 	 * Initialize the contents of the frame.
 	 */
@@ -159,6 +170,8 @@ public class GUIMain {
 		
 		preferences = MoviescraperPreferences.getInstance();
 		guiSettings = GuiSettings.getInstance();
+		
+		reinitializeAmalgamationPreferencesFromFile();
 		
 		setCurrentlySelectedNfoFileList(new ArrayList<File>());
 		setCurrentlySelectedMovieFileList(new ArrayList<File>());
@@ -218,10 +231,6 @@ public class GUIMain {
 		buttonPanel.setVisible(guiSettings.getShowToolbar());
 		messageConsolePanel.setVisible(guiSettings.getShowOutputPanel());
 		
-		//restore amalgamation preferences
-		allAmalgamationOrderingPreferences = new AllAmalgamationOrderingPreferences();
-		
-		allAmalgamationOrderingPreferences = allAmalgamationOrderingPreferences.initializeValuesFromPreferenceFile();
 	}
 
 	/**
@@ -475,8 +484,8 @@ public class GUIMain {
 	}
 
 	//Update the File Detail Panel GUI so the user can see what is scraped in
-	public void updateAllFieldsOfFileDetailPanel(boolean forceUpdatePoster) {
-			fileDetailPanel.updateView(forceUpdatePoster, false);
+	public void updateAllFieldsOfFileDetailPanel(boolean forceUpdatePoster, boolean newMovieWasSet) {
+			fileDetailPanel.updateView(forceUpdatePoster, newMovieWasSet);
 	}
 
 
@@ -809,11 +818,15 @@ public class GUIMain {
 	}
 	
 	public boolean showAmalgamationSettingsDialog() {
-		AmalgamationSettingsDialog dialog =  new AmalgamationSettingsDialog(frmMoviescraper, getAllAmalgamationOrderingPreferences());
+		AmalgamationSettingsDialog dialog =  new AmalgamationSettingsDialog(this, getAllAmalgamationOrderingPreferences());
 		return dialog.show();
 	}
 
 	public AllAmalgamationOrderingPreferences getAllAmalgamationOrderingPreferences() {
+		//rereading from file in case external program somehow decides to change this file before we get it.
+		//also this fixes a bug where canceling a scrape somehow corrupted the variable and caused an error when opening the
+		//amalgamation settings dialog
+		allAmalgamationOrderingPreferences = allAmalgamationOrderingPreferences.initializeValuesFromPreferenceFile();
 		return allAmalgamationOrderingPreferences;
 	}
 

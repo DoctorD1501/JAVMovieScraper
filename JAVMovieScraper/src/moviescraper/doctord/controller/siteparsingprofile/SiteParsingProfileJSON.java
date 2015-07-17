@@ -11,7 +11,7 @@ public abstract class SiteParsingProfileJSON extends SiteParsingProfile {
 
 	public String getJSONStringFromURL(String url) throws IOException
 	{
-		String json = Jsoup.connect(url).ignoreContentType(true).execute().body();
+		String json = Jsoup.connect(url).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).ignoreContentType(true).execute().body();
 		return json;
 	}
 	

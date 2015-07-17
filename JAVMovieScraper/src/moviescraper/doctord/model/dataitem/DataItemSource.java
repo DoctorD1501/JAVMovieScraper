@@ -1,5 +1,7 @@
 package moviescraper.doctord.model.dataitem;
 
+import javax.swing.ImageIcon;
+
 /**
  * Where did this data item come from - i.e from disk, from a specific scraper, user supplied, etc
  *
@@ -17,5 +19,7 @@ public interface DataItemSource {
 	public boolean isDisabled();
 
 	public void setDisabled(boolean b);
+	
+	public ImageIcon getProfileIcon();
 
 }

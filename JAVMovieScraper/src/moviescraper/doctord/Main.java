@@ -14,13 +14,13 @@ import org.apache.commons.cli.ParseException;
 
 import moviescraper.doctord.controller.Renamer;
 import moviescraper.doctord.controller.releaserenamer.WebReleaseRenamer;
-import moviescraper.doctord.controller.siteparsingprofile.Data18MovieParsingProfile;
-import moviescraper.doctord.controller.siteparsingprofile.Data18WebContentParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.IAFDParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.AvEntertainmentParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.CaribbeancomParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.CaribbeancomPremiumParsingProfile;
+import moviescraper.doctord.controller.siteparsingprofile.specific.Data18MovieParsingProfile;
+import moviescraper.doctord.controller.siteparsingprofile.specific.Data18WebContentParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.DmmParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.HeyzoParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.JavBusParsingProfile;

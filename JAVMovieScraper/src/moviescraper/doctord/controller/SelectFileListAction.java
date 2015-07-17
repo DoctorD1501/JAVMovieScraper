@@ -94,7 +94,7 @@ public class SelectFileListAction implements ListSelectionListener {
 				}
 				if(!readInAnInfo)
 				{
-					this.guiMain.updateAllFieldsOfFileDetailPanel(false);
+					this.guiMain.updateAllFieldsOfFileDetailPanel(false, false);
 				}
 				this.guiMain.debugWriter("currentlySelectedMovieFileList: " + guiMain.getCurrentlySelectedMovieFileList());
 				this.guiMain.debugWriter("movieToWriteToDiskList: " + guiMain.movieToWriteToDiskList.size());
@@ -172,7 +172,7 @@ public class SelectFileListAction implements ListSelectionListener {
 			}
 			finally
 			{
-				guiMain.updateAllFieldsOfFileDetailPanel(false);
+				guiMain.updateAllFieldsOfFileDetailPanel(false, false);
 			}
 		}
 	}

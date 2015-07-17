@@ -7,7 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import moviescraper.doctord.controller.SpecificScraperAction;
+import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.CaribbeancomParsingProfile;
 import moviescraper.doctord.model.SearchResult;
 import moviescraper.doctord.model.dataitem.Actor;
@@ -37,10 +37,9 @@ public class CaribbeancomParsingProfileTest {
 		String searchString = parser.createSearchString(file);
 		try {
 			SearchResult[] searchResults = parser.getSearchResults(searchString);
-			Document document = SpecificScraperAction.downloadDocument(searchResults[0]);
+			Document document = SiteParsingProfile.downloadDocument(searchResults[0]);
 			parser.setDocument(document);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -65,7 +64,7 @@ public class CaribbeancomParsingProfileTest {
 	@Test
 	public void testScrapeOriginalTitle(){
 		OriginalTitle originalTitle = parser.scrapeOriginalTitle();
-		assertEquals("Wrong original title", "CA乱交パーティ 〜快�?��?�性交空間〜", originalTitle.getOriginalTitle());
+		assertEquals("Wrong original title", "CA乱交パーティ 〜快�?��?�性交空間〜", originalTitle.getOriginalTitle());
 	}
 	
 	@Test

@@ -3,7 +3,10 @@ package moviescraper.doctord.controller;
 import java.awt.event.ActionEvent;
 
 import moviescraper.doctord.view.GUIMain;
-
+/**
+ * Deprecated - As of v0.2.00-alpha use ScrapeAmalgamationAction instead
+ */
+@Deprecated
 public class ScrapeMovieActionData18Movie extends ScrapeMovieAction
 {
 	/**

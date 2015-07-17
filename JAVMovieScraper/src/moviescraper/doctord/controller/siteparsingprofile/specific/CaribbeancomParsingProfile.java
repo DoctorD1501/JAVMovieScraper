@@ -18,7 +18,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import moviescraper.doctord.controller.SpecificScraperAction;
 import moviescraper.doctord.controller.languagetranslation.Language;
 import moviescraper.doctord.controller.languagetranslation.TranslateString;
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
@@ -67,7 +66,7 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements
 		if(document != null && japaneseDocument == null)
 		{
 			String url = "http://www.caribbeancom.com/moviepages/" + id + "/index.html";
-			japaneseDocument = SpecificScraperAction.downloadDocument(url);
+			japaneseDocument = SiteParsingProfile.downloadDocumentFromURLString(url);
 		}
 	}
 	@Override
@@ -134,7 +133,7 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements
 	@Override
 	public ReleaseDate scrapeReleaseDate() {
 		initializeJapaneseDocument();
-		Element releaseDate = japaneseDocument.select("div.movie-info dl dt:contains(�?信日:) ~ dd ").first();
+		Element releaseDate = japaneseDocument.select("div.movie-info dl dt:contains(�?信日:) ~ dd ").first();
 		if(releaseDate != null && releaseDate.text().length() > 4)
 		{
 			return new ReleaseDate(releaseDate.text(), caribbeanReleaseDateFormat);
@@ -179,7 +178,7 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements
 	@Override
 	public Runtime scrapeRuntime() {
 		initializeJapaneseDocument();
-		Element durationElement = japaneseDocument.select("div.movie-info dl dt:contains(�?生時間:) ~ dd ").first();
+		Element durationElement = japaneseDocument.select("div.movie-info dl dt:contains(�?生時間:) ~ dd ").first();
 		if(durationElement != null && durationElement.text().trim().length() > 0)
 		{
 			String [] durationSplitByTimeUnit = durationElement.text().split(":");
@@ -208,7 +207,6 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements
 				try {
 					posters.add(new Thumb(trailerPoster));
 				} catch (MalformedURLException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -223,7 +221,6 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements
 						additionalThumb.setPreviewURL(new URL(additionalImageURLTemplatePreview));
 						posters.add(additionalThumb);
 					} catch (MalformedURLException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}

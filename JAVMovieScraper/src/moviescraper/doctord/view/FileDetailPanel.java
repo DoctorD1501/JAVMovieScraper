@@ -370,11 +370,21 @@ public class FileDetailPanel extends JPanel {
 	 */
 	
 	public void setNewMovie(Movie newMovie, boolean forcePosterUpdate) {
+		setNewMovie(newMovie, forcePosterUpdate, false);
+	}
+	
+	/**
+	 * Sets a new movie and updates a view
+	 * @param newMovie the movie this fileDetailPanel will show
+	 * @param forcePosterUpdate whether to force a redownload from the poster defined in the Thumb url
+	 * @param modifyWriteToDiskList - whether to modify the gui object's disk list by adding the currently viewed item if the disk list is empty
+	 */
+	public void setNewMovie(Movie newMovie, boolean forcePosterUpdate, boolean modifyWriteToDiskList) {
 		System.out.println("Setting new movie: " + newMovie);
 		if(newMovie != null)
 		{
 			setCurrentMovie(newMovie);
-			updateView(forcePosterUpdate, true);
+			updateView(forcePosterUpdate, modifyWriteToDiskList);
 		}
 	}
 	
@@ -453,7 +463,8 @@ public class FileDetailPanel extends JPanel {
 		txtFieldMovieSet.setText( currentMovie.getSet().getSet() );
 		moviePlotTextField.setText( currentMovie.getPlot().getPlot() );
 		
-		//select first Title
+		//select first Title 
+		//TODO: for some reason this has the side effect of clearing out the data item source of the title in the movieToWriteToDiskList so I may need to revisit this later
 		if ( comboBoxMovieTitleText.getItemCount() > 0 )
 			comboBoxMovieTitleText.setSelectedIndex(0);
 		

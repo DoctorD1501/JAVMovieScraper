@@ -18,7 +18,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import moviescraper.doctord.controller.SpecificScraperAction;
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.model.SearchResult;
 import moviescraper.doctord.model.dataitem.Actor;
@@ -92,7 +91,7 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 				System.out.println("Visiting set page to get full text");
 				try
 				{
-					Document setDocument = SpecificScraperAction.downloadDocument(setElement.attr("href"));
+					Document setDocument = SiteParsingProfile.downloadDocumentFromURLString(setElement.attr("href"));
 					Element setElementFullText = setDocument.select("div.cmn-ttl-tabMain01 div.txt01").first();
 					if(setElementFullText != null)
 					{

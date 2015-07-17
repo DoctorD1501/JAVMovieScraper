@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import org.apache.commons.codec.EncoderException;
@@ -41,7 +43,15 @@ public class IAFDParsingProfile extends SiteParsingProfile {
 	boolean useSiteSearch = true;
 	String yearFromFilename = "";
 	String fileName;
-
+	
+	@Override
+	public List<ScraperGroupName> getScraperGroupNames()
+	{
+		if(groupNames == null)
+			groupNames = Arrays.asList(ScraperGroupName.AMERICAN_ADULT_DVD_SCRAPER_GROUP);
+		return groupNames;
+	}
+	
 	@Override
 	public Title scrapeTitle() {
 		Element titleElement = document.select("div#centered.main2 div div h1.h1big, div#movieinfo div#moviedata h2").first();

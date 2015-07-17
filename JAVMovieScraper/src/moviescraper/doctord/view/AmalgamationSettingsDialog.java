@@ -47,7 +47,7 @@ public class AmalgamationSettingsDialog {
 	private JPanel panel;
 	JPanel overallAmalgamationPreferencePanel;
 	JPanel specificAmalgamationPreferencePanel;
-	private JFrame parent;
+	private GUIMain guiMain;
 
 	private JComboBox<ScraperGroupName> scraperGroupNameComboBox;
 	private JList<DataItemSource> overallAmalgamationPreferenceList;
@@ -84,9 +84,9 @@ public class AmalgamationSettingsDialog {
 
 	
 	
-	public AmalgamationSettingsDialog(JFrame parent, AllAmalgamationOrderingPreferences amalgamationPreferences) {
+	public AmalgamationSettingsDialog(GUIMain parent, AllAmalgamationOrderingPreferences amalgamationPreferences) {
 		
-		this.parent = parent;
+		this.guiMain = parent;
 		BorderLayout panelLayoutManager = new BorderLayout();
 		panelLayoutManager.setHgap(layoutHorizontalGap);
 		panelLayoutManager.setVgap(layoutVerticalGap);
@@ -103,7 +103,10 @@ public class AmalgamationSettingsDialog {
 		JPanel northPanel = new JPanel(northPanelLayoutManager);
 		JLabel helpMessage = new JLabel("<html>Select the scrapers you wish to use and the preferred order of each item to use when amalgamating data from the same scraping group.<br>Higher numbered items have precedence over lower numbered items.<br> Any scrapers disabled under \"Default Ordering\" will not scrape at all, even if enabled in the specific ordering section.</html>");
 		northPanel.add(helpMessage, BorderLayout.SOUTH);
-		northPanel.add(scraperGroupNameComboBox, BorderLayout.NORTH);
+		JPanel scraperGroupNameComboPanel = new JPanel();
+		scraperGroupNameComboPanel.add(new JLabel("Scraper Group:"));
+		scraperGroupNameComboPanel.add(scraperGroupNameComboBox);
+		northPanel.add(scraperGroupNameComboPanel, BorderLayout.NORTH);
 		panel.add(northPanel, BorderLayout.NORTH);
 		//End Scraper Groups
 		
@@ -337,8 +340,12 @@ public class AmalgamationSettingsDialog {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				createOverallAmalgamationPreferenceList();
 				synchronizeAmalgamationPreferenceListToDataItemSourceAmalgamationPreference(overallAmalgamationPreferenceListModel, true);
+				overallAmalgamationPreferenceList.updateUI();
+				createSpecificFieldAmalgamationPreferenceList();
 				synchronizeAmalgamationPreferenceListToDataItemSourceAmalgamationPreference(specificFieldAmalgamationPreferenceListModel, false);
+				specificFieldAmalgamationPreferenceList.updateUI();
 			}
 		});
 		return comboBox;
@@ -482,13 +489,17 @@ public class AmalgamationSettingsDialog {
 	}
 	
 	public boolean show(){
-		int result = JOptionPane.showOptionDialog(parent, panel, "Amalgamation Settings", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+		JFrame parentFrame = null;
+		if(guiMain != null)
+			parentFrame = guiMain.getFrmMoviescraper();
+		int result = JOptionPane.showOptionDialog(parentFrame, panel, "Amalgamation Settings", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
 
 		if (result == JOptionPane.OK_OPTION) {
 
 			
 			try {
 				amalgamationPreferences.saveToPreferencesFile();
+				guiMain.reinitializeAmalgamationPreferencesFromFile();
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			}

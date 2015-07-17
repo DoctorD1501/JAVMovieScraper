@@ -8,18 +8,19 @@ import java.util.Collection;
 
 import javax.swing.JOptionPane;
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
-import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfileJSON;
 import moviescraper.doctord.controller.siteparsingprofile.specific.SpecificProfile;
 import moviescraper.doctord.model.Movie;
 import moviescraper.doctord.model.SearchResult;
 import moviescraper.doctord.model.dataitem.Thumb;
 import moviescraper.doctord.model.preferences.MoviescraperPreferences;
 import moviescraper.doctord.view.SelectionDialog;
-
+/**
+ * Deprecated - As of v0.2.00-alpha use ScrapeAmalgamationAction instead
+ */
+@Deprecated
 public class SpecificScraperAction {
 
 	private Collection<SiteParsingProfile> sppList;
@@ -155,7 +156,7 @@ public class SpecificScraperAction {
 				}
 
 				if (searchResultToUse != null) {
-					Document document = downloadDocument(searchResultToUse);
+					Document document = SiteParsingProfile.downloadDocument(searchResultToUse);
 					spp.setDocument(document);
 				}
 			}
@@ -177,26 +178,6 @@ public class SpecificScraperAction {
                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,
                 null, null, null);
 		return selectionDialog.getSelectedValue();
-	}
-	
-	public static Document downloadDocument(String url) {
-		try {
-			return Jsoup.connect(url).userAgent("Mozilla").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
-	public static Document downloadDocument(SearchResult searchResult){
-		try {
-			if(searchResult.isJSONSearchResult())
-				return SiteParsingProfileJSON.getDocument(searchResult.getUrlPath());
-			else return Jsoup.connect(searchResult.getUrlPath()).userAgent("Mozilla").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
 	}
 	
 }

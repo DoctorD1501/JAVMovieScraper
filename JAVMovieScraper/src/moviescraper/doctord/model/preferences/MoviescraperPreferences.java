@@ -22,7 +22,9 @@ public class MoviescraperPreferences extends Settings {
 		promptForUserProvidedURLWhenScraping,
 		isFirstWordOfFileID,
 		appendIDToStartOfTitle,
-		useFilenameAsTitle
+		useFilenameAsTitle,
+		selectArtManuallyWhenScraping,
+		selectSearchResultManuallyWhenScraping
 		;
 
 		@Override
@@ -189,6 +191,26 @@ public class MoviescraperPreferences extends Settings {
 	
 	public void setUseFileNameAsTitle(boolean preferenceValue){
 		setBooleanValue(Key.useFilenameAsTitle, preferenceValue);
+	}
+	
+	public boolean getSelectArtManuallyWhenScraping()
+	{
+		return getBooleanValue(Key.selectArtManuallyWhenScraping, true);
+	}
+	
+	public void setSelectArtManuallyWhenScraping(boolean preferenceValue)
+	{
+		setBooleanValue(Key.selectArtManuallyWhenScraping, preferenceValue);
+	}
+	
+	public boolean getSelectSearchResultManuallyWhenScraping()
+	{
+		return getBooleanValue(Key.selectSearchResultManuallyWhenScraping, false);
+	}
+	
+	public void setSelectSearchResultManuallyWhenScraping(boolean preferenceValue)
+	{
+		setBooleanValue(Key.selectSearchResultManuallyWhenScraping, preferenceValue);
 	}
 
 

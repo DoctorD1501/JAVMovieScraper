@@ -7,6 +7,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 
+import javax.swing.Icon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -20,15 +21,12 @@ import moviescraper.doctord.controller.MoveToNewFolderAction;
 import moviescraper.doctord.controller.OpenFileAction;
 import moviescraper.doctord.controller.PlayMovieAction;
 import moviescraper.doctord.controller.RefreshDirectoryAction;
-import moviescraper.doctord.controller.ScrapeMovieAction;
-import moviescraper.doctord.controller.ScrapeMovieActionAutomatic;
-import moviescraper.doctord.controller.ScrapeMovieActionData18Movie;
-import moviescraper.doctord.controller.ScrapeMovieActionData18WebContent;
-import moviescraper.doctord.controller.ScrapeSpecificAction;
 import moviescraper.doctord.controller.SelectAmalgamationSettingsAction;
 import moviescraper.doctord.controller.WriteFileDataAction;
+import moviescraper.doctord.controller.amalgamation.ScrapeAmalgamatedAction;
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfileItem;
 import moviescraper.doctord.controller.siteparsingprofile.SpecificProfileFactory;
+import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile.ScraperGroupName;
 import moviescraper.doctord.model.Movie;
 import moviescraper.doctord.model.preferences.MoviescraperPreferences;
 
@@ -196,6 +194,8 @@ public class GUIMainMenuBar extends JMenuBar{
 		});
 		preferenceMenu.add(nfoNamedMovieDotNfo);
 
+		/*
+		//Made obsolete by amalgamation handling this functionality now
 		//Checkbox for using IAFD Actors instead of Data18
 		JCheckBoxMenuItem useIAFDForActors = new JCheckBoxMenuItem("Using IAFD Actors instead of Data18");
 		useIAFDForActors.setState(getPreferences().getUseIAFDForActors());
@@ -212,6 +212,7 @@ public class GUIMainMenuBar extends JMenuBar{
 			}
 		});
 		preferenceMenu.add(useIAFDForActors);
+		*/
 
 		//Checkbox for renaming Movie file
 		JCheckBoxMenuItem renameMovieFile = new JCheckBoxMenuItem("Rename Movie File");
@@ -317,10 +318,45 @@ public class GUIMainMenuBar extends JMenuBar{
 		});
 		preferenceMenu.add(useFilenameAsScrapedMovieTitle);
 		
+		//Checkbox for whether the user needs to manually select the art while scraping
+		JCheckBoxMenuItem selectArtManuallyWhenScraping = new JCheckBoxMenuItem("Select Art Manually When Scraping");
+		selectArtManuallyWhenScraping.setState(getPreferences().getSelectArtManuallyWhenScraping());
+		selectArtManuallyWhenScraping.addItemListener(new ItemListener() {
+
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				//save the menu choice off to the preference object (and the disk based settings file)
+				if(e.getStateChange() == ItemEvent.SELECTED)
+					getPreferences().setSelectArtManuallyWhenScraping(true);
+				else if(e.getStateChange() == ItemEvent.DESELECTED)
+					getPreferences().setSelectArtManuallyWhenScraping(false);
+
+			}
+		});
+		preferenceMenu.add(selectArtManuallyWhenScraping);
+		
+		//Checkbox for whether the user needs to manually select the search result when scraping
+		JCheckBoxMenuItem selectSearchResultManuallyWhenScraping = new JCheckBoxMenuItem("Select Search Results Manually When Scraping");
+		selectSearchResultManuallyWhenScraping.setState(getPreferences().getSelectSearchResultManuallyWhenScraping());
+		selectSearchResultManuallyWhenScraping.addItemListener(new ItemListener() {
+
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				//save the menu choice off to the preference object (and the disk based settings file)
+				if(e.getStateChange() == ItemEvent.SELECTED)
+					getPreferences().setSelectSearchResultManuallyWhenScraping(true);
+				else if(e.getStateChange() == ItemEvent.DESELECTED)
+					getPreferences().setSelectSearchResultManuallyWhenScraping(false);
+
+			}
+		});
+		preferenceMenu.add(selectSearchResultManuallyWhenScraping);
+		
 		
 		add(preferenceMenu);
 
 	}
+	
 	
 	private void initializeSettingsMenu() {
 
@@ -486,6 +522,7 @@ public class GUIMainMenuBar extends JMenuBar{
 		JMenu scrapeMenu = new JMenu("Scrape");
 		scrapeMenu.setMnemonic(KeyEvent.VK_S);
 		
+		/*Deprecated
 		JMenuItem scrapeJav = new JMenuItem(new ScrapeMovieAction(guiMain));
 		scrapeJav.setText(scrapeJav.getText() + "...");
 		scrapeJav.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, Event.CTRL_MASK | Event.SHIFT_MASK));
@@ -498,11 +535,23 @@ public class GUIMainMenuBar extends JMenuBar{
 		
 		JMenuItem scrapeData18WebContent = new JMenuItem(new ScrapeMovieActionData18WebContent(guiMain));
 		scrapeData18WebContent.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, Event.CTRL_MASK));
-		
 		scrapeMenu.add(scrapeJav);
 		scrapeMenu.add(scrapeJavAuto);
 		scrapeMenu.add(scrapeData18Movie);
 		scrapeMenu.add(scrapeData18WebContent);
+		*/
+		JMenuItem scrapeAdultDVDAmalgamated = new JMenuItem(new ScrapeAmalgamatedAction(guiMain, 
+				guiMain.getAllAmalgamationOrderingPreferences()
+				.getScraperGroupAmalgamationPreference(ScraperGroupName.AMERICAN_ADULT_DVD_SCRAPER_GROUP)));
+		scrapeAdultDVDAmalgamated.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, Event.CTRL_MASK | Event.SHIFT_MASK));
+		scrapeAdultDVDAmalgamated.setIcon(GUIMainButtonPanel.initializeImageIcon("App"));
+		
+		JMenuItem scrapeJAVAmalgamated = new JMenuItem(new ScrapeAmalgamatedAction(guiMain, guiMain.getAllAmalgamationOrderingPreferences().getScraperGroupAmalgamationPreference(ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP)));
+		scrapeJAVAmalgamated.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, Event.CTRL_MASK));
+		scrapeJAVAmalgamated.setIcon(GUIMainButtonPanel.initializeImageIcon("Japan"));
+		
+		scrapeMenu.add(scrapeAdultDVDAmalgamated);
+		scrapeMenu.add(scrapeJAVAmalgamated);
 		
 		
 		JMenu specificMenu = new JMenu("Specific Scrape");
@@ -512,6 +561,9 @@ public class GUIMainMenuBar extends JMenuBar{
 		
 		for(SiteParsingProfileItem item: SpecificProfileFactory.getAll()){
 			JMenuItem menuItem = new JMenuItem(item.toString());
+			Icon menuItemIcon = item.getParser().getProfileIcon();
+			if(menuItemIcon != null)
+				menuItem.setIcon(menuItemIcon);
 			
 			if (++i < 10){
 				menuItem.setAccelerator(KeyStroke.getKeyStroke(Character.forDigit(i,  10), Event.CTRL_MASK));
@@ -521,7 +573,7 @@ public class GUIMainMenuBar extends JMenuBar{
 					++i;
 				menuItem.setAccelerator(KeyStroke.getKeyStroke(Character.forDigit(i%10,  10), Event.CTRL_MASK | Event.SHIFT_MASK));
 			}
-			menuItem.addActionListener(new ScrapeSpecificAction(guiMain, item.getParser()));
+			menuItem.addActionListener(new ScrapeAmalgamatedAction(guiMain, item.getParser()));
 			specificMenu.add(menuItem);
 		}
 		

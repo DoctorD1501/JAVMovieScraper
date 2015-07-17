@@ -10,7 +10,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import moviescraper.doctord.controller.SpecificScraperAction;
 import moviescraper.doctord.controller.languagetranslation.Language;
 import moviescraper.doctord.controller.languagetranslation.TranslateString;
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
@@ -51,7 +50,7 @@ public class OneThousandGiriParsingProfile extends SiteParsingProfile implements
 		{
 			String url = document.baseUri().replaceFirst("http://en", "http://www");
 			System.out.println("url = " + url);
-			japaneseDocument = SpecificScraperAction.downloadDocument(url);
+			japaneseDocument = SiteParsingProfile.downloadDocumentFromURLString(url);
 		}
 		else if(document != null && japaneseDocument == null)
 			japaneseDocument = document;
@@ -137,7 +136,7 @@ public class OneThousandGiriParsingProfile extends SiteParsingProfile implements
 	public ReleaseDate scrapeReleaseDate()
 	{
 		initializeJapaneseDocument();
-		Element releaseDateElement = japaneseDocument.select("table.detail tbody tr th:contains(é…?ä¿¡æ—¥) + td").first();
+		Element releaseDateElement = japaneseDocument.select("table.detail tbody tr th:contains(ï¿½?ä¿¡æ—¥) + td").first();
 		if(releaseDateElement != null && releaseDateElement.text().length() > 4)
 		{
 			return new ReleaseDate(releaseDateElement.text().trim());
@@ -262,7 +261,7 @@ public class OneThousandGiriParsingProfile extends SiteParsingProfile implements
 		if(getScrapingLanguage().equals(Language.ENGLISH))
 			actorElements = document.select("table.detail tbody tr th:contains(Name) + td a");
 		else
-			actorElements = japaneseDocument.select("table.detail tbody tr th:contains(å??å‰?) + td a");
+			actorElements = japaneseDocument.select("table.detail tbody tr th:contains(ï¿½??ï¿½?) + td a");
 		if(actorElements != null)
 		{
 			for(Element actor : actorElements)

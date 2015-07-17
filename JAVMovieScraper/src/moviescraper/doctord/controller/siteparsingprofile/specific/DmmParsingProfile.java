@@ -82,18 +82,26 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 	 * getSearchResults()
 	 */
 	public DmmParsingProfile(boolean doGoogleTranslation) {
+		super();
 		this.doGoogleTranslation = doGoogleTranslation;
+		if(this.doGoogleTranslation == false)
+			setScrapingLanguage(Language.JAPANESE);
 		scrapeTrailers = true;
 	}
 
 	public DmmParsingProfile(boolean doGoogleTranslation, boolean scrapeTrailers) {
+		super();
 		this.doGoogleTranslation = doGoogleTranslation;
+		if(this.doGoogleTranslation == false)
+			setScrapingLanguage(Language.JAPANESE);
 		this.scrapeTrailers = scrapeTrailers;
 	}
 
 	public DmmParsingProfile(Document document, boolean doGoogleTranslation) {
 		super(document);
 		this.doGoogleTranslation = doGoogleTranslation;
+		if(this.doGoogleTranslation == false)
+			setScrapingLanguage(Language.JAPANESE);
 	}
 
 	@Override
@@ -690,7 +698,6 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 			return "http://www.dmm.co.jp/search/=/searchstr="
 			+ fileNameURLEncoded + "/";
 		} catch (Exception e) {
-			// TODO auto generated catch
 			e.printStackTrace();
 		}
 		return null;

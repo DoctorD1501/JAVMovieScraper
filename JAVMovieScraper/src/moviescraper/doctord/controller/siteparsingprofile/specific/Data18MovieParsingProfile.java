@@ -1,11 +1,13 @@
-package moviescraper.doctord.controller.siteparsingprofile;
+package moviescraper.doctord.controller.siteparsingprofile.specific;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,6 +19,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.model.Movie;
 import moviescraper.doctord.model.SearchResult;
 import moviescraper.doctord.model.dataitem.Actor;
@@ -40,7 +43,7 @@ import moviescraper.doctord.model.dataitem.Top250;
 import moviescraper.doctord.model.dataitem.Votes;
 import moviescraper.doctord.model.dataitem.Year;
 
-public class Data18MovieParsingProfile extends SiteParsingProfile {
+public class Data18MovieParsingProfile extends SiteParsingProfile implements SpecificProfile {
 	
 	boolean useSiteSearch = true;
 	String yearFromFilename = "";
@@ -49,7 +52,14 @@ public class Data18MovieParsingProfile extends SiteParsingProfile {
 	//to create the search results is not the same as the object used to actually scrape the document.
 	private static HashMap<String, String> releaseDateMap; 
 
-
+	@Override
+	public List<ScraperGroupName> getScraperGroupNames()
+	{
+		if(groupNames == null)
+			groupNames = Arrays.asList(ScraperGroupName.AMERICAN_ADULT_DVD_SCRAPER_GROUP);
+		return groupNames;
+	}
+	
 	@Override
 	public Title scrapeTitle() {
 		Element titleElement = document.select("div#centered.main2 div h1").first();
@@ -402,7 +412,7 @@ public class Data18MovieParsingProfile extends SiteParsingProfile {
 		{
 			ArrayList<SearchResult> linksList = new ArrayList<SearchResult>();
 			Document doc = Jsoup.connect(searchString).userAgent("Mozilla").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
-			Elements movieSearchResultElements = doc.select("div[style=float: left; padding: 6px; width: 130px;");
+			Elements movieSearchResultElements = doc.select("div[style=float: left; padding: 6px; width: 130px;]");
 			if(movieSearchResultElements == null || movieSearchResultElements.size() == 0)
 			{
 				this.useSiteSearch = false;

@@ -236,7 +236,7 @@ public class MessageConsole
 				}
 			}
 			catch (BadLocationException ble) {
-				ble.printStackTrace();
+				//ble.printStackTrace();
 			}
 
 			if (printStream != null)

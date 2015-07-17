@@ -1,5 +1,6 @@
 package moviescraper.doctord.controller.siteparsingprofile;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -16,7 +17,12 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+
 import org.apache.commons.io.FilenameUtils;
+import org.imgscalr.Scalr;
+import org.imgscalr.Scalr.Method;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -48,6 +54,7 @@ import moviescraper.doctord.model.dataitem.Trailer;
 import moviescraper.doctord.model.dataitem.Votes;
 import moviescraper.doctord.model.dataitem.Year;
 import moviescraper.doctord.model.preferences.MoviescraperPreferences;
+import moviescraper.doctord.view.GUIMain;
 
 public abstract class SiteParsingProfile implements DataItemSource{
 	
@@ -57,6 +64,8 @@ public abstract class SiteParsingProfile implements DataItemSource{
 	public enum ScraperGroupName{
 		JAV_CENSORED_SCRAPER_GROUP {@Override
 		public String toString() {return "JAV Censored Group";}}, 
+		AMERICAN_ADULT_DVD_SCRAPER_GROUP {@Override
+			public String toString() {return "American Adult DVD";}}, 
 		DEFAULT_SCRAPER_GROUP {@Override
 		public String toString() {return "Default Group";}}
 	}
@@ -88,11 +97,18 @@ public abstract class SiteParsingProfile implements DataItemSource{
 	
 	protected File scrapedMovieFile;
 	
+	private ImageIcon profileIcon;
+	
 	/**
 	 * If this has a value when scraping, will use overridenSearchResult 
 	 * from a user provided URL without looking at file name
 	 */
-	private SearchResult overridenSearchResult; 
+	private SearchResult overridenSearchResult;
+
+	/**
+	 * do we want to ignore scraping from this scraper. typically done when the user has hit cancel from a dialog box because none of the seen results were valid
+	 */
+	private boolean discardResults; 
 	
 	public boolean isExtraFanartScrapingEnabled() {
 		return extraFanartScrapingEnabled;
@@ -117,6 +133,7 @@ public abstract class SiteParsingProfile implements DataItemSource{
 		overrideURLDMM = null;
 		scrapingLanguage = Language.ENGLISH;
 		scrapingPreferences = MoviescraperPreferences.getInstance();
+		setScrapingLanguage(scrapingPreferences);
 		this.firstWordOfFileIsID = scrapingPreferences.getIsFirstWordOfFileID();
 		this.isDisabled = false;
 	}
@@ -124,6 +141,7 @@ public abstract class SiteParsingProfile implements DataItemSource{
 	public SiteParsingProfile(){
 		scrapingLanguage = Language.ENGLISH;
 		scrapingPreferences = MoviescraperPreferences.getInstance();
+		setScrapingLanguage(scrapingPreferences);
 		this.firstWordOfFileIsID = scrapingPreferences.getIsFirstWordOfFileID();
 		this.isDisabled = false;
 	}
@@ -144,6 +162,10 @@ public abstract class SiteParsingProfile implements DataItemSource{
 	public void setOverridenSearchResult(String urlPath)
 	{
 		overridenSearchResult = new SearchResult(urlPath);
+		if(SiteParsingProfileJSON.class.isAssignableFrom(this.getClass()))
+		{
+			overridenSearchResult.setJSONSearchResult(true);
+		}
 	}
 	
 	/**
@@ -326,7 +348,7 @@ public abstract class SiteParsingProfile implements DataItemSource{
 	/**
 	 * 
 	 * @return a new copy of the parser by calling the parser's constructor. 
-	 * used to instiate a parser when the type of the object is not known
+	 * used to instantiate a parser when the type of the object is not known
 	 */
 	public abstract SiteParsingProfile newInstance();
 
@@ -446,6 +468,74 @@ public abstract class SiteParsingProfile implements DataItemSource{
 	@Override
 	public void setDisabled(boolean value) {
 		isDisabled = value;
+	}
+
+
+
+	public static Document downloadDocumentFromURLString(String url) {
+		try {
+			return Jsoup.connect(url).userAgent("Mozilla").ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).get();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+
+
+	public static Document downloadDocument(SearchResult searchResult){
+		try {
+			if(searchResult.isJSONSearchResult())
+				return SiteParsingProfileJSON.getDocument(searchResult.getUrlPath());
+			else return Jsoup.connect(searchResult.getUrlPath()).userAgent("Mozilla").ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).get();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@Override
+	public ImageIcon getProfileIcon()
+	{
+		if(profileIcon != null)
+			return profileIcon;
+		else
+		{
+			String profileName = this.getClass().getSimpleName();
+			String siteName = profileName.replace("ParsingProfile", "");
+			return initializeResourceIcon("/res/sites/" + siteName + ".png",16,16);
+		}
+	}
+	
+	private ImageIcon initializeResourceIcon(String resourceName, int iconSizeX, int iconSizeY) {
+		try {
+			URL url = GUIMain.class.getResource(resourceName);
+			if(url != null)
+			{
+			BufferedImage iconBufferedImage = ImageIO.read(url);
+			if(iconBufferedImage != null)
+			{
+				iconBufferedImage = Scalr.resize(iconBufferedImage, Method.QUALITY, iconSizeX, iconSizeY, Scalr.OP_ANTIALIAS);
+				return new ImageIcon(iconBufferedImage);
+			}
+			else return new ImageIcon();
+			}
+			return new ImageIcon();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+			return null;
+		}
+	}
+
+
+
+	public boolean getDiscardResults() {
+		return discardResults;
+	}
+	
+	public void setDiscardResults(boolean value)
+	{
+		discardResults = value;
 	}
 
 

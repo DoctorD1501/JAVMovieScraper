@@ -7,7 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import moviescraper.doctord.controller.SpecificScraperAction;
+import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.JavBusParsingProfile;
 import moviescraper.doctord.model.SearchResult;
 import moviescraper.doctord.model.dataitem.Actor;
@@ -41,7 +41,7 @@ public class JavBusParsingProfileTest {
 		System.out.println("searchString = " + searchString);
 		try {
 			SearchResult[] searchResults = profile.getSearchResults(searchString);
-			Document document = SpecificScraperAction.downloadDocument(searchResults[0]);
+			Document document = SiteParsingProfile.downloadDocument(searchResults[0]);
 			System.out.println("document set to " + document.baseUri());
 			profile.setDocument(document);
 		} catch (IOException e) {
@@ -68,7 +68,7 @@ public class JavBusParsingProfileTest {
 	@Test
 	public void testOriginalTitle(){
 		OriginalTitle testOriginalTitle = profile.scrapeOriginalTitle();
-		assertEquals("Wrong original title", "çŒ›çƒˆã?ªKISSã?¨çµ¡ã?¿å?ˆã?†è‚‰ä½“ æœ¨ä¸‹ã?‚ã?šã?¿", testOriginalTitle.getOriginalTitle());
+		assertEquals("Wrong original title", "çŒ›çƒˆï¿½?ï¿½KISSï¿½?ï¿½çµ¡ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½è‚‰ä½“ æœ¨ä¸‹ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½", testOriginalTitle.getOriginalTitle());
 	}
 	
 	@Test
