@@ -200,16 +200,24 @@ public class Movie {
 			title.setDataItemSource(new DefaultDataItemSource());
 		}
 		
-		if(scraperPreferences.getAppendIDToStartOfTitle() && id != null && 
+		appendIDToStartOfTitle();
+		
+
+			
+		
+	}
+	
+	/**
+	 * If the appropriate preference is set, add the ID number to the end of the title field
+	 */
+	private void appendIDToStartOfTitle()
+	{
+		if(MoviescraperPreferences.getInstance().getAppendIDToStartOfTitle() && id != null && 
 				id.getId() != null && id.getId().trim().length() > 0 && title != null &&
 				title.getTitle() != null && title.getTitle().length() > 0)
 		{
 			title.setTitle(id.getId() + " - " + title.getTitle());
 		}
-		
-
-			
-		
 	}
 	
 	private void setDataItemSourceOnThumbs(Thumb [] thumbs, DataItemSource dataItemSource)
@@ -462,7 +470,14 @@ public class Movie {
 	public void writeToFile(File nfoFile, File posterFile, File fanartFile, File currentlySelectedFolderJpgFile, File targetFolderForExtraFanartFolderAndActorFolder, File trailerFile, MoviescraperPreferences preferences) throws IOException {
 		// Output the movie to XML using XStream and a proxy class to
 		// translate things to a format that xbmc expects
-
+		
+		//ID only appended if preference set and not already at the start of the title
+		if(!title.getTitle().startsWith(id.getId()))
+		{
+			appendIDToStartOfTitle();
+		}
+		
+		
 		String xml = new XbmcXmlMovieBean(this).toXML();
 		// add the xml header since xstream doesn't do this
 		xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>"
