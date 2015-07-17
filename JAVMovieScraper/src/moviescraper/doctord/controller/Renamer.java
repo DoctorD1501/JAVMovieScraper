@@ -13,6 +13,7 @@ import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.model.Movie;
 import moviescraper.doctord.model.dataitem.Actor;
 import moviescraper.doctord.model.dataitem.Genre;
+import moviescraper.doctord.model.dataitem.Title;
 import moviescraper.doctord.model.preferences.MoviescraperPreferences;
 
 public class Renamer {
@@ -26,6 +27,7 @@ public class Renamer {
 	private String filename;
 	private String path;
 	private static final int maxFileNameLength = 248;
+	private static final int extraFlexForFileNameLength = 25; //a folder can't be so long in name that it can't have a reasonable file inside it, so we're giving ourselves some extra flex
 
 	private final static String ID = "<ID>";
 	private final static String TITLE = "<TITLE>";
@@ -59,9 +61,15 @@ public class Renamer {
 		String newName = getSanitizedString (replace());
 		newName = path + newName + getAppendix() + getPosterFanartTrailerEnder() + dot + extension;
 		//shorten the string if it still doesn't fit
-		while(newName.length() > maxFileNameLength)
+		while((newName.length() + extraFlexForFileNameLength) > maxFileNameLength)
 		{
-			newName = path + newName.substring(0,newName.length()-1) + getAppendix() + getPosterFanartTrailerEnder() + dot + extension;
+			//newName = path + newName.substring(0,newName.length()-1) + getAppendix() + getPosterFanartTrailerEnder() + dot + extension;
+			//Cut the title down by one character and try again
+			System.out.println("Potential filename was too long. Cutting letters off title");
+			Title newTitle = new Title(movie.getTitle().getTitle().substring(0, movie.getTitle().getTitle().length()-1));
+			System.out.println("New truncated title is = " + newTitle.getTitle());
+			movie.setTitle(newTitle);
+			return getNewFileName();
 		}
 		
 		return newName;
