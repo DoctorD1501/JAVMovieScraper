@@ -111,9 +111,16 @@ public class Renamer {
 	private String renameReplaceAll(String replacementString, String tagName, String movieContentOfTag)
 	{
 		String replacedString = replacementString;
+		//Remove's stuff like <RELEASEDATE> when this field is null
+		if(movieContentOfTag == null)
+		{
+			replacedString = replacedString.replace(tagName, "");
+		}
+
 		if(replacedString.contains(tagName)){
 			replacedString = StringUtils.replace(replacedString, tagName, movieContentOfTag);
 		}
+		//Get rid of empty parens that are left over from blank field replacements like these : ()
 		if(movieContentOfTag == null || movieContentOfTag.trim().equals(""))
 		{
 			replacedString = replacedString.replaceAll("\\[\\]|\\(\\)", "");

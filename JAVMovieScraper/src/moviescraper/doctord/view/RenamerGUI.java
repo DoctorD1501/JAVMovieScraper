@@ -92,6 +92,8 @@ public class RenamerGUI extends JFrame {
 	public RenamerGUI(final MoviescraperPreferences preferences, Movie sampleMovie) {
 		System.out.println("calling constr with sampleMovie = " + sampleMovie);
 		this.sampleMovie = sampleMovie;
+		if(this.sampleMovie == null)
+			this.sampleMovie = getFakeMovie();
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 800, 600);
 		contentPane = new JPanel();
@@ -228,7 +230,7 @@ public class RenamerGUI extends JFrame {
 			}
 		});
 
-		fileDetailPanel.setNewMovie(getFakeMovie(), false);
+		fileDetailPanel.setNewMovie(getFakeMovie(), false, true);
 		updateExample();
 		this.setVisible(true);
 	}
