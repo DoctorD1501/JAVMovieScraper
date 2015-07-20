@@ -313,7 +313,11 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
 			}
 			if(evt.getPropertyName().equals(ScrapeAmalgamatedMovieWorkerProperty.ALL_SCRAPES_FINISHED.toString()))
 			{
-				if(guiMain != null)
+				if(currentAmalgamatedMovie == null)
+				{
+					guiMain.movieToWriteToDiskList.add(currentAmalgamatedMovie);
+				}
+				else if(guiMain != null)
 				{
 					promptUserToPickPoster();
 					promptUserToPickFanart();
@@ -322,12 +326,14 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
 					//I really shouldn't have to add this again here as setting the new movie above should do this, but that code is currently weirdly written and sometimes doesn't set it, so I've put an extra check here
 					if(!guiMain.movieToWriteToDiskList.contains(currentAmalgamatedMovie))
 						guiMain.movieToWriteToDiskList.add(currentAmalgamatedMovie);
-					
-					//scrape the next selected item
-					boolean weAreDone = !scrapeNextItemIfNeeded();
-					if(weAreDone)
+				}
+				//scrape the next selected item
+				boolean weAreDone = !scrapeNextItemIfNeeded();
+				if(weAreDone)
+				{
+					//renable the main gui and close our scraping dialog
+					if(guiMain != null)
 					{
-						//renable the main gui and close our scraping dialog
 						guiMain.getFrmMoviescraper().setCursor(Cursor.getDefaultCursor());
 						ScrapeAmalgamatedProgressDialog.this.guiMain.setMainGUIEnabled(true);
 						ScrapeAmalgamatedProgressDialog.this.dispose();
