@@ -58,16 +58,29 @@ public class RenamerGUI extends JFrame {
 	private static final long serialVersionUID = -5068144242360229926L;
 	private JPanel contentPane;
 	private JTextField textFieldRenameString;
+	private JTextField textFieldFolderRenameString;
 	private JTextField textFieldSanitizerString;
 	private FileDetailPanel fileDetailPanel;
-	private JPanel panel;
+	private JPanel buttonsPanel;
 	private JButton btnOk;
 	private JButton btnCancel;
 	private JLabel lblExample;
 	private JTextField textFieldExample;
 	private JScrollPane scrollPane;
 	
-	Movie sampleMovie;
+	
+	//order of form elements, y direction
+	private static final int fileRenameY = 0;
+	private static final int folderRenameY = 1;
+	private static final int availableTagsForFileY = 2;
+	private static final int availableTagsForFolderY = 3;
+	private static final int sanitizerY = 4;
+	private static final int exampleY = 5;
+	private static final int filePreviewerY = 6;
+	private static final int buttonsPanelY = 7;
+	
+	private Movie sampleMovie;
+	private File sampleFile;
 	
 	/**
 	 * Launch the application.
@@ -77,7 +90,7 @@ public class RenamerGUI extends JFrame {
 			@Override
 			public void run() {
 				try {
-					RenamerGUI frame = new RenamerGUI(MoviescraperPreferences.getInstance(),null);
+					RenamerGUI frame = new RenamerGUI(MoviescraperPreferences.getInstance(),null, new File("C:/Temp/Good old Movie.avi"));
 					frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -89,13 +102,17 @@ public class RenamerGUI extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public RenamerGUI(final MoviescraperPreferences preferences, Movie sampleMovie) {
+	public RenamerGUI(final MoviescraperPreferences preferences, Movie sampleMovie, File sampleFile) {
 		System.out.println("calling constr with sampleMovie = " + sampleMovie);
 		this.sampleMovie = sampleMovie;
 		if(this.sampleMovie == null)
 			this.sampleMovie = getFakeMovie();
+		if(sampleFile == null)
+			this.sampleFile = getFakeFile();
+		else
+			this.sampleFile = sampleFile;
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 800, 600);
+		setBounds(100, 100, 1200, 600);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -103,15 +120,16 @@ public class RenamerGUI extends JFrame {
 		gbl_contentPane.columnWidths = new int[]{0, 0, 0};
 		gbl_contentPane.rowHeights = new int[]{0, 0, 0, 0, 0};
 		gbl_contentPane.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
-		gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 1.0, 0.0};
+		gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0}; //file detail panel (2nd from last) expands to fill space
 		contentPane.setLayout(gbl_contentPane);
 		
-		JLabel lblRenamestring = new JLabel("Rename String:");
+		//File Rename String
+		JLabel lblRenamestring = new JLabel("File Rename String:");
 		GridBagConstraints gbc_lblRenamestring = new GridBagConstraints();
 		gbc_lblRenamestring.insets = new Insets(0, 0, 5, 5);
 		gbc_lblRenamestring.anchor = GridBagConstraints.EAST;
 		gbc_lblRenamestring.gridx = 0;
-		gbc_lblRenamestring.gridy = 0;
+		gbc_lblRenamestring.gridy = fileRenameY;
 		contentPane.add(lblRenamestring, gbc_lblRenamestring);
 		
 		textFieldRenameString = new JTextField(MoviescraperPreferences.getRenamerString());
@@ -119,7 +137,7 @@ public class RenamerGUI extends JFrame {
 		gbc_textFieldRenameString.insets = new Insets(0, 0, 5, 0);
 		gbc_textFieldRenameString.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textFieldRenameString.gridx = 1;
-		gbc_textFieldRenameString.gridy = 0;
+		gbc_textFieldRenameString.gridy = fileRenameY;
 		contentPane.add(textFieldRenameString, gbc_textFieldRenameString);
 		textFieldRenameString.setColumns(10);
 		textFieldRenameString.addKeyListener(new KeyAdapter() {
@@ -130,30 +148,79 @@ public class RenamerGUI extends JFrame {
 			}
 		});
 		
-		JLabel lblAvailableString = new JLabel("Available Tags For Rename String:");
+		//Folder Rename String
+		JLabel lblFolderRenamestring = new JLabel("Folder Rename/Move String:");
+		GridBagConstraints gbc_lblFolderRenamestring = new GridBagConstraints();
+		gbc_lblFolderRenamestring.insets = new Insets(0, 0, 5, 5);
+		gbc_lblFolderRenamestring.anchor = GridBagConstraints.EAST;
+		gbc_lblFolderRenamestring.gridx = 0;
+		gbc_lblFolderRenamestring.gridy = folderRenameY;
+		contentPane.add(lblFolderRenamestring, gbc_lblFolderRenamestring);
+		
+		textFieldFolderRenameString = new JTextField(MoviescraperPreferences.getFolderRenamerString());
+		GridBagConstraints gbc_textFieldFolderRenameString = new GridBagConstraints();
+		gbc_textFieldFolderRenameString.insets = new Insets(0, 0, 5, 0);
+		gbc_textFieldFolderRenameString.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textFieldFolderRenameString.gridx = 1;
+		gbc_textFieldFolderRenameString.gridy = folderRenameY;
+		contentPane.add(textFieldFolderRenameString, gbc_textFieldFolderRenameString);
+		textFieldFolderRenameString.setColumns(10);
+		textFieldFolderRenameString.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				preferences.setFolderRenamerString( textFieldFolderRenameString.getText() );
+				updateExample();
+			}
+		});
+		
+		
+		
+		//Available Tags - File
+		
+		JLabel lblAvailableString = new JLabel("Available Tags For File Rename String:");
 		GridBagConstraints gbc_lblavailablestring = new GridBagConstraints();
 		gbc_lblavailablestring.insets = new Insets(0, 0, 5, 5);
 		gbc_lblavailablestring.anchor = GridBagConstraints.EAST;
 		gbc_lblavailablestring.gridx = 0;
-		gbc_lblavailablestring.gridy = 1;
+		gbc_lblavailablestring.gridy = availableTagsForFileY;
 		contentPane.add(lblAvailableString, gbc_lblavailablestring);
 		
-		JTextField availbleTagsTextField = new JTextField(Renamer.getAvailableTags());
+		JTextField availbleTagsTextField = new JTextField(Renamer.getAvailableFileTags());
 		availbleTagsTextField.setEditable(false);
 		GridBagConstraints gbc_textFieldRenameStringTwo = new GridBagConstraints();
 		gbc_textFieldRenameStringTwo.insets = new Insets(0, 0, 5, 0);
 		gbc_textFieldRenameStringTwo.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textFieldRenameStringTwo.gridx = 1;
-		gbc_textFieldRenameStringTwo.gridy = 1;
+		gbc_textFieldRenameStringTwo.gridy = availableTagsForFileY;
 		contentPane.add(availbleTagsTextField, gbc_textFieldRenameStringTwo);
 		availbleTagsTextField.setColumns(10);
 		
+		//Available Tags - Folder
+		JLabel lblAvailableFolderString = new JLabel("Available Tags For Folder Rename/Move String:");
+		GridBagConstraints gbc_lblavailableFolderstring = new GridBagConstraints();
+		gbc_lblavailableFolderstring.insets = new Insets(0, 0, 5, 5);
+		gbc_lblavailableFolderstring.anchor = GridBagConstraints.EAST;
+		gbc_lblavailableFolderstring.gridx = 0;
+		gbc_lblavailableFolderstring.gridy = availableTagsForFolderY;
+		contentPane.add(lblAvailableFolderString, gbc_lblavailableFolderstring);
+		
+		JTextField availbleTagsFolderTextField = new JTextField(Renamer.getAvailableFolderTags());
+		availbleTagsFolderTextField.setEditable(false);
+		GridBagConstraints gbc_textFieldAvailableFolder = new GridBagConstraints();
+		gbc_textFieldAvailableFolder.insets = new Insets(0, 0, 5, 0);
+		gbc_textFieldAvailableFolder.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textFieldAvailableFolder.gridx = 1;
+		gbc_textFieldAvailableFolder.gridy = availableTagsForFolderY;
+		contentPane.add(availbleTagsFolderTextField, gbc_textFieldAvailableFolder);
+		availbleTagsFolderTextField.setColumns(10);
+		
+		//Sanitizer
 		JLabel lblSanitizerString = new JLabel("Sanitizer String:");
 		GridBagConstraints gbc_lblSanitizerString = new GridBagConstraints();
 		gbc_lblSanitizerString.insets = new Insets(0, 0, 5, 5);
 		gbc_lblSanitizerString.anchor = GridBagConstraints.EAST;
 		gbc_lblSanitizerString.gridx = 0;
-		gbc_lblSanitizerString.gridy = 2;
+		gbc_lblSanitizerString.gridy = sanitizerY;
 		contentPane.add(lblSanitizerString, gbc_lblSanitizerString);
 		
 		textFieldSanitizerString = new JTextField(MoviescraperPreferences.getSanitizerForFilename());
@@ -161,7 +228,7 @@ public class RenamerGUI extends JFrame {
 		gbc_textFieldSanitizerString.insets = new Insets(0, 0, 5, 0);
 		gbc_textFieldSanitizerString.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textFieldSanitizerString.gridx = 1;
-		gbc_textFieldSanitizerString.gridy = 2;
+		gbc_textFieldSanitizerString.gridy = sanitizerY;
 		contentPane.add(textFieldSanitizerString, gbc_textFieldSanitizerString);
 		textFieldSanitizerString.setColumns(10);
 		textFieldSanitizerString.addKeyListener(new KeyAdapter() {
@@ -172,12 +239,13 @@ public class RenamerGUI extends JFrame {
 			}
 		});
 		
+		//Preview Results
 		lblExample = new JLabel("Example :");
 		GridBagConstraints gbc_lblExample = new GridBagConstraints();
 		gbc_lblExample.anchor = GridBagConstraints.EAST;
 		gbc_lblExample.insets = new Insets(0, 0, 5, 5);
 		gbc_lblExample.gridx = 0;
-		gbc_lblExample.gridy = 3;
+		gbc_lblExample.gridy = exampleY;
 		contentPane.add(lblExample, gbc_lblExample);
 		
 		textFieldExample = new JTextField();
@@ -186,10 +254,11 @@ public class RenamerGUI extends JFrame {
 		gbc_textFieldExample.insets = new Insets(0, 0, 5, 0);
 		gbc_textFieldExample.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textFieldExample.gridx = 1;
-		gbc_textFieldExample.gridy = 3;
+		gbc_textFieldExample.gridy = exampleY;
 		contentPane.add(textFieldExample, gbc_textFieldExample);
 		textFieldExample.setColumns(10);		
-
+		
+		//File Detail Panel
 		fileDetailPanel = new FileDetailPanel(preferences, new GUIMain());
 		fileDetailPanel.hideArtworkPanel();
 		
@@ -200,19 +269,21 @@ public class RenamerGUI extends JFrame {
 		gbc_scrollPane.gridwidth = 3;
 		gbc_scrollPane.fill = GridBagConstraints.BOTH;
 		gbc_scrollPane.gridx = 0;
-		gbc_scrollPane.gridy = 4;
+		gbc_scrollPane.gridy = filePreviewerY;
 		contentPane.add(scrollPane, gbc_scrollPane);
 		
-		panel = new JPanel();
+		
+		//OK, Cancel Button Panel
+		buttonsPanel = new JPanel();
 		GridBagConstraints gbc_panel = new GridBagConstraints();
 		gbc_panel.gridwidth = 2;
 		gbc_panel.gridx = 0;
-		gbc_panel.gridy = 5;
-		contentPane.add(panel, gbc_panel);
-		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+		gbc_panel.gridy = buttonsPanelY;
+		contentPane.add(buttonsPanel, gbc_panel);
+		buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.X_AXIS));
 		
 		btnOk = new JButton("OK");
-		panel.add(btnOk);
+		buttonsPanel.add(btnOk);
 		btnOk.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -222,7 +293,7 @@ public class RenamerGUI extends JFrame {
 		});
 		
 		btnCancel = new JButton("Cancel");
-		panel.add(btnCancel);
+		buttonsPanel.add(btnCancel);
 		btnCancel.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -236,9 +307,9 @@ public class RenamerGUI extends JFrame {
 	}
 
 	protected void updateExample() {
-		Renamer renamer = new Renamer(textFieldRenameString.getText(), textFieldSanitizerString.getText(),
-				fileDetailPanel.currentMovie, getFakeFile());
-		textFieldExample.setText( renamer.getNewFileName() );
+		Renamer renamer = new Renamer(textFieldRenameString.getText(), textFieldFolderRenameString.getText(), textFieldSanitizerString.getText(),
+				fileDetailPanel.currentMovie, sampleFile);
+		textFieldExample.setText( renamer.getNewFileName(true) );
 	}
 	
 	private File getFakeFile() {

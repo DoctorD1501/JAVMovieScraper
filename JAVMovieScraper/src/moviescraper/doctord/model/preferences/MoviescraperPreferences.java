@@ -17,6 +17,7 @@ public class MoviescraperPreferences extends Settings {
 		useIAFDForActors,
 		sanitizerForFilename, 
 		renamerString,
+		folderRenamerString,
 		renameMovieFile,
 		scrapeInJapanese,
 		promptForUserProvidedURLWhenScraping,
@@ -143,6 +144,14 @@ public class MoviescraperPreferences extends Settings {
 
 	public void setRenamerString(String preferenceValue) {
 		setStringValue(Key.renamerString, preferenceValue);
+	}
+	
+	public static String getFolderRenamerString() {
+		return getStringValue(Key.folderRenamerString, "<BASEDIRECTORY><PATHSEPERATOR>");
+	}
+	
+	public void setFolderRenamerString(String preferenceValue) {
+		setStringValue(Key.folderRenamerString, preferenceValue);
 	}
 
 	public boolean getRenameMovieFile() {

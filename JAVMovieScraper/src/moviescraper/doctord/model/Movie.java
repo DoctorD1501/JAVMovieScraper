@@ -536,18 +536,25 @@ public class Movie {
 				}
 				if(createFolderJpgEnabledPreference && currentlySelectedFolderJpgFile != null)
 				{
-					if(!posterToSaveToDisk.isModified())
+					if(!posterToSaveToDisk.isModified() && (!currentlySelectedFolderJpgFile.exists() || (currentlySelectedFolderJpgFile.exists() && writePosterIfAlreadyExists)))
 					{
 						System.out.println("Writing folder.jpg (no changes) to " + currentlySelectedFolderJpgFile);
 						FileUtils.copyURLToFile(posterToSaveToDisk.getThumbURL(), currentlySelectedFolderJpgFile, connectionTimeout, readTimeout);
 					}
 					else
 					{
-						System.out.println("Writing folder to " + currentlySelectedFolderJpgFile);
-						FileImageOutputStream folderFileOutput = new FileImageOutputStream(currentlySelectedFolderJpgFile);
-						writer.setOutput(folderFileOutput);
-						writer.write(null, image, iwp);
-						folderFileOutput.close();
+						if(!currentlySelectedFolderJpgFile.exists() || (currentlySelectedFolderJpgFile.exists() && writePosterIfAlreadyExists))
+						{
+							System.out.println("Writing folder to " + currentlySelectedFolderJpgFile);
+							FileImageOutputStream folderFileOutput = new FileImageOutputStream(currentlySelectedFolderJpgFile);
+							writer.setOutput(folderFileOutput);
+							writer.write(null, image, iwp);
+							folderFileOutput.close();
+						}
+						else
+						{
+							System.out.println("Skipping overwrite of folder.jpg due to preference setting");
+						}
 					}
 				}
 				writer.dispose();

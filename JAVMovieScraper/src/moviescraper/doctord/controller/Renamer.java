@@ -18,7 +18,8 @@ import moviescraper.doctord.model.preferences.MoviescraperPreferences;
 
 public class Renamer {
 
-	private String renameString;
+	private String fileNameRenameString;
+	private String folderNameRenameString;
 	private Movie movie;
 	private String sanitizer;
 	private File oldFile;
@@ -29,6 +30,7 @@ public class Renamer {
 	private static final int maxFileNameLength = 248;
 	private static final int extraFlexForFileNameLength = 25; //a folder can't be so long in name that it can't have a reasonable file inside it, so we're giving ourselves some extra flex
 
+	//file tags
 	private final static String ID = "<ID>";
 	private final static String TITLE = "<TITLE>";
 	private final static String ACTORS = "<ACTORS>";
@@ -41,25 +43,44 @@ public class Renamer {
 	private final static String period = ".";
 	private final static String[] availableRenameTags = {ID, TITLE, ACTORS, GENRES, SET, STUDIO, YEAR, RELEASEDATE, ORIGINALTITLE};
 	
-	public Renamer(String renameString, String sanitizer, Movie toRename, File oldFile) {
-		this.renameString = renameString;
+	//folder tags
+	private final static String BASEDIRECTORY = "<BASEDIRECTORY>";
+	private final static String PATHSEPERATOR = "<PATHSEPERATOR>";
+	private final static String[] availableFolderRenameTags = {BASEDIRECTORY, PATHSEPERATOR, ID, TITLE, ACTORS, GENRES, SET, STUDIO, YEAR, RELEASEDATE, ORIGINALTITLE};
+	
+	public Renamer(String fileNameRenameString, String folderNameRenameString, String sanitizer, Movie toRename, File oldFile) {
+		this.fileNameRenameString = fileNameRenameString;
+		this.folderNameRenameString = folderNameRenameString;
 		this.sanitizer = sanitizer;
 		this.movie = toRename;
 		this.oldFile = oldFile;
 	}
 	
-	public String getNewFileName() {
+	/**
+	 * Returns the new name given by the constructed renamer string used from the movie scraper preferences and arguments passed into the renamer object
+	 * @param isFolderName - if true will remove the extension and enders such as -poster and -trailer from the filename. otherwise leaves them on
+	 */
+	public String getNewFileName(boolean isFolderName) {
 		
 		extension = FilenameUtils.getExtension(oldFile.toString());
 		if(oldFile.isDirectory())
 			extension = "";
 		filename = FilenameUtils.getBaseName(oldFile.toString());
 		path = FilenameUtils.getFullPath(oldFile.toString());
+		path = getRenamedFolderPath(path);
 		String dot = ".";
 		if(oldFile.isDirectory())
 			dot = "";
-		String newName = getSanitizedString (replace());
-		newName = path + newName + getAppendix() + getPosterFanartTrailerEnder() + dot + extension;
+		String newName = getSanitizedString (replace(fileNameRenameString));
+		if(isFolderName)
+		{
+			newName = path + newName;
+		}
+		else
+		{
+			newName = path + newName + getAppendix() + getPosterFanartTrailerEnder() + dot + extension;
+		}
+		
 		//shorten the string if it still doesn't fit
 		while((newName.length() + extraFlexForFileNameLength) > maxFileNameLength)
 		{
@@ -69,13 +90,26 @@ public class Renamer {
 			Title newTitle = new Title(movie.getTitle().getTitle().substring(0, movie.getTitle().getTitle().length()-1));
 			System.out.println("New truncated title is = " + newTitle.getTitle());
 			movie.setTitle(newTitle);
-			return getNewFileName();
+			return getNewFileName(isFolderName);
 		}
 		
 		return newName;
 	}
 	
-	private String replace() {
+	private String getRenamedFolderPath(String path) {
+		System.out.println("Old Path: " + path);
+		String newPath = replace(folderNameRenameString);
+		//Make sure we don't have any double path separators caused by things like an empty field
+		String doublePathSeperator = File.separator + File.separator;
+		while(newPath.contains(doublePathSeperator))
+		{
+			newPath = newPath.replace(doublePathSeperator, File.separator);
+		}
+		System.out.println("New path: " + newPath);
+		return newPath;
+	}
+
+	private String replace(String target) {
 		String movieID = movie.getId().getId();
 		String movieTitle = movie.getTitle().getTitle();
 		List<Actor> movieActorsList = movie.getActors();
@@ -86,8 +120,15 @@ public class Renamer {
 		String movieSet = movie.getSet().getSet();
 		String movieStudio = movie.getStudio().getStudio();
 		String movieGenres = combineGenreList(movie.getGenres());
-		String newName = renameString;
+		String baseDirectory = oldFile.getParent();
+		String pathSeperator = File.separator;
+		String newName = target;
 				
+		//path stuff
+		newName = renameReplaceAll(newName, BASEDIRECTORY, baseDirectory);
+		newName = renameReplaceAll(newName, PATHSEPERATOR, pathSeperator);
+		
+		//metadata stuff
 		newName = renameReplaceAll(newName, ID, movieID);
 		newName = renameReplaceAll(newName, TITLE, movieTitle);
 		newName = renameReplaceAll(newName, YEAR, movieYear);
@@ -149,22 +190,22 @@ public class Renamer {
 			Movie movieReadFromNfo = Movie.createMovieFromNfo(nfoFile);
 			if(movieReadFromNfo != null && movieReadFromNfo.getTitle() != null)
 			{
-				Renamer renamer = new Renamer(MoviescraperPreferences.getRenamerString(), MoviescraperPreferences.getSanitizerForFilename(), movieReadFromNfo, fileToRename);
+				Renamer renamer = new Renamer(MoviescraperPreferences.getRenamerString(), MoviescraperPreferences.getRenamerString(), MoviescraperPreferences.getSanitizerForFilename(), movieReadFromNfo, fileToRename);
 				
 				//Figure out all the new names
-			    File newMovieFilename = new File(renamer.getNewFileName());
+			    File newMovieFilename = new File(renamer.getNewFileName(false));
 			    
 			    renamer.setOldFilename(nfoFile);
-			    File newNfoFilename = new File(renamer.getNewFileName());
+			    File newNfoFilename = new File(renamer.getNewFileName(false));
 				
 				renamer.setOldFilename(posterFile);
-				File newPosterFilename = new File(renamer.getNewFileName());
+				File newPosterFilename = new File(renamer.getNewFileName(false));
 				
 				renamer.setOldFilename(fanartFile);
-				File newFanartFilename = new File(renamer.getNewFileName());
+				File newFanartFilename = new File(renamer.getNewFileName(false));
 				
 				renamer.setOldFilename(trailerFile);
-				File newTrailerFilename = new File(renamer.getNewFileName());
+				File newTrailerFilename = new File(renamer.getNewFileName(false));
 				
 				//Do All the Renames
 				if(fileToRename.exists())
@@ -210,7 +251,7 @@ public class Renamer {
 						if(currentFile.isFile() && currentFileNameWithoutStackSuffix.equals(currentlySelectedMovieFileWihoutStackSuffix))
 						{
 							renamer.setOldFilename(currentFile);
-							File newStackedFilename = new File(renamer.getNewFileName());
+							File newStackedFilename = new File(renamer.getNewFileName(false));
 							System.out.println("Renaming " + currentFile.getPath() + " to " + newStackedFilename);
 							FileUtils.moveFile(currentFile, newStackedFilename);
 						}
@@ -277,10 +318,20 @@ public class Renamer {
 		return fileName;
 	}
 	
-	public static String getAvailableTags()
+	public static String getAvailableFileTags()
 	{
 		String tags = "";
 		for (String tag : availableRenameTags)
+		{
+			tags= tags + " " + tag;
+		}
+		return tags.trim();
+	}
+	
+	public static String getAvailableFolderTags()
+	{
+		String tags = "";
+		for (String tag : availableFolderRenameTags)
 		{
 			tags= tags + " " + tag;
 		}

@@ -8,6 +8,9 @@ import java.io.IOException;
 
 import javax.swing.SwingWorker;
 
+import org.apache.commons.io.FileExistsException;
+import org.apache.commons.io.FileUtils;
+
 import moviescraper.doctord.model.Movie;
 import moviescraper.doctord.model.preferences.MoviescraperPreferences;
 import moviescraper.doctord.view.GUIMain;
@@ -61,15 +64,32 @@ public class WriteFileDataAction implements ActionListener {
 							Movie movie = guiMain.movieToWriteToDiskList.get(movieNumberInList);
 
 							String sanitizerString = MoviescraperPreferences.getSanitizerForFilename();
-							String renameString = MoviescraperPreferences.getRenamerString(); 
-							Renamer renamer = new Renamer(renameString, sanitizerString, movie, oldMovieFile);
-							String newMovieFilename = renamer.getNewFileName();
+							String fileRenameString = MoviescraperPreferences.getRenamerString();
+							String folderRenameString = MoviescraperPreferences.getFolderRenamerString();
+							Renamer renamer = new Renamer(fileRenameString, folderRenameString, sanitizerString, movie, oldMovieFile);
+							String newMovieFilename = renamer.getNewFileName(true);
 							System.out.println( "New Filename : " + newMovieFilename );
 							File newMovieFile = new File(newMovieFilename);
+							/*
+							 * old method
 							boolean renameStatus = oldMovieFile.renameTo(newMovieFile);
 							if(!renameStatus)
 							{
 								System.err.println("There was a problem renaming " + oldMovieFile + " to "+ newMovieFile);
+							}*/
+							try{
+							if(oldMovieFile.isDirectory())
+							{
+								FileUtils.moveDirectory(oldMovieFile, newMovieFile);
+							}
+							else if(oldMovieFile.isFile())
+							{
+								FileUtils.moveFileToDirectory(oldMovieFile, newMovieFile, true);
+							}
+							}
+							catch(FileExistsException e)
+							{
+								System.out.println("A file or directory already exists at " + newMovieFile + " - skipping overwrite or creation of new folder.");
 							}
 
 							guiMain.movieToWriteToDiskList.get(movieNumberInList).writeToFile(
@@ -112,7 +132,8 @@ public class WriteFileDataAction implements ActionListener {
 					guiMain.getFrmMoviescraper().setCursor(Cursor.getDefaultCursor());
 				}
 				finally{
-					guiMain.getFrmMoviescraper().setCursor(Cursor.getDefaultCursor());
+					done();
+					
 				}
 			}
 			return null;

@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
+import java.io.File;
 
 import javax.swing.Icon;
 import javax.swing.JCheckBoxMenuItem;
@@ -76,7 +77,7 @@ public class GUIMainMenuBar extends JMenuBar{
 		preferenceMenu.add(writeFanartAndPosters);
 
 		//Checkbox for overwriting fanart and poster
-		JCheckBoxMenuItem overwriteFanartAndPosters = new JCheckBoxMenuItem("Overwrite fanart and poster files");
+		JCheckBoxMenuItem overwriteFanartAndPosters = new JCheckBoxMenuItem("Overwrite fanart, poster, and folder.jpg files");
 		overwriteFanartAndPosters.setState(getPreferences().getOverWriteFanartAndPostersPreference());
 		overwriteFanartAndPosters.addItemListener(new ItemListener() {
 
@@ -373,9 +374,12 @@ public class GUIMainMenuBar extends JMenuBar{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Movie currentSelectedMovie = null;
+				File currentlySelectedFile = null;
 				if(guiMain.getMovieToWriteToDiskList().size() > 0)
 					currentSelectedMovie = guiMain.getMovieToWriteToDiskList().get(0);
-				new RenamerGUI(getPreferences(), currentSelectedMovie);
+				if(guiMain.getCurrentlySelectedMovieFileList().size() > 0)
+					currentlySelectedFile = guiMain.getCurrentlySelectedMovieFileList().get(0);
+				new RenamerGUI(getPreferences(), currentSelectedMovie, currentlySelectedFile);
 			}
 		});
 		settingsMenu.add(renameSettings);
