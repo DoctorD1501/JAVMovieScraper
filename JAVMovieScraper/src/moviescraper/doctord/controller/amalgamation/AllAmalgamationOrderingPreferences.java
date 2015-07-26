@@ -18,6 +18,7 @@ import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile.Scr
 import moviescraper.doctord.controller.siteparsingprofile.specific.ActionJavParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.Data18MovieParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.DmmParsingProfile;
+import moviescraper.doctord.controller.siteparsingprofile.specific.ExcaliburFilmsParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.JavLibraryParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.JavZooParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.R18ParsingProfile;
@@ -135,7 +136,7 @@ public class AllAmalgamationOrderingPreferences {
 	private void initializeAmericanAdultDVDScraperGroupDefaultPreferences() {
 		System.out.println("Initializing default american adult dvd preferences");
 		DataItemSourceAmalgamationPreference overallOrdering = new DataItemSourceAmalgamationPreference(
-				new TheMovieDatabaseParsingProfile(), new Data18MovieParsingProfile(), new IAFDParsingProfile());
+				new TheMovieDatabaseParsingProfile(), new Data18MovieParsingProfile(), new ExcaliburFilmsParsingProfile(), new IAFDParsingProfile());
 		ScraperGroupAmalgamationPreference preferences = new ScraperGroupAmalgamationPreference(
 				ScraperGroupName.AMERICAN_ADULT_DVD_SCRAPER_GROUP,
 				overallOrdering);

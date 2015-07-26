@@ -22,6 +22,7 @@ import moviescraper.doctord.controller.siteparsingprofile.specific.CaribbeancomP
 import moviescraper.doctord.controller.siteparsingprofile.specific.Data18MovieParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.Data18WebContentParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.DmmParsingProfile;
+import moviescraper.doctord.controller.siteparsingprofile.specific.ExcaliburFilmsParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.HeyzoParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.JavBusParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.Kin8tengokuParsingProfile;
@@ -64,7 +65,7 @@ public class Main {
                     .hasArgs(2)
                     .withDescription(  "Scrapes and writes metadata of the file located at <FilePath> with type of scraper specified by <ScraperName>.\n" +
                     					"Valid ScraperNames are: \n" +
-                    					"data18webcontent, data18, themoviedatabase, iafd, dmm, 1000giri, 1pondo, aventertainment, caribbeancom, caribbeancompremium, heyzo, kin8tengoku, mytokyohot, tokyohot, javbus .\n" + 
+                    					"data18webcontent, data18, excaliburfilms, themoviedatabase, iafd, dmm, 1000giri, 1pondo, aventertainment, caribbeancom, caribbeancompremium, heyzo, kin8tengoku, mytokyohot, tokyohot, javbus .\n" + 
                     					"Any settings.xml file preference values will be taken into account when scraping.")
                     .create( "scrape" );
 			
@@ -301,6 +302,8 @@ public class Main {
 			case "themoviedatabase":
 				parsingProfile = new TheMovieDatabaseParsingProfile();
 				break;
+			case "excaliburfilms":
+				parsingProfile = new ExcaliburFilmsParsingProfile();
 			case "1000giri":
 				parsingProfile = new OneThousandGiriParsingProfile();
 				break;
