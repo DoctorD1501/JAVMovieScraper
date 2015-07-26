@@ -21,6 +21,7 @@ public class Renamer {
 	private String fileNameRenameString;
 	private String folderNameRenameString;
 	private Movie movie;
+	private Title originalTitle;
 	private String sanitizer;
 	private File oldFile;
 	
@@ -53,6 +54,7 @@ public class Renamer {
 		this.folderNameRenameString = folderNameRenameString;
 		this.sanitizer = sanitizer;
 		this.movie = toRename;
+		this.originalTitle = movie.getTitle();
 		this.oldFile = oldFile;
 	}
 	
@@ -84,7 +86,6 @@ public class Renamer {
 		//shorten the string if it still doesn't fit
 		while((newName.length() + extraFlexForFileNameLength) > maxFileNameLength)
 		{
-			//newName = path + newName.substring(0,newName.length()-1) + getAppendix() + getPosterFanartTrailerEnder() + dot + extension;
 			//Cut the title down by one character and try again
 			System.out.println("Potential filename was too long. Cutting letters off title");
 			Title newTitle = new Title(movie.getTitle().getTitle().substring(0, movie.getTitle().getTitle().length()-1));
@@ -92,7 +93,8 @@ public class Renamer {
 			movie.setTitle(newTitle);
 			return getNewFileName(isFolderName);
 		}
-		
+		//if we messed with the title above because it was too short, restore us back to our original title to get the file length in the movie object
+		movie.setTitle(originalTitle);
 		return newName;
 	}
 	
