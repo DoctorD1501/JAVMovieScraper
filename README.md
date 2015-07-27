@@ -9,8 +9,14 @@ The data is then fed through a machine translation (if original data is in Japan
 
 
 This program is in alpha. Please submit bugs and feature requests here on github on the issues page!
+## Screenshots
+Main Window
+![alt text](https://github.com/DoctorD1501/JAVMovieScraper/blob/gh-pages/images/JAVMovieScraperScreenShot1%20-%20Main%20Window.jpg "Main Window")
 
-###### Usage
+Renamer Window
+![alt text](https://github.com/DoctorD1501/JAVMovieScraper/blob/gh-pages/images/JAVMovieScraperScreenShot1%20-%20Renamer%20Window.jpg "Renamer")
+
+## Usage
 
 1. Make sure you have the Java JRE installed. You will need at least Java version 7. Java can be downloaded here: https://www.java.com/en/download/index.jsp
 2. Either download the newest development build JAR from here: [http://www.mediafire.com/download/pm3d2yl49qa99fe/JAVMovieScraper.jar](http://www.mediafire.com/download/pm3d2yl49qa99fe/JAVMovieScraper.jar) or grab one of the stabler releases from the [release page](https://github.com/DoctorD1501/JAVMovieScraper/releases).
@@ -23,7 +29,7 @@ This program is in alpha. Please submit bugs and feature requests here on github
 9. It's worth checking out the preferences menu to customize what info gets written and how it is named.
 
 
-###### Command Line Options
+## Command Line Options
 This program now supports command line options. Starting the program without any command line option will load the graphical user interface version of the program. I'm still actively working on the command line options to make sure all scrapers are accounted for and any settings.xml values are taken into account.
 <p>
 Usage:
@@ -60,7 +66,7 @@ Example command to rename a directory located at "C:\Movie (2014)" which has a n
 If you're having trouble getting matches with -scrape data18webcontent, try to first run -filenamecleanup on the file and then run -scrape on the file.
 </p>
 
-###### Site Specific File Name Conventions
+## Site Specific File Name Conventions
 When using the site specific scraper feature, your file name must contain an ID number which conforms to the release ID conventions set by that site. 
 * 1000Giri: ID follows a YYMMDDactorname structure. You can also see the ID from the URL (right after /moviepages/ and before /index.html). Example: 150206name
 * Aventertainments: This follows the usual JAV id naming structure like ABC-123. It does a search on the site using this ID.<br>
@@ -71,13 +77,13 @@ When using the site specific scraper feature, your file name must contain an ID 
 * Heyzo: The ID is a 4 digit number in the url right after /moviepages/. Example: 0123<br>
 * JavBus: You can search using a censored standard jav ID or try using one of the formats of the uncensored sites above.<br>
 
-###### File Name Cleanup Feature
+## File Name Cleanup Feature
 This attempts to rename a file to make it more likely a match will be found with the Data18 Web Content Scraper. This is done by replacing website abbreviations ([current list here - more to be added soon](https://raw.githubusercontent.com/DoctorD1501/JAVMovieScraper/master/JAVMovieScraper/src/moviescraper/doctord/ReleaseRenamer/SiteNameAbbreviations.csv)) at the beginning of the file name with the full site name. It will also remove [words from the file](https://raw.githubusercontent.com/DoctorD1501/JAVMovieScraper/master/JAVMovieScraper/src/moviescraper/doctord/ReleaseRenamer/WordsToRemove.csv) that interfere with scraping and replace underscores and periods in the filename with spaces.
 The [list of site name abbreviations](https://raw.githubusercontent.com/DoctorD1501/JAVMovieScraper/master/JAVMovieScraper/src/moviescraper/doctord/ReleaseRenamer/SiteNameAbbreviations.csv) still needs more work. Please consider contributing to this list if you use this feature and would like to see it work better! Note that the list of abbreviations usually contains a short 2-4 letter abbreviation as the second entry in the list. This is the abbreviation used in the scene release of the file.
 
 
-###### What If I Use Plex?
+## What If I Use Plex?
 XBMC Metadata is compatible with [Plex](https://plex.tv/) using the [XBMCnfoMovieImporter](https://forums.plex.tv/index.php/topic/38402-metadata-agents-for-exported-xbmc-library/) from the [Unsupported Appstore Channel](https://forums.plex.tv/index.php/topic/25523-unsupported-as-in-totally-unofficial-appstore/).
 
-###### Other Good Programs for Viewing/Browsing XBMC Scraped Files
+## Other Good Programs for Viewing/Browsing XBMC Scraped Files
 Try [Media Companion](https://mediacompanion.codeplex.com/). It's easier to use when sitting at a computer than XBMC because the interface is designed for keyboard & mouse use rather than a remote and large screen.
