@@ -83,7 +83,9 @@ public class AllAmalgamationOrderingPreferences {
 				InputStream inputFromFile = new FileInputStream(settingsFileName);
 				JsonReader jr = new JsonReader(inputFromFile);
 				AllAmalgamationOrderingPreferences jsonObject = (AllAmalgamationOrderingPreferences) jr.readObject();
+				
 				jr.close();
+				inputFromFile.close();
 				System.out.println("Read in amalgamation preferences from " + settingsFileName);
 				return jsonObject;
 			} catch (FileNotFoundException e) {
@@ -93,6 +95,9 @@ public class AllAmalgamationOrderingPreferences {
 			{
 				System.out.println("Preference file is not compatible between versions - reinitializing preference file");
 				initializeDefaultPreferences(true);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 		return this;

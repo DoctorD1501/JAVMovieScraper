@@ -309,7 +309,7 @@ public class RenamerGUI extends JFrame {
 	protected void updateExample() {
 		Renamer renamer = new Renamer(textFieldRenameString.getText(), textFieldFolderRenameString.getText(), textFieldSanitizerString.getText(),
 				fileDetailPanel.currentMovie, sampleFile);
-		textFieldExample.setText( renamer.getNewFileName(true) );
+		textFieldExample.setText( renamer.getNewFileName(sampleFile.isDirectory()) );
 	}
 	
 	private File getFakeFile() {

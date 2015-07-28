@@ -90,6 +90,7 @@ public class WebReleaseRenamer extends ReleaseRenamer {
 		CSVParser parser = new CSVParser(new InputStreamReader(inputStream), format);
 		List<CSVRecord> csvRecords = parser.getRecords();
 		parser.close();
+		inputStream.close();
 		return csvRecords;
 	}
 

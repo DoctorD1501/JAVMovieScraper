@@ -67,7 +67,7 @@ public class WriteFileDataAction implements ActionListener {
 							String fileRenameString = MoviescraperPreferences.getRenamerString();
 							String folderRenameString = MoviescraperPreferences.getFolderRenamerString();
 							Renamer renamer = new Renamer(fileRenameString, folderRenameString, sanitizerString, movie, oldMovieFile);
-							String newMovieFilename = renamer.getNewFileName(true);
+							String newMovieFilename = renamer.getNewFileName(oldMovieFile.isDirectory());
 							System.out.println( "New Filename : " + newMovieFilename );
 							File newMovieFile = new File(newMovieFilename);
 							/*
@@ -78,14 +78,14 @@ public class WriteFileDataAction implements ActionListener {
 								System.err.println("There was a problem renaming " + oldMovieFile + " to "+ newMovieFile);
 							}*/
 							try{
-							if(oldMovieFile.isDirectory())
-							{
-								FileUtils.moveDirectory(oldMovieFile, newMovieFile);
-							}
-							else if(oldMovieFile.isFile())
-							{
-								FileUtils.moveFileToDirectory(oldMovieFile, newMovieFile, true);
-							}
+								if(oldMovieFile.isDirectory())
+								{
+									FileUtils.moveDirectory(oldMovieFile, newMovieFile);
+								}
+								else if(oldMovieFile.isFile())
+								{
+									FileUtils.moveFile(oldMovieFile, newMovieFile);
+								}
 							}
 							catch(FileExistsException e)
 							{

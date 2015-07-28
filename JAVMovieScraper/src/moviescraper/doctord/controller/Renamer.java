@@ -81,6 +81,7 @@ public class Renamer {
 		else
 		{
 			newName = path + newName + getAppendix() + getPosterFanartTrailerEnder() + dot + extension;
+			System.out.println("Was file, new name = " + newName);
 		}
 		
 		//shorten the string if it still doesn't fit
@@ -195,7 +196,7 @@ public class Renamer {
 				Renamer renamer = new Renamer(MoviescraperPreferences.getRenamerString(), MoviescraperPreferences.getRenamerString(), MoviescraperPreferences.getSanitizerForFilename(), movieReadFromNfo, fileToRename);
 				
 				//Figure out all the new names
-			    File newMovieFilename = new File(renamer.getNewFileName(false));
+			    File newMovieFilename = new File(renamer.getNewFileName(fileToRename.isDirectory()));
 			    
 			    renamer.setOldFilename(nfoFile);
 			    File newNfoFilename = new File(renamer.getNewFileName(false));
