@@ -287,7 +287,10 @@ public class OnePondoParsingProfile extends SiteParsingProfile implements Specif
 		if(profileArea != null)
 		{
 		String actressThumbURL = profileArea.select("img").attr("src");
-		String actressName = profileArea.select(".bgoose h2, .bgg1").text();
+		//Fix for redirect 1pondo is doing for actor images due to new site layout
+		if(actressThumbURL.contains("/moviepages/"))
+			actressThumbURL = actressThumbURL.replace("/moviepages/", "/assets/sample/").replace("/images/", "/");
+		String actressName = profileArea.select(".bgoose h2, .bgg1").first().text();
 			try {
 				actorList.add(new Actor(actressName, "", new Thumb(actressThumbURL)));
 			} catch (MalformedURLException e) {
