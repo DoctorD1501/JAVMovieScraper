@@ -103,6 +103,8 @@ public class RenamerGUI extends JFrame {
 	 * Create the frame.
 	 */
 	public RenamerGUI(final MoviescraperPreferences preferences, Movie sampleMovie, File sampleFile) {
+		this.setTitle("Rename Settings");
+		this.setIconImage(GUICommon.getProgramIcon());
 		System.out.println("calling constr with sampleMovie = " + sampleMovie);
 		this.sampleMovie = sampleMovie;
 		if(this.sampleMovie == null)

@@ -194,19 +194,9 @@ public class GUIMain {
 		//create tree view icon provider
 		IconCache.setIconProvider(getGuiSettings().getUseContentBasedTypeIcons() ? IconCache.IconProviderType.CONTENT
 						: IconCache.IconProviderType.SYSTEM);
-
-		//initialize the icons used in the program
-		URL programIconURL = frmMoviescraper.getClass().getResource("/res/AppIcon.png");
 		
 		//Used for icon in the title bar
-		Image programIcon = null;
-		try {
-			programIcon = ImageIO.read(programIconURL);
-			if(programIcon != null)
-				frmMoviescraper.setIconImage(programIcon);
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
+		frmMoviescraper.setIconImage(GUICommon.getProgramIcon());
 		
 		//Set up the file list panel - the panel where the user picks what file to scrape
 		setUpFileListPanel();
