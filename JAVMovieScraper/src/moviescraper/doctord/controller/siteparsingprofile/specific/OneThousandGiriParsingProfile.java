@@ -136,7 +136,7 @@ public class OneThousandGiriParsingProfile extends SiteParsingProfile implements
 	public ReleaseDate scrapeReleaseDate()
 	{
 		initializeJapaneseDocument();
-		Element releaseDateElement = japaneseDocument.select("table.detail tbody tr th:contains(�?信日) + td").first();
+		Element releaseDateElement = japaneseDocument.select("table.detail tbody tr th:contains(配信日) + td").first();
 		if(releaseDateElement != null && releaseDateElement.text().length() > 4)
 		{
 			return new ReleaseDate(releaseDateElement.text().trim());
