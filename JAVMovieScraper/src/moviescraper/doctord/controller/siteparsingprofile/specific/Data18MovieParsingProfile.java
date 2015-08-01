@@ -288,7 +288,8 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 	@Override
 	public ArrayList<Genre> scrapeGenres() {
 		ArrayList<Genre> genreList = new ArrayList<Genre>();
-		Elements genreElements = document.select("div.gen12:contains(Categories:) a, div.p8 div:contains(Categories:) a");
+		Elements genreElements = document.select("div.gen12:has(b:containsOwn(Categories:)) p a[href*=/movies/], div.p8:has(div:containsOwn(Categories:)) a[href*=/movies/]");
+		System.out.println("genreElements = " + genreElements);
 		if (genreElements != null)
 		{
 			for(Element currentGenreElement : genreElements)
