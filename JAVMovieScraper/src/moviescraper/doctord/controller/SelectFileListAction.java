@@ -131,15 +131,19 @@ public class SelectFileListAction implements ListSelectionListener {
 				if (guiMain.getCurrentlySelectedPosterFileList().get(0).exists()) {
 					//we don't want to resize this poster later
 					Thumb[] currentPosters = guiMain.movieToWriteToDiskList.get(0).getPosters();
-					Thumb fileFromDisk;
-					if(currentPosters.length > 0 && currentPosters[0] != null && currentPosters[0].getThumbURL() != null)
-						fileFromDisk = new Thumb(guiMain.getCurrentlySelectedPosterFileList().get(0), currentPosters[0].getThumbURL().toString());
-					else
-					{
-						fileFromDisk = new Thumb(guiMain.getCurrentlySelectedPosterFileList().get(0));
-						currentPosters = new Thumb[1];
+					File currentPosterFile = guiMain.getCurrentlySelectedPosterFileList().get(0);
+					Thumb thumbFromDisk;
+					if(currentPosterFile != null)
+						{
+						if(currentPosters.length > 0 && guiMain.getCurrentlySelectedPosterFileList().size() > 0 && currentPosters[0] != null && currentPosters[0].getThumbURL() != null)
+							thumbFromDisk = new Thumb(guiMain.getCurrentlySelectedPosterFileList().get(0), currentPosters[0].getThumbURL().toString());
+						else
+						{
+							thumbFromDisk = new Thumb(guiMain.getCurrentlySelectedPosterFileList().get(0));
+							currentPosters = new Thumb[1];
+						}
+						currentPosters[0] = thumbFromDisk;
 					}
-					currentPosters[0] = fileFromDisk;
 				}
 
 				// The poster read from the URL is not resized. We used to do a resize here when this was only a jav scraper, but for now i've turned this off

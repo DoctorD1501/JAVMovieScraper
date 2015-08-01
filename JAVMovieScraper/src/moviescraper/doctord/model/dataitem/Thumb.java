@@ -437,5 +437,21 @@ public class Thumb extends MovieDataItem {
 	    // Return the buffered image
 	    return bimage;
 	}
+	
+	/**
+	 * Utility method to convert a Image type object to a BufferedImage type object
+	 * @param image - the image to convert
+	 * @return the same image, but as a BufferedImage
+	 */
+	public static BufferedImage convertToBufferedImage(Image image)
+	{
+	    BufferedImage newImage = new BufferedImage(
+	        image.getWidth(null), image.getHeight(null),
+	        BufferedImage.TYPE_INT_ARGB);
+	    Graphics2D g = newImage.createGraphics();
+	    g.drawImage(image, 0, 0, null);
+	    g.dispose();
+	    return newImage;
+	}
 
 }

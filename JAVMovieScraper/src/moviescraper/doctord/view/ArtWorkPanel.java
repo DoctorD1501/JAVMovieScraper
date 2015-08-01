@@ -20,6 +20,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import moviescraper.doctord.model.Movie;
+import moviescraper.doctord.model.dataitem.Thumb;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.imgscalr.Scalr;
@@ -149,7 +150,8 @@ public class ArtWorkPanel extends JPanel implements ComponentListener {
 			this.setNewFanart(fanartScaledImage, false);
 		}
 
-		BufferedImage posterImg = (BufferedImage)(posterImage);
+		//BufferedImage posterImg = (BufferedImage)(posterImage);
+		BufferedImage posterImg = Thumb.convertToBufferedImage(posterImage);
 		BufferedImage posterScaledImage = ArtWorkPanel.resizeToPoster(posterImg);
 		this.setNewPoster(posterScaledImage, false);
 
