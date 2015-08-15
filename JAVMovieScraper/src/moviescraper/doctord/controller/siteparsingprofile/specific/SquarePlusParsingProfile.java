@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.LinkedList;
 
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
@@ -40,7 +41,7 @@ import org.jsoup.select.Elements;
 
 public class SquarePlusParsingProfile extends SiteParsingProfile implements SpecificProfile {
 	
-	private static final SimpleDateFormat squarePlusReleaseDateFormat = new SimpleDateFormat("MMM dd, yyyy"); 
+	private static final SimpleDateFormat squarePlusReleaseDateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.ENGLISH); 
 	
 	@Override
 	public List<ScraperGroupName> getScraperGroupNames()

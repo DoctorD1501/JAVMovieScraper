@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
 /**
  * The full date on which a movie is released.
@@ -115,7 +116,7 @@ public class ReleaseDate extends MovieDataItem {
 		System.out.println("isvalid on good = " + christmasDay.isReleaseDateFormattedCorrectly());
 		System.out.println("Month = " +  christmasDay.getMonth() + " Year =" + christmasDay.getYear() + " Day = " + christmasDay.getDay());
 		System.out.println("DateFormatter version");
-		ReleaseDate newYear = new ReleaseDate("March 4, 2015", new SimpleDateFormat("MMMM dd, yyyy"));
+		ReleaseDate newYear = new ReleaseDate("March 4, 2015", new SimpleDateFormat("MMMM dd, yyyy", Locale.ENGLISH));
 		System.out.println(newYear);
 	}
 	

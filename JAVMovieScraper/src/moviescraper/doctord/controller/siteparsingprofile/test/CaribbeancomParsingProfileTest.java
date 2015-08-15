@@ -64,7 +64,7 @@ public class CaribbeancomParsingProfileTest {
 	@Test
 	public void testScrapeOriginalTitle(){
 		OriginalTitle originalTitle = parser.scrapeOriginalTitle();
-		assertEquals("Wrong original title", "CA乱交パーティ 〜快�?��?�性交空間〜", originalTitle.getOriginalTitle());
+		assertEquals("Wrong original title", "CA乱交パーティ 〜快適な性交空間〜", originalTitle.getOriginalTitle());
 	}
 	
 	@Test

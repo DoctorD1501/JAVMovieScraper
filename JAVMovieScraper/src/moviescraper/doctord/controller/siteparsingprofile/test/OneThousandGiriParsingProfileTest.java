@@ -70,15 +70,15 @@ public class OneThousandGiriParsingProfileTest {
 		Title testEnglishTitle = englishProfile.scrapeTitle();
 		assertEquals("Wrong title", "Lesbian Colleagues Fetishism - Work Is Each Other Comfort To Forget OL~", testEnglishTitle.getTitle());
 		Title testJapaneseTitle = japaneseProfile.scrapeTitle();
-		assertEquals("Wrong title", "レズフェティシズム 〜仕事�?�忘れ�?�慰�?�?��?��?�僚ＯＬ〜", testJapaneseTitle.getTitle());
+		assertEquals("Wrong title", "レズフェティシズム 〜仕事は忘れて慰め合う同僚ＯＬ〜", testJapaneseTitle.getTitle());
 	}
 	
 	@Test
 	public void testOriginalTitle(){
 		OriginalTitle testEnglishTitle = englishProfile.scrapeOriginalTitle();
-		assertEquals("Wrong original title", "レズフェティシズム 〜仕事�?�忘れ�?�慰�?�?��?��?�僚ＯＬ〜", testEnglishTitle.getOriginalTitle());
+		assertEquals("Wrong original title", "レズフェティシズム 〜仕事は忘れて慰め合う同僚ＯＬ〜", testEnglishTitle.getOriginalTitle());
 		OriginalTitle testJapaneseTitle = japaneseProfile.scrapeOriginalTitle();
-		assertEquals("Wrong original title", "レズフェティシズム 〜仕事�?�忘れ�?�慰�?�?��?��?�僚ＯＬ〜", testJapaneseTitle.getOriginalTitle());
+		assertEquals("Wrong original title", "レズフェティシズム 〜仕事は忘れて慰め合う同僚ＯＬ〜", testJapaneseTitle.getOriginalTitle());
 	}
 	
 	@Test

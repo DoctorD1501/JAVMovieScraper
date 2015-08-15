@@ -68,7 +68,7 @@ public class JavBusParsingProfileTest {
 	@Test
 	public void testOriginalTitle(){
 		OriginalTitle testOriginalTitle = profile.scrapeOriginalTitle();
-		assertEquals("Wrong original title", "猛烈�?�KISS�?�絡�?��?��?�肉体 木下�?��?��?�", testOriginalTitle.getOriginalTitle());
+		assertEquals("Wrong original title", "猛烈なKISSと絡み合う肉体 木下あずみ", testOriginalTitle.getOriginalTitle());
 	}
 	
 	@Test

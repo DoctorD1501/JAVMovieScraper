@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
@@ -91,7 +92,7 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 		Element releaseDateElement = document.select("font:containsOwn(Released:) + font").first();
 		if(releaseDateElement != null)
 		{
-			ReleaseDate releaseDate = new ReleaseDate(releaseDateElement.text(),new SimpleDateFormat("MM/dd/yyyy"));
+			ReleaseDate releaseDate = new ReleaseDate(releaseDateElement.text(),new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH));
 			return releaseDate;
 		}
 		return ReleaseDate.BLANK_RELEASEDATE;

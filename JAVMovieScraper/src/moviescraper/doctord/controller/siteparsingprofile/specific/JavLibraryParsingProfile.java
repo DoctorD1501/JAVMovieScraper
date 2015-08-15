@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 import org.apache.commons.codec.DecoderException;
@@ -52,7 +53,7 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 	private static final boolean reverseAsianNameInEnglish = true;
 	private String overrideURLJavLibrary;
 	
-	private static final SimpleDateFormat javLibraryReleaseDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	private static final SimpleDateFormat javLibraryReleaseDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
 	
 	@Override
 	public List<ScraperGroupName> getScraperGroupNames()

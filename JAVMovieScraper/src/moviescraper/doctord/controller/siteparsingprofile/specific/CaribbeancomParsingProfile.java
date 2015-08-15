@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -51,7 +52,7 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements
 	String id;
 	
 	boolean useTranslationOfJapanesePageForEnglishMetadata = true;
-	private static final SimpleDateFormat caribbeanReleaseDateFormat = new SimpleDateFormat("yyyy/mm/dd");
+	private static final SimpleDateFormat caribbeanReleaseDateFormat = new SimpleDateFormat("yyyy/mm/dd", Locale.ENGLISH);
 	
 	@Override
 	public String getParserName() {
@@ -133,7 +134,7 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements
 	@Override
 	public ReleaseDate scrapeReleaseDate() {
 		initializeJapaneseDocument();
-		Element releaseDate = japaneseDocument.select("div.movie-info dl dt:contains(�?信日:) ~ dd ").first();
+		Element releaseDate = japaneseDocument.select("div.movie-info dl dt:contains(配信日:) ~ dd ").first();
 		if(releaseDate != null && releaseDate.text().length() > 4)
 		{
 			return new ReleaseDate(releaseDate.text(), caribbeanReleaseDateFormat);

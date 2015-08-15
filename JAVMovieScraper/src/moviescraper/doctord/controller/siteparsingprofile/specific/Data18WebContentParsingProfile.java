@@ -48,7 +48,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 	String yearFromFilename = "";
 	String fileName;
 	Thumb[] scrapedPosters;
-	private static final SimpleDateFormat data18ReleaseDateFormat = new SimpleDateFormat("MMMM dd, yyyy");
+	private static final SimpleDateFormat data18ReleaseDateFormat = new SimpleDateFormat("MMMM dd, yyyy", Locale.ENGLISH);
 	
 	@Override
 	public Title scrapeTitle() {
@@ -104,7 +104,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 		if ((releaseDateElement != null && releaseDateElement.text() != null && releaseDateElement
 				.text().contains("errors")) || releaseDateElement == null) {
 			releaseDateElement = document.select("div p:contains(Date:) b, div p:contains(Release date:) b").first();
-			dateFormatToUse = new SimpleDateFormat("MMMM, yyyy");
+			dateFormatToUse = new SimpleDateFormat("MMMM, yyyy", Locale.ENGLISH);
 		}
 		if(releaseDateElement != null)
 		{

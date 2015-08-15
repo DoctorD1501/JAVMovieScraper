@@ -6,6 +6,7 @@ import java.net.MalformedURLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -46,7 +47,7 @@ public class TokyoHotParsingProfile extends SiteParsingProfile implements Specif
 	private String siteLink;
 	private String imageLink;
 	private String id;
-	private static final SimpleDateFormat tokyoHotReleaseDateFormat = new SimpleDateFormat("dd-MMM-yyyy hh:mm");
+	private static final SimpleDateFormat tokyoHotReleaseDateFormat = new SimpleDateFormat("dd-MMM-yyyy hh:mm", Locale.ENGLISH);
 
 	public TokyoHotParsingProfile() {
 	}

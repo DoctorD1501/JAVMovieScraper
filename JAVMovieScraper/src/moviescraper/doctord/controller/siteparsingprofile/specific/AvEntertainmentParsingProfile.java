@@ -7,6 +7,7 @@ import java.net.MalformedURLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -46,7 +47,7 @@ import moviescraper.doctord.model.dataitem.Year;
 
 public class AvEntertainmentParsingProfile extends SiteParsingProfile implements SpecificProfile {
 	
-	private static final SimpleDateFormat avEntertainmentReleaseDateFormat = new SimpleDateFormat("MM/dd/yyyy");
+	private static final SimpleDateFormat avEntertainmentReleaseDateFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
 	
 	@Override
 	public Title scrapeTitle() {
@@ -132,7 +133,7 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 						&& (element.childNode(1).childNode(0).toString()
 								.startsWith("Playing time") || element
 								.childNode(1).childNode(0).toString()
-								.startsWith("�?�録時間"))) {
+								.startsWith("�?�録時間"))) {
 					String data = element.childNode(2).toString();
 					Pattern pattern = Pattern.compile("\\d+");
 					Matcher matcher = pattern.matcher(data);
