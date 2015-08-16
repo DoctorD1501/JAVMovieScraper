@@ -169,7 +169,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 			try {
 				for(Element currentTrailerElement: trailerImgElements)
 				{
-					trailerImages.add(new Thumb(currentTrailerElement.attr("src")));
+					trailerImages.add(new Thumb(fixIPAddressOfData18(currentTrailerElement.attr("src"))));
 				}
 			} catch (MalformedURLException e) {
 				// TODO Auto-generated catch block
@@ -182,7 +182,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 			{
 				try {
 					for(Element currentVideoStill : videoStills)
-						posters.add(new Thumb(currentVideoStill.attr("src")));
+						posters.add(new Thumb(fixIPAddressOfData18(currentVideoStill.attr("src"))));
 				} catch (MalformedURLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -235,10 +235,12 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 						if(imgElement != null)
 						{
 							String mainImageUrl = imgElement.attr("src");
+							mainImageUrl = fixIPAddressOfData18(mainImageUrl);
 							if(fileExistsAtURL(mainImageUrl))
 							{
 								Thumb thumbToAdd = new Thumb(mainImageUrl);
 								String previewURL = mainImageUrl.substring(0,mainImageUrl.length()-6) + "th8/" + mainImageUrl.substring(mainImageUrl.length()-6,mainImageUrl.length());
+								previewURL = fixIPAddressOfData18(previewURL);
 								if(!fileExistsAtURL(previewURL))
 									previewURL = mainImageUrl.substring(0,mainImageUrl.length()-6) + "thumb2/" + mainImageUrl.substring(mainImageUrl.length()-6,mainImageUrl.length());	
 								if(fileExistsAtURL(previewURL))
@@ -260,7 +262,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 		Element officialPosterElement = document.select("a img[alt=poster]").first();
 		if (officialPosterElement != null) {
 			try {
-				Thumb officialPosterThumb = new Thumb(officialPosterElement.attr("src"));
+				Thumb officialPosterThumb = new Thumb(fixIPAddressOfData18(officialPosterElement.attr("src")));
 				posters.add(officialPosterThumb);
 				
 				//get the trailer images too, since items with an official poster tend to not have much else in them
@@ -281,6 +283,17 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 		}
 	}
 	
+	/**
+	 * Fix for Github issue 97 (https://github.com/DoctorD1501/JAVMovieScraper/issues/97)
+	 * The european IP address for galleries gives us a HTTP response code of 302 (redirect), which prevents us from downloading things
+	 * we will route to the american IP address instead
+	 */
+	private String fixIPAddressOfData18(String mainImageUrl) {
+		if(mainImageUrl == null)
+			return mainImageUrl;
+		else return(mainImageUrl.replaceFirst("94.229.67.74", "74.50.117.45"));
+	}
+
 	@Override
 	public Thumb[] scrapeFanart() {
 		if(scrapedPosters != null)
