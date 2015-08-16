@@ -167,7 +167,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 	@Override
 	public ReleaseDate scrapeReleaseDate(){
 		Element releaseDateElement = document
-				.select("table.mg-b20 tr td:contains(貸出開始日：) + td, table.mg-b20 tr td:contains(発売日：) + td, table.mg-b20 tr td:contains(�?信開始日：) + td")
+				.select("table.mg-b20 tr td:contains(貸出開始日：) + td, table.mg-b20 tr td:contains(発売日：) + td, table.mg-b20 tr td:contains(商品発売日：) + td")
 				.first();
 		if(releaseDateElement != null)
 		{
@@ -229,7 +229,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 	public moviescraper.doctord.model.dataitem.Runtime scrapeRuntime() {
 		String runtime = "";
 		Element runtimeElement = document.select(
-				"table.mg-b20 tr td:contains(�?�録時間：) + td").first();
+				"table.mg-b20 tr td:contains(収録時間：) + td").first();
 		if (runtimeElement != null) {
 			// get rid of japanese word for minutes and just get the number
 			runtime = runtimeElement.text().replaceAll("分", "");
@@ -373,7 +373,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 
 	@Override
 	public ID scrapeID() {	
-		Element idElement = document.select("td:containsOwn(�?番：) ~ td").first();
+		Element idElement = document.select("td:containsOwn(品番：) ~ td").first();
 		if(idElement != null)
 		{
 			String idElementText = idElement.text();
