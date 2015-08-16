@@ -60,7 +60,7 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 	
 	private String getJapaneseTitleText(){
 		initializeJapaneseDocument();
-		Element titleElement = japaneseDocument.select("div.video-detail span h1").first();		
+		Element titleElement = japaneseDocument.select("div.video-detail h1").first();		
 		
 		if(titleElement != null)
 		{
@@ -164,7 +164,7 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 	@Override
 	public Runtime scrapeRuntime() {
 		initializeJapaneseDocument();
-		Element durationElement = japaneseDocument.select("div.movie-info dl dt:contains(�?生時間:) + dd").first();
+		Element durationElement = japaneseDocument.select("div.movie-info dl dt:contains(再生時間:) + dd").first();
 		if(durationElement != null && durationElement.text().trim().length() > 0)
 		{
 			String [] durationSplitByTimeUnit = durationElement.text().split(":");
