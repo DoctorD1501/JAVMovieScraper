@@ -133,7 +133,7 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 						&& (element.childNode(1).childNode(0).toString()
 								.startsWith("Playing time") || element
 								.childNode(1).childNode(0).toString()
-								.startsWith("�?�録時間"))) {
+								.startsWith("収録時間"))) {
 					String data = element.childNode(2).toString();
 					Pattern pattern = Pattern.compile("\\d+");
 					Matcher matcher = pattern.matcher(data);
