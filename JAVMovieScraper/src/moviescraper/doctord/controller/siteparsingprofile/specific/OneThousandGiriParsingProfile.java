@@ -261,7 +261,7 @@ public class OneThousandGiriParsingProfile extends SiteParsingProfile implements
 		if(getScrapingLanguage().equals(Language.ENGLISH))
 			actorElements = document.select("table.detail tbody tr th:contains(Name) + td a");
 		else
-			actorElements = japaneseDocument.select("table.detail tbody tr th:contains(�??�?) + td a");
+			actorElements = japaneseDocument.select("table.detail tbody tr th:contains(名前) + td a");
 		if(actorElements != null)
 		{
 			for(Element actor : actorElements)
