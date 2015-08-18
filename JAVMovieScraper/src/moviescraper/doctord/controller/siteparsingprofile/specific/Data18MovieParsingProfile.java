@@ -190,7 +190,7 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 		{
 			Thumb[] posterThumbs = new Thumb[1];
 			try {
-				posterThumbs[0] = new Thumb(posterElement.attr("href"));
+				posterThumbs[0] = new Thumb(fixIPAddressOfData18(posterElement.attr("href")));
 				return posterThumbs;
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
@@ -198,6 +198,17 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 			}
 		}
 		return new Thumb[0];
+	}
+	
+	/**
+	 * Fix for Github issue 97 (https://github.com/DoctorD1501/JAVMovieScraper/issues/97)
+	 * The european IP address for galleries gives us a HTTP response code of 302 (redirect), which prevents us from downloading things
+	 * we will route to the american IP address instead
+	 */
+	private String fixIPAddressOfData18(String mainImageUrl) {
+		if(mainImageUrl == null)
+			return mainImageUrl;
+		else return(mainImageUrl.replaceFirst("94.229.67.74", "74.50.117.45"));
 	}
 
 	@Override
@@ -207,7 +218,7 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 		{
 			Thumb[] posterThumbs = new Thumb[1];
 			try {
-				posterThumbs[0] = new Thumb(posterElement.attr("href"));
+				posterThumbs[0] = new Thumb(fixIPAddressOfData18(posterElement.attr("href")));
 				return posterThumbs;
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
@@ -257,10 +268,10 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 						if(imgElement != null)
 						{
 							String mainImageUrl = imgElement.attr("src");
-							Thumb thumbToAdd = new Thumb(mainImageUrl);
+							Thumb thumbToAdd = new Thumb(fixIPAddressOfData18(mainImageUrl));
 							String previewURL = mainImageUrl.substring(0,mainImageUrl.length()-6) + "th8/" + mainImageUrl.substring(mainImageUrl.length()-6,mainImageUrl.length());
 							if(fileExistsAtURL(previewURL))
-								thumbToAdd.setPreviewURL(new URL(previewURL));
+								thumbToAdd.setPreviewURL(new URL(fixIPAddressOfData18(previewURL)));
 							extraFanart.add(thumbToAdd);
 						}
 					}
