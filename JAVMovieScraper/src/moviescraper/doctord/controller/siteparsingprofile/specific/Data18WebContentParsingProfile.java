@@ -291,7 +291,14 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 	private String fixIPAddressOfData18(String mainImageUrl) {
 		if(mainImageUrl == null)
 			return mainImageUrl;
-		else return(mainImageUrl.replaceFirst("94.229.67.74", "74.50.117.45"));
+		else 
+		{
+			//tends to be links for main cover, etc
+			String stringWithIPAdressReplaced = mainImageUrl.replaceFirst("94.229.67.74", "74.50.117.45");
+			//tends to be image gallery on movie page
+			stringWithIPAdressReplaced = stringWithIPAdressReplaced.replaceFirst("78.110.165.210", "74.50.117.48");
+			return stringWithIPAdressReplaced;
+		}
 	}
 
 	@Override

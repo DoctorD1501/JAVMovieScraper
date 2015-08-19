@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -48,6 +49,9 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 	boolean useSiteSearch = true;
 	String yearFromFilename = "";
 	String fileName;
+	Thumb[] scrapedExtraFanart;
+	boolean hasRunScrapeExtraFanart = false;
+	
 	//I've unfortunately had to make this static due to the current mess of a way this type of scraping is done where the object used
 	//to create the search results is not the same as the object used to actually scrape the document.
 	private static HashMap<String, String> releaseDateMap; 
@@ -208,28 +212,48 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 	private String fixIPAddressOfData18(String mainImageUrl) {
 		if(mainImageUrl == null)
 			return mainImageUrl;
-		else return(mainImageUrl.replaceFirst("94.229.67.74", "74.50.117.45"));
+		else 
+		{
+			//tends to be links for main cover, etc
+			String stringWithIPAdressReplaced = mainImageUrl.replaceFirst("94.229.67.74", "74.50.117.45");
+			//tends to be image gallery on movie page
+			stringWithIPAdressReplaced = stringWithIPAdressReplaced.replaceFirst("78.110.165.210", "74.50.117.48");
+			return stringWithIPAdressReplaced;
+		}
 	}
 
 	@Override
 	public Thumb[] scrapeFanart() {
+		if(!hasRunScrapeExtraFanart && scrapedExtraFanart == null)
+		{
+			scrapeExtraFanart();
+		}
 		Element posterElement = document.select("a[rel=covers]:contains(Back Cover)").first();
 		if(posterElement != null)
 		{
 			Thumb[] posterThumbs = new Thumb[1];
 			try {
 				posterThumbs[0] = new Thumb(fixIPAddressOfData18(posterElement.attr("href")));
-				return posterThumbs;
+				return ArrayUtils.addAll(scrapedExtraFanart,  posterThumbs);
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
-				return new Thumb[0];
+				if(scrapedExtraFanart != null)
+					return scrapedExtraFanart;
+				else return new Thumb[0];
 			}
 		}
-		return new Thumb[0];
+		if(scrapedExtraFanart != null)
+			return scrapedExtraFanart;
+		else return new Thumb[0];
 	}
 
 	@Override
 	public Thumb[] scrapeExtraFanart() {
+		hasRunScrapeExtraFanart = true;
+		if(scrapedExtraFanart != null)
+		{
+			return scrapedExtraFanart;
+		}
 		//find split scene links from a full movie
 		Elements sceneContentLinks = document.select("div[onmouseout]:matches(Scene \\d\\d?)");
 		ArrayList<String> contentLinks = new ArrayList<String>();
@@ -283,7 +307,8 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 			
 			}
 		}
-		return extraFanart.toArray(new Thumb[extraFanart.size()]);
+		scrapedExtraFanart = extraFanart.toArray(new Thumb[extraFanart.size()]);
+		return scrapedExtraFanart;
 	}
 
 	@Override
