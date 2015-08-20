@@ -189,6 +189,10 @@ public class Thumb extends MovieDataItem {
 			//800x537 - crop 1 pixel
 			if(height == 537 && width == 800)
 				croppedWidth = croppedWidth - 1;
+			if(height == 513 && width == 800)
+			{
+				croppedWidth = croppedWidth -14;
+			}
 			
 			//now crop the image
 
