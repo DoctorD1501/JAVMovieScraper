@@ -490,7 +490,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 		{
 			ArrayList<SearchResult> linksList = new ArrayList<SearchResult>();
 			Document doc = Jsoup.connect(searchString).userAgent("Mozilla").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
-			Elements movieSearchResultElements = doc.select("div[style=float: left; padding: 6px; width: 130px;");
+			Elements movieSearchResultElements = doc.select("div.bscene");
 			if(movieSearchResultElements == null || movieSearchResultElements.size() == 0)
 			{
 				this.useSiteSearch = false;
@@ -502,7 +502,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 				for(Element currentMovie : movieSearchResultElements)
 				{
 					String currentMovieURL = currentMovie.select("a").first().attr("href");
-					String currentMovieTitle = currentMovie.select("a").last().text();
+					String currentMovieTitle = currentMovie.select("span.gen11 a").first().text();
 					String releaseDateText = currentMovie.ownText();
 					if(releaseDateText != null && releaseDateText.length() > 0)
 						currentMovieTitle = currentMovieTitle + " (" + releaseDateText + ")";
