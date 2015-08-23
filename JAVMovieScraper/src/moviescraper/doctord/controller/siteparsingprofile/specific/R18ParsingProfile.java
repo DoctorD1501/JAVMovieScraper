@@ -298,7 +298,7 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 			for(Element currentGenre : genreElements)
 			{
 				String genreText = currentGenre.text();
-				if(genreText.length() > 0 && !genreText.equals("Hi-Def") && !genreText.equals("Featured Actress"))
+				if(genreText.length() > 0 && !genreText.equals("Hi-Def") && !genreText.equals("Featured Actress") && !(genreText.toLowerCase().startsWith("featured")))
 				{
 					genreList.add(new Genre(genreText));
 				}
