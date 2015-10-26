@@ -14,7 +14,6 @@ import org.apache.commons.cli.ParseException;
 
 import moviescraper.doctord.controller.Renamer;
 import moviescraper.doctord.controller.releaserenamer.WebReleaseRenamer;
-import moviescraper.doctord.controller.siteparsingprofile.IAFDParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.AvEntertainmentParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.CaribbeancomParsingProfile;
@@ -24,6 +23,7 @@ import moviescraper.doctord.controller.siteparsingprofile.specific.Data18WebCont
 import moviescraper.doctord.controller.siteparsingprofile.specific.DmmParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.ExcaliburFilmsParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.HeyzoParsingProfile;
+import moviescraper.doctord.controller.siteparsingprofile.specific.IAFDParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.JavBusParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.Kin8tengokuParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.MyTokyoHotParsingProfile;

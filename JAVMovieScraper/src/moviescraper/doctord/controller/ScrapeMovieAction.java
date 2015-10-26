@@ -25,13 +25,13 @@ import javax.swing.SwingWorker;
 
 import moviescraper.doctord.controller.amalgamation.MovieScrapeResultGroup;
 import moviescraper.doctord.controller.amalgamation.ScraperGroupAmalgamationPreference;
-import moviescraper.doctord.controller.siteparsingprofile.IAFDParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile.ScraperGroupName;
 import moviescraper.doctord.controller.siteparsingprofile.specific.ActionJavParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.Data18MovieParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.Data18WebContentParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.DmmParsingProfile;
+import moviescraper.doctord.controller.siteparsingprofile.specific.IAFDParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.JavLibraryParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.JavZooParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.R18ParsingProfile;

@@ -13,12 +13,12 @@ import com.cedarsoftware.util.io.JsonIoException;
 import com.cedarsoftware.util.io.JsonReader;
 import com.cedarsoftware.util.io.JsonWriter;
 
-import moviescraper.doctord.controller.siteparsingprofile.IAFDParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile.ScraperGroupName;
 import moviescraper.doctord.controller.siteparsingprofile.specific.ActionJavParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.Data18MovieParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.DmmParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.ExcaliburFilmsParsingProfile;
+import moviescraper.doctord.controller.siteparsingprofile.specific.IAFDParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.JavLibraryParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.JavZooParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.R18ParsingProfile;

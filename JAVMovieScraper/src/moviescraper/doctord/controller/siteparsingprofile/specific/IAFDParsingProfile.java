@@ -1,4 +1,4 @@
-package moviescraper.doctord.controller.siteparsingprofile;
+package moviescraper.doctord.controller.siteparsingprofile.specific;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,11 +11,14 @@ import java.util.regex.Pattern;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
+import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile.ScraperGroupName;
 import moviescraper.doctord.model.SearchResult;
 import moviescraper.doctord.model.dataitem.Actor;
 import moviescraper.doctord.model.dataitem.Director;
@@ -38,7 +41,7 @@ import moviescraper.doctord.model.dataitem.Top250;
 import moviescraper.doctord.model.dataitem.Votes;
 import moviescraper.doctord.model.dataitem.Year;
 
-public class IAFDParsingProfile extends SiteParsingProfile {
+public class IAFDParsingProfile extends SiteParsingProfile implements SpecificProfile {
 	
 	boolean useSiteSearch = true;
 	String yearFromFilename = "";
@@ -54,10 +57,28 @@ public class IAFDParsingProfile extends SiteParsingProfile {
 	
 	@Override
 	public Title scrapeTitle() {
-		Element titleElement = document.select("div#centered.main2 div div h1.h1big, div#movieinfo div#moviedata h2").first();
+		Element titleElement = document.select(getTitleElementSelector()).first();
+		System.out.println(titleElement);
+		//System.out.println(document);
+		System.out.println("Scraping title");
 		if(titleElement != null)
-			return new Title(titleElement.text());
+		{
+			String titleText = titleElement.text().trim();
+			//remove year like (2015) from text
+			if(titleText.matches(".+\\(\\d{4}\\)"))
+			{
+				titleText = StringUtils.substringBeforeLast(titleText, " ");
+			}
+			//titleText = titleText.replaceFirst("(\\d{4}", "");
+			//System.err.println("New title text = " + titleText);
+			return new Title(titleText);
+		}
 		else return new Title("");
+	}
+	
+	private String getTitleElementSelector()
+	{
+		return "div.col-sm-12 h1";
 	}
 
 	@Override
@@ -67,15 +88,16 @@ public class IAFDParsingProfile extends SiteParsingProfile {
 
 	@Override
 	public SortTitle scrapeSortTitle() {
-		// TODO Auto-generated method stub
 		return SortTitle.BLANK_SORTTITLE;
 	}
 
 	@Override
 	public Set scrapeSet() {
-		Element setElement = document.select("div div.p8 div p a[href*=/series/]").first();
-		if(setElement != null)
+		Element setElement = findSidebarElement("Studio");
+		if(setElement != null && setElement.text().contains(".com"))
+		{
 			return new Set(setElement.text());
+		}
 		else return Set.BLANK_SET;
 	}
 
@@ -102,6 +124,9 @@ public class IAFDParsingProfile extends SiteParsingProfile {
 	@Override
 	public ReleaseDate scrapeReleaseDate() {
 		//I don't think IAFD has the month or day a movie was released - only the year
+		//In some rare cases they have this information in the comments. There is also a release date field
+		//in the side bar that always seems to be blank. Maybe they are going to populate this in the future?
+		//TODO: get this info out of the comments field. this info may be inconsistently formatted, so watch out
 		return ReleaseDate.BLANK_RELEASEDATE;
 	}
 
@@ -125,9 +150,25 @@ public class IAFDParsingProfile extends SiteParsingProfile {
 
 	@Override
 	public Plot scrapePlot() {
-		Element plotElement = document.select("div.gen12 b:contains(Description:) ~ p").first();
+		Element plotElement = document.select("div#sceneinfo ul").first();
 		if(plotElement != null)
-			return new Plot(plotElement.text());
+		{
+			//try to put each scene on its own new line
+			Elements sceneBreakdown = plotElement.select("li");
+			if(sceneBreakdown != null)
+			{
+				String sceneText = "";
+				for(Element scene : sceneBreakdown)
+				{
+					sceneText += scene.text() + "\n";
+				}
+				return new Plot(sceneText);
+			}
+			else
+			{
+				return new Plot(plotElement.text());
+			}
+		}	
 		return Plot.BLANK_PLOT;
 	}
 
@@ -139,18 +180,11 @@ public class IAFDParsingProfile extends SiteParsingProfile {
 
 	@Override
 	public Runtime scrapeRuntime() {
-		Element runtimeElement = document.select("p.gen12:contains(Length:)").first();
+		Element runtimeElement = findSidebarElement("Minutes");
 		if(runtimeElement != null)
 		{
-			String runtimeElementText = runtimeElement.text().replaceFirst(Pattern.quote("Length:"), "").replaceFirst(Pattern.quote(" min."), "").trim();
-			return new Runtime(runtimeElementText);
+			return new Runtime(runtimeElement.text());
 		}
-		Element minutesElement = document.select("div#movieinfo div#moviedata div.middle dt:contains(Minutes) ~ dd").first();
-		if(minutesElement != null)
-		{
-			return new Runtime(minutesElement.text());
-		}
-		//System.out.println("runtime " + runtimeElement.text());
 		else return Runtime.BLANK_RUNTIME;
 	}
 
@@ -202,49 +236,39 @@ public class IAFDParsingProfile extends SiteParsingProfile {
 
 	@Override
 	public ArrayList<Actor> scrapeActors() {
-//		Elements actorElements = document.select("div [id=actor] li");	//male actors
-		Elements actorElements = document.select("div [id=actress] li");  //female actors
+		//		Elements actorElements = document.select("div [id=actor] li");	//male actors
+		Elements actorElements = document.select("div.castbox:not(.nonsex) a");  //female actors
 		ArrayList<Actor> actorList = new ArrayList<Actor>();
 		if(actorElements != null)
 		{
 			for(Element currentActorElement : actorElements)
 			{
-				String actorName = currentActorElement.childNode(0).childNode(0).toString().trim();
+				String actorName = currentActorElement.ownText();
 				String actorAlias = "(as ";
 				int indexOfAs = actorName.indexOf(actorAlias);
 				if ( indexOfAs >= 0 ) {
 					actorName = actorName.substring(indexOfAs + actorAlias.length(), actorName.lastIndexOf(")") );
 				}
-				String actorThumbnailSite = currentActorElement.childNode(0).absUrl("href");
-				
-				Document searchActor;
-				try {
-					searchActor = Jsoup.connect(actorThumbnailSite).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:5.0) Gecko/20100101 Firefox/5.0").get();
-					Element actorPicture = searchActor.select("div[id=headshot] img").first();
-					if (actorPicture == null)
-						continue;	//found something like "Non Sex Performers" Text between actors
-					String actorThumbnail = actorPicture.absUrl("src");
-					//case with actor with thumbnail
-					if(actorThumbnail != null && !actorThumbnail.equals("http://www.iafd.com/graphics/headshots/no_photo.gif"))
-					{
-						try {
-							actorThumbnail = actorThumbnail.replaceFirst(Pattern.quote("/60/"), "/120/");
-							actorList.add(new Actor(actorName, null, new Thumb(actorThumbnail)));
-						} catch (MalformedURLException e) {
-							actorList.add(new Actor(actorName, null, null));
-							e.printStackTrace();
-						}
-					}
-					//add the actor with no thumbnail
-					else
-					{
+				Element actorPicture = currentActorElement.select("img").first();
+				if (actorPicture == null)
+					continue;	//found something like "Non Sex Performers" Text between actors
+				String actorThumbnail = actorPicture.absUrl("src");
+				//case with actor with thumbnail
+				if(actorThumbnail != null && !actorThumbnail.contains("nophoto"))
+				{
+					try {
+						actorThumbnail = actorThumbnail.replaceFirst(Pattern.quote("/60/"), "/120/");
+						actorList.add(new Actor(actorName, null, new Thumb(actorThumbnail)));
+					} catch (MalformedURLException e) {
 						actorList.add(new Actor(actorName, null, null));
+						e.printStackTrace();
 					}
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
 				}
-				
+				//add the actor with no thumbnail
+				else
+				{
+					actorList.add(new Actor(actorName, null, null));
+				}
 			}
 		}
 		return actorList;
@@ -253,10 +277,10 @@ public class IAFDParsingProfile extends SiteParsingProfile {
 	@Override
 	public ArrayList<Director> scrapeDirectors() {
 		ArrayList<Director> directorList = new ArrayList<Director>();
-		Element directorElement = document.select("dd a[href^=/person.rme/]").first();
+		Element directorElement = findSidebarElement("Director");
 		if(directorElement != null)
 		{
-			String directorName = directorElement.childNode(0).toString().trim();
+			String directorName = directorElement.text().trim();
 			if(directorName != null && directorName.length() > 0 && !directorName.equals("Unknown"))
 				directorList.add(new Director(directorName,null));
 		}
@@ -265,10 +289,10 @@ public class IAFDParsingProfile extends SiteParsingProfile {
 
 	@Override
 	public Studio scrapeStudio() {
-		Element studioElement = document.select("dd a[href^=/studio.rme/]").first();
+		Element studioElement = findSidebarElement("Distributor");
 		if(studioElement != null)
 		{
-			String studioText = studioElement.childNode(0).toString().trim();
+			String studioText = studioElement.text().trim();
 			if(studioText != null && studioText.length() > 0)
 				return new Studio(studioText);
 		}
@@ -305,7 +329,7 @@ public class IAFDParsingProfile extends SiteParsingProfile {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			fileBaseName = "http://www.iafd.com/results.asp?searchtype=title&searchstring=" + fileBaseName;
+			fileBaseName = "http://www.iafd.com/results.asp?searchtype=comprehensive&searchstring=" + fileBaseName;
 			return fileBaseName;
 		}
 		return FilenameUtils.getBaseName(file.getName());
@@ -317,9 +341,15 @@ public class IAFDParsingProfile extends SiteParsingProfile {
 		if(useSiteSearch)
 		{
 			ArrayList<SearchResult> linksList = new ArrayList<SearchResult>();
-			Document doc = Jsoup.connect(searchString).userAgent("Mozilla").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
-			Elements movieSearchResultElements = doc.select("li b a");
-			if(movieSearchResultElements == null || movieSearchResultElements.size() == 0)
+			Document doc = Jsoup.connect(searchString).userAgent(getRandomUserAgent()).referrer("http://www.iafd.com").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
+			//check to see if we directly found the title
+			if(doc != null && doc.location().contains("title.asp?title="))
+			{
+				String title =  doc.select(getTitleElementSelector()).first().text();
+				linksList.add(new SearchResult(doc.location(), title));
+			}
+			Elements movieSearchResultElements = doc.select("table#titleresult tr td a[href*=title.rme");
+			if(linksList.size() == 0 && (movieSearchResultElements == null || movieSearchResultElements.size() == 0))
 			{
 				this.useSiteSearch = false;
 				return getLinksFromGoogle(fileName, "www.iafd.com/title.rme");
@@ -328,8 +358,8 @@ public class IAFDParsingProfile extends SiteParsingProfile {
 			{
 				for(Element currentMovie : movieSearchResultElements)
 				{
-					String currentMovieURL = currentMovie.select("a").first().attr("href");
-					String currentMovieTitle = currentMovie.select("a").last().text();
+					String currentMovieURL = currentMovie.absUrl("href");
+					String currentMovieTitle = currentMovie.text();
 					final String searchForYearText = "year=";
 					int index = currentMovieURL.indexOf(searchForYearText) + searchForYearText.length();
 					String releaseDateText = currentMovieURL.substring(index, index+4);
@@ -360,6 +390,14 @@ public class IAFDParsingProfile extends SiteParsingProfile {
 	@Override
 	public String getParserName() {
 		return "IAFD";
+	}
+	
+	private Element findSidebarElement(String textOfSideBarElement)
+	{
+		String selector = "p:containsOwn(" + textOfSideBarElement + ") + p.biodata";
+		System.out.println("selector = " + selector);
+		Element sidebarElement = document.select(selector).first();
+		return sidebarElement;
 	}
 
 }
