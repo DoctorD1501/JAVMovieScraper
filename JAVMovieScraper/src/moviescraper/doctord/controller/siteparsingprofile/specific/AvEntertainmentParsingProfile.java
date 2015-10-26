@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -206,10 +207,19 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 			Element element = select.get(0);
 			if (element.childNodeSize() > 0) {
 				id = element.childNode(0).toString();
-				id = id.substring(8);
+				id = getLastWord(id);
 			}
 		}
 		return new ID( id );
+	}
+	
+	private static String getLastWord(String input) {
+	    String wordSeparator = " ";
+	    boolean inputIsOnlyOneWord = !StringUtils.contains(input, wordSeparator);
+	    if (inputIsOnlyOneWord) {
+	        return input;
+	    }
+	    return StringUtils.substringAfterLast(input, wordSeparator);
 	}
 
 	@Override
