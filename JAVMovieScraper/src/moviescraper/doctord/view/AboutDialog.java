@@ -23,7 +23,7 @@ public class AboutDialog extends JDialog {
 	private static final long serialVersionUID = 2426089852777554719L;
 	
 	//FIXME: is there a way to extract from project??
-	private static final String versionString = "v0.2.09-alpha";
+	private static final String versionString = "v0.2.10-alpha";
 	private static final String nameString = "JAVMovieScraper";
 	private static final String aboutString = 
 			"Scrape XBMC and Kodi movie metadata and automatically rename " +
