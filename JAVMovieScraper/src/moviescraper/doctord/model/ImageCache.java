@@ -3,6 +3,7 @@ package moviescraper.doctord.model;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
@@ -10,6 +11,8 @@ import java.util.Map;
 
 import javax.imageio.IIOException;
 import javax.imageio.ImageIO;
+
+import moviescraper.doctord.controller.FileDownloaderUtilities;
 
 public class ImageCache {
 	private static Map<URL, Image> cache = Collections.synchronizedMap(new HashMap<URL, Image>());
@@ -27,7 +30,7 @@ public class ImageCache {
 			try{
 				if(url != null)
 				{
-					Image imageFromUrl = ImageIO.read(url);
+					Image imageFromUrl = FileDownloaderUtilities.getImageFromUrl(url);
 					if(imageFromUrl != null)
 					{
 					cache.put(url, imageFromUrl);
@@ -45,9 +48,9 @@ public class ImageCache {
                 System.out.println("We ran out of memory..clearing the cache. It was size " + cache.size() 
                 		+ " before the clear");
                 cache.clear();
-                return ImageIO.read(url);
+                return FileDownloaderUtilities.getImageFromUrl(url);
             }
-			catch(IIOException e)
+			catch(IOException e)
 			{
 				e.printStackTrace();
 				Image blankImage = createBlankImage();

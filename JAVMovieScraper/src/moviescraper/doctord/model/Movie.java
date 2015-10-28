@@ -26,6 +26,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Document;
 
+import moviescraper.doctord.controller.FileDownloaderUtilities;
 import moviescraper.doctord.controller.ScrapeMovieAction;
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.Data18MovieParsingProfile;
@@ -532,14 +533,14 @@ public class Movie {
 				else if((!posterFile.exists() ||  writePosterIfAlreadyExists) && posterToSaveToDisk != null && posterToSaveToDisk.getThumbURL() != null)
 				{
 					System.out.println("Writing poster file from nfo: " + posterFile);
-					FileUtils.copyURLToFile(posterToSaveToDisk.getThumbURL(), posterFile, connectionTimeout, readTimeout);
+					FileDownloaderUtilities.writeURLToFile(posterToSaveToDisk.getThumbURL(), posterFile);
 				}
 				if(createFolderJpgEnabledPreference && currentlySelectedFolderJpgFile != null)
 				{
 					if(!posterToSaveToDisk.isModified() && (!currentlySelectedFolderJpgFile.exists() || (currentlySelectedFolderJpgFile.exists() && writePosterIfAlreadyExists)))
 					{
 						System.out.println("Writing folder.jpg (no changes) to " + currentlySelectedFolderJpgFile);
-						FileUtils.copyURLToFile(posterToSaveToDisk.getThumbURL(), currentlySelectedFolderJpgFile, connectionTimeout, readTimeout);
+						FileDownloaderUtilities.writeURLToFile(posterToSaveToDisk.getThumbURL(), currentlySelectedFolderJpgFile);
 					}
 					else
 					{
@@ -580,7 +581,7 @@ public class Movie {
 				ImageIO.write(fanartToSaveToDisk.toBufferedImage(), "jpg", fanartFile);
 			}
 			//download the url and save it out to disk
-			else FileUtils.copyURLToFile(fanartToSaveToDisk.getThumbURL(), fanartFile, connectionTimeout, readTimeout);
+			else FileDownloaderUtilities.writeURLToFile(fanartToSaveToDisk.getThumbURL(), fanartFile);
 			}
 		}
 		
