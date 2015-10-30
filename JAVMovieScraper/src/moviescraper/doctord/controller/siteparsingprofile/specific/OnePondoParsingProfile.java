@@ -112,21 +112,32 @@ public class OnePondoParsingProfile extends SiteParsingProfile implements Specif
 	public Year scrapeYear() {
 		return scrapeReleaseDate().getYear();
 	}
-	
+
 	@Override
 	public ReleaseDate scrapeReleaseDate(){
-		//Get year from last 2 digits before the underscore in the ID of the movie
-				//Add "20" to these digits, so "14" becomes 2014, for example
-				//(this is ok because there are no scenes on 1pondo from 1999 or earlier)
-				ID movieID = scrapeID();
-				if(movieID != null)
+		
+		//Still having problems with this due to release-date element not loading on japanese site
+		
+		//new method after site redesign
+		Element releaseDate = document.select("dl.release-date dd.ng-binding").first();
+		if(releaseDate != null && releaseDate.text().length() == 10)
+		{
+			String releaseDateText = releaseDate.text().replaceAll("/", "-");
+			return new ReleaseDate(releaseDateText);
+		}
+		
+		//Old method of site before redesign: Get year from last 2 digits before the underscore in the ID of the movie
+		//Add "20" to these digits, so "14" becomes 2014, for example
+		//(this is ok because there are no scenes on 1pondo from 1999 or earlier)
+		ID movieID = scrapeID();
+		if(movieID != null && movieID.getId().contains("_"))
 				{
-					String year = "20" + movieID.getId().substring(4,6);
-					String month = movieID.getId().substring(0,2);
-					String day = movieID.getId().substring(2,4);
-					return new ReleaseDate(year + "-" + month + "-" + day);
+			String year = "20" + movieID.getId().substring(4,6);
+			String month = movieID.getId().substring(0,2);
+			String day = movieID.getId().substring(2,4);
+			return new ReleaseDate(year + "-" + month + "-" + day);
 				}
-				return ReleaseDate.BLANK_RELEASEDATE;
+		return ReleaseDate.BLANK_RELEASEDATE;
 	}
 
 	@Override
@@ -262,15 +273,17 @@ public class OnePondoParsingProfile extends SiteParsingProfile implements Specif
 	@Override
 	public ID scrapeID() {
 		//Just get the ID from the page URL by doing some string manipulation
-		String baseUri = document.baseUri();
-		if(baseUri.length() > 0 && baseUri.contains("1pondo.tv"))
+		String documentURL = document.location();
+		if(documentURL.length() > 0 && documentURL.contains("1pondo.tv"))
 		{
-			baseUri = baseUri.replaceFirst("/index.html", "");
-			baseUri = baseUri.replaceFirst("/index.htm", "");
-			String idFromBaseUri = baseUri.substring(baseUri.lastIndexOf('/')+1);
+			documentURL = documentURL.replaceFirst("/index.html", "");
+			documentURL = documentURL.replaceFirst("/index.htm", "");
+			if(documentURL.endsWith("/"))
+				documentURL = documentURL.substring(0,documentURL.length()-1);
+			String idFromBaseUri = documentURL.substring(documentURL.lastIndexOf('/')+1);
 			return new ID(idFromBaseUri);
 		}
-		return null;
+		return ID.BLANK_ID;
 	}
 
 	@Override
