@@ -10,6 +10,7 @@ import javax.swing.JOptionPane;
 
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.model.Movie;
+import moviescraper.doctord.model.preferences.MoviescraperPreferences;
 import moviescraper.doctord.view.GUIMain;
 
 import org.apache.commons.io.FileUtils;
@@ -39,21 +40,27 @@ public class MoveToNewFolderAction extends AbstractAction {
 		int moviesToMove = guiMain.getCurrentlySelectedMovieFileList().size();
 		for(int movieNumberInList = 0; movieNumberInList < moviesToMove; movieNumberInList++)
 		{
+			
 			try {
 				//set the cursor to busy as this could take more than 1 or 2 seconds while files are copied or extrafanart is downloaded from the internet
 				this.guiMain.getFrmMoviescraper().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+				boolean usedReanmerModule = false;
 				if (this.guiMain.getCurrentlySelectedMovieFileList() != null
-						&& this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList).exists() && this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList).isFile()) {
+						&& this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList).exists() 
+						&& this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList).isFile()) {
 					// we can append the movie title to resulting folder name if
 					// the movie is scraped, has an ID and generally matches the
 					// ID in the filename (assuming the file is only named the
 					// ID of the movie)
 					String destinationDirectoryPrefix = "";
+					
 					if (this.guiMain.movieToWriteToDiskList != null 
 							&& this.guiMain.movieToWriteToDiskList.size() > 0
 							&& this.guiMain.movieToWriteToDiskList.get(movieNumberInList) != null) {
+						File fileToRename = this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList);
+						Movie currentMovie = this.guiMain.movieToWriteToDiskList.get(movieNumberInList);
 						
-						String possibleID = this.guiMain.movieToWriteToDiskList.get(movieNumberInList).getId().getId()
+						/*String possibleID = this.guiMain.movieToWriteToDiskList.get(movieNumberInList).getId().getId()
 								.toUpperCase();
 						String possibleIDWithoutDash = possibleID.replaceFirst(
 								"-", "");
@@ -70,10 +77,23 @@ public class MoveToNewFolderAction extends AbstractAction {
 							destinationDirectoryPrefix = destinationDirectoryPrefix
 									.replace("^\\.+", "").replaceAll(
 											"[\\\\/:*?\"<>|]", "");
-						}
+						}*/
+
+						Renamer renamer = new Renamer(MoviescraperPreferences.getRenamerString(), MoviescraperPreferences.getFolderRenamerString(), MoviescraperPreferences.getSanitizerForFilename(), currentMovie , fileToRename);
+						
+						//Figure out all the new names
+						destinationDirectoryPrefix = renamer.getNewFileName(true);
+						usedReanmerModule = true;
 
 					}
-					File destDir = new File(
+					File destDir;
+					if(usedReanmerModule)
+					{
+						destDir = new File(destinationDirectoryPrefix);
+					}
+					else
+					{
+					destDir = new File(
 							this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList).getParentFile()
 							.getCanonicalPath()
 							+ pathSeperator
@@ -81,6 +101,7 @@ public class MoveToNewFolderAction extends AbstractAction {
 							+ SiteParsingProfile.stripDiscNumber(FilenameUtils
 									.getBaseName(this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList)
 											.getName())));
+					}
 					this.guiMain.clearAllFieldsOfFileDetailPanel();
 					//copy over the .actor folder items to the destination folder, but only if the preference is set and the usual sanity checking is done
 					if (this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList).isFile() && this.guiMain.getCurrentlySelectedActorsFolderList() != null && this.guiMain.getPreferences().getDownloadActorImagesToActorFolderPreference())
