@@ -24,10 +24,14 @@ import javax.swing.JTextField;
 import moviescraper.doctord.model.Movie;
 import moviescraper.doctord.model.dataitem.Actor;
 import moviescraper.doctord.model.dataitem.Genre;
+import moviescraper.doctord.model.dataitem.ID;
+import moviescraper.doctord.model.dataitem.OriginalTitle;
 import moviescraper.doctord.model.dataitem.Plot;
+import moviescraper.doctord.model.dataitem.ReleaseDate;
 import moviescraper.doctord.model.dataitem.Set;
 import moviescraper.doctord.model.dataitem.Studio;
 import moviescraper.doctord.model.dataitem.Title;
+import moviescraper.doctord.model.dataitem.Year;
 import moviescraper.doctord.model.preferences.MoviescraperPreferences;
 import moviescraper.doctord.view.AbstractFileDetailPanelEditGUI.Operation;
 import moviescraper.doctord.view.renderer.ActressListRenderer;
@@ -43,9 +47,9 @@ public class FileDetailPanel extends JPanel {
 	private static final long serialVersionUID = 7088761619568387476L;
 	
 	private JComboBox<String> comboBoxMovieTitleText;
-	private JLabel lblOriginalTitleText;
-	private JLabel lblScrapedYearText;
-	private JLabel lblIDCurrentMovie;
+	private JTextField txtFieldOriginalTitleText;
+	private JTextField txtFieldScrapedYearText;
+	private JTextField txtFieldIDCurrentMovie;
 	private JTextField txtFieldStudio;
 	private JTextField txtFieldMovieSet;
 	private JTextArea moviePlotTextField;
@@ -56,10 +60,11 @@ public class FileDetailPanel extends JPanel {
 	MoviescraperPreferences preferences;
 
 	private ArtWorkPanel artWorkPanel;
+	private final static int DEFAULT_TEXTFIELD_LENGTH = 35;
 	
 	GUIMain gui;
 
-	private JLabel lblReleaseDateText;
+	private JTextField txtFieldReleaseDateText;
 
 	/**
 	 * Create the panel.
@@ -162,32 +167,172 @@ public class FileDetailPanel extends JPanel {
 
 
 
-		lblOriginalTitleText = new JLabel("");
-		fileDetailsPanel.add(lblOriginalTitleText, "4, 4");
+		txtFieldOriginalTitleText = new JTextField("", DEFAULT_TEXTFIELD_LENGTH);
+		txtFieldOriginalTitleText.addActionListener(new ActionListener(){
+	        @Override
+	        public void actionPerformed(ActionEvent e) {
+	            
+	            if(currentMovie != null)
+	            {
+	            	String newValue = (String) txtFieldOriginalTitleText.getText();
+	            	if(newValue != null)
+	            	{
+	            		currentMovie.setOriginalTitle(new OriginalTitle(newValue));
+	            	}
+	            }
+	        }
+	    });
+		txtFieldOriginalTitleText.addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				String newValue = (String) txtFieldOriginalTitleText.getText();
+				if(newValue != null)
+				{
+					currentMovie.setOriginalTitle(new OriginalTitle(newValue));
+				}
+
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+			}
+
+		});
+		fileDetailsPanel.add(txtFieldOriginalTitleText, "4, 4");
 
 
 		JLabel lblYear = new JLabel("Year:");
 		fileDetailsPanel.add(lblYear, "2, 6");
 		
 
-		lblScrapedYearText = new JLabel("");
-		fileDetailsPanel.add(lblScrapedYearText, "4, 6");
+		txtFieldScrapedYearText = new JTextField("",4);
+		fileDetailsPanel.add(txtFieldScrapedYearText, "4, 6");
+		txtFieldScrapedYearText.addActionListener(new ActionListener(){
+	        @Override
+	        public void actionPerformed(ActionEvent e) {
+	            
+	            if(currentMovie != null)
+	            {
+	            	String newValue = (String) txtFieldScrapedYearText.getText();
+	            	if(newValue != null)
+	            	{
+	            		currentMovie.setYear(new Year(newValue));
+	            	}
+	            }
+	        }
+	    });
+		txtFieldScrapedYearText.addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				String newValue = (String) txtFieldScrapedYearText.getText();
+				if(newValue != null)
+				{
+					currentMovie.setYear(new Year(newValue));
+				}
+
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+			}
+
+		});
 		
 		
 		JLabel lblReleaseDate = new JLabel("Release Date:");
 		fileDetailsPanel.add(lblReleaseDate, "2, 8");
 		
-		lblReleaseDateText = new JLabel("");
-		fileDetailsPanel.add(lblReleaseDateText, "4, 8");
+		txtFieldReleaseDateText = new JTextField("",12);
+		txtFieldReleaseDateText.addActionListener(new ActionListener(){
+	        @Override
+	        public void actionPerformed(ActionEvent e) {
+	            
+	            if(currentMovie != null)
+	            {
+	            	String newValue = (String) txtFieldReleaseDateText.getText();
+	            	if(newValue != null)
+	            	{
+	            		currentMovie.setReleaseDate(new ReleaseDate(newValue));
+	            	}
+	            }
+	        }
+	    });
+		txtFieldReleaseDateText.addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				String newValue = (String) txtFieldReleaseDateText.getText();
+				if(newValue != null)
+				{
+					currentMovie.setReleaseDate(new ReleaseDate(newValue));
+				}
+
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+			}
+
+		});
+		fileDetailsPanel.add(txtFieldReleaseDateText, "4, 8");
 		
 		JLabel lblID = new JLabel("ID:");
 		fileDetailsPanel.add(lblID, "2, 10");
 		
-		lblIDCurrentMovie = new JLabel("");
-		fileDetailsPanel.add(lblIDCurrentMovie,"4, 10");
+		txtFieldIDCurrentMovie = new JTextField("", DEFAULT_TEXTFIELD_LENGTH);
+		txtFieldIDCurrentMovie.addActionListener(new ActionListener(){
+	        @Override
+	        public void actionPerformed(ActionEvent e) {
+	            
+	            if(currentMovie != null)
+	            {
+	            	String newValue = (String) txtFieldIDCurrentMovie.getText();
+	            	if(newValue != null)
+	            	{
+	            		currentMovie.setId(new ID(newValue));
+	            	}
+	            }
+	        }
+	    });
+		txtFieldIDCurrentMovie.addKeyListener(new KeyListener() {
+			
+			@Override
+			public void keyTyped(KeyEvent e) {
+			}
+			
+			@Override
+			public void keyReleased(KeyEvent e) {
+				String newValue = (String) txtFieldIDCurrentMovie.getText();
+            	if(newValue != null)
+            	{
+            		currentMovie.setId(new ID(newValue));
+            	}
+				
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+			}
+			
+		});
+		fileDetailsPanel.add(txtFieldIDCurrentMovie,"4, 10");
 		
 		JLabel lblStudio = new JLabel("Studio:");
-		txtFieldStudio = new JTextField("");
+		txtFieldStudio = new JTextField("", DEFAULT_TEXTFIELD_LENGTH);
 		txtFieldStudio.addActionListener(new ActionListener(){
 	        @Override
 	        public void actionPerformed(ActionEvent e) {
@@ -229,7 +374,7 @@ public class FileDetailPanel extends JPanel {
 		
 		JLabel lblSet = new JLabel("Movie Set:");
 		fileDetailsPanel.add(lblSet,"2, 14");
-		txtFieldMovieSet = new JTextField("");
+		txtFieldMovieSet = new JTextField("", DEFAULT_TEXTFIELD_LENGTH);
 		txtFieldMovieSet.addActionListener(new ActionListener(){
 	        @Override
 	        public void actionPerformed(ActionEvent e) {
@@ -455,10 +600,10 @@ public class FileDetailPanel extends JPanel {
 		}
 		comboBoxMovieTitleText.setModel( new TitleListModel() );
 		comboBoxMovieTitleText.setEditable(true);
-		lblOriginalTitleText.setText( currentMovie.getOriginalTitle().getOriginalTitle() );
-		lblScrapedYearText.setText( currentMovie.getYear().getYear() );
-		lblReleaseDateText.setText(currentMovie.getReleaseDate().getReleaseDate());
-		lblIDCurrentMovie.setText( currentMovie.getId().getId() );
+		txtFieldOriginalTitleText.setText( currentMovie.getOriginalTitle().getOriginalTitle() );
+		txtFieldScrapedYearText.setText( currentMovie.getYear().getYear() );
+		txtFieldReleaseDateText.setText(currentMovie.getReleaseDate().getReleaseDate());
+		txtFieldIDCurrentMovie.setText( currentMovie.getId().getId() );
 		txtFieldStudio.setText( currentMovie.getStudio().getStudio() );
 		txtFieldMovieSet.setText( currentMovie.getSet().getSet() );
 		moviePlotTextField.setText( currentMovie.getPlot().getPlot() );
