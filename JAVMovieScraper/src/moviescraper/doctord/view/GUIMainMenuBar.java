@@ -354,6 +354,23 @@ public class GUIMainMenuBar extends JMenuBar{
 		});
 		preferenceMenu.add(selectSearchResultManuallyWhenScraping);
 		
+		//Checkbox for whether the user needs to manually confirm the results of each clean up file operation
+		JCheckBoxMenuItem confirmNameForFileNameCleanup = new JCheckBoxMenuItem("Confirm New Name Each Time for \"Clean Up File Name\"");
+		confirmNameForFileNameCleanup.setState(getPreferences().getConfirmCleanUpFileNameNameBeforeRenaming());
+		confirmNameForFileNameCleanup.addItemListener(new ItemListener() {
+
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				//save the menu choice off to the preference object (and the disk based settings file)
+				if(e.getStateChange() == ItemEvent.SELECTED)
+					getPreferences().setConfirmCleanUpFileNameNameBeforeRenaming(true);
+				else if(e.getStateChange() == ItemEvent.DESELECTED)
+					getPreferences().setConfirmCleanUpFileNameNameBeforeRenaming(false);
+
+			}
+		});
+		preferenceMenu.add(confirmNameForFileNameCleanup);
+		
 		
 		add(preferenceMenu);
 
