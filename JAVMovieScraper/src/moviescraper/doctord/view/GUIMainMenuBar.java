@@ -18,6 +18,7 @@ import javax.swing.KeyStroke;
 import moviescraper.doctord.controller.BrowseDirectoryAction;
 import moviescraper.doctord.controller.BrowseUriAction;
 import moviescraper.doctord.controller.ChooseExternalMediaPlayerAction;
+import moviescraper.doctord.controller.FileNameCleanupAction;
 import moviescraper.doctord.controller.MoveToNewFolderAction;
 import moviescraper.doctord.controller.OpenFileAction;
 import moviescraper.doctord.controller.PlayMovieAction;
@@ -450,7 +451,7 @@ public class GUIMainMenuBar extends JMenuBar{
 		cleanFile.setMnemonic(KeyEvent.VK_C);
 		cleanFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C,
 				Event.CTRL_MASK));
-		cleanFile.addActionListener(new MoveToNewFolderAction(guiMain));
+		cleanFile.addActionListener(new FileNameCleanupAction(guiMain));
 		fileMenu.add(cleanFile);
 		
 		
