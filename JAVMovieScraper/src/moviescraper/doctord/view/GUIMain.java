@@ -5,6 +5,7 @@ import java.awt.EventQueue;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
+import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -28,6 +29,9 @@ import moviescraper.doctord.model.preferences.GuiSettings;
 import moviescraper.doctord.model.preferences.MoviescraperPreferences;
 import moviescraper.doctord.view.renderer.FileRenderer;
 
+//madaustrian added
+import moviescraper.doctord.model.dataitem.GlobalGenreList;
+
 import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.Dimension;
@@ -50,9 +54,24 @@ import java.awt.event.MouseListener;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import javax.swing.BoxLayout;
 import javax.swing.event.ListSelectionListener;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 public class GUIMain {
 
@@ -172,6 +191,10 @@ public class GUIMain {
 		
 		preferences = MoviescraperPreferences.getInstance();
 		guiSettings = GuiSettings.getInstance();
+		
+// madaustrian added
+				ReadGenreListfromXML();
+//				ReadGenreXMLFile();
 		
 		reinitializeAmalgamationPreferencesFromFile();
 		
@@ -826,5 +849,204 @@ public class GUIMain {
 			AllAmalgamationOrderingPreferences allAmalgamationOrderingPreferences) {
 		this.allAmalgamationOrderingPreferences = allAmalgamationOrderingPreferences;
 	}
+
+////madaustrian added	
+//
+	public void ReadGenreListfromXML() {
+
+		File fXmlFile = new File("genrelist.xml");
 	
+		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder dBuilder = null;
+
+		try {
+			dBuilder = dbFactory.newDocumentBuilder();
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		Document doc = null;
+		
+		if ( fXmlFile.exists()== false){
+			// create file
+			System.out.println("Creating genrelist.xml since it was not found...");
+
+			  DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+			  DocumentBuilder docBuildernew = null;
+			try {
+				docBuildernew = docFactory.newDocumentBuilder();
+			} catch (ParserConfigurationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			  
+			//root elements
+			  Document docnew = docBuildernew.newDocument();
+
+			  Element rootElement = docnew.createElement("genrelist");
+			  docnew.appendChild(rootElement);
+
+			  // ----------- every node needs this ---------
+			  //genrenode elements
+			  Element genrenode = docnew.createElement("genre");
+			  rootElement.appendChild(genrenode);
+			  //set attribute to genrenode element
+			  Attr listcolumn = docnew.createAttribute("column");
+			  listcolumn.setValue("0");
+			  genrenode.setAttributeNode(listcolumn);
+			  //text elements
+			  Element genretext = docnew.createElement("text");
+			  genretext.appendChild(docnew.createTextNode("JAV"));
+			  genrenode.appendChild(genretext);
+			  // end ----------- every node needs this ---------
+
+			  //write the content into xml file
+			  TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			  Transformer transformer = null;
+			try {
+				transformer = transformerFactory.newTransformer();
+			} catch (TransformerConfigurationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			  DOMSource source = new DOMSource(docnew);
+
+			  StreamResult result =  new StreamResult(new File("genrelist.xml"));
+			  try {
+				transformer.transform(source, result);
+			} catch (TransformerException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		
+		try {
+			doc = dBuilder.parse(fXmlFile);
+		} catch (SAXException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
+		
+		doc.getDocumentElement().normalize();
+
+		NodeList nList = doc.getElementsByTagName("genre");
+		
+		GlobalGenreList.NumberOfGenreItems_1 = 0;
+		GlobalGenreList.NumberOfGenreItems_2 = 0;
+		GlobalGenreList.NumberOfGenreItems_3 = 0;
+		GlobalGenreList.NumberOfGenreItems_4 = 0;
+		GlobalGenreList.NumberOfGenreItems_5 = 0;
+		
+		GlobalGenreList.RealNumberOfGenreItems_1 = 0;
+		GlobalGenreList.RealNumberOfGenreItems_2 = 0;
+		GlobalGenreList.RealNumberOfGenreItems_3 = 0;
+		GlobalGenreList.RealNumberOfGenreItems_4 = 0;
+		GlobalGenreList.RealNumberOfGenreItems_5 = 0;
+		
+		
+		for (int temp = 0; temp < nList.getLength(); temp++) {
+
+			Node nNode = nList.item(temp);
+					
+			if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+
+				Element eElement = (Element) nNode;
+
+				System.out.println("genre col,text : " + eElement.getAttribute("column") + "," + eElement.getElementsByTagName("text").item(0).getTextContent());
+				
+				int col = 999;
+				
+				if (eElement.getAttribute("column") != ""){
+					col = Integer.parseInt(eElement.getAttribute("column"));
+				}
+				
+				if ( col == 1){
+					GlobalGenreList.NumberOfGenreItems_1++;
+				}
+				else if ( col == 2){
+					GlobalGenreList.NumberOfGenreItems_2++;
+				} 
+				else if ( col == 3){
+					GlobalGenreList.NumberOfGenreItems_3++;
+				} 
+				else if ( col == 4){
+					GlobalGenreList.NumberOfGenreItems_4++;
+				}
+				else if ( col == 5){
+					GlobalGenreList.NumberOfGenreItems_5++;
+				} 
+
+			}
+		}
+		
+		GlobalGenreList.GenreList_1 = new String[GlobalGenreList.NumberOfGenreItems_1];
+		GlobalGenreList.GenreList_2 = new String[GlobalGenreList.NumberOfGenreItems_2];
+		GlobalGenreList.GenreList_3 = new String[GlobalGenreList.NumberOfGenreItems_3];
+		GlobalGenreList.GenreList_4 = new String[GlobalGenreList.NumberOfGenreItems_4];
+		GlobalGenreList.GenreList_5 = new String[GlobalGenreList.NumberOfGenreItems_5];
+		
+		GlobalGenreList.NumberOfGenreItems_1 = 0;
+		GlobalGenreList.NumberOfGenreItems_2 = 0;
+		GlobalGenreList.NumberOfGenreItems_3 = 0;
+		GlobalGenreList.NumberOfGenreItems_4 = 0;
+		GlobalGenreList.NumberOfGenreItems_5 = 0;
+		
+		
+//create arrays and define text
+		for (int temp = 0; temp < nList.getLength(); temp++) {
+
+			Node nNode = nList.item(temp);
+					
+			if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+
+				Element eElement = (Element) nNode;
+
+				int col = 999;
+
+				if (eElement.hasAttribute("column")){
+					col = Integer.parseInt(eElement.getAttribute("column"));
+				}
+				
+				if ( col == 1){
+					GlobalGenreList.GenreList_1[GlobalGenreList.NumberOfGenreItems_1]=eElement.getElementsByTagName("text").item(0).getTextContent();
+					GlobalGenreList.NumberOfGenreItems_1++;
+				}
+				else if ( col == 2){
+					GlobalGenreList.GenreList_2[GlobalGenreList.NumberOfGenreItems_2]=eElement.getElementsByTagName("text").item(0).getTextContent();
+					GlobalGenreList.NumberOfGenreItems_2++;
+				} 
+				else if ( col == 3){
+					GlobalGenreList.GenreList_3[GlobalGenreList.NumberOfGenreItems_3]=eElement.getElementsByTagName("text").item(0).getTextContent();
+					GlobalGenreList.NumberOfGenreItems_3++;
+				} 
+				else if ( col == 4){
+					GlobalGenreList.GenreList_4[GlobalGenreList.NumberOfGenreItems_4]=eElement.getElementsByTagName("text").item(0).getTextContent();
+					GlobalGenreList.NumberOfGenreItems_4++;
+				}
+				else if ( col == 5){
+					GlobalGenreList.GenreList_5[GlobalGenreList.NumberOfGenreItems_5]=eElement.getElementsByTagName("text").item(0).getTextContent();
+					GlobalGenreList.NumberOfGenreItems_5++;
+				} 
+			}
+		}
+		
+		System.out.println("NumberOfGenreItems_1 : " + GlobalGenreList.NumberOfGenreItems_1);
+		System.out.println("NumberOfGenreItems_2 : " + GlobalGenreList.NumberOfGenreItems_2);
+		System.out.println("NumberOfGenreItems_3 : " + GlobalGenreList.NumberOfGenreItems_3);
+		System.out.println("NumberOfGenreItems_4 : " + GlobalGenreList.NumberOfGenreItems_4);
+		System.out.println("NumberOfGenreItems_5 : " + GlobalGenreList.NumberOfGenreItems_5);
+		
+		GlobalGenreList.GenreButton_1 = new JCheckBox[GlobalGenreList.NumberOfGenreItems_1];
+		GlobalGenreList.GenreButton_2 = new JCheckBox[GlobalGenreList.NumberOfGenreItems_2];
+		GlobalGenreList.GenreButton_3 = new JCheckBox[GlobalGenreList.NumberOfGenreItems_3];
+		GlobalGenreList.GenreButton_4 = new JCheckBox[GlobalGenreList.NumberOfGenreItems_4];	
+		GlobalGenreList.GenreButton_5 = new JCheckBox[GlobalGenreList.NumberOfGenreItems_5];
+
+				
+		// ======== Genrelist - copy down for now ====================	
+			
+	}	
 }
