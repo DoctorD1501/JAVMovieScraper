@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.apache.commons.codec.net.URLCodec;
+import org.apache.commons.lang3.text.WordUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -128,7 +129,12 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 		Element setElement = document.select("span.header:containsOwn(" + seriesWord + ") ~ a").first();
 		if(setElement != null && setElement.text().length() > 0)
 		{
-			return new Set(setElement.text());
+			String setText = setElement.text();
+			if(scrapingLanguage == Language.ENGLISH && JapaneseCharacter.containsJapaneseLetter(setText))
+			{
+				setText = TranslateString.translateStringJapaneseToEnglish(setText);
+			}
+			return new Set(setText);
 		}
 		return Set.BLANK_SET;
 	}
@@ -182,7 +188,7 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 
 	@Override
 	public Runtime scrapeRuntime() {
-		String lengthWord = (scrapingLanguage == Language.ENGLISH) ? "Length:" : "�?�録時間:";
+		String lengthWord = (scrapingLanguage == Language.ENGLISH) ? "Length:" : "�?�録時間:";
 		Element lengthElement = document.select("p:contains(" + lengthWord + ")").first();
 		if(lengthElement != null && lengthElement.ownText().trim().length() >= 0)
 		{
@@ -251,7 +257,7 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 
 	@Override
 	public ID scrapeID() {
-		Element idElement = document.select("span.movie-code").first();
+		Element idElement = document.select("span.movie-code, span.header:containsOwn(ID:) + span").first();
 		if(idElement != null)
 			return new ID(idElement.text());
 		else return ID.BLANK_ID;
@@ -260,14 +266,21 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 	@Override
 	public ArrayList<Genre> scrapeGenres() {
 		ArrayList<Genre> genreList = new ArrayList<Genre>();
-		String genreWord = (scrapingLanguage == Language.ENGLISH) ? "Genre:" : "ジャンル:";
-		Elements genreElements = document.select("h5:containsOwn(" + genreWord + ") ~ p span.genre a[href*=/genre/");
+		Elements genreElements = document.select("span.genre a[href*=/genre/");
 		if(genreElements != null)
 		{
 			for(Element genreElement : genreElements)
 			{
+				String genreText = genreElement.text();
 				if(genreElement.text().length() > 0)
-					genreList.add(new Genre(genreElement.text()));			
+				{
+					//some genre elements are untranslated, even on the english site, so we need to do it ourselves
+					if(scrapingLanguage == Language.ENGLISH && JapaneseCharacter.containsJapaneseLetter(genreText))
+					{
+						genreText = TranslateString.translateStringJapaneseToEnglish(genreText);
+					}
+					genreList.add(new Genre(WordUtils.capitalize(genreText)));
+				}
 			}
 		}
 		return genreList;
@@ -276,7 +289,7 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 	@Override
 	public ArrayList<Actor> scrapeActors() {
 		ArrayList<Actor> actorList = new ArrayList<Actor>();
-		Elements actorElements = document.select("#star-show ~ ul a img");
+		Elements actorElements = document.select("div.star-box li a img");
 		if(actorElements != null)
 		{
 			for(Element currentActor: actorElements)
@@ -307,7 +320,7 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 	@Override
 	public ArrayList<Director> scrapeDirectors() {
 		ArrayList<Director> directorList = new ArrayList<Director>();
-		String directorWord = (scrapingLanguage == Language.ENGLISH) ? "Director:" : "監�?�:";
+		String directorWord = (scrapingLanguage == Language.ENGLISH) ? "Director:" : "監�?�:";
 		Element directorElement = document.select("span.header:containsOwn(" + directorWord + ") ~ a").first();
 		if(directorElement != null && directorElement.text().length() > 0)
 		{
