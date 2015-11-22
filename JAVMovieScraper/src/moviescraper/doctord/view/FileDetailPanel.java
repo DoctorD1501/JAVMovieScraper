@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.AbstractListModel;
+import javax.swing.ComboBoxEditor;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JComboBox;
@@ -591,23 +592,33 @@ public class FileDetailPanel extends JPanel {
 		comboBoxMovieTitleText.setModel( new TitleListModel() );
 		comboBoxMovieTitleText.setEditable(true);
 		txtFieldOriginalTitleText.setText( currentMovie.getOriginalTitle().getOriginalTitle() );
+		txtFieldOriginalTitleText.setCaretPosition(0);
 		txtFieldScrapedYearText.setText( currentMovie.getYear().getYear() );
 		txtFieldReleaseDateText.setText(currentMovie.getReleaseDate().getReleaseDate());
 		txtFieldIDCurrentMovie.setText( currentMovie.getId().getId() );
 		txtFieldStudio.setText( currentMovie.getStudio().getStudio() );
+		txtFieldStudio.setCaretPosition(0);
 		txtFieldMovieSet.setText( currentMovie.getSet().getSet() );
+		txtFieldMovieSet.setCaretPosition(0);
 		moviePlotTextField.setText( currentMovie.getPlot().getPlot() );
+		moviePlotTextField.setCaretPosition(0);
 		genreList.setText(toGenreListFormat(currentMovie.getGenres()));
+		genreList.setCaretPosition(0);
 		
 		//select first Title 
 		//TODO: for some reason this has the side effect of clearing out the data item source of the title in the movieToWriteToDiskList so I may need to revisit this later
 		if ( comboBoxMovieTitleText.getItemCount() > 0 )
+		{
 			comboBoxMovieTitleText.setSelectedIndex(0);
+		}
 		
 		//Actors and Genres are automatically generated
 		actorList.updateUI();
 		
 		comboBoxMovieTitleText.updateUI();
+        ComboBoxEditor editor = comboBoxMovieTitleText.getEditor();
+        JTextField textField = (JTextField)editor.getEditorComponent();
+        textField.setCaretPosition(0);
 		
 		artWorkPanel.updateView(forcePosterUpdate, gui);
 	}
