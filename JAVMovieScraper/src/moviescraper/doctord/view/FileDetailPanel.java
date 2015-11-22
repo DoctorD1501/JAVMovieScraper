@@ -488,7 +488,6 @@ public class FileDetailPanel extends JPanel {
 		genreList.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent evt) {
-				System.out.println("Genre list clicked");
 				EditGenresAction editGenresAction = new EditGenresAction(FileDetailPanel.this);
 				editGenresAction.actionPerformed(null);
 		    }

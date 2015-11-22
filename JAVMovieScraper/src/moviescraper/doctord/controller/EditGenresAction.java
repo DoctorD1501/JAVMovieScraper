@@ -14,7 +14,6 @@ public class EditGenresAction extends AbstractAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		System.out.println("Edit genres clicked");
 		GenreEditorPanel genreEditorPanel = new GenreEditorPanel(fileDetailPanel.getCurrentMovie().getGenres());
 		int result = JOptionPane.showOptionDialog(fileDetailPanel.gui.getFrmMoviescraper(), genreEditorPanel, "Edit Genres...",
                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,

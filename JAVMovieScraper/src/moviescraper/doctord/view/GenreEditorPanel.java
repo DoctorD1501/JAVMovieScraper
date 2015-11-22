@@ -151,7 +151,6 @@ public class GenreEditorPanel extends JPanel implements ItemListener {
 	//What happens when a checkbox in the genre editor is checked or unchecked
 	@Override
 	public void itemStateChanged(ItemEvent event) {
-		System.out.println("Checked box with event = " + event);
 		if(genreCheckBoxes != null && editedGenreList != null)
 		{
 			JCheckBox eventItem = (JCheckBox) event.getItem();
@@ -160,14 +159,11 @@ public class GenreEditorPanel extends JPanel implements ItemListener {
 			{
 				if(!editedGenreList.contains(genreNameToEdit))
 				{
-					System.out.println("Adding " + genreNameToEdit);
 					editedGenreList.add(genreNameToEdit);
 				}
 			}
 			else if(event.getStateChange() == ItemEvent.DESELECTED)
 			{
-				System.out.println("editedgenrelist before + " + editedGenreList);
-				System.out.println("Removing " + genreNameToEdit);
 				editedGenreList.remove(genreNameToEdit);
 			}
 		}
@@ -178,10 +174,7 @@ public class GenreEditorPanel extends JPanel implements ItemListener {
 	 */
 	public void save()
 	{
-		System.out.println("orig genreList in save: " + originalGenreList);
-		System.out.println("edit genreList in save: " + editedGenreList);
 		originalGenreList.clear();
 		originalGenreList.addAll(editedGenreList);
-		System.out.println("orig genreList in save2: " + originalGenreList);
 	}
 }
