@@ -78,8 +78,6 @@ public class Movie {
 
 	private Year year;
 	
-	private final static int connectionTimeout = 10000; //10 seconds
-	private final static int  readTimeout = 10000; //10 seconds
 	private String fileName;
 	
 	public Movie(ArrayList<Actor> actors, ArrayList<Director> directors,

@@ -2,7 +2,6 @@ package moviescraper.doctord.view;
 
 import java.awt.EventQueue;
 
-import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
@@ -31,14 +30,12 @@ import moviescraper.doctord.view.renderer.FileRenderer;
 import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.Dimension;
-import java.awt.Image;
 import java.awt.SystemColor;
 
 import javax.swing.UIManager;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;

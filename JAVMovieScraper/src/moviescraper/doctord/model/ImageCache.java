@@ -3,14 +3,10 @@ package moviescraper.doctord.model;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.imageio.IIOException;
-import javax.imageio.ImageIO;
 
 import moviescraper.doctord.controller.FileDownloaderUtilities;
 

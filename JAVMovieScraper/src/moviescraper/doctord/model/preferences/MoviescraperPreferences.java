@@ -1,5 +1,6 @@
 package moviescraper.doctord.model.preferences;
 
+import moviescraper.doctord.view.FavoriteGenrePickerPanel;
 
 public class MoviescraperPreferences extends Settings {
 	
@@ -26,7 +27,9 @@ public class MoviescraperPreferences extends Settings {
 		useFilenameAsTitle, //Filename will be writen to the title field of the nfo file instead of using the scraped result
 		selectArtManuallyWhenScraping, //Confirmation dialog to allow user to select art will be shown. If false, art is still picked, but it will be automatically chosen.
 		selectSearchResultManuallyWhenScraping, //Confirmation dialog to allow user to pick which search result they want to use will be shown.
-		confirmCleanUpFileNameNameBeforeRenaming // Show a dialog asking the user to confirm the rename of a file each time using the File Name Cleanup feature
+		confirmCleanUpFileNameNameBeforeRenaming, // Show a dialog asking the user to confirm the rename of a file each time using the File Name Cleanup feature
+		frequentlyUsedGenres, //Used in genre editing to store user's list of frequently used genres to aid in quickly adding genres to a movie
+		frequentlyUsedTags //Used in tag editing to store user's list of frequently used tags to aid in quickly adding tags to a movie
 		;
 
 		@Override
@@ -231,5 +234,25 @@ public class MoviescraperPreferences extends Settings {
 	public void setConfirmCleanUpFileNameNameBeforeRenaming(boolean preferenceValue)
 	{
 		setBooleanValue(Key.confirmCleanUpFileNameNameBeforeRenaming, preferenceValue);
+	}
+	
+	public String getfrequentlyUsedGenres()
+	{
+		return getStringValue(Key.frequentlyUsedGenres, "Adult" + FavoriteGenrePickerPanel.listSeperator +  "JAV");
+	}
+	
+	public void setFrequentlyUsedGenres(String value)
+	{
+		setStringValue(Key.frequentlyUsedGenres, value);
+	}
+	
+	public String getfrequentlyUsedTags()
+	{
+		return getStringValue(Key.frequentlyUsedTags, "Feature");
+	}
+	
+	public void setFrequentlyUsedTags(String value)
+	{
+		setStringValue(Key.frequentlyUsedTags, value);
 	}
 }

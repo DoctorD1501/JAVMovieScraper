@@ -6,13 +6,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
-import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
-
 import moviescraper.doctord.controller.xmlserialization.XbmcXmlMovieBean;
 import moviescraper.doctord.model.Movie;
 import moviescraper.doctord.model.dataitem.Thumb;

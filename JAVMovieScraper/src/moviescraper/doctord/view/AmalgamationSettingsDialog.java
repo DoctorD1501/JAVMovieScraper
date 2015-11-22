@@ -29,9 +29,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import com.cedarsoftware.util.io.JsonReader;
-import com.cedarsoftware.util.io.JsonWriter;
-
+import moviescraper.doctord.controller.UtilityFunctions;
 import moviescraper.doctord.controller.amalgamation.AllAmalgamationOrderingPreferences;
 import moviescraper.doctord.controller.amalgamation.DataItemSourceAmalgamationPreference;
 import moviescraper.doctord.controller.amalgamation.ScraperGroupAmalgamationPreference;
@@ -92,7 +90,7 @@ public class AmalgamationSettingsDialog {
 		panelLayoutManager.setVgap(layoutVerticalGap);
 		this.panel = new JPanel(panelLayoutManager);
 		this.amalgamationPreferences = amalgamationPreferences;
-		this.amalgamationPreferencesOriginal = (AllAmalgamationOrderingPreferences) cloneObject(this.amalgamationPreferences);
+		this.amalgamationPreferencesOriginal = (AllAmalgamationOrderingPreferences) UtilityFunctions.cloneObject(this.amalgamationPreferences);
 		
 		panelHeaderSpecificFieldAmalgamationPreference = new JLabel("Specific Field", SwingConstants.CENTER);
 		
@@ -475,11 +473,6 @@ public class AmalgamationSettingsDialog {
 		jListMovieFields.setCellRenderer(new MovieFieldCellRenderer());
 		selectedMovieField = jListMovieFields.getSelectedValue();
 		return jListMovieFields;
-	}
-	
-	private Object cloneObject(Object root)
-	{
-	    return JsonReader.jsonToJava(JsonWriter.objectToJson(root));    
 	}
 	
 	private void restorePreferencesBeforeDialogOpened()

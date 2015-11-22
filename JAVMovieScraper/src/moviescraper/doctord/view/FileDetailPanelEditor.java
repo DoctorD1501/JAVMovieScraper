@@ -11,10 +11,11 @@ abstract class AbstractFileDetailPanelEditGUI {
 	}
 	
 	protected enum Operation{
-		ADD, EDIT, DELETE
+		ADD, EDIT, DELETE, EDIT_ALL
 	}
 	
 	protected void showOptionDialog(JPanel panel, String title, Operation operation) {
+		System.out.println("show option dialog");
 		int result = JOptionPane.showOptionDialog(null, panel, title,
 				JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,
 				null, null, null);

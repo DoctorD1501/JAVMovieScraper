@@ -13,14 +13,18 @@ import java.util.List;
 
 import javax.swing.AbstractListModel;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import moviescraper.doctord.controller.EditGenresAction;
 import moviescraper.doctord.model.Movie;
 import moviescraper.doctord.model.dataitem.Actor;
 import moviescraper.doctord.model.dataitem.Genre;
@@ -62,7 +66,7 @@ public class FileDetailPanel extends JPanel {
 	private ArtWorkPanel artWorkPanel;
 	private final static int DEFAULT_TEXTFIELD_LENGTH = 35;
 	
-	GUIMain gui;
+	public GUIMain gui;
 
 	private JTextField txtFieldReleaseDateText;
 
@@ -481,7 +485,6 @@ public class FileDetailPanel extends JPanel {
 
 		JLabel lblGenres = new JLabel("Genres:");
 		fileDetailsPanel.add(lblGenres, "2, 20");
-
 		genreList = new JList<Genre>(new GenreItemListModel());
 		//double or triple click the genre list to open the editor on the item you clicked
 		genreList.addMouseListener(new MouseAdapter() {
@@ -489,7 +492,7 @@ public class FileDetailPanel extends JPanel {
 			public void mouseClicked(MouseEvent evt) {
 		        if (evt.getClickCount() == 2 || evt.getClickCount() == 3) {
 
-		            // Double-click detected
+		            // Double-click or triple click detected
 		            FileDetailPanelGenreEditor genreEditor = new FileDetailPanelGenreEditor(FileDetailPanel.this);
 		            genreEditor.showGUI(Operation.EDIT);
 		        }
@@ -497,10 +500,13 @@ public class FileDetailPanel extends JPanel {
 		});
 		genreList.setCellRenderer(new GenreListRenderer());
 		JScrollPane listScrollerGenres = new JScrollPane(genreList);
-		genreList.setComponentPopupMenu(new FileDetailPanelPopup(new FileDetailPanelGenreEditor(this)));
+		JPopupMenu genrePopupMenu = new JPopupMenu();
+		JMenuItem editGenreMenuItem = new JMenuItem("Edit");
+		editGenreMenuItem.addActionListener(new EditGenresAction(this));
+		genrePopupMenu.add(editGenreMenuItem);
+		genreList.setComponentPopupMenu(genrePopupMenu);
+		//genreList.setComponentPopupMenu(new FileDetailPanelPopup(new FileDetailPanelGenreEditor(this)));
 		
-		//genreList.setSize(new Dimension(200, 200));
-		//genreList.setPreferredSize(new Dimension(200,200));
 		listScrollerGenres.setPreferredSize(new Dimension(200,125));
 		fileDetailsPanel.add(listScrollerGenres, "4, 20");
 		
@@ -637,7 +643,7 @@ public class FileDetailPanel extends JPanel {
 		return artWorkPanel;
 	}
 	
-	class GenreItemListModel extends AbstractListModel<Genre> {
+	public class GenreItemListModel extends DefaultListModel<Genre> {
 		
 		private static final long serialVersionUID = 973741706455659871L;
 
