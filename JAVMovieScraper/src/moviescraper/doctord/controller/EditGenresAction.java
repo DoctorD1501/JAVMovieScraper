@@ -4,9 +4,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
-import moviescraper.doctord.model.dataitem.Genre;
 import moviescraper.doctord.view.FileDetailPanel;
-import moviescraper.doctord.view.FileDetailPanel.GenreItemListModel;
 import moviescraper.doctord.view.GenreEditorPanel;
 
 public class EditGenresAction extends AbstractAction {
@@ -24,12 +22,13 @@ public class EditGenresAction extends AbstractAction {
 		if(result == JOptionPane.OK_OPTION)
 		{
 			genreEditorPanel.save();
-			GenreItemListModel listModel = (GenreItemListModel) fileDetailPanel.getGenreList().getModel();
+			/*GenreItemListModel listModel = (GenreItemListModel) fileDetailPanel.getGenreList().getModel();
 			listModel.clear();
 			for(Genre currentGenre : fileDetailPanel.getCurrentMovie().getGenres())
 			{
 				listModel.addElement(currentGenre);
-			}
+			}*/
+			fileDetailPanel.getGenreList().setText(FileDetailPanel.toGenreListFormat(fileDetailPanel.getCurrentMovie().getGenres()));
 			//listModel
 			fileDetailPanel.updateUI();
 		}

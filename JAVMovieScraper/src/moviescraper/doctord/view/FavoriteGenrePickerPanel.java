@@ -1,8 +1,6 @@
 package moviescraper.doctord.view;
 
 import java.util.ArrayList;
-import java.util.List;
-
 import moviescraper.doctord.model.dataitem.Genre;
 import moviescraper.doctord.model.preferences.MoviescraperPreferences;
 

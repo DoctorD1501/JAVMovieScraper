@@ -17,9 +17,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -39,8 +37,6 @@ import moviescraper.doctord.model.dataitem.Year;
 import moviescraper.doctord.model.preferences.MoviescraperPreferences;
 import moviescraper.doctord.view.AbstractFileDetailPanelEditGUI.Operation;
 import moviescraper.doctord.view.renderer.ActressListRenderer;
-import moviescraper.doctord.view.renderer.GenreListRenderer;
-
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
@@ -58,7 +54,7 @@ public class FileDetailPanel extends JPanel {
 	private JTextField txtFieldMovieSet;
 	private JTextArea moviePlotTextField;
 	private JList<Actor> actorList;
-	private JList<Genre> genreList;
+	private JTextField genreList;
 	
 	protected Movie currentMovie = getEmptyMovie();
 	MoviescraperPreferences preferences;
@@ -485,30 +481,19 @@ public class FileDetailPanel extends JPanel {
 
 		JLabel lblGenres = new JLabel("Genres:");
 		fileDetailsPanel.add(lblGenres, "2, 20");
-		genreList = new JList<Genre>(new GenreItemListModel());
-		//double or triple click the genre list to open the editor on the item you clicked
+
+		genreList = new JTextField("", DEFAULT_TEXTFIELD_LENGTH);
+		//the user clicks the field to edit it - we don't want them typing directly here
+		genreList.addKeyListener(new KeyListenerIgnoreTyping());
 		genreList.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent evt) {
-		        if (evt.getClickCount() == 2 || evt.getClickCount() == 3) {
-
-		            // Double-click or triple click detected
-		            FileDetailPanelGenreEditor genreEditor = new FileDetailPanelGenreEditor(FileDetailPanel.this);
-		            genreEditor.showGUI(Operation.EDIT);
-		        }
+				System.out.println("Genre list clicked");
+				EditGenresAction editGenresAction = new EditGenresAction(FileDetailPanel.this);
+				editGenresAction.actionPerformed(null);
 		    }
 		});
-		genreList.setCellRenderer(new GenreListRenderer());
-		JScrollPane listScrollerGenres = new JScrollPane(genreList);
-		JPopupMenu genrePopupMenu = new JPopupMenu();
-		JMenuItem editGenreMenuItem = new JMenuItem("Edit");
-		editGenreMenuItem.addActionListener(new EditGenresAction(this));
-		genrePopupMenu.add(editGenreMenuItem);
-		genreList.setComponentPopupMenu(genrePopupMenu);
-		//genreList.setComponentPopupMenu(new FileDetailPanelPopup(new FileDetailPanelGenreEditor(this)));
-		
-		listScrollerGenres.setPreferredSize(new Dimension(200,125));
-		fileDetailsPanel.add(listScrollerGenres, "4, 20");
+		fileDetailsPanel.add(genreList, "4,20");
 		
 		artWorkPanel = new ArtWorkPanel();
 		//frmMoviescraper.getContentPane().add(artworkPanelScrollPane, BorderLayout.EAST);
@@ -613,6 +598,7 @@ public class FileDetailPanel extends JPanel {
 		txtFieldStudio.setText( currentMovie.getStudio().getStudio() );
 		txtFieldMovieSet.setText( currentMovie.getSet().getSet() );
 		moviePlotTextField.setText( currentMovie.getPlot().getPlot() );
+		genreList.setText(toGenreListFormat(currentMovie.getGenres()));
 		
 		//select first Title 
 		//TODO: for some reason this has the side effect of clearing out the data item source of the title in the movieToWriteToDiskList so I may need to revisit this later
@@ -621,7 +607,7 @@ public class FileDetailPanel extends JPanel {
 		
 		//Actors and Genres are automatically generated
 		actorList.updateUI();
-		genreList.updateUI();
+		
 		comboBoxMovieTitleText.updateUI();
 		
 		artWorkPanel.updateView(forcePosterUpdate, gui);
@@ -643,6 +629,26 @@ public class FileDetailPanel extends JPanel {
 		return artWorkPanel;
 	}
 	
+	private final class KeyListenerIgnoreTyping implements KeyListener {
+		@Override
+		public void keyTyped(KeyEvent e) {
+			e.consume();
+			
+		}
+
+		@Override
+		public void keyPressed(KeyEvent e) {
+			e.consume();
+			
+		}
+
+		@Override
+		public void keyReleased(KeyEvent e) {
+			e.consume();
+			
+		}
+	}
+
 	public class GenreItemListModel extends DefaultListModel<Genre> {
 		
 		private static final long serialVersionUID = 973741706455659871L;
@@ -699,11 +705,21 @@ public class FileDetailPanel extends JPanel {
 		this.actorList = actorList;
 	}
 
-	public JList<Genre> getGenreList() {
+	/*public JList<Genre> getGenreList() {
 		return genreList;
 	}
 
 	public void setGenreList(JList<Genre> genreList) {
+		this.genreList = genreList;
+	}*/
+	
+	public JTextField getGenreList()
+	{
+		return genreList;
+	}
+	
+	public void setGenreList(JTextField genreList)
+	{
 		this.genreList = genreList;
 	}
 
@@ -714,6 +730,19 @@ public class FileDetailPanel extends JPanel {
 	public void hideArtworkPanel()
 	{
 		artWorkPanel.setVisible(false);
+	}
+	public static String toGenreListFormat(ArrayList<Genre> genres) {
+		String genreText = "";
+		for(Genre currentGenre : genres)
+		{
+			genreText += currentGenre.getGenre();
+			genreText += " \\ ";
+		}
+		if(genreText.endsWith(" \\ "))
+		{
+			genreText = genreText.substring(0, genreText.length()-3);
+		}
+		return genreText;
 	}
 	
 }

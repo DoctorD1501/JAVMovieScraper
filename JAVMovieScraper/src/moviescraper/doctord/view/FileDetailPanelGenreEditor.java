@@ -1,33 +1,13 @@
 package moviescraper.doctord.view;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.border.Border;
-
-import moviescraper.doctord.controller.UtilityFunctions;
 import moviescraper.doctord.model.Movie;
 import moviescraper.doctord.model.dataitem.Genre;
-import moviescraper.doctord.model.preferences.MoviescraperPreferences;
 
 public class FileDetailPanelGenreEditor extends AbstractFileDetailPanelEditGUI{
 	
@@ -82,7 +62,7 @@ public class FileDetailPanelGenreEditor extends AbstractFileDetailPanelEditGUI{
 		if(operation == Operation.ADD)
 			showOptionDialog(initializeInnerFrame(), "Add New Genre", operation);
 		else if(operation == Operation.EDIT)
-			showOptionDialog(initializeInnerFrame(fileDetailPanel.getGenreList().getSelectedValue()),"Edit Genre", operation);
+			showOptionDialog(initializeInnerFrame(new Genre(fileDetailPanel.getGenreList().getSelectedText())),"Edit Genre", operation);
 	}
 
 	@Override
@@ -97,17 +77,17 @@ public class FileDetailPanelGenreEditor extends AbstractFileDetailPanelEditGUI{
 
 	@Override
 	public void deleteAction() {
-		Genre genreToRemove = fileDetailPanel.getGenreList().getSelectedValue();
+		/*Genre genreToRemove = fileDetailPanel.getGenreList().getSelectedText();
 		fileDetailPanel.getCurrentMovie().getGenres().remove(genreToRemove);
-		fileDetailPanel.updateView(false, false);
+		fileDetailPanel.updateView(false, false);*/
 		
 	}
 
 	@Override
 	public void editAction() {
-		Genre genreToEdit = fileDetailPanel.getGenreList().getSelectedValue();
+		/*Genre genreToEdit = fileDetailPanel.getGenreList().getSelectedText();
 		genreToEdit.setGenre(textFieldGenre.getText());
-		fileDetailPanel.updateView(false, false);
+		fileDetailPanel.updateView(false, false);*/
 		
 	}
 	
