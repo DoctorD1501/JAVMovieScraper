@@ -7,6 +7,8 @@ import java.awt.Image;
 import java.awt.Transparency;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -30,9 +32,85 @@ import org.imgscalr.Scalr.Method;
 
 public class ArtWorkPanel extends JPanel implements ComponentListener {
 
+	private final class MouseListenerShowArtPicker implements MouseListener {
+		
+		/**
+		 * Set this to true in the constructor if this is supposed to be used for fanart picker. 
+		 * Could have done some kind of subclass thing, but this was just easier.
+		 */
+		boolean forFanartInsteadOfPosters;
+		private static final String posterPickerDialogName = "Pick New Primary Poster";
+		private static final String fanartPickerDialogName = "Pick New Primary Fanart";
+		
+		public MouseListenerShowArtPicker(boolean forFanartInsteadOfPosters) {
+			this.forFanartInsteadOfPosters = forFanartInsteadOfPosters;
+		}
+		
+		private String getDialogName()
+		{
+			if(forFanartInsteadOfPosters)
+				return fanartPickerDialogName;
+			else return posterPickerDialogName;
+		}
+		
+		private Thumb[] getCorrectArtArray(Movie movie)
+		{
+			if(forFanartInsteadOfPosters)
+				return movie.getFanart();
+			else return movie.getPosters();
+		}
+		
+		@Override
+		public void mouseClicked(MouseEvent event) {
+
+			if (event.getClickCount() == 2) {
+				Movie currentMovie = guiMain.getFileDetailPanel().getCurrentMovie();
+				if(currentMovie != null)
+				{
+					Thumb [] artToPick = getCorrectArtArray(currentMovie);
+
+					if (artToPick != null
+							&& currentMovie.getPosters().length > 1) {
+						Thumb artFromUserSelection = ScrapeAmalgamatedProgressDialog.showArtPicker(artToPick,
+								getDialogName());
+						if(forFanartInsteadOfPosters)
+							currentMovie.moveExistingFanartToFront(artFromUserSelection);
+						else currentMovie.moveExistingPosterToFront(artFromUserSelection);
+						guiMain.getFileDetailPanel().updateView(true, false);
+					}
+				}
+			}
+		}
+
+		@Override
+		public void mouseEntered(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void mouseExited(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void mousePressed(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void mouseReleased(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+	}
+
+
 	private static final long serialVersionUID = 9061046066424044803L;
 
-	private ArtWorkPanel artworkPanel;
+	//private ArtWorkPanel artworkPanel;
 
 	private JLabel lblPosterIcon;
 	private JLabel lblFanartIcon;
@@ -48,15 +126,18 @@ public class ArtWorkPanel extends JPanel implements ComponentListener {
 	private Dimension oldSize;
 
 	private boolean updatingPosterAndFanartSizes = false;
+	
+	private GUIMain guiMain;
+	
 
 
 
 
-	public ArtWorkPanel() {
-		artworkPanel = this;
+	public ArtWorkPanel(GUIMain guiMain) {
 		//artworkPanel.setMinimumSize(new Dimension(379,675));
-		artworkPanel.setLayout(new BoxLayout(artworkPanel, BoxLayout.Y_AXIS));
-		artworkPanel.addComponentListener(this);
+		this.guiMain = guiMain;
+		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		addComponentListener(this);
 
 		//set up the poster
 		lblPosterIcon = new JLabel("");
@@ -69,6 +150,7 @@ public class ArtWorkPanel extends JPanel implements ComponentListener {
 		lblPosterIcon.setIcon(posterIcon);
 		lblPosterIcon.setAlignmentX(Component.LEFT_ALIGNMENT);
 		lblPosterIcon.setAlignmentY(Component.CENTER_ALIGNMENT);
+		lblPosterIcon.addMouseListener(new MouseListenerShowArtPicker(false));
 
 		//set up the fanart
 		lblFanartIcon = new JLabel("");
@@ -78,14 +160,15 @@ public class ArtWorkPanel extends JPanel implements ComponentListener {
 		lblFanartIcon.setIcon(fanartIcon);
 		lblFanartIcon.setAlignmentX(Component.LEFT_ALIGNMENT);
 		lblFanartIcon.setAlignmentY(Component.BOTTOM_ALIGNMENT);
+		lblFanartIcon.addMouseListener(new MouseListenerShowArtPicker(true));
 
 
-		artworkPanel.add(lblPosterIcon);
+		add(lblPosterIcon);
 		//add a little bit of space between the poster and the fanart
-		artworkPanel.add(Box.createRigidArea(new Dimension(0,5)));
-		artworkPanel.add(lblFanartIcon);
+		add(Box.createRigidArea(new Dimension(0,5)));
+		add(lblFanartIcon);
 
-		oldSize = artworkPanel.getBounds().getSize();
+		oldSize = getBounds().getSize();
 	}
 
 	private Image createEmptyImage(int x, int y) {

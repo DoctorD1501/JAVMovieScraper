@@ -66,7 +66,7 @@ public class FileDetailPanel extends JPanel {
 	private ArtWorkPanel artWorkPanel;
 	private final static int DEFAULT_TEXTFIELD_LENGTH = 35;
 	
-	public GUIMain gui;
+	public GUIMain guiMain;
 
 	private JTextField txtFieldReleaseDateText;
 	
@@ -93,7 +93,7 @@ public class FileDetailPanel extends JPanel {
 	 */
 	public FileDetailPanel(MoviescraperPreferences preferences, GUIMain gui) {
 		this.preferences = preferences;
-		this.gui = gui;
+		this.guiMain = gui;
 		JPanel fileDetailsPanel = this;
 				
 		FormLayout formLayout = new FormLayout(new ColumnSpec[] {
@@ -535,7 +535,7 @@ public class FileDetailPanel extends JPanel {
 		});
 		fileDetailsPanel.add(tagList, getLayoutPositionString(COLUMN_FORM_FIELD, ROW_TAGS));
 		
-		artWorkPanel = new ArtWorkPanel();
+		artWorkPanel = new ArtWorkPanel(guiMain);
 		//frmMoviescraper.getContentPane().add(artworkPanelScrollPane, BorderLayout.EAST);
 		String beginRow = "1";
 		String rowsToSpan = Integer.toString((formLayout.getRowCount()-1));
@@ -584,7 +584,7 @@ public class FileDetailPanel extends JPanel {
 	 */
 	public void updateView(boolean forcePosterUpdate, boolean newMovieWasSet) {
 		
-		List<Movie> movieToWriteToDiskList = gui.getMovieToWriteToDiskList();
+		List<Movie> movieToWriteToDiskList = guiMain.getMovieToWriteToDiskList();
 		if(newMovieWasSet && movieToWriteToDiskList.size() == 0)
 		{
 			movieToWriteToDiskList.add(currentMovie);
@@ -607,30 +607,30 @@ public class FileDetailPanel extends JPanel {
 					this.getCurrentMovie().getAllTitles().add(new Title(fileName));
 			}
 			
-			if(gui.getCurrentlySelectedMovieR18() != null)
-				this.getCurrentMovie().getAllTitles().add( gui.getCurrentlySelectedMovieR18().getTitle() );
-			if(gui.getCurrentlySelectedMovieDMM() != null)
-				this.getCurrentMovie().getAllTitles().add( gui.getCurrentlySelectedMovieDMM().getTitle() );
-			if(gui.getCurrentlySelectedMovieJavLibrary() != null)
+			if(guiMain.getCurrentlySelectedMovieR18() != null)
+				this.getCurrentMovie().getAllTitles().add( guiMain.getCurrentlySelectedMovieR18().getTitle() );
+			if(guiMain.getCurrentlySelectedMovieDMM() != null)
+				this.getCurrentMovie().getAllTitles().add( guiMain.getCurrentlySelectedMovieDMM().getTitle() );
+			if(guiMain.getCurrentlySelectedMovieJavLibrary() != null)
 			{
 				//we might have replaced JavLib's title during amalgamation, so let's get the original one
 				//before this happens in the drop down title list
-				if(gui.getOriginalJavLibraryMovieTitleBeforeAmalgamate() != null && 
-						gui.getOriginalJavLibraryMovieTitleBeforeAmalgamate().length() > 0)
+				if(guiMain.getOriginalJavLibraryMovieTitleBeforeAmalgamate() != null && 
+						guiMain.getOriginalJavLibraryMovieTitleBeforeAmalgamate().length() > 0)
 				{
-					this.getCurrentMovie().getAllTitles().add(new Title(gui.getOriginalJavLibraryMovieTitleBeforeAmalgamate()));
+					this.getCurrentMovie().getAllTitles().add(new Title(guiMain.getOriginalJavLibraryMovieTitleBeforeAmalgamate()));
 				}
 				else
 				{
-					this.getCurrentMovie().getAllTitles().add( gui.getCurrentlySelectedMovieJavLibrary().getTitle() );
+					this.getCurrentMovie().getAllTitles().add( guiMain.getCurrentlySelectedMovieJavLibrary().getTitle() );
 				}
 			}
-			if(gui.getCurrentlySelectedMovieSquarePlus() != null)
-				this.getCurrentMovie().getAllTitles().add( gui.getCurrentlySelectedMovieSquarePlus().getTitle() );
-			if(gui.getCurrentlySelectedMovieActionJav() != null)
-				this.getCurrentMovie().getAllTitles().add( gui.getCurrentlySelectedMovieActionJav().getTitle() );
-			if(gui.getCurrentlySelectedMovieJavZoo() != null)
-				this.getCurrentMovie().getAllTitles().add( gui.getCurrentlySelectedMovieJavZoo().getTitle() );
+			if(guiMain.getCurrentlySelectedMovieSquarePlus() != null)
+				this.getCurrentMovie().getAllTitles().add( guiMain.getCurrentlySelectedMovieSquarePlus().getTitle() );
+			if(guiMain.getCurrentlySelectedMovieActionJav() != null)
+				this.getCurrentMovie().getAllTitles().add( guiMain.getCurrentlySelectedMovieActionJav().getTitle() );
+			if(guiMain.getCurrentlySelectedMovieJavZoo() != null)
+				this.getCurrentMovie().getAllTitles().add( guiMain.getCurrentlySelectedMovieJavZoo().getTitle() );
 			if(this.getCurrentMovie().getAllTitles().size() > 0)
 				this.setTitleEditable(true);
 		//end
@@ -668,7 +668,7 @@ public class FileDetailPanel extends JPanel {
         JTextField textField = (JTextField)editor.getEditorComponent();
         textField.setCaretPosition(0);
 		
-		artWorkPanel.updateView(forcePosterUpdate, gui);
+		artWorkPanel.updateView(forcePosterUpdate, guiMain);
 	}
 
 

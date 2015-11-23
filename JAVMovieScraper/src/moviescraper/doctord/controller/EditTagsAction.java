@@ -15,7 +15,7 @@ public class EditTagsAction extends AbstractAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		TagEditorPanel tagEditorPanel = new TagEditorPanel(fileDetailPanel.getCurrentMovie().getTags());
-		int result = JOptionPane.showOptionDialog(fileDetailPanel.gui.getFrmMoviescraper(), tagEditorPanel, "Edit tags...",
+		int result = JOptionPane.showOptionDialog(fileDetailPanel.guiMain.getFrmMoviescraper(), tagEditorPanel, "Edit tags...",
                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,
                 null, null, null);
 		if(result == JOptionPane.OK_OPTION)

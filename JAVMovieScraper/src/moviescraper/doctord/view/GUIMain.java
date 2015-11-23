@@ -68,14 +68,14 @@ public class GUIMain {
 	private AllAmalgamationOrderingPreferences allAmalgamationOrderingPreferences;
 
 	//scraped movies
-	private Movie currentlySelectedMovieDMM;
-	private Movie currentlySelectedMovieActionJav;
-	private Movie currentlySelectedMovieSquarePlus;
-	private Movie currentlySelectedMovieJavLibrary;
-	private Movie currentlySelectedMovieJavZoo;
-	private Movie currentlySelectedMovieCaribbeancomPremium;
-	private Movie currentlySelectedMovieData18Movie;
-	private Movie currentlySelectedMovieR18;
+	@Deprecated private Movie currentlySelectedMovieDMM;
+	@Deprecated private Movie currentlySelectedMovieActionJav;
+	@Deprecated private Movie currentlySelectedMovieSquarePlus;
+	@Deprecated private Movie currentlySelectedMovieJavLibrary;
+	@Deprecated private Movie currentlySelectedMovieJavZoo;
+	@Deprecated private Movie currentlySelectedMovieCaribbeancomPremium;
+	@Deprecated private Movie currentlySelectedMovieData18Movie;
+	@Deprecated private Movie currentlySelectedMovieR18;
 	public List <Movie> movieToWriteToDiskList;
 
 	//Gui Elements
