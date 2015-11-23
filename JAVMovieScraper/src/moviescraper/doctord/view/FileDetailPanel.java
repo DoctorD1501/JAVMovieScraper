@@ -69,6 +69,24 @@ public class FileDetailPanel extends JPanel {
 	public GUIMain gui;
 
 	private JTextField txtFieldReleaseDateText;
+	
+	private static final int COLUMN_LABEL = 2;
+	private static final int COLUMN_FORM_FIELD = 4;
+	private static final int COLUMN_ARTWORK_PANEL = 6;
+	
+	private static final int ROW_TITLE = 2;
+	private static final int ROW_ARTWORK_PANEL = 2;
+	private static final int ROW_ORIGINAL_TITLE = 4;
+	private static final int ROW_YEAR = 6;
+	private static final int ROW_RELEASE_DATE = 8;
+	private static final int ROW_ID = 10;
+	private static final int ROW_STUDIO = 12;
+	private static final int ROW_MOVIE_SET = 14;
+	private static final int ROW_PLOT = 16;
+	private static final int ROW_GENRES = 18;
+	private static final int ROW_TAGS = 20;
+	private static final int ROW_ACTORS = 22;
+	
 
 	/**
 	 * Create the panel.
@@ -82,7 +100,7 @@ public class FileDetailPanel extends JPanel {
 				FormFactory.RELATED_GAP_COLSPEC, // 1 - empty space
 				FormFactory.DEFAULT_COLSPEC, //2 - label for each of the form items
 				FormFactory.RELATED_GAP_COLSPEC,//3 - empty space
-				ColumnSpec.decode("default:grow"), // 4 - Form text items
+				ColumnSpec.decode("fill:pref:grow"), // 4 - Form text items
 				FormFactory.RELATED_GAP_COLSPEC,//5 - empty space
 				FormFactory.DEFAULT_COLSPEC,// 6 - artwork panel
 				FormFactory.RELATED_GAP_COLSPEC,//7 - empty space
@@ -96,22 +114,24 @@ public class FileDetailPanel extends JPanel {
 				FormFactory.DEFAULT_ROWSPEC,//6 - Year
 				FormFactory.RELATED_GAP_ROWSPEC,//7 - empty space
 				FormFactory.DEFAULT_ROWSPEC,//8 - Release Date
-				FormFactory.RELATED_GAP_ROWSPEC,//8 - empty space
-				FormFactory.DEFAULT_ROWSPEC,//9 - ID
-				FormFactory.RELATED_GAP_ROWSPEC,//10 - empty space
-				FormFactory.DEFAULT_ROWSPEC,//11 - Studio
-				FormFactory.RELATED_GAP_ROWSPEC,//12 - empty space
-				FormFactory.DEFAULT_ROWSPEC,//13 - Movie set
-				FormFactory.RELATED_GAP_ROWSPEC,//14 - empty space
-				FormFactory.DEFAULT_ROWSPEC,//15 - Plot
-				FormFactory.RELATED_GAP_ROWSPEC,//16 - empty space
-				RowSpec.decode("default:grow"),//17 - actors
-				FormFactory.RELATED_GAP_ROWSPEC,//18 - empty space
-				FormFactory.DEFAULT_ROWSPEC,//19 - genres
-				FormFactory.RELATED_GAP_ROWSPEC,//20 - empty space
-				FormFactory.DEFAULT_ROWSPEC,//21 - tags
-				FormFactory.RELATED_GAP_ROWSPEC//22 - empty space
+				FormFactory.RELATED_GAP_ROWSPEC,//9 - empty space
+				FormFactory.DEFAULT_ROWSPEC,//10 - ID
+				FormFactory.RELATED_GAP_ROWSPEC,//11 - empty space
+				FormFactory.DEFAULT_ROWSPEC,//12 - Studio
+				FormFactory.RELATED_GAP_ROWSPEC,//13 - empty space
+				FormFactory.DEFAULT_ROWSPEC,//14 - Movie set
+				FormFactory.RELATED_GAP_ROWSPEC,//15 - empty space
+				FormFactory.DEFAULT_ROWSPEC,//16 - Plot
+				FormFactory.RELATED_GAP_ROWSPEC,//17 - empty space
+				FormFactory.DEFAULT_ROWSPEC,//18 - genres
+				FormFactory.RELATED_GAP_ROWSPEC,//19 - empty space
+				FormFactory.DEFAULT_ROWSPEC,//20 - tags
+				FormFactory.RELATED_GAP_ROWSPEC,//21 - empty space
+				RowSpec.decode("fill:pref:grow"),//22 - actors
+				FormFactory.RELATED_GAP_ROWSPEC//23 - empty space
 				});
+		
+
 		
 		
 		//formLayout.setColumnGroups(new int[][]{{4, 6}});
@@ -120,7 +140,7 @@ public class FileDetailPanel extends JPanel {
 
 
 		JLabel lblTitle = new JLabel("Title:");
-		fileDetailsPanel.add(lblTitle, "2, 2");
+		fileDetailsPanel.add(lblTitle, getLayoutPositionString(COLUMN_LABEL, ROW_TITLE));
 		
 		//using this workaround for JComboBox constructor for problem with generics in WindowBuilder as per this stackoverflow thread: https://stackoverflow.com/questions/8845139/jcombobox-warning-preventing-opening-the-design-page-in-eclipse
 		comboBoxMovieTitleText = new JComboBox<String>();
@@ -164,12 +184,12 @@ public class FileDetailPanel extends JPanel {
 			
 		});
 		//movieTitlePanel.add(comboBoxMovieTitleText);
-		fileDetailsPanel.add(comboBoxMovieTitleText, "4, 2");
+		fileDetailsPanel.add(comboBoxMovieTitleText, getLayoutPositionString(COLUMN_FORM_FIELD, ROW_TITLE));
 
 
 
 		JLabel lblOriginalTitle = new JLabel("Original Title:");
-		fileDetailsPanel.add(lblOriginalTitle, "2, 4");
+		fileDetailsPanel.add(lblOriginalTitle, getLayoutPositionString(COLUMN_LABEL, ROW_ORIGINAL_TITLE));
 
 
 
@@ -209,15 +229,15 @@ public class FileDetailPanel extends JPanel {
 			}
 
 		});
-		fileDetailsPanel.add(txtFieldOriginalTitleText, "4, 4");
+		fileDetailsPanel.add(txtFieldOriginalTitleText, getLayoutPositionString(COLUMN_FORM_FIELD, ROW_ORIGINAL_TITLE));
 
 
 		JLabel lblYear = new JLabel("Year:");
-		fileDetailsPanel.add(lblYear, "2, 6");
+		fileDetailsPanel.add(lblYear, getLayoutPositionString(COLUMN_LABEL, ROW_YEAR));
 		
 
 		txtFieldScrapedYearText = new JTextField("",4);
-		fileDetailsPanel.add(txtFieldScrapedYearText, "4, 6");
+		fileDetailsPanel.add(txtFieldScrapedYearText, getLayoutPositionString(COLUMN_FORM_FIELD, ROW_YEAR));
 		txtFieldScrapedYearText.addActionListener(new ActionListener(){
 	        @Override
 	        public void actionPerformed(ActionEvent e) {
@@ -256,7 +276,7 @@ public class FileDetailPanel extends JPanel {
 		
 		
 		JLabel lblReleaseDate = new JLabel("Release Date:");
-		fileDetailsPanel.add(lblReleaseDate, "2, 8");
+		fileDetailsPanel.add(lblReleaseDate, getLayoutPositionString(COLUMN_LABEL, ROW_RELEASE_DATE));
 		
 		txtFieldReleaseDateText = new JTextField("",12);
 		txtFieldReleaseDateText.addActionListener(new ActionListener(){
@@ -294,10 +314,10 @@ public class FileDetailPanel extends JPanel {
 			}
 
 		});
-		fileDetailsPanel.add(txtFieldReleaseDateText, "4, 8");
+		fileDetailsPanel.add(txtFieldReleaseDateText, getLayoutPositionString(COLUMN_FORM_FIELD, ROW_RELEASE_DATE));
 		
 		JLabel lblID = new JLabel("ID:");
-		fileDetailsPanel.add(lblID, "2, 10");
+		fileDetailsPanel.add(lblID, getLayoutPositionString(COLUMN_LABEL, ROW_ID));
 		
 		txtFieldIDCurrentMovie = new JTextField("", DEFAULT_TEXTFIELD_LENGTH);
 		txtFieldIDCurrentMovie.addActionListener(new ActionListener(){
@@ -335,7 +355,7 @@ public class FileDetailPanel extends JPanel {
 			}
 			
 		});
-		fileDetailsPanel.add(txtFieldIDCurrentMovie,"4, 10");
+		fileDetailsPanel.add(txtFieldIDCurrentMovie,getLayoutPositionString(COLUMN_FORM_FIELD, ROW_ID));
 		
 		JLabel lblStudio = new JLabel("Studio:");
 		txtFieldStudio = new JTextField("", DEFAULT_TEXTFIELD_LENGTH);
@@ -375,11 +395,11 @@ public class FileDetailPanel extends JPanel {
 			
 		});
 		
-		fileDetailsPanel.add(lblStudio,"2,12");
-		fileDetailsPanel.add(txtFieldStudio,"4,12");
+		fileDetailsPanel.add(lblStudio,getLayoutPositionString(COLUMN_LABEL, ROW_STUDIO));
+		fileDetailsPanel.add(txtFieldStudio,getLayoutPositionString(COLUMN_FORM_FIELD, ROW_STUDIO));
 		
 		JLabel lblSet = new JLabel("Movie Set:");
-		fileDetailsPanel.add(lblSet,"2, 14");
+		fileDetailsPanel.add(lblSet, getLayoutPositionString(COLUMN_LABEL, ROW_MOVIE_SET));
 		txtFieldMovieSet = new JTextField("", DEFAULT_TEXTFIELD_LENGTH);
 		txtFieldMovieSet.addActionListener(new ActionListener(){
 	        @Override
@@ -416,10 +436,10 @@ public class FileDetailPanel extends JPanel {
 			}
 			
 		});
-		fileDetailsPanel.add(txtFieldMovieSet,"4,14");
+		fileDetailsPanel.add(txtFieldMovieSet,getLayoutPositionString(COLUMN_FORM_FIELD, ROW_MOVIE_SET));
 		
 		JLabel lblPlot = new JLabel("Plot:");
-		fileDetailsPanel.add(lblPlot, "2,16");
+		fileDetailsPanel.add(lblPlot, getLayoutPositionString(COLUMN_LABEL, ROW_PLOT));
 		
 
 		moviePlotTextField = new JTextArea(3,35);
@@ -450,11 +470,11 @@ public class FileDetailPanel extends JPanel {
 		JScrollPane plotPanelScrollPane = new JScrollPane(moviePlotTextField, 
 				   JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-		fileDetailsPanel.add(plotPanelScrollPane,"4,16");
+		fileDetailsPanel.add(plotPanelScrollPane,getLayoutPositionString(COLUMN_FORM_FIELD, ROW_PLOT));
 		
 
 		JLabel lblActors = new JLabel("Actors:");
-		fileDetailsPanel.add(lblActors, "2, 18");
+		fileDetailsPanel.add(lblActors, getLayoutPositionString(COLUMN_LABEL, ROW_ACTORS));
 
 		actorList = new JList<Actor>(new ActorItemListModel());
 		List<File> currentlySelectedActorsFolderList = new ArrayList<File>();
@@ -483,10 +503,10 @@ public class FileDetailPanel extends JPanel {
 		JScrollPane actorListScroller = new JScrollPane(actorList);
 		actorListScroller.setPreferredSize(new Dimension(250, 250));
 		
-		fileDetailsPanel.add(actorListScroller, "4, 18");
+		fileDetailsPanel.add(actorListScroller, getLayoutPositionString(COLUMN_FORM_FIELD, ROW_ACTORS));
 
 		JLabel lblGenres = new JLabel("Genres:");
-		fileDetailsPanel.add(lblGenres, "2, 20");
+		fileDetailsPanel.add(lblGenres, getLayoutPositionString(COLUMN_LABEL, ROW_GENRES));
 
 		genreList = new JTextField("", DEFAULT_TEXTFIELD_LENGTH);
 		//the user clicks the field to edit it - we don't want them typing directly here
@@ -498,10 +518,10 @@ public class FileDetailPanel extends JPanel {
 				editGenresAction.actionPerformed(null);
 		    }
 		});
-		fileDetailsPanel.add(genreList, "4,20");
+		fileDetailsPanel.add(genreList, getLayoutPositionString(COLUMN_FORM_FIELD, ROW_GENRES));
 		
 		JLabel lblTags = new JLabel("Tags:");
-		fileDetailsPanel.add(lblTags, "2, 22");
+		fileDetailsPanel.add(lblTags, getLayoutPositionString(COLUMN_LABEL, ROW_TAGS));
 
 		tagList = new JTextField("", DEFAULT_TEXTFIELD_LENGTH);
 		//the user clicks the field to edit it - we don't want them typing directly here
@@ -513,11 +533,14 @@ public class FileDetailPanel extends JPanel {
 				editTagsAction.actionPerformed(null);
 		    }
 		});
-		fileDetailsPanel.add(tagList, "4,22");
+		fileDetailsPanel.add(tagList, getLayoutPositionString(COLUMN_FORM_FIELD, ROW_TAGS));
 		
 		artWorkPanel = new ArtWorkPanel();
 		//frmMoviescraper.getContentPane().add(artworkPanelScrollPane, BorderLayout.EAST);
-		fileDetailsPanel.add(artWorkPanel,"6,2,1,22");
+		String beginRow = "1";
+		String rowsToSpan = Integer.toString((formLayout.getRowCount()-1));
+		String rowSpanConstraintString = "," + beginRow + "," + rowsToSpan;
+		fileDetailsPanel.add(artWorkPanel,getLayoutPositionString(COLUMN_ARTWORK_PANEL, ROW_ARTWORK_PANEL) + rowSpanConstraintString);
 		
 
 		
@@ -803,6 +826,11 @@ public class FileDetailPanel extends JPanel {
 			tagText = tagText.substring(0, tagText.length()-3);
 		}
 		return tagText;
+	}
+	
+	private String getLayoutPositionString(int columnNumber, int rowNumber)
+	{
+		return columnNumber + ", " + rowNumber;
 	}
 	
 }
