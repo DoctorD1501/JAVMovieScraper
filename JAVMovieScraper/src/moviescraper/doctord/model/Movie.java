@@ -526,7 +526,7 @@ public class Movie {
 				(writePoster || createFolderJpgEnabledPreference) && 
 				((posterFile.exists() == writePosterIfAlreadyExists) || (!posterFile.exists() || (createFolderJpgEnabledPreference))))
 		{
-			if(posterToSaveToDisk.isModified() || createFolderJpgEnabledPreference || !posterFile.exists())
+			if(posterToSaveToDisk.isModified() || createFolderJpgEnabledPreference || !posterFile.exists() || writePosterIfAlreadyExists)
 			{
 				//reencode the jpg since we probably did a resize
 				Iterator<ImageWriter> iter = ImageIO.getImageWritersByFormatName("jpeg");
