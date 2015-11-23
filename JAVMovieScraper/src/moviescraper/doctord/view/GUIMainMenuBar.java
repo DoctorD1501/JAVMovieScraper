@@ -19,6 +19,7 @@ import moviescraper.doctord.controller.BrowseDirectoryAction;
 import moviescraper.doctord.controller.BrowseUriAction;
 import moviescraper.doctord.controller.ChooseExternalMediaPlayerAction;
 import moviescraper.doctord.controller.ChooseFavoriteGenresAction;
+import moviescraper.doctord.controller.ChooseFavoriteTagsAction;
 import moviescraper.doctord.controller.FileNameCleanupAction;
 import moviescraper.doctord.controller.MoveToNewFolderAction;
 import moviescraper.doctord.controller.OpenFileAction;
@@ -406,6 +407,10 @@ public class GUIMainMenuBar extends JMenuBar{
 		JMenuItem favoriteGenresMenuItem = new JMenuItem("Favorite Genres...");
 		favoriteGenresMenuItem.addActionListener(new ChooseFavoriteGenresAction(guiMain));
 		settingsMenu.add(favoriteGenresMenuItem);
+		
+		JMenuItem favoriteTagsMenuItem = new JMenuItem("Favorite Tags...");
+		favoriteTagsMenuItem.addActionListener(new ChooseFavoriteTagsAction(guiMain));
+		settingsMenu.add(favoriteTagsMenuItem);
 		
 		JMenuItem externalMediaPlayerPickerMenu = new JMenuItem("Pick External Media Player...");
 		externalMediaPlayerPickerMenu.addActionListener(new ChooseExternalMediaPlayerAction(guiMain));

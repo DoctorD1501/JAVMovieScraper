@@ -24,6 +24,7 @@ import moviescraper.doctord.model.dataitem.Runtime;
 import moviescraper.doctord.model.dataitem.Set;
 import moviescraper.doctord.model.dataitem.SortTitle;
 import moviescraper.doctord.model.dataitem.Studio;
+import moviescraper.doctord.model.dataitem.Tag;
 import moviescraper.doctord.model.dataitem.Tagline;
 import moviescraper.doctord.model.dataitem.Thumb;
 import moviescraper.doctord.model.dataitem.Title;
@@ -108,6 +109,7 @@ public class MovieScrapeResultGroup {
 			ArrayList<Actor> actors = (ArrayList<Actor>) getPreferredMovieDataItemAsArrayList(Actor.class);
 			ArrayList<Director> directors = (ArrayList<Director>) getPreferredMovieDataItemAsArrayList(Director.class);
 			ArrayList<Genre> genres = (ArrayList<Genre>) getPreferredMovieDataItemAsArrayList(Genre.class);
+			ArrayList<Tag> tags = (ArrayList<Tag>) getPreferredMovieDataItemAsArrayList(Tag.class);
 			
 			Thumb[] fanart = getPreferredArrayMovieDataItem("fanart"); 
 			Thumb[] extraFanart = getPreferredArrayMovieDataItem("extraFanart"); 
@@ -132,7 +134,7 @@ public class MovieScrapeResultGroup {
 			Year year = (Year) getPreferredMovieDataItemAsMovieDataItem(Year.class);
 			
 			Movie amalgamatedMovie = new Movie(actors, directors, fanart,
-					extraFanart, genres, id, mpaa, originalTitle, outline,
+					extraFanart, genres, tags, id, mpaa, originalTitle, outline,
 					plot, posters, rating, releaseDate, runtime, set, sortTitle, studio,
 					tagline, title, top250, trailer, votes, year);
 			//The all titles at this point is just the file name, which is the same for all so we can just use the first one

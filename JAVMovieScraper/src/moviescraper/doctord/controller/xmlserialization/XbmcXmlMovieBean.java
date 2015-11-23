@@ -35,6 +35,7 @@ public class XbmcXmlMovieBean {
 	private String mpaa;
 	private String id;
 	private String[] genre;
+	private String[] tag;
 	// private String[] credits; add in later
 	private ArrayList<XbmcXmlActorBean> actor;
 	private String[] director;
@@ -85,6 +86,11 @@ public class XbmcXmlMovieBean {
 		genre = new String[movie.getGenres().size()];
 		for(int i = 0; i < genre.length; i++){
 			genre[i] = movie.getGenres().get(i).getGenre();
+		}
+		// tag
+		tag = new String[movie.getTags().size()];
+		for(int i = 0; i < tag.length; i++){
+			tag[i] = movie.getTags().get(i).getTag();
 		}
 		// director
 		director = new String[movie.getDirectors().size()];
@@ -152,6 +158,15 @@ public class XbmcXmlMovieBean {
 			}
 		}
 		
+		ArrayList<Tag> tags = new ArrayList<Tag>();
+		if(tag != null)
+		{
+			for (int i = 0; i < tag.length; i++)
+			{
+				tags.add(new Tag(tag[i]));
+			}
+		}
+		
 		ArrayList<Director> directors = new ArrayList<Director>();
 		if(director !=null)
 		{
@@ -162,7 +177,7 @@ public class XbmcXmlMovieBean {
 			}
 		}
 		Thumb [] emptyExtraFanrt = new Thumb[0];
-		Movie movie = new Movie(actors, directors, fanartThumbs, emptyExtraFanrt, genres, new ID(id),
+		Movie movie = new Movie(actors, directors, fanartThumbs, emptyExtraFanrt, genres, tags, new ID(id),
 				new MPAARating(mpaa), new OriginalTitle(originaltitle),
 				new Outline(outline), new Plot(plot), posterThumbs, new Rating(10,rating), new ReleaseDate(releasedate),
 				new Runtime(runtime), new Set(set), new SortTitle(sorttitle),
@@ -189,6 +204,7 @@ public class XbmcXmlMovieBean {
 		xstream.addImplicitArray(XbmcXmlMovieBean.class, "director", "director");
 		xstream.addImplicitArray(XbmcXmlFanartBean.class, "thumb","thumb");
 		xstream.addImplicitArray(XbmcXmlMovieBean.class, "genre","genre");
+		xstream.addImplicitArray(XbmcXmlMovieBean.class, "tag","tag");
 		return xstream;
 	}
 	

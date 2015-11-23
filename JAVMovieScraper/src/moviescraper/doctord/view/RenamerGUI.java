@@ -43,6 +43,7 @@ import moviescraper.doctord.model.dataitem.Runtime;
 import moviescraper.doctord.model.dataitem.Set;
 import moviescraper.doctord.model.dataitem.SortTitle;
 import moviescraper.doctord.model.dataitem.Studio;
+import moviescraper.doctord.model.dataitem.Tag;
 import moviescraper.doctord.model.dataitem.Tagline;
 import moviescraper.doctord.model.dataitem.Thumb;
 import moviescraper.doctord.model.dataitem.Title;
@@ -341,6 +342,12 @@ public class RenamerGUI extends JFrame {
 		ArrayList<Genre> genres = new ArrayList<Genre>(5);
 		Collections.addAll(genres, genreA, genreB);
 		
+		Tag tagA = new Tag("TagA");
+		Tag tagB = new Tag("TagB");
+		ArrayList<Tag> tags = new ArrayList<Tag>(5);
+		
+		Collections.addAll(tags, tagA, tagB);
+		
 		ID id = new ID("ABC-123");
 		MPAARating mpaa = new MPAARating("PG-13");
 		OriginalTitle originalTitle = new OriginalTitle("Original Title");
@@ -361,6 +368,6 @@ public class RenamerGUI extends JFrame {
 		Votes votes = new Votes("Votes");
 		Year year = new Year("1999");
 		
-		return new Movie(actors, directors, fanart, extraFanart, genres, id, mpaa, originalTitle, outline, plot, posters, rating, releaseDate, runtime, set, sortTitle, studio, tagline, title, top250, trailer, votes, year);
+		return new Movie(actors, directors, fanart, extraFanart, genres, tags, id, mpaa, originalTitle, outline, plot, posters, rating, releaseDate, runtime, set, sortTitle, studio, tagline, title, top250, trailer, votes, year);
 	}
 }

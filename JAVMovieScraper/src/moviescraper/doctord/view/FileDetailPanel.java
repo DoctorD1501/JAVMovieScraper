@@ -24,6 +24,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import moviescraper.doctord.controller.EditGenresAction;
+import moviescraper.doctord.controller.EditTagsAction;
 import moviescraper.doctord.model.Movie;
 import moviescraper.doctord.model.dataitem.Actor;
 import moviescraper.doctord.model.dataitem.Genre;
@@ -33,6 +34,7 @@ import moviescraper.doctord.model.dataitem.Plot;
 import moviescraper.doctord.model.dataitem.ReleaseDate;
 import moviescraper.doctord.model.dataitem.Set;
 import moviescraper.doctord.model.dataitem.Studio;
+import moviescraper.doctord.model.dataitem.Tag;
 import moviescraper.doctord.model.dataitem.Title;
 import moviescraper.doctord.model.dataitem.Year;
 import moviescraper.doctord.model.preferences.MoviescraperPreferences;
@@ -56,6 +58,7 @@ public class FileDetailPanel extends JPanel {
 	private JTextArea moviePlotTextField;
 	private JList<Actor> actorList;
 	private JTextField genreList;
+	private JTextField tagList;
 	
 	protected Movie currentMovie = getEmptyMovie();
 	MoviescraperPreferences preferences;
@@ -104,8 +107,10 @@ public class FileDetailPanel extends JPanel {
 				FormFactory.RELATED_GAP_ROWSPEC,//16 - empty space
 				RowSpec.decode("default:grow"),//17 - actors
 				FormFactory.RELATED_GAP_ROWSPEC,//18 - empty space
-				RowSpec.decode("default:grow"),//19 - genres
-				FormFactory.RELATED_GAP_ROWSPEC//20 - empty space
+				FormFactory.DEFAULT_ROWSPEC,//19 - genres
+				FormFactory.RELATED_GAP_ROWSPEC,//20 - empty space
+				FormFactory.DEFAULT_ROWSPEC,//21 - tags
+				FormFactory.RELATED_GAP_ROWSPEC//22 - empty space
 				});
 		
 		
@@ -495,9 +500,27 @@ public class FileDetailPanel extends JPanel {
 		});
 		fileDetailsPanel.add(genreList, "4,20");
 		
+		JLabel lblTags = new JLabel("Tags:");
+		fileDetailsPanel.add(lblTags, "2, 22");
+
+		tagList = new JTextField("", DEFAULT_TEXTFIELD_LENGTH);
+		//the user clicks the field to edit it - we don't want them typing directly here
+		tagList.addKeyListener(new KeyListenerIgnoreTyping());
+		tagList.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent evt) {
+				EditTagsAction editTagsAction = new EditTagsAction(FileDetailPanel.this);
+				editTagsAction.actionPerformed(null);
+		    }
+		});
+		fileDetailsPanel.add(tagList, "4,22");
+		
 		artWorkPanel = new ArtWorkPanel();
 		//frmMoviescraper.getContentPane().add(artworkPanelScrollPane, BorderLayout.EAST);
-		fileDetailsPanel.add(artWorkPanel,"6,2,1,20");
+		fileDetailsPanel.add(artWorkPanel,"6,2,1,22");
+		
+
+		
 	}
 	/**
 	 * Sets a new movie and updates a view
@@ -604,6 +627,8 @@ public class FileDetailPanel extends JPanel {
 		moviePlotTextField.setCaretPosition(0);
 		genreList.setText(toGenreListFormat(currentMovie.getGenres()));
 		genreList.setCaretPosition(0);
+		tagList.setText(toTagListFormat(currentMovie.getTags()));
+		tagList.setCaretPosition(0);
 		
 		//select first Title 
 		//TODO: for some reason this has the side effect of clearing out the data item source of the title in the movieToWriteToDiskList so I may need to revisit this later
@@ -622,6 +647,7 @@ public class FileDetailPanel extends JPanel {
 		
 		artWorkPanel.updateView(forcePosterUpdate, gui);
 	}
+
 
 	public Movie getCurrentMovie() {
 		return currentMovie;
@@ -732,6 +758,16 @@ public class FileDetailPanel extends JPanel {
 	{
 		this.genreList = genreList;
 	}
+	
+	public JTextField getTagList()
+	{
+		return tagList;
+	}
+	
+	public void setTagList(JTextField tagList)
+	{
+		this.tagList = tagList;
+	}
 
 	public void setCurrentMovie(Movie currentMovie) {
 		this.currentMovie = currentMovie;
@@ -753,6 +789,20 @@ public class FileDetailPanel extends JPanel {
 			genreText = genreText.substring(0, genreText.length()-3);
 		}
 		return genreText;
+	}
+	
+	public static String toTagListFormat(ArrayList<Tag> tags) {
+		String tagText = "";
+		for(Tag currentTag : tags)
+		{
+			tagText += currentTag.getTag();
+			tagText += " \\ ";
+		}
+		if(tagText.endsWith(" \\ "))
+		{
+			tagText = tagText.substring(0, tagText.length()-3);
+		}
+		return tagText;
 	}
 	
 }

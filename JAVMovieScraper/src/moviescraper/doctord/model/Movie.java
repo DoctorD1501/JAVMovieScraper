@@ -65,6 +65,7 @@ public class Movie {
 	private Studio studio;
 
 	private Tagline tagline;
+	private ArrayList<Tag> tags;
 
 	private Title title;
 	
@@ -81,7 +82,8 @@ public class Movie {
 	private String fileName;
 	
 	public Movie(ArrayList<Actor> actors, ArrayList<Director> directors,
-			Thumb[] fanart, Thumb[] extraFanart, ArrayList<Genre> genres, ID id, MPAARating mpaa,
+			Thumb[] fanart, Thumb[] extraFanart, ArrayList<Genre> genres, ArrayList<Tag> tags, 
+			ID id, MPAARating mpaa,
 			OriginalTitle originalTitle, Outline outline, Plot plot,
 			Thumb[] posters, Rating rating, ReleaseDate releaseDate, Runtime runtime, Set set,
 			SortTitle sortTitle, Studio studio, Tagline tagline, Title title,
@@ -92,6 +94,7 @@ public class Movie {
 		this.fanart = fanart;
 		this.extraFanart = extraFanart;
 		this.genres = genres;
+		this.tags = tags;
 		this.id = id;
 		this.mpaa = mpaa;
 		this.originalTitle = originalTitle;
@@ -180,6 +183,12 @@ public class Movie {
 		genres = siteToScrapeFrom.scrapeGenres();
 		for(Genre currentGenre : genres)
 			currentGenre.setDataItemSource(siteToScrapeFrom);
+		
+		tags = siteToScrapeFrom.scrapeTags();
+		for(Tag currentTag : tags)
+		{
+			currentTag.setDataItemSource(siteToScrapeFrom);
+		}
 		
 		directors = siteToScrapeFrom.scrapeDirectors();
 		for(Director currentDirector : directors)
@@ -283,6 +292,11 @@ public class Movie {
 	public ArrayList<Genre> getGenres() {
 		return genres;
 	}
+	
+	public ArrayList<Tag> getTags()
+	{
+		return tags;
+	}
 
 	public ID getId() {
 		return id;
@@ -363,6 +377,11 @@ public class Movie {
 	public void setGenres(ArrayList<Genre> genres) {
 		this.genres = genres;
 	}
+	
+	public void setTags(ArrayList<Tag> tags)
+	{
+		this.tags = tags;
+	}
 
 	public void setId(ID id) {
 		this.id = id;
@@ -438,7 +457,7 @@ public class Movie {
 				+ runtime + ", posters=" + Arrays.toString(posters)
 				+ ", fanart=" + Arrays.toString(fanart) + ", extrafanart = " 
 				+ Arrays.toString(extraFanart) + ", mpaa=" + mpaa
-				+ ", id=" + id + ", genres=" + genres + ", actors=" + actors
+				+ ", id=" + id + ", genres=" + genres + ", tags=" + tags + ", actors=" + actors
 				+ ", directors=" + directors + "]";
 	}
 
@@ -990,6 +1009,7 @@ public class Movie {
 		ArrayList<Actor> actors = new ArrayList<Actor>();
 		ArrayList<Director> directors = new ArrayList<>();
 		ArrayList<Genre> genres = new ArrayList<Genre>();
+		ArrayList<Tag> tags = new ArrayList<Tag>();
 		
 		Thumb[] fanart = new Thumb[0]; 
 		Thumb[] extraFanart = new Thumb[0]; 
@@ -1013,7 +1033,7 @@ public class Movie {
 		Votes votes = Votes.BLANK_VOTES;
 		Year year = Year.BLANK_YEAR;
 		
-		return new Movie(actors, directors, fanart, extraFanart, genres, id, mpaa, originalTitle, outline, plot, posters, rating, releaseDate, runtime, set, sortTitle, studio, tagline, title, top250, trailer, votes, year);
+		return new Movie(actors, directors, fanart, extraFanart, genres, tags, id, mpaa, originalTitle, outline, plot, posters, rating, releaseDate, runtime, set, sortTitle, studio, tagline, title, top250, trailer, votes, year);
 	}
 
 	public String getFileName() {

@@ -46,6 +46,7 @@ import moviescraper.doctord.model.dataitem.ReleaseDate;
 import moviescraper.doctord.model.dataitem.Set;
 import moviescraper.doctord.model.dataitem.SortTitle;
 import moviescraper.doctord.model.dataitem.Studio;
+import moviescraper.doctord.model.dataitem.Tag;
 import moviescraper.doctord.model.dataitem.Tagline;
 import moviescraper.doctord.model.dataitem.Thumb;
 import moviescraper.doctord.model.dataitem.Title;
@@ -268,6 +269,11 @@ public abstract class SiteParsingProfile implements DataItemSource{
 	
 	public Trailer scrapeTrailer() {
 		return Trailer.BLANK_TRAILER;
+	}
+	
+	public ArrayList<Tag> scrapeTags()
+	{
+		return Tag.BLANK_TAGS;
 	}
 	
 	public abstract SearchResult[] getSearchResults(String searchString) throws IOException;
