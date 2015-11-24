@@ -103,7 +103,11 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 		//case where the date is not a hyperlink, but just a month and a year
 		if ((releaseDateElement != null && releaseDateElement.text() != null && releaseDateElement
 				.text().contains("errors")) || releaseDateElement == null) {
-			releaseDateElement = document.select("div p:contains(Date:) b, div p:contains(Release date:) b").first();
+			releaseDateElement = document.select("span.gen11:containsOwn(Release date:) b:matches(.+\\d{4})").first();
+			if(releaseDateElement == null)
+			{
+				releaseDateElement = document.select("div p:contains(Date:) b").first();
+			}
 			dateFormatToUse = new SimpleDateFormat("MMMM, yyyy", Locale.ENGLISH);
 		}
 		if(releaseDateElement != null)
@@ -435,6 +439,9 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 	public Studio scrapeStudio() {
 		//Element studioElement = document.select("div.main.gre1 div#centered.main2 a:contains(Sites) ~ a").first();
 		Element studioElement = document.select("div.main.gre1 div#centered.main2 div.p8.dloc a[href*=/sites/").first();
+		//often seen in split scenes
+		if(studioElement == null)
+			studioElement = document.select("div div.p8.dloc a[href*=/studios/").first();
 		if(studioElement != null)
 		{
 			String studioText = studioElement.text();
