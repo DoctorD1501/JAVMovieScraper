@@ -235,8 +235,7 @@ public class IAFDParsingProfile extends SiteParsingProfile implements SpecificPr
 
 	@Override
 	public ArrayList<Actor> scrapeActors() {
-		//		Elements actorElements = document.select("div [id=actor] li");	//male actors
-		Elements actorElements = document.select("div.castbox:not(.nonsex) a");  //female actors
+		Elements actorElements = document.select("div.castbox:not(.nonsex) a");  //performers who are not just extras, etc
 		ArrayList<Actor> actorList = new ArrayList<Actor>();
 		if(actorElements != null)
 		{

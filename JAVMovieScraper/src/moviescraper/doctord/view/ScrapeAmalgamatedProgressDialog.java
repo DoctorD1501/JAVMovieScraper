@@ -23,7 +23,6 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
@@ -43,12 +42,12 @@ import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile.ScraperGroupName;
 import moviescraper.doctord.controller.siteparsingprofile.specific.Data18MovieParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.TheMovieDatabaseParsingProfile;
+import moviescraper.doctord.model.AsyncImageComponent;
 import moviescraper.doctord.model.Movie;
 import moviescraper.doctord.model.SearchResult;
 import moviescraper.doctord.model.dataitem.DataItemSource;
 import moviescraper.doctord.model.dataitem.Thumb;
 import moviescraper.doctord.model.preferences.MoviescraperPreferences;
-import moviescraper.doctord.view.renderer.FanartPickerRenderer;
 
 public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable{
 	
@@ -378,7 +377,7 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
 		if (showPosterPicker && currentAmalgamatedMovie != null && currentAmalgamatedMovie.getPosters() != null
 				&& currentAmalgamatedMovie.getPosters().length > 1) {
 			Thumb posterFromUserSelection = showArtPicker(currentAmalgamatedMovie.getPosters(),
-					"Pick Posters");
+					"Pick Poster",true);
 			currentAmalgamatedMovie.moveExistingPosterToFront(posterFromUserSelection);
 		}
 	}
@@ -390,22 +389,34 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
 		if (showFanartPicker && currentAmalgamatedMovie != null && currentAmalgamatedMovie.getFanart() != null
 				&& currentAmalgamatedMovie.getFanart().length > 1) {
 			Thumb fanartFromUserSelection = showArtPicker(currentAmalgamatedMovie.getFanart(),
-					"Pick Fanart");
+					"Pick Fanart",false);
 			currentAmalgamatedMovie.moveExistingFanartToFront(fanartFromUserSelection);
 		}
 	}
 
-	public static Thumb showArtPicker(Thumb [] thumbArray, String windowTitle)
+	public static Thumb showArtPicker(Thumb [] thumbArray, String windowTitle, boolean isForPoster)
 	{
 		if(thumbArray.length > 0)
 		{
 			JPanel panel = new JPanel();
 			panel.setLayout(new BorderLayout());
-			JList<Thumb> labelList = new JList<Thumb>(thumbArray);
+			/*JList<Thumb> labelList = new JList<Thumb>(thumbArray);
 			labelList.setCellRenderer(new FanartPickerRenderer());
 			labelList.setVisible(true);
 			JScrollPane pane = new JScrollPane(labelList);
 			panel.add(pane, BorderLayout.CENTER);
+			*/
+			JPanel thumbPane = new JPanel(new ModifiedFlowLayout());
+			AsyncImageComponent[] thumbPanels = new AsyncImageComponent[thumbArray.length];
+			boolean doAutoSelect = true;
+			for(int i = 0; i < thumbArray.length; i++)
+			{
+				
+				thumbPanels[i] = new AsyncImageComponent(thumbArray[i],false, thumbPanels, doAutoSelect, isForPoster);
+				thumbPane.add(thumbPanels[i]);
+			}
+			JScrollPane thumbScroller = new JScrollPane(thumbPane);
+			panel.add(thumbScroller, BorderLayout.CENTER);
 			panel.setPreferredSize(new Dimension(325,600));
 
 			final JDialog bwin = new JDialog();
@@ -431,12 +442,22 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
 					null, null, null);
 			if(result == JOptionPane.OK_OPTION)
 			{
-				Thumb optionPickedFromPanel = labelList.getSelectedValue();
-				return optionPickedFromPanel;
+				//get the selected item's thumb
+				Thumb optionPickedFromPanel = null;
+				for(int i = 0; i < thumbPanels.length; i++)
+				{
+					if(thumbPanels[i].isSelected())
+					{
+						optionPickedFromPanel = thumbPanels[i].getThumb();
+						System.out.println("returning option picked from panel = " + optionPickedFromPanel);
+						return optionPickedFromPanel;
+					}
+				}
+				
 			}
 			else return null;
 		}
-		else return null;
+		return null;
 	}
 	
 	public static boolean showPromptForUserProvidedURL(SiteParsingProfile siteScraper, File fileToScrape)

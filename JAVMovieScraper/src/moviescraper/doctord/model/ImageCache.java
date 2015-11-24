@@ -56,6 +56,11 @@ public class ImageCache {
 		}
 	}
 	
+	public static void putImageInCache(URL url, Image image)
+	{
+		cache.put(url, image);
+	}
+	
 	private static Image createBlankImage()
 	{
 		return new BufferedImage(1,1, BufferedImage.TYPE_INT_ARGB);

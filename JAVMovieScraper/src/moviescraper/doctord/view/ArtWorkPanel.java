@@ -72,7 +72,7 @@ public class ArtWorkPanel extends JPanel implements ComponentListener {
 					if (artToPick != null
 							&& currentMovie.getPosters().length > 1) {
 						Thumb artFromUserSelection = ScrapeAmalgamatedProgressDialog.showArtPicker(artToPick,
-								getDialogName());
+								getDialogName(),!forFanartInsteadOfPosters);
 						if(forFanartInsteadOfPosters)
 							currentMovie.moveExistingFanartToFront(artFromUserSelection);
 						else currentMovie.moveExistingPosterToFront(artFromUserSelection);
