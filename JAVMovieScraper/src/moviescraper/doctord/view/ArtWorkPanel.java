@@ -32,80 +32,7 @@ import org.imgscalr.Scalr.Method;
 
 public class ArtWorkPanel extends JPanel implements ComponentListener {
 
-	private final class MouseListenerShowArtPicker implements MouseListener {
-		
-		/**
-		 * Set this to true in the constructor if this is supposed to be used for fanart picker. 
-		 * Could have done some kind of subclass thing, but this was just easier.
-		 */
-		boolean forFanartInsteadOfPosters;
-		private static final String posterPickerDialogName = "Pick New Primary Poster";
-		private static final String fanartPickerDialogName = "Pick New Primary Fanart";
-		
-		public MouseListenerShowArtPicker(boolean forFanartInsteadOfPosters) {
-			this.forFanartInsteadOfPosters = forFanartInsteadOfPosters;
-		}
-		
-		private String getDialogName()
-		{
-			if(forFanartInsteadOfPosters)
-				return fanartPickerDialogName;
-			else return posterPickerDialogName;
-		}
-		
-		private Thumb[] getCorrectArtArray(Movie movie)
-		{
-			if(forFanartInsteadOfPosters)
-				return movie.getFanart();
-			else return movie.getPosters();
-		}
-		
-		@Override
-		public void mouseClicked(MouseEvent event) {
 
-			if (event.getClickCount() == 2) {
-				Movie currentMovie = guiMain.getFileDetailPanel().getCurrentMovie();
-				if(currentMovie != null)
-				{
-					Thumb [] artToPick = getCorrectArtArray(currentMovie);
-
-					if (artToPick != null
-							&& currentMovie.getPosters().length > 1) {
-						Thumb artFromUserSelection = ScrapeAmalgamatedProgressDialog.showArtPicker(artToPick,
-								getDialogName(),!forFanartInsteadOfPosters);
-						if(forFanartInsteadOfPosters)
-							currentMovie.moveExistingFanartToFront(artFromUserSelection);
-						else currentMovie.moveExistingPosterToFront(artFromUserSelection);
-						guiMain.getFileDetailPanel().updateView(true, false);
-					}
-				}
-			}
-		}
-
-		@Override
-		public void mouseEntered(MouseEvent e) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void mouseExited(MouseEvent e) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void mousePressed(MouseEvent e) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void mouseReleased(MouseEvent e) {
-			// TODO Auto-generated method stub
-			
-		}
-	}
 
 
 	private static final long serialVersionUID = 9061046066424044803L;
@@ -126,9 +53,9 @@ public class ArtWorkPanel extends JPanel implements ComponentListener {
 	private Dimension oldSize;
 
 	private boolean updatingPosterAndFanartSizes = false;
-	
+
 	private GUIMain guiMain;
-	
+
 
 
 
@@ -226,14 +153,13 @@ public class ArtWorkPanel extends JPanel implements ComponentListener {
 
 	private void updatePosterAndFanartSizes(){
 		updatingPosterAndFanartSizes = true;
-		BufferedImage fanartImg = (BufferedImage)(fanartImage);
-		if(fanartImg != null)
+		BufferedImage bufferedFanartImg = Thumb.convertToBufferedImage(fanartImage);
+		if(bufferedFanartImg != null)
 		{
-			BufferedImage fanartScaledImage = ArtWorkPanel.resizeToFanart(fanartImg);
+			BufferedImage fanartScaledImage = ArtWorkPanel.resizeToFanart(bufferedFanartImg);
 			this.setNewFanart(fanartScaledImage, false);
 		}
 
-		//BufferedImage posterImg = (BufferedImage)(posterImage);
 		BufferedImage posterImg = Thumb.convertToBufferedImage(posterImage);
 		BufferedImage posterScaledImage = ArtWorkPanel.resizeToPoster(posterImg);
 		this.setNewPoster(posterScaledImage, false);
@@ -404,13 +330,14 @@ public class ArtWorkPanel extends JPanel implements ComponentListener {
 			try {
 				if(gui.getFileDetailPanel().currentMovie.getFanart().length > 0)
 				{
-					Image fanartImage = gui.getFileDetailPanel().currentMovie.getFanart()[0]
+					fanartImage = gui.getFileDetailPanel().currentMovie.getFanart()[0]
 							.getThumbImage();
 					ImageIcon newFanartIcon = new ImageIcon(fanartImage);
 					BufferedImage img = (BufferedImage) newFanartIcon.getImage();
 					BufferedImage scaledImage = ArtWorkPanel.resizeToFanart(img);
-					this.setNewFanart(scaledImage, true);
-					fanartImage = scaledImage;
+					fanartImage = img;
+					this.setNewFanart(scaledImage, false);
+					
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -447,6 +374,81 @@ public class ArtWorkPanel extends JPanel implements ComponentListener {
 
 	@Override
 	public void componentShown(ComponentEvent e) {}
+
+	private final class MouseListenerShowArtPicker implements MouseListener {
+
+		/**
+		 * Set this to true in the constructor if this is supposed to be used for fanart picker. 
+		 * Could have done some kind of subclass thing, but this was just easier.
+		 */
+		boolean forFanartInsteadOfPosters;
+		private static final String posterPickerDialogName = "Pick New Primary Poster";
+		private static final String fanartPickerDialogName = "Pick New Primary Fanart";
+
+		public MouseListenerShowArtPicker(boolean forFanartInsteadOfPosters) {
+			this.forFanartInsteadOfPosters = forFanartInsteadOfPosters;
+		}
+
+		private String getDialogName()
+		{
+			if(forFanartInsteadOfPosters)
+				return fanartPickerDialogName;
+			else return posterPickerDialogName;
+		}
+
+		private Thumb[] getCorrectArtArray(Movie movie)
+		{
+			if(forFanartInsteadOfPosters)
+				return movie.getFanart();
+			else return movie.getPosters();
+		}
+
+		@Override
+		public void mouseClicked(MouseEvent event) {
+
+			if (event.getClickCount() == 2) {
+				Movie currentMovie = guiMain.getFileDetailPanel().getCurrentMovie();
+				if(currentMovie != null)
+				{
+					Thumb [] artToPick = getCorrectArtArray(currentMovie);
+
+					if (artToPick != null
+							&& currentMovie.getPosters().length > 1) {
+						Thumb artFromUserSelection = ScrapeAmalgamatedProgressDialog.showArtPicker(artToPick,
+								getDialogName(),!forFanartInsteadOfPosters);
+						if(forFanartInsteadOfPosters)
+							currentMovie.moveExistingFanartToFront(artFromUserSelection);
+						else currentMovie.moveExistingPosterToFront(artFromUserSelection);
+						guiMain.getFileDetailPanel().updateView(true, false);
+					}
+				}
+			}
+		}
+
+		@Override
+		public void mouseEntered(MouseEvent e) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void mouseExited(MouseEvent e) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void mousePressed(MouseEvent e) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void mouseReleased(MouseEvent e) {
+			// TODO Auto-generated method stub
+
+		}
+	}
 
 
 }
