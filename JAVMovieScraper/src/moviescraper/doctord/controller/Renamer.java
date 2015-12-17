@@ -102,12 +102,20 @@ public class Renamer {
 	private String getRenamedFolderPath(String path) {
 		System.out.println("Old Path: " + path);
 		String newPath = replace(folderNameRenameString);
-		//Make sure we don't have any double path separators caused by things like an empty field
+		//Make sure we don't have any double path separators caused by things like an empty field.
+		//However, if this is a network share, it's OK for the path to start with \\, so we will add it back in later
 		String doublePathSeperator = File.separator + File.separator;
+		String cutPath = "";
+		if(newPath.startsWith(doublePathSeperator))
+		{
+			cutPath = doublePathSeperator;
+			newPath = path.substring(2,path.length());
+		}
 		while(newPath.contains(doublePathSeperator))
 		{
 			newPath = newPath.replace(doublePathSeperator, File.separator);
 		}
+		newPath = cutPath + newPath;
 		System.out.println("New path: " + newPath);
 		return newPath;
 	}
