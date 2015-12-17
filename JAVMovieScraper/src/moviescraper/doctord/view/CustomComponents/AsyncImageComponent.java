@@ -345,6 +345,7 @@ public class AsyncImageComponent extends JPanel implements ImageConsumer, MouseL
 	public void clear() {
 		this.thumb = null;
 		this.img = null;
+		this.resizedImage = null;
 		repaint();
 		
 	}
