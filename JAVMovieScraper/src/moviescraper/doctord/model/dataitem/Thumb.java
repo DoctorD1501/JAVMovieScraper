@@ -276,6 +276,7 @@ public class Thumb extends MovieDataItem {
 		this.setImage(ImageIO.read(file));
 		this.isImageModified = false;
 		loadedFromDisk = true;
+		thumbURL = file.toURI().toURL();
 	}
 
 	public URL getThumbURL() {

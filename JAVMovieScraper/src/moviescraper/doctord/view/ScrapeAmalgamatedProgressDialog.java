@@ -42,12 +42,12 @@ import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile.ScraperGroupName;
 import moviescraper.doctord.controller.siteparsingprofile.specific.Data18MovieParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.TheMovieDatabaseParsingProfile;
-import moviescraper.doctord.model.AsyncImageComponent;
 import moviescraper.doctord.model.Movie;
 import moviescraper.doctord.model.SearchResult;
 import moviescraper.doctord.model.dataitem.DataItemSource;
 import moviescraper.doctord.model.dataitem.Thumb;
 import moviescraper.doctord.model.preferences.MoviescraperPreferences;
+import moviescraper.doctord.view.CustomComponents.AsyncImageComponent;
 
 public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable{
 	
@@ -412,7 +412,7 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
 			for(int i = 0; i < thumbArray.length; i++)
 			{
 				
-				thumbPanels[i] = new AsyncImageComponent(thumbArray[i],false, thumbPanels, doAutoSelect, isForPoster);
+				thumbPanels[i] = new AsyncImageComponent(thumbArray[i],false, thumbPanels, doAutoSelect, isForPoster, true);
 				thumbPane.add(thumbPanels[i]);
 			}
 			JScrollPane thumbScroller = new JScrollPane(thumbPane);
