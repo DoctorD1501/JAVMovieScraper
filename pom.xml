@@ -8,15 +8,9 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>all</name>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>JAVMovieScraper</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+    <prerequisites>
+        <maven>3.1.1</maven>
+    </prerequisites>
 
     <modules>
         <module>JAVMovieScraper</module>
