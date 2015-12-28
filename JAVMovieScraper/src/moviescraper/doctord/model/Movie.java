@@ -934,6 +934,7 @@ public class Movie {
 			//for now just set the movie to the first thing found unless we found a link which had something close to the ID
 			SearchResult searchResultToUse = searchResults[searchResultNumberToUse];
 			Document searchMatch = SiteParsingProfile.downloadDocument(searchResultToUse);
+			siteToParseFrom.downloadDocument(searchResultToUse);
 			siteToParseFrom.setDocument(searchMatch);
 			siteToParseFrom.setOverrideURLDMM(urlToScrapeFromDMM);
 			if(scrapeMovieAction != null)

@@ -8,14 +8,11 @@ import java.util.ArrayList;
 
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.TokyoHotParsingProfile;
-import moviescraper.doctord.model.dataitem.Actor;
-import moviescraper.doctord.model.dataitem.Plot;
-import moviescraper.doctord.model.dataitem.ReleaseDate;
-import moviescraper.doctord.model.dataitem.Thumb;
-import moviescraper.doctord.model.dataitem.Title;
-import moviescraper.doctord.model.dataitem.Year;
+import moviescraper.doctord.model.dataitem.*;
 
 import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -45,7 +42,7 @@ public class TokyoHotParsingProfileTest {
 	@Test
 	public void testFindGoogleLink() {
 		String searchString = parser.createSearchString(file);		
-		assertEquals("Found no Link", searchString, "http://cdn.www.tokyo-hot.com/e/n0754_iori_tsukimoto_eq_e.html");
+		assertEquals("Found no Link", searchString, "http://my.tokyo-hot.com/product/20876/");
 	}
 	
 	@Test
@@ -80,30 +77,25 @@ public class TokyoHotParsingProfileTest {
 	@Test
 	public void testRuntime() {
 		moviescraper.doctord.model.dataitem.Runtime runTime = profile.scrapeRuntime();
-		
-		assertEquals("Wrong Runtime", "95", runTime.getRuntime());
+		assertEquals("Wrong Runtime", "01:35:24", runTime.getRuntime());
 	}
 	
 	@Test
 	public void testPlot() {
 		Plot scrapePlot = profile.scrapePlot();
-		
 		assertTrue("Found wrong Plot", scrapePlot.getPlot().startsWith("It is the plump body"));
 	}
 	
 	@Test
 	public void testFanart() throws IOException {
 		Thumb[] scrapeFanart = profile.scrapeFanart();
-		assertTrue("There should only be 1 fanart", scrapeFanart.length == 1);
-		TestingHelper.showImage("Test Fanart", scrapeFanart[0].getThumbImage());
+		assertTrue("There should only be 1 fanart", scrapeFanart.length == 0);
 	}
 	
 	@Test
 	public void testPoster() throws IOException {
 		Thumb[] scrapePosters = profile.scrapePosters();
 		assertTrue("There should only be 1 fanart", scrapePosters.length == 1);
-		TestingHelper.showImage("Test Fanart", scrapePosters[0].getThumbImage());
+		//TestingHelper.showImage("Test Fanart", scrapePosters[0].getThumbImage());
 	}
-	
-
 }

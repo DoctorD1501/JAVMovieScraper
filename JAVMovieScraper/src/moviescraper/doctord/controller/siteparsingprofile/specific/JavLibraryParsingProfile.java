@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import org.apache.commons.codec.DecoderException;
@@ -43,6 +44,7 @@ import moviescraper.doctord.model.dataitem.Votes;
 import moviescraper.doctord.model.dataitem.Year;
 
 public class JavLibraryParsingProfile extends SiteParsingProfile implements SpecificProfile {
+	private Logger log = Logger.getLogger(JavLibraryParsingProfile.class.getName());
 
 	private String siteLanguageToScrape;
 	

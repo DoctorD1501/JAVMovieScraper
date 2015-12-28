@@ -23,6 +23,7 @@ import javax.swing.ImageIcon;
 import org.apache.commons.io.FilenameUtils;
 import org.imgscalr.Scalr;
 import org.imgscalr.Scalr.Method;
+import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -474,24 +475,37 @@ public abstract class SiteParsingProfile implements DataItemSource{
 		isDisabled = value;
 	}
 
-
-
 	public static Document downloadDocumentFromURLString(String url) {
 		try {
-			return Jsoup.connect(url).userAgent("Mozilla").ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).get();
+			String agent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.106 Safari/537.36";
+			String enUrl = "http://my.tokyo-hot.com/product/6185/?lang=en";
+			Connection.Response response =  Jsoup.connect(enUrl)
+					.userAgent(agent)
+					.ignoreHttpErrors(true)
+					.header("Accept-Language", "en-US,en")
+					.header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*")
+					.execute();
+
+			return Jsoup.connect(url)
+					.userAgent(agent)
+					.ignoreHttpErrors(true)
+					.header("Accept-Language", "en-US,en;q=0.8")
+					.cookies(response.cookies())
+					.timeout(CONNECTION_TIMEOUT_VALUE)
+					.get();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
 
-
-
 	public static Document downloadDocument(SearchResult searchResult){
 		try {
 			if(searchResult.isJSONSearchResult())
 				return SiteParsingProfileJSON.getDocument(searchResult.getUrlPath());
-			else return Jsoup.connect(searchResult.getUrlPath()).userAgent("Mozilla").ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).get();
+			else {
+				return downloadDocumentFromURLString(searchResult.getUrlPath());
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -507,7 +521,7 @@ public abstract class SiteParsingProfile implements DataItemSource{
 		{
 			String profileName = this.getClass().getSimpleName();
 			String siteName = profileName.replace("ParsingProfile", "");
-			return initializeResourceIcon("/res/sites/" + siteName + ".png",16,16);
+			return initializeResourceIcon("/src/res/sites/" + siteName + ".png",16,16);
 		}
 	}
 	

@@ -10,7 +10,10 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import moviescraper.doctord.model.dataitem.*;
+import moviescraper.doctord.model.dataitem.Runtime;
 import org.apache.commons.io.FilenameUtils;
+import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -18,36 +21,15 @@ import org.jsoup.select.Elements;
 
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.model.SearchResult;
-import moviescraper.doctord.model.dataitem.Actor;
-import moviescraper.doctord.model.dataitem.Director;
-import moviescraper.doctord.model.dataitem.Genre;
-import moviescraper.doctord.model.dataitem.ID;
-import moviescraper.doctord.model.dataitem.MPAARating;
-import moviescraper.doctord.model.dataitem.OriginalTitle;
-import moviescraper.doctord.model.dataitem.Outline;
-import moviescraper.doctord.model.dataitem.Plot;
-import moviescraper.doctord.model.dataitem.Rating;
-import moviescraper.doctord.model.dataitem.ReleaseDate;
-import moviescraper.doctord.model.dataitem.Runtime;
-import moviescraper.doctord.model.dataitem.Set;
-import moviescraper.doctord.model.dataitem.SortTitle;
-import moviescraper.doctord.model.dataitem.Studio;
-import moviescraper.doctord.model.dataitem.Tagline;
-import moviescraper.doctord.model.dataitem.Thumb;
-import moviescraper.doctord.model.dataitem.Title;
-import moviescraper.doctord.model.dataitem.Top250;
-import moviescraper.doctord.model.dataitem.Votes;
-import moviescraper.doctord.model.dataitem.Year;
 
 public class TokyoHotParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
 	private String searchString;
 	private Document docSite;
-	private Document docImage;
 	private String siteLink;
 	private String imageLink;
 	private String id;
-	private static final SimpleDateFormat tokyoHotReleaseDateFormat = new SimpleDateFormat("dd-MMM-yyyy hh:mm", Locale.ENGLISH);
+	private static final SimpleDateFormat tokyoHotReleaseDateFormat = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
 
 	public TokyoHotParsingProfile() {
 	}
@@ -56,14 +38,21 @@ public class TokyoHotParsingProfile extends SiteParsingProfile implements Specif
 	public void setDocument(Document document) {
 		super.setDocument(document);
 		docSite = document;
-		docImage = SiteParsingProfile.downloadDocumentFromURLString(imageLink);
+
+		// get image link from document
+		Elements elements = document.select("video");
+		if (elements.size() > 0) {
+			imageLink = elements.first().attr("poster");
+		}
+
+		//docImage = SiteParsingProfile.downloadDocumentFromURLString(imageLink);
 	}
 	
 	@Override
 	public Title scrapeTitle() {
-		Elements elements = docSite.select("div font[size=2]");
-		if ( elements.size() > 2 )
-			return new Title( elements.get(0).ownText().replace("&quot;", "").replace("\"", "") );
+		Elements elements = docSite.select(".pagetitle h2");
+		if ( elements.size() > 0 )
+			return new Title( elements.first().text() );
 		return null;
 	}
 
@@ -96,21 +85,18 @@ public class TokyoHotParsingProfile extends SiteParsingProfile implements Specif
 	public ReleaseDate scrapeReleaseDate()
 	{
 		ReleaseDate releaseDate = ReleaseDate.BLANK_RELEASEDATE;
-		Elements releaseDateElements = docImage.select("td[align=right]");
-		for(Element currentElement : releaseDateElements)
-		{
-			if (releaseDateElements.size() > 2) {
-				Pattern pattern = Pattern.compile("[0-9]{4}");
-				String timecode = currentElement.ownText();
-				Matcher matcher = pattern.matcher(timecode);
-				if (matcher.find()) {
-					// the last element we find seems to be the most accurate
-					// date, but I'm not 100% sure what each of these dates
-					// represents
-					// since they seem to vary by a few days usually
-					releaseDate = new ReleaseDate(timecode,
-							tokyoHotReleaseDateFormat);
-				}
+		Elements releaseDateElements = document.select(".info dd");
+		if (releaseDateElements.size() >= 4) {
+			Pattern pattern = Pattern.compile("[0-9]{4}");
+			String timecode = releaseDateElements.get(3).text();
+			Matcher matcher = pattern.matcher(timecode);
+			if (matcher.find()) {
+				// the last element we find seems to be the most accurate
+				// date, but I'm not 100% sure what each of these dates
+				// represents
+				// since they seem to vary by a few days usually
+				releaseDate = new ReleaseDate(timecode,
+						tokyoHotReleaseDateFormat);
 			}
 		}
 		return releaseDate;
@@ -133,9 +119,9 @@ public class TokyoHotParsingProfile extends SiteParsingProfile implements Specif
 
 	@Override
 	public Plot scrapePlot() {
-		Elements elements = docSite.select("tr td[align=left]");
+		Elements elements = docSite.select("div.sentence");
 		if (elements.size() > 0) {
-			String ownText = elements.get(0).childNode(0).childNode(0).toString().trim();
+			String ownText = elements.first().text();
 			return new Plot(ownText);
 		}
 		return Plot.BLANK_PLOT;
@@ -148,21 +134,13 @@ public class TokyoHotParsingProfile extends SiteParsingProfile implements Specif
 
 	@Override
 	public Runtime scrapeRuntime() {
-		Elements elements = docSite.select("td[align=center] font strong");
-		Pattern timePattern = Pattern.compile("[0-9]{2,3} min");
-		Pattern minPattern = Pattern.compile("[0-9]{2,3}");
+		Elements elements = document.select(".info dd");
 		String time = "";
-		for (Element element : elements) {
-			String node = element.childNode(0).toString();
-			Matcher matcher = timePattern.matcher(node);
-			if (matcher.find()) {
-				time = matcher.group();
-				Matcher minMatcher = minPattern.matcher(time);
-				if ( minMatcher.find() ) {
-					time = minMatcher.group();
-				}
-			}
+
+		if (elements.size() >= 5) {
+			time = elements.get(4).text();
 		}
+
 		return new Runtime(time);
 	}
 
@@ -170,7 +148,7 @@ public class TokyoHotParsingProfile extends SiteParsingProfile implements Specif
 	public Thumb[] scrapePosters() {
 		try {
 			Thumb[] thumbs = new Thumb[1];
-			thumbs[0] = new Thumb(getImageLink(searchString) + "_v.jpg");
+			thumbs[0] = new Thumb(imageLink);
 			return thumbs;
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
@@ -181,14 +159,6 @@ public class TokyoHotParsingProfile extends SiteParsingProfile implements Specif
 
 	@Override
 	public Thumb[] scrapeFanart() {
-		try {
-			Thumb[] thumbs = new Thumb[1];
-			thumbs[0] = new Thumb(getImageLink(searchString) + "_vb.jpg", getImageLink(searchString) + "_v.jpg");
-			return thumbs;
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		return new Thumb[0];
 	}
 
@@ -220,9 +190,13 @@ public class TokyoHotParsingProfile extends SiteParsingProfile implements Specif
 	@Override
 	public ArrayList<Actor> scrapeActors() {
 		ArrayList<Actor> list = new ArrayList<>();
-		Elements elements = docSite.select("div font[size=2]");
-		if ( elements.size() > 2 )
-			list.add( new Actor(elements.get(1).childNode(0).toString(), null, null) );
+		Elements elements = docSite.select(".info dd");
+		if ( elements.size() > 2 ) {
+			Elements actors = elements.get(0).select("a");
+			for (Element element : actors) {
+				list.add(new Actor(element.text(), null, null));
+			}
+		}
 		return list;
 	}
 
@@ -240,30 +214,53 @@ public class TokyoHotParsingProfile extends SiteParsingProfile implements Specif
 	}
 
 	@Override
+	public ArrayList<Tag> scrapeTags() {
+		ArrayList<Tag> tags = new ArrayList<>();
+		ArrayList<Actor> list = new ArrayList<>();
+		Elements elements = docSite.select(".info dd");
+		if ( elements.size() >= 3 ) {
+			Elements children = elements.get(2).children();
+			for (Element element : children) {
+				tags.add(new Tag(element.text()));
+			}
+		}
+
+		return tags;
+	}
+
+	@Override
 	public String createSearchString(File file) {
 		scrapedMovieFile = file;
 		String fileID = findIDTagFromFile(file).toLowerCase();
-		
+
+		searchString = fileID;
 		if ( fileID != null ) {
 			try {
-				Document doc = Jsoup.connect("http://cdn.www.tokyo-hot.com/igs/").userAgent("Mozilla").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
-				Elements select = doc.select("tr td a");
+				String url = "http://cdn.www.tokyo-hot.com/igs/";
+				url = "http://my.tokyo-hot.com/product/?q=" + fileID;
+				Connection connection = Jsoup.connect(url)
+						.userAgent("Mozilla")
+						.ignoreHttpErrors(true)
+						.header("Accept-Language", "en-US")
+						.cookie("sessionid", "odc30090rhn0ans7x9cqnx5pbtz8qe5q")
+						.timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE);
+
+				Document doc = connection.get();
+				System.out.println(doc.toString());
+				Elements select = doc.select("ul li a.rm");
 				String foundLink = null;
 				for (Element element : select) {
-					String link = element.attr("href");
-					if ( link.startsWith( fileID ) ) {
-						foundLink = link;
-						break;
-					}
+					siteLink = element.attr("href");
+					break;
 				}
-				if ( foundLink == null ) {
+
+				if ( siteLink == null ) {
 					System.out.println("Found no Link for TokyoHot");
 					return null;
 				}
-				id = foundLink.replace("/", "");
-				imageLink = getImageLink(id);
-				siteLink = getSiteLink(id);
-				
+
+				id = siteLink.replace("/product/", "").replace("/", "");
+				siteLink = "http://my.tokyo-hot.com" + siteLink;
 				return siteLink;
 						
 			} catch (Exception e) {
@@ -295,15 +292,6 @@ public class TokyoHotParsingProfile extends SiteParsingProfile implements Specif
 			return searchString;
 		}
 		return null;
-	}
-
-	private String getImageLink(String searchString) {
-		return "http://cdn.www.tokyo-hot.com/igs/" + searchString + "/";
-	}
-	
-	private String getSiteLink(String searchString) {
-		this.searchString = searchString;
-		return "http://cdn.www.tokyo-hot.com/e/" + searchString + "_e.html";
 	}
 
 	@Override
