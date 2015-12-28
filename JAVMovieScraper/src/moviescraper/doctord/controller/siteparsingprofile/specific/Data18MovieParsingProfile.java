@@ -234,7 +234,7 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 			Thumb[] posterThumbs = new Thumb[1];
 			try {
 				posterThumbs[0] = new Thumb(fixIPAddressOfData18(posterElement.attr("href")));
-				return ArrayUtils.addAll(scrapedExtraFanart,  posterThumbs);
+				return (Thumb[]) ArrayUtils.addAll(scrapedExtraFanart,  posterThumbs);
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
 				if(scrapedExtraFanart != null)

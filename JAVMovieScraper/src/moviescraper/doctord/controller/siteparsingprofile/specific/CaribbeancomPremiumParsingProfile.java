@@ -248,7 +248,7 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 					Thumb [] additionalPosterThumbs;
 					fanartThumbs[0] = fanartThumb;
 					additionalPosterThumbs = (scrapedPosters == null) ? scrapePosters() : scrapedPosters;
-					Thumb[] allCombinedFanart = ArrayUtils.addAll(fanartThumbs, additionalPosterThumbs);
+					Thumb[] allCombinedFanart = (Thumb[]) ArrayUtils.addAll(fanartThumbs, additionalPosterThumbs);
 					return allCombinedFanart;
 				} catch (MalformedURLException e) {
 					e.printStackTrace();

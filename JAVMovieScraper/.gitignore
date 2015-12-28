@@ -2,3 +2,6 @@
 /ToDO.txt
 /settings.xml
 /AmalgamationSettings.json
+.idea
+*.iml
+settings.xml

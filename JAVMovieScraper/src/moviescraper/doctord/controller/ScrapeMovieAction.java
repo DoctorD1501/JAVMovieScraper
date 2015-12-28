@@ -447,7 +447,7 @@ public class ScrapeMovieAction extends AbstractAction {
 					// duplication between fanart and extrafanart in
 					// this case
 					Thumb fanartPicked = showArtPicker(
-							ArrayUtils.addAll(javMovie.getFanart(),
+							(Thumb[]) ArrayUtils.addAll(javMovie.getFanart(),
 									javMovie.getExtraFanart()),
 							"Pick Fanart");
 					if (fanartPicked != null)

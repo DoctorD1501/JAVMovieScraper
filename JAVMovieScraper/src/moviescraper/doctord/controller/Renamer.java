@@ -7,7 +7,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.model.Movie;
@@ -15,6 +14,7 @@ import moviescraper.doctord.model.dataitem.Actor;
 import moviescraper.doctord.model.dataitem.Genre;
 import moviescraper.doctord.model.dataitem.Title;
 import moviescraper.doctord.model.preferences.MoviescraperPreferences;
+import org.apache.commons.lang3.StringUtils;
 
 public class Renamer {
 
