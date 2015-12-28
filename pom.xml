@@ -17,4 +17,8 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <modules>
+        <module>JAVMovieScraper</module>
+    </modules>
 </project>
