@@ -110,7 +110,7 @@ public class R18ParsingProfileTest {
 	public void testExtraFanart() throws IOException
 	{
 		Thumb  [] extraFanart = profile.scrapeExtraFanart();
-		assertTrue("There should be 1 Fanart.", extraFanart.length == 1);
+		assertTrue("There should be more than 1 Fanart.", extraFanart.length > 1);
 	}
 	
 	@Test
