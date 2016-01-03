@@ -144,8 +144,6 @@ public class TheMovieDatabaseParsingProfileTest {
 	public void testPoster() throws IOException {
 		Thumb[] poster = profile.scrapePosters();
 		assertTrue("There should be 1 Poster or more.", poster.length > 1);
-		
-		TestingHelper.showImage("Poster", poster[0].getThumbImage());
 	}
 	
 

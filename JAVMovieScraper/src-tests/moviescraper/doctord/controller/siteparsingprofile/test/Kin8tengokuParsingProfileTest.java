@@ -1,23 +1,18 @@
 package moviescraper.doctord.controller.siteparsingprofile.test;
 
-import static org.junit.Assert.*;
+import moviescraper.doctord.controller.siteparsingprofile.specific.Kin8tengokuParsingProfile;
+import moviescraper.doctord.model.dataitem.*;
+import moviescraper.doctord.model.dataitem.Runtime;
+import org.jsoup.nodes.Document;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
-import moviescraper.doctord.controller.siteparsingprofile.specific.Kin8tengokuParsingProfile;
-import moviescraper.doctord.model.dataitem.Actor;
-import moviescraper.doctord.model.dataitem.Genre;
-import moviescraper.doctord.model.dataitem.ReleaseDate;
-import moviescraper.doctord.model.dataitem.Runtime;
-import moviescraper.doctord.model.dataitem.Thumb;
-import moviescraper.doctord.model.dataitem.Year;
-
-import org.jsoup.nodes.Document;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class Kin8tengokuParsingProfileTest {
 
@@ -82,8 +77,6 @@ public class Kin8tengokuParsingProfileTest {
 	public void testFanart() throws IOException {
 		Thumb[] fanart = profile.scrapeFanart();
 		assertTrue("There should be 1 Fanart.", fanart.length == 1);
-		
-		TestingHelper.showImage("Fanart", fanart[0].getThumbImage());
 	}
 
 }

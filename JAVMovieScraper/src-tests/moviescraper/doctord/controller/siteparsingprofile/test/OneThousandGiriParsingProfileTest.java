@@ -115,6 +115,5 @@ public class OneThousandGiriParsingProfileTest {
 	public void testPoster() throws IOException {
 		Thumb[] posters = englishProfile.scrapePosters();
 		assertTrue("There should be 1 poster.", posters.length == 1);
-		TestingHelper.showImage("Fanart", posters[0].getThumbImage());
 	}
 }

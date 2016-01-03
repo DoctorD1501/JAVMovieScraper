@@ -1,28 +1,19 @@
 package moviescraper.doctord.controller.siteparsingprofile.test;
 
-import static org.junit.Assert.*;
+import moviescraper.doctord.controller.siteparsingprofile.specific.AvEntertainmentParsingProfile;
+import moviescraper.doctord.model.SearchResult;
+import moviescraper.doctord.model.dataitem.*;
+import moviescraper.doctord.model.dataitem.Runtime;
+import org.jsoup.nodes.Document;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
-import moviescraper.doctord.controller.siteparsingprofile.specific.AvEntertainmentParsingProfile;
-import moviescraper.doctord.model.SearchResult;
-import moviescraper.doctord.model.dataitem.Actor;
-import moviescraper.doctord.model.dataitem.Genre;
-import moviescraper.doctord.model.dataitem.Plot;
-import moviescraper.doctord.model.dataitem.ReleaseDate;
-import moviescraper.doctord.model.dataitem.Runtime;
-import moviescraper.doctord.model.dataitem.Set;
-import moviescraper.doctord.model.dataitem.Studio;
-import moviescraper.doctord.model.dataitem.Thumb;
-import moviescraper.doctord.model.dataitem.Title;
-import moviescraper.doctord.model.dataitem.Year;
-
-import org.jsoup.nodes.Document;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class AvEntertainmentParsingProfileTest {
 
@@ -97,7 +88,6 @@ public class AvEntertainmentParsingProfileTest {
 		Thumb[] posters = profile.scrapePosters();
 		assertTrue("Wrong count of posters", posters.length == 1);
 		assertEquals("Wrong poster", "http://imgs.aventertainments.com/new/bigcover/dvd1pt-154.jpg", posters[0].getThumbURL().toString());
-		TestingHelper.showImage("posters", posters[0].getThumbImage());
 	}
 	
 	@Test
@@ -106,7 +96,6 @@ public class AvEntertainmentParsingProfileTest {
 		assertTrue("There should be 1 Fanart.", fanart.length == 1);
 		
 		assertEquals("Wrong Fanart", "http://imgs.aventertainments.com/new/bigcover/dvd1pt-154.jpg", fanart[0].getThumbURL().toString());
-		TestingHelper.showImage("Fanart", fanart[0].getThumbImage());
 	}
 	
 	@Test
