@@ -31,9 +31,10 @@ public class AvEntertainmentParsingProfileTest {
 
 	@BeforeClass
 	public static void initialize() {
-		String url = "http://www.aventertainments.com/product_lists.aspx?product_id=81366&languageID=1&dept_id=29";
-		Document document = SiteParsingProfile.downloadDocumentFromURLString(url);
 		profile = new AvEntertainmentParsingProfile();
+
+		String url = "http://www.aventertainments.com/product_lists.aspx?product_id=81366&languageID=1&dept_id=29";
+		Document document = profile.downloadDocumentFromURLString(url);
 		profile.setDocument(document);
 	}
 	

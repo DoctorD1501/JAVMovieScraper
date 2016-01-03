@@ -1,15 +1,11 @@
 package moviescraper.doctord.controller.siteparsingprofile.specific;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-
+import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
+import moviescraper.doctord.model.Movie;
+import moviescraper.doctord.model.SearchResult;
+import moviescraper.doctord.model.dataitem.*;
+import moviescraper.doctord.model.dataitem.Runtime;
+import moviescraper.doctord.model.dataitem.Set;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.io.FilenameUtils;
@@ -18,29 +14,11 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
-import moviescraper.doctord.model.Movie;
-import moviescraper.doctord.model.SearchResult;
-import moviescraper.doctord.model.dataitem.Actor;
-import moviescraper.doctord.model.dataitem.Director;
-import moviescraper.doctord.model.dataitem.Genre;
-import moviescraper.doctord.model.dataitem.ID;
-import moviescraper.doctord.model.dataitem.MPAARating;
-import moviescraper.doctord.model.dataitem.OriginalTitle;
-import moviescraper.doctord.model.dataitem.Outline;
-import moviescraper.doctord.model.dataitem.Plot;
-import moviescraper.doctord.model.dataitem.Rating;
-import moviescraper.doctord.model.dataitem.ReleaseDate;
-import moviescraper.doctord.model.dataitem.Runtime;
-import moviescraper.doctord.model.dataitem.Set;
-import moviescraper.doctord.model.dataitem.SortTitle;
-import moviescraper.doctord.model.dataitem.Studio;
-import moviescraper.doctord.model.dataitem.Tagline;
-import moviescraper.doctord.model.dataitem.Thumb;
-import moviescraper.doctord.model.dataitem.Title;
-import moviescraper.doctord.model.dataitem.Top250;
-import moviescraper.doctord.model.dataitem.Votes;
-import moviescraper.doctord.model.dataitem.Year;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements SpecificProfile {
 	
@@ -395,11 +373,11 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 			SearchResult[] directResultArray = {result};
 			return directResultArray;
 		}
-		Elements foundMovies = doc.select("table[width=690]:contains(Wish List) tr tbody:has(img)");
+		Elements foundMovies = doc.select("table table table table td a:has(img)");
 		LinkedList<SearchResult> searchList = new LinkedList<SearchResult>();
 		
 		for(Element movie: foundMovies){
-			String urlPath = movie.select("a").first().attr("href");
+			String urlPath = movie.attr("href");
 			String thumb = movie.select("img").first().attr("src");
 			String label = movie.select("img").first().attr("alt");
 			SearchResult searchResult = new SearchResult(urlPath, label, new Thumb(thumb));

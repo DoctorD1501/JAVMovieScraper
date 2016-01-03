@@ -1,5 +1,24 @@
 package moviescraper.doctord.model;
 
+import moviescraper.doctord.controller.FileDownloaderUtilities;
+import moviescraper.doctord.controller.ScrapeMovieAction;
+import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
+import moviescraper.doctord.controller.siteparsingprofile.specific.*;
+import moviescraper.doctord.controller.xmlserialization.XbmcXmlMovieBean;
+import moviescraper.doctord.model.dataitem.*;
+import moviescraper.doctord.model.dataitem.Runtime;
+import moviescraper.doctord.model.preferences.MoviescraperPreferences;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.jsoup.nodes.Document;
+
+import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.FileImageOutputStream;
 import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,31 +32,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-
-import javax.imageio.IIOImage;
-import javax.imageio.ImageIO;
-import javax.imageio.ImageWriteParam;
-import javax.imageio.ImageWriter;
-import javax.imageio.stream.FileImageOutputStream;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.jsoup.nodes.Document;
-
-import moviescraper.doctord.controller.FileDownloaderUtilities;
-import moviescraper.doctord.controller.ScrapeMovieAction;
-import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
-import moviescraper.doctord.controller.siteparsingprofile.specific.Data18MovieParsingProfile;
-import moviescraper.doctord.controller.siteparsingprofile.specific.Data18WebContentParsingProfile;
-import moviescraper.doctord.controller.siteparsingprofile.specific.DmmParsingProfile;
-import moviescraper.doctord.controller.siteparsingprofile.specific.IAFDParsingProfile;
-import moviescraper.doctord.controller.siteparsingprofile.specific.JavLibraryParsingProfile;
-import moviescraper.doctord.controller.xmlserialization.XbmcXmlMovieBean;
-import moviescraper.doctord.model.dataitem.*;
-import moviescraper.doctord.model.dataitem.Runtime;
-import moviescraper.doctord.model.preferences.MoviescraperPreferences;
 
 public class Movie {
 
@@ -933,7 +927,7 @@ public class Movie {
 			System.out.println("Scraping this webpage for movie: " + searchResults[searchResultNumberToUse].getUrlPath());
 			//for now just set the movie to the first thing found unless we found a link which had something close to the ID
 			SearchResult searchResultToUse = searchResults[searchResultNumberToUse];
-			Document searchMatch = SiteParsingProfile.downloadDocument(searchResultToUse);
+			Document searchMatch = siteToParseFrom.downloadDocument(searchResultToUse);
 			siteToParseFrom.downloadDocument(searchResultToUse);
 			siteToParseFrom.setDocument(searchMatch);
 			siteToParseFrom.setOverrideURLDMM(urlToScrapeFromDMM);

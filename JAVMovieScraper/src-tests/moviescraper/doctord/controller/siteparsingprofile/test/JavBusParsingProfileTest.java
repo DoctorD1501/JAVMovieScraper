@@ -41,7 +41,7 @@ public class JavBusParsingProfileTest {
 		System.out.println("searchString = " + searchString);
 		try {
 			SearchResult[] searchResults = profile.getSearchResults(searchString);
-			Document document = SiteParsingProfile.downloadDocument(searchResults[0]);
+			Document document = profile.downloadDocument(searchResults[0]);
 			System.out.println("document set to " + document.baseUri());
 			profile.setDocument(document);
 		} catch (IOException e) {

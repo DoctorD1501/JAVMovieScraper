@@ -1,43 +1,32 @@
 package moviescraper.doctord.controller.siteparsingprofile.test;
 
-import static org.junit.Assert.assertEquals;
+import moviescraper.doctord.controller.siteparsingprofile.specific.CaribbeancomPremiumParsingProfile;
+import moviescraper.doctord.model.SearchResult;
+import moviescraper.doctord.model.dataitem.*;
+import org.jsoup.nodes.Document;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
-import moviescraper.doctord.controller.siteparsingprofile.specific.CaribbeancomPremiumParsingProfile;
-import moviescraper.doctord.model.SearchResult;
-import moviescraper.doctord.model.dataitem.Actor;
-import moviescraper.doctord.model.dataitem.Genre;
-import moviescraper.doctord.model.dataitem.OriginalTitle;
-import moviescraper.doctord.model.dataitem.Plot;
-import moviescraper.doctord.model.dataitem.Rating;
-import moviescraper.doctord.model.dataitem.ReleaseDate;
-import moviescraper.doctord.model.dataitem.Thumb;
-import moviescraper.doctord.model.dataitem.Title;
-import moviescraper.doctord.model.dataitem.Trailer;
-import moviescraper.doctord.model.dataitem.Year;
-
-import org.jsoup.nodes.Document;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 public class CaribbeancomPremiumParsingProfileTest {
 	
 	static File file = new File("C:/Temp/Caribbeancom Premium 062014_878.avi");
-	static CaribbeancomPremiumParsingProfile parser = new CaribbeancomPremiumParsingProfile();
+	static CaribbeancomPremiumParsingProfile profile = new CaribbeancomPremiumParsingProfile();
 	
 	
 	@BeforeClass
 	public static void initialize() {
-		parser = new CaribbeancomPremiumParsingProfile();
-		String searchString = parser.createSearchString(file);
+		profile = new CaribbeancomPremiumParsingProfile();
+		String searchString = profile.createSearchString(file);
 		try {
-			SearchResult[] searchResults = parser.getSearchResults(searchString);
-			Document document = SiteParsingProfile.downloadDocument(searchResults[0]);
-			parser.setDocument(document);
+			SearchResult[] searchResults = profile.getSearchResults(searchString);
+			Document document = profile.downloadDocument(searchResults[0]);
+			profile.setDocument(document);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -48,19 +37,19 @@ public class CaribbeancomPremiumParsingProfileTest {
 	@SuppressWarnings("static-access")
 	@Test
 	public void testFindID() {
-		String findIDTagFromFile = parser.findIDTagFromFile(file, false);
+		String findIDTagFromFile = profile.findIDTagFromFile(file, false);
 		assertEquals(findIDTagFromFile, "062014_878");
 	}
 	
 	@Test
 	public void testScrapeID(){
-		String id = parser.scrapeID().getId();
+		String id = profile.scrapeID().getId();
 		assertEquals("062014_878", id);
 	}
 	
 	@Test
 	public void testScrapeTitle() {
-		Title title = parser.scrapeTitle();
+		Title title = profile.scrapeTitle();
 		//this assumes translation is done. if this test fails, it could be because translation is not done or the web
 		//based translation service has changed how they do translation, so try to just see if the title is close to
 		//this one and adjust as needed to fix the test case
@@ -69,38 +58,38 @@ public class CaribbeancomPremiumParsingProfileTest {
 	
 	@Test
 	public void testScrapeOriginalTitle(){
-		OriginalTitle originalTitle = parser.scrapeOriginalTitle();
+		OriginalTitle originalTitle = profile.scrapeOriginalTitle();
 		assertEquals("Wrong original title", "グラマラス・ビーナスM −究極マゾBODY姦−", originalTitle.getOriginalTitle());
 	}
 	
 	@Test
 	public void testScrapeRating(){
-		Rating rating = parser.scrapeRating();
+		Rating rating = profile.scrapeRating();
 		assertEquals("Wrong rating", "", rating.getRatingOutOfTen());
 	}
 	
 	@Test
 	public void testScrapeYear(){
-		Year year = parser.scrapeYear();
+		Year year = profile.scrapeYear();
 		assertEquals("Wrong year", "2014", year.getYear());
 	}
 	
 	@Test
 	public void testScrapeReleaseDate()
 	{
-		ReleaseDate releaseDate = parser.scrapeReleaseDate();
+		ReleaseDate releaseDate = profile.scrapeReleaseDate();
 		assertEquals("Wrong release date", "2014-01-20", releaseDate.getReleaseDate());
 	}
 	
 	@Test
 	public void testScrapePlot(){
-		Plot plot = parser.scrapePlot();
+		Plot plot = profile.scrapePlot();
 		assertEquals("Didn't scrape something which is long and looks like a plot", true, plot.getPlot().length() > 35);
 	}
 	
 	@Test
 	public void testScrapeRuntime(){
-		moviescraper.doctord.model.dataitem.Runtime movieRuntime = parser.scrapeRuntime();
+		moviescraper.doctord.model.dataitem.Runtime movieRuntime = profile.scrapeRuntime();
 		assertEquals("Wrong runtime", "120", movieRuntime.getRuntime());
 	}
 	
@@ -108,25 +97,25 @@ public class CaribbeancomPremiumParsingProfileTest {
 	
 	@Test
 	public void testScrapeActors(){
-		ArrayList<Actor> actorList = parser.scrapeActors();
+		ArrayList<Actor> actorList = profile.scrapeActors();
 		assertEquals("Wrong actor", "Ichiki Miho", actorList.get(0).getName());
 	}
 	
 	@Test
 	public void testScrapeGenre(){
-		ArrayList<Genre> genreList = parser.scrapeGenres();
+		ArrayList<Genre> genreList = profile.scrapeGenres();
 		assertEquals("Wrong genre", "Pornstar", genreList.get(0).getGenre());
 	}
 	
 	@Test
 	public void testTrailer(){
-		Trailer trailer = parser.scrapeTrailer();
+		Trailer trailer = profile.scrapeTrailer();
 		assertEquals("Wrong trailer", "http://sample.caribbeancompr.com/moviepages/062014_878/sample/sample.mp4", trailer.getTrailer());
 	}
 	
 	@Test
 	public void testScrapePoster(){
-		Thumb[] posters = parser.scrapePosters();
+		Thumb[] posters = profile.scrapePosters();
 		assertEquals("Poster size not right", true, posters.length > 0);
 		assertEquals("Wrong poster url", "http://en.caribbeancompr.com/moviepages/062014_878/images/main_b.jpg", posters[0].getThumbURL().toString());
 	}

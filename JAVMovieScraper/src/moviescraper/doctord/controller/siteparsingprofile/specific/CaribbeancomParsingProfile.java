@@ -1,49 +1,26 @@
 package moviescraper.doctord.controller.siteparsingprofile.specific;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import moviescraper.doctord.controller.languagetranslation.Language;
+import moviescraper.doctord.controller.languagetranslation.TranslateString;
+import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
+import moviescraper.doctord.model.SearchResult;
+import moviescraper.doctord.model.dataitem.*;
+import moviescraper.doctord.model.dataitem.Runtime;
+import moviescraper.doctord.model.dataitem.Set;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.text.WordUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import moviescraper.doctord.controller.languagetranslation.Language;
-import moviescraper.doctord.controller.languagetranslation.TranslateString;
-import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
-import moviescraper.doctord.model.SearchResult;
-import moviescraper.doctord.model.dataitem.Actor;
-import moviescraper.doctord.model.dataitem.Director;
-import moviescraper.doctord.model.dataitem.Genre;
-import moviescraper.doctord.model.dataitem.ID;
-import moviescraper.doctord.model.dataitem.MPAARating;
-import moviescraper.doctord.model.dataitem.OriginalTitle;
-import moviescraper.doctord.model.dataitem.Outline;
-import moviescraper.doctord.model.dataitem.Plot;
-import moviescraper.doctord.model.dataitem.Rating;
-import moviescraper.doctord.model.dataitem.ReleaseDate;
-import moviescraper.doctord.model.dataitem.Runtime;
-import moviescraper.doctord.model.dataitem.Set;
-import moviescraper.doctord.model.dataitem.SortTitle;
-import moviescraper.doctord.model.dataitem.Studio;
-import moviescraper.doctord.model.dataitem.Tagline;
-import moviescraper.doctord.model.dataitem.Thumb;
-import moviescraper.doctord.model.dataitem.Title;
-import moviescraper.doctord.model.dataitem.Top250;
-import moviescraper.doctord.model.dataitem.Trailer;
-import moviescraper.doctord.model.dataitem.Votes;
-import moviescraper.doctord.model.dataitem.Year;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CaribbeancomParsingProfile extends SiteParsingProfile implements
 		SpecificProfile {
@@ -67,9 +44,10 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements
 		if(document != null && japaneseDocument == null)
 		{
 			String url = "http://www.caribbeancom.com/moviepages/" + id + "/index.html";
-			japaneseDocument = SiteParsingProfile.downloadDocumentFromURLString(url);
+			japaneseDocument = downloadDocumentFromURLString(url);
 		}
 	}
+
 	@Override
 	public Title scrapeTitle() {
 		Document documentToUse = document;
@@ -179,7 +157,7 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements
 	@Override
 	public Runtime scrapeRuntime() {
 		initializeJapaneseDocument();
-		Element durationElement = japaneseDocument.select("div.movie-info dl dt:contains(�?生時間:) ~ dd ").first();
+		Element durationElement = japaneseDocument.select("div.movie-info dl dt:contains(再生時間:) ~ dd ").first();
 		if(durationElement != null && durationElement.text().trim().length() > 0)
 		{
 			String [] durationSplitByTimeUnit = durationElement.text().split(":");

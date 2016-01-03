@@ -1,28 +1,18 @@
 package moviescraper.doctord.controller.siteparsingprofile.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import moviescraper.doctord.controller.siteparsingprofile.specific.R18ParsingProfile;
+import moviescraper.doctord.model.SearchResult;
+import moviescraper.doctord.model.dataitem.*;
+import org.jsoup.nodes.Document;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
-import moviescraper.doctord.controller.siteparsingprofile.specific.R18ParsingProfile;
-import moviescraper.doctord.model.SearchResult;
-import moviescraper.doctord.model.dataitem.Actor;
-import moviescraper.doctord.model.dataitem.Genre;
-import moviescraper.doctord.model.dataitem.ID;
-import moviescraper.doctord.model.dataitem.Plot;
-import moviescraper.doctord.model.dataitem.ReleaseDate;
-import moviescraper.doctord.model.dataitem.Set;
-import moviescraper.doctord.model.dataitem.Thumb;
-import moviescraper.doctord.model.dataitem.Title;
-import moviescraper.doctord.model.dataitem.Year;
-
-import org.jsoup.nodes.Document;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class R18ParsingProfileTest {
 	static boolean scrapeInEnglish = true;
@@ -38,7 +28,7 @@ public class R18ParsingProfileTest {
 		System.out.println("searchString = " + searchString);
 		try {
 			SearchResult[] searchResults = profile.getSearchResults(searchString);
-			Document document = SiteParsingProfile.downloadDocument(searchResults[0]);
+			Document document = profile.downloadDocument(searchResults[0]);
 			System.out.println("document set to " + document.baseUri());
 			profile.setDocument(document);
 		} catch (IOException e) {

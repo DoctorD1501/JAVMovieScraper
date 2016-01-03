@@ -1,33 +1,18 @@
 package moviescraper.doctord.controller.siteparsingprofile.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import moviescraper.doctord.controller.siteparsingprofile.specific.TheMovieDatabaseParsingProfile;
+import moviescraper.doctord.model.SearchResult;
+import moviescraper.doctord.model.dataitem.*;
+import org.jsoup.nodes.Document;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
-import moviescraper.doctord.controller.siteparsingprofile.specific.TheMovieDatabaseParsingProfile;
-import moviescraper.doctord.model.SearchResult;
-import moviescraper.doctord.model.dataitem.Director;
-import moviescraper.doctord.model.dataitem.Genre;
-import moviescraper.doctord.model.dataitem.ID;
-import moviescraper.doctord.model.dataitem.OriginalTitle;
-import moviescraper.doctord.model.dataitem.Plot;
-import moviescraper.doctord.model.dataitem.Rating;
-import moviescraper.doctord.model.dataitem.ReleaseDate;
-import moviescraper.doctord.model.dataitem.Set;
-import moviescraper.doctord.model.dataitem.Studio;
-import moviescraper.doctord.model.dataitem.Tagline;
-import moviescraper.doctord.model.dataitem.Thumb;
-import moviescraper.doctord.model.dataitem.Title;
-import moviescraper.doctord.model.dataitem.Votes;
-import moviescraper.doctord.model.dataitem.Year;
-
-import org.jsoup.nodes.Document;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class TheMovieDatabaseParsingProfileTest {
 	static File file = new File("C:/Temp/Pirates (2005).avi");
@@ -42,7 +27,7 @@ public class TheMovieDatabaseParsingProfileTest {
 		System.out.println("searchString = " + searchString);
 		try {
 			SearchResult[] searchResults = profile.getSearchResults(searchString);
-			Document document = SiteParsingProfile.downloadDocument(searchResults[0]);
+			Document document = profile.downloadDocument(searchResults[0]);
 			System.out.println("document set to " + document.baseUri());
 			profile.setDocument(document);
 		} catch (IOException e) {
@@ -114,7 +99,7 @@ public class TheMovieDatabaseParsingProfileTest {
 	public void testReleaseDate()
 	{
 		ReleaseDate releaseDate = profile.scrapeReleaseDate();
-		assertEquals("Found wrong release date ", "2005-01-01", releaseDate.getReleaseDate());
+		assertEquals("Found wrong release date ", "2005-09-26", releaseDate.getReleaseDate());
 	}
 	
 	@Test

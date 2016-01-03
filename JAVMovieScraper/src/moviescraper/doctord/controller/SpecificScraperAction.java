@@ -116,24 +116,24 @@ public class SpecificScraperAction {
 	
 	public Movie scrape(MoviescraperPreferences preferences) {
 		try {
-			for (SiteParsingProfile spp : sppList) {
+			for (SiteParsingProfile siteParsingProfile : sppList) {
 				if(preferences.getPromptForUserProvidedURLWhenScraping())
-					ScrapeMovieAction.setOverridenSearchResult(spp, toScrape.toString());
+					ScrapeMovieAction.setOverridenSearchResult(siteParsingProfile, toScrape.toString());
 				
 				SearchResult searchResultToUse = null;
-				if(spp.getOverridenSearchResult() != null)
+				if(siteParsingProfile.getOverridenSearchResult() != null)
 				{
-					searchResultToUse = spp.getOverridenSearchResult();
+					searchResultToUse = siteParsingProfile.getOverridenSearchResult();
 				}
 				else
 				{
-					String searchString = spp.createSearchString(toScrape);
-					SearchResult[] results = spp.getSearchResults(searchString);
+					String searchString = siteParsingProfile.createSearchString(toScrape);
+					SearchResult[] results = siteParsingProfile.getSearchResults(searchString);
 					String site = "Select Movie to Scrape From ";				
-					if ( spp instanceof SpecificProfile )
-						site += ((SpecificProfile) spp).getParserName();
+					if ( siteParsingProfile instanceof SpecificProfile )
+						site += ((SpecificProfile) siteParsingProfile).getParserName();
 					else
-						site += spp.getClass().getSimpleName();
+						site += siteParsingProfile.getClass().getSimpleName();
 					
 					if(results == null || results.length == 0)
 						return null;
@@ -156,8 +156,8 @@ public class SpecificScraperAction {
 				}
 
 				if (searchResultToUse != null) {
-					Document document = SiteParsingProfile.downloadDocument(searchResultToUse);
-					spp.setDocument(document);
+					Document document = siteParsingProfile.downloadDocument(searchResultToUse);
+					siteParsingProfile.setDocument(document);
 				}
 			}
 			Movie scrapedMovie = movieScraper.createMovie();

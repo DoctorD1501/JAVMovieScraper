@@ -126,7 +126,9 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
 		progressBar.setValue(0);
 	}
 	
-	public ScrapeAmalgamatedProgressDialog(GUIMain guiMain, AllAmalgamationOrderingPreferences allAmalgamationOrderingPreferences, ScraperGroupAmalgamationPreference scraperGroupAmalgamationPreference)
+	public ScrapeAmalgamatedProgressDialog(GUIMain guiMain,
+										   AllAmalgamationOrderingPreferences allAmalgamationOrderingPreferences,
+										   ScraperGroupAmalgamationPreference scraperGroupAmalgamationPreference)
 	{
 		super(guiMain.getFrmMoviescraper());
 		setTitle("Scraping...");

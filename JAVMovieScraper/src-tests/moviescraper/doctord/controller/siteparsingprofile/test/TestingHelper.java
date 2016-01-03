@@ -1,10 +1,7 @@
 package moviescraper.doctord.controller.siteparsingprofile.test;
 
-import java.awt.EventQueue;
-import java.awt.Image;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
+import javax.swing.*;
+import java.awt.*;
 
 public class TestingHelper {
 
@@ -19,7 +16,7 @@ public class TestingHelper {
 					jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 					jFrame.add( new JLabel(new ImageIcon(image)) );
 					jFrame.pack();
-					jFrame.setVisible(true);
+					//jFrame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

@@ -1,68 +1,38 @@
 package moviescraper.doctord.controller.siteparsingprofile;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.SocketTimeoutException;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-
+import moviescraper.doctord.controller.AbstractMovieScraper;
+import moviescraper.doctord.controller.GenericMovieScraper;
+import moviescraper.doctord.controller.languagetranslation.Language;
+import moviescraper.doctord.model.SearchResult;
+import moviescraper.doctord.model.dataitem.*;
+import moviescraper.doctord.model.dataitem.Set;
+import moviescraper.doctord.model.preferences.MoviescraperPreferences;
+import moviescraper.doctord.view.GUIMain;
 import org.apache.commons.io.FilenameUtils;
 import org.imgscalr.Scalr;
 import org.imgscalr.Scalr.Method;
-import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import moviescraper.doctord.controller.AbstractMovieScraper;
-import moviescraper.doctord.controller.GenericMovieScraper;
-import moviescraper.doctord.controller.languagetranslation.Language;
-import moviescraper.doctord.model.SearchResult;
-import moviescraper.doctord.model.dataitem.Actor;
-import moviescraper.doctord.model.dataitem.DataItemSource;
-import moviescraper.doctord.model.dataitem.Director;
-import moviescraper.doctord.model.dataitem.Genre;
-import moviescraper.doctord.model.dataitem.ID;
-import moviescraper.doctord.model.dataitem.MPAARating;
-import moviescraper.doctord.model.dataitem.OriginalTitle;
-import moviescraper.doctord.model.dataitem.Outline;
-import moviescraper.doctord.model.dataitem.Plot;
-import moviescraper.doctord.model.dataitem.Rating;
-import moviescraper.doctord.model.dataitem.ReleaseDate;
-import moviescraper.doctord.model.dataitem.Set;
-import moviescraper.doctord.model.dataitem.SortTitle;
-import moviescraper.doctord.model.dataitem.Studio;
-import moviescraper.doctord.model.dataitem.Tag;
-import moviescraper.doctord.model.dataitem.Tagline;
-import moviescraper.doctord.model.dataitem.Thumb;
-import moviescraper.doctord.model.dataitem.Title;
-import moviescraper.doctord.model.dataitem.Top250;
-import moviescraper.doctord.model.dataitem.Trailer;
-import moviescraper.doctord.model.dataitem.Votes;
-import moviescraper.doctord.model.dataitem.Year;
-import moviescraper.doctord.model.preferences.MoviescraperPreferences;
-import moviescraper.doctord.view.GUIMain;
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.net.*;
+import java.util.*;
+import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public abstract class SiteParsingProfile implements DataItemSource{
-	
+	private static Logger log = Logger.getLogger(SiteParsingProfile.class.getName());
+
 	/* Any group of SiteParsingProfiles which return the same type of information for a given file and which
-	 * will be compatible for amalgamation should return the same ScraperGroupName by implementing getScraperGroupName()
-	 */
+         * will be compatible for amalgamation should return the same ScraperGroupName by implementing getScraperGroupName()
+         */
 	public enum ScraperGroupName{
 		JAV_CENSORED_SCRAPER_GROUP {@Override
 		public String toString() {return "JAV Censored Group";}}, 
@@ -177,8 +147,12 @@ public abstract class SiteParsingProfile implements DataItemSource{
 	{
 		return overridenSearchResult;
 	}
-	
-	
+
+
+	public static String findIDTagFromFile(File file) {
+		return findIDTagFromFile(file, false);
+	}
+
 	/**
 	 * Gets the ID number from the file and considers stripped out multipart file identifiers like CD1, CD2, etc
 	 * The ID number needs to be the last word in the filename or the next to the last word in the file name if the file name
@@ -281,7 +255,7 @@ public abstract class SiteParsingProfile implements DataItemSource{
 	
 	public SearchResult [] getLinksFromGoogle(String searchQuery, String site)
 	{
-		//System.out.println("calling get links from google with searchQuery = " + searchQuery);
+		//log.info("calling get links from google with searchQuery = " + searchQuery);
 		Document doc;
 		ArrayList<SearchResult> linksToReturn = new ArrayList<SearchResult>();
 	    try{
@@ -298,7 +272,7 @@ public abstract class SiteParsingProfile implements DataItemSource{
 			}
 	        if ( captchaData.size() > 0 )
 	        {
-	        	System.out.println("Found Captchadata : " + captchaData);
+	        	log.info("Found Captchadata : " + captchaData);
 	        	return new SearchResult[0];
 	        }
 	        
@@ -337,7 +311,7 @@ public abstract class SiteParsingProfile implements DataItemSource{
 	    }
 	    catch(SocketTimeoutException e) {
 	    	// Non-existing DMM trailers usually time out
-	    	System.err.println("Connection timed out: " + URLName);
+	    	log.severe("Connection timed out: " + URLName);
 	    	return false;
 	    }
 	    catch (Exception e) {
@@ -475,31 +449,23 @@ public abstract class SiteParsingProfile implements DataItemSource{
 		isDisabled = value;
 	}
 
-	public static Document downloadDocumentFromURLString(String url) {
+	public Document downloadDocumentFromURLString(String url) {
 		try {
 			String agent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.106 Safari/537.36";
-			String enUrl = "http://my.tokyo-hot.com/product/6185/?lang=en";
-			Connection.Response response =  Jsoup.connect(enUrl)
-					.userAgent(agent)
-					.ignoreHttpErrors(true)
-					.header("Accept-Language", "en-US,en")
-					.header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*")
-					.execute();
-
+			log.info("Open URL: " + url);
 			return Jsoup.connect(url)
 					.userAgent(agent)
 					.ignoreHttpErrors(true)
-					.header("Accept-Language", "en-US,en;q=0.8")
-					.cookies(response.cookies())
 					.timeout(CONNECTION_TIMEOUT_VALUE)
 					.get();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
 		return null;
 	}
 
-	public static Document downloadDocument(SearchResult searchResult){
+	public Document downloadDocument(SearchResult searchResult){
 		try {
 			if(searchResult.isJSONSearchResult())
 				return SiteParsingProfileJSON.getDocument(searchResult.getUrlPath());
@@ -521,7 +487,7 @@ public abstract class SiteParsingProfile implements DataItemSource{
 		{
 			String profileName = this.getClass().getSimpleName();
 			String siteName = profileName.replace("ParsingProfile", "");
-			return initializeResourceIcon("/src/res/sites/" + siteName + ".png",16,16);
+			return initializeResourceIcon("/res/sites/" + siteName + ".png",16,16);
 		}
 	}
 	
@@ -545,8 +511,6 @@ public abstract class SiteParsingProfile implements DataItemSource{
 		}
 	}
 
-
-
 	public boolean getDiscardResults() {
 		return discardResults;
 	}
@@ -555,11 +519,5 @@ public abstract class SiteParsingProfile implements DataItemSource{
 	{
 		discardResults = value;
 	}
-
-
-
-
-	
-
 	
 }

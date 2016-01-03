@@ -28,7 +28,7 @@ public class Kin8tengokuParsingProfileTest {
 	public static void initialize() {
 		profile = new Kin8tengokuParsingProfile( );
 		String url = profile.createSearchString(file);
-		Document document = SiteParsingProfile.downloadDocumentFromURLString(url);
+		Document document = profile.downloadDocumentFromURLString(url);
 		profile.setDocument(document);
 	}
 	
