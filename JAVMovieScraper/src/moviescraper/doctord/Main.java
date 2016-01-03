@@ -30,7 +30,6 @@ import moviescraper.doctord.controller.siteparsingprofile.specific.MyTokyoHotPar
 import moviescraper.doctord.controller.siteparsingprofile.specific.OnePondoParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.OneThousandGiriParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.TheMovieDatabaseParsingProfile;
-import moviescraper.doctord.controller.siteparsingprofile.specific.TokyoHotParsingProfile;
 import moviescraper.doctord.model.Movie;
 import moviescraper.doctord.model.preferences.MoviescraperPreferences;
 import moviescraper.doctord.view.GUIMain;
