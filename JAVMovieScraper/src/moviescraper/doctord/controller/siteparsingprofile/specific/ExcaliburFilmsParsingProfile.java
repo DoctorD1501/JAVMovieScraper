@@ -395,7 +395,10 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 			SearchResult[] directResultArray = {result};
 			return directResultArray;
 		}
-		Elements foundMovies = doc.select("table[width=690]:contains(Wish List) tr tbody:has(img)");
+		//This selector in particular tends to break when they update their site. 
+		//Unfortunately, they don't use things like ids or classes much which makes it hard to get the right element without resorting to 
+		//hackery like width=600 stuff
+		Elements foundMovies = doc.select("table[width=600]:contains(Wish List) tr tbody:has(img)");
 		LinkedList<SearchResult> searchList = new LinkedList<SearchResult>();
 		
 		for(Element movie: foundMovies){
