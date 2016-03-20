@@ -29,8 +29,8 @@ public class ImageCache {
 					Image imageFromUrl = FileDownloaderUtilities.getImageFromUrl(url);
 					if(imageFromUrl != null)
 					{
-					cache.put(url, imageFromUrl);
-					return imageFromUrl;
+						cache.put(url, imageFromUrl);
+						return imageFromUrl;
 					}
 				}
 
@@ -58,6 +58,15 @@ public class ImageCache {
 	
 	public static void putImageInCache(URL url, Image image)
 	{
+		//300 is arbitrary for now, but at some point we gotta boot stuff from cache or we will run out memory
+		//Ideally, I would boot out old items first, but I would need a new data structure to do this, probably
+		//by using a library already written that handles all the cache stuff rather than just using a map like I'm doing
+		//in this class
+		if(cache.size() > 300)
+		{
+			System.out.println("Clearing cache - cache had " + cache.size() + " items before clearing.");
+			cache.clear();
+		}
 		cache.put(url, image);
 	}
 	
