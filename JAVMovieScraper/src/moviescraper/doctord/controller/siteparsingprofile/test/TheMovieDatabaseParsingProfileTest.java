@@ -114,7 +114,7 @@ public class TheMovieDatabaseParsingProfileTest {
 	public void testReleaseDate()
 	{
 		ReleaseDate releaseDate = profile.scrapeReleaseDate();
-		assertEquals("Found wrong release date ", "2005-01-01", releaseDate.getReleaseDate());
+		assertEquals("Found wrong release date ", "2005-09-26", releaseDate.getReleaseDate());
 	}
 	
 	@Test
