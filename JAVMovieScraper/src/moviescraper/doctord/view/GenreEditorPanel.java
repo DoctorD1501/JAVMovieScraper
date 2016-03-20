@@ -40,8 +40,8 @@ public class GenreEditorPanel extends JPanel implements ItemListener {
 	public GenreEditorPanel(final List<Genre> genreList){
 		super(new BorderLayout());
 		this.originalGenreList = genreList;
-		editedGenreList = (List<Genre>) UtilityFunctions.cloneObject(originalGenreList);
-	
+		editedGenreList = cloneOriginalGenreListDeepCopy();
+		
 		super.setMaximumSize(new Dimension(600,400));
 		final JPanel currentMovieGenresPanel = new JPanel(new ModifiedFlowLayout());
 		
@@ -139,6 +139,15 @@ public class GenreEditorPanel extends JPanel implements ItemListener {
 		
 	}
 	
+	private List<Genre> cloneOriginalGenreListDeepCopy() {
+		ArrayList<Genre> clonedList = new ArrayList<Genre>(originalGenreList.size());
+		for (Genre originalGenre : originalGenreList)
+		{
+			clonedList.add(new Genre(originalGenre.getGenre()));
+		}
+		return clonedList;
+	}
+
 	private void addGenreCheckBoxToPanel(JPanel panel, Genre genre, boolean initialStatus)
 	{
 		JCheckBox checkBoxOfGenre = new JCheckBox(genre.getGenre());
