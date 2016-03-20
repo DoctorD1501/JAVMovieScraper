@@ -41,6 +41,7 @@ import moviescraper.doctord.model.dataitem.Year;
 import moviescraper.doctord.model.preferences.MoviescraperPreferences;
 
 import org.apache.commons.codec.net.URLCodec;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
 import org.jsoup.Jsoup;
@@ -251,6 +252,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 				// an iframe that hosts the flash video player. Then scrape that iframe contents obtaining trailer information.
 				
 				String playerPath = buttonElement.attr("onclick").replaceFirst("^.*sampleplay\\('([^']+).*$", "$1");
+				playerPath = StringEscapeUtils.unescapeJava(playerPath);
 				URL playerURL = new URI(document.location()).resolve(playerPath).toURL();	
 				Document playerDocument = Jsoup.parse(playerURL, CONNECTION_TIMEOUT_VALUE);
 				URL iframeURL = new URL(playerDocument.select("iframe").first().attr("src"));
@@ -278,9 +280,8 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 			
 				System.err.println("I expected to find a trailer and did not at " + document.location());
 			}		
-		} catch (MalformedURLException | URISyntaxException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (Exception e)
+		{
 			e.printStackTrace();
 		}
 		
