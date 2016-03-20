@@ -301,7 +301,7 @@ public abstract class SiteParsingProfile implements DataItemSource{
 	        	return new SearchResult[0];
 	        }
 	        
-	        Elements links = doc.select("li[class=g]");
+	        Elements links = doc.select("div.g");
 	        for (Element link : links) {	            
 	            Elements hrefs = link.select("h3.r a");
 	            String href = hrefs.attr("href");
