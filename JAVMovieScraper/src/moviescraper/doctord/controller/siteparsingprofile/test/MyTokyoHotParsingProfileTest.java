@@ -61,7 +61,7 @@ public class MyTokyoHotParsingProfileTest {
 	@Test
 	public void testScrapeOriginalTitle(){
 		OriginalTitle originalTitle = parser.scrapeOriginalTitle();
-		assertEquals("Original Title Not Correct", "月本�?��?�り�?�熱水�?�膣射", originalTitle.getOriginalTitle());
+		assertEquals("Original Title Not Correct", "月本いおり東熱水着膣射", originalTitle.getOriginalTitle());
 	}
 	
 	@Test

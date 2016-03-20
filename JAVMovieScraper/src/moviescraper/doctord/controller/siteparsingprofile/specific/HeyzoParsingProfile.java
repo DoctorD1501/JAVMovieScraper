@@ -94,12 +94,18 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 
 	@Override
 	public Rating scrapeRating() {
-		Element ratingValueElement = japaneseDocument.select("span.dataInfo span[property=v:average]").first();
+		//This used to be scrapable, but this now requires javascript to parse the page to get the rating
+		//TODO: If I ever replace jsoup with a javascript enabled parser, rewrite this function
+		return Rating.BLANK_RATING;
+		/*this was the code that should work if I had javascript enabled parser*/
+		/*
+		Element ratingValueElement = japaneseDocument.select("#review-value").first();
 		if(ratingValueElement != null)
 		{
 			return new Rating(5.0, ratingValueElement.text().trim());
 		}
-		else return new Rating(0,"");
+		else return Rating.BLANK_RATING;
+		*/
 	}
 
 	@Override

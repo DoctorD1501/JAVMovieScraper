@@ -3,6 +3,7 @@ package moviescraper.doctord.controller.siteparsingprofile;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URL;
@@ -281,13 +282,12 @@ public abstract class SiteParsingProfile implements DataItemSource{
 	public SearchResult [] getLinksFromGoogle(String searchQuery, String site)
 	{
 		//System.out.println("calling get links from google with searchQuery = " + searchQuery);
-		Document doc;
 		ArrayList<SearchResult> linksToReturn = new ArrayList<SearchResult>();
 	    try{
 	    	String encodingScheme = "UTF-8";
 	    	String queryToEncode = "site:" + site + " " + searchQuery;
 	    	String encodedSearchQuery = URLEncoder.encode(queryToEncode, encodingScheme);
-	        doc = Jsoup.connect("https://www.google.com/search?q="+encodedSearchQuery).userAgent(getRandomUserAgent()).referrer("http://www.google.com").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
+	        Document doc = Jsoup.connect("https://www.google.com/search?q="+encodedSearchQuery).userAgent(getRandomUserAgent()).referrer("http://www.google.com").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
 	        Elements sorryLink = doc.select("form[action=CaptchaRedirect] input");
 	        Map<String, String> captchaData = new HashMap<>();
 	        for (Element element : sorryLink) {
@@ -298,7 +298,8 @@ public abstract class SiteParsingProfile implements DataItemSource{
 	        if ( captchaData.size() > 0 )
 	        {
 	        	System.out.println("Found Captchadata : " + captchaData);
-	        	return new SearchResult[0];
+	        	System.out.println("Google has temporarily blocked us. Trying on bing instead.");
+	        	return getLinksFromBing(searchQuery, site);
 	        }
 	        
 	        Elements links = doc.select("div.g");
@@ -314,12 +315,40 @@ public abstract class SiteParsingProfile implements DataItemSource{
 	            	href = href.substring(0, startIndexToRemove);
 	            linksToReturn.add(new SearchResult(href,hrefs.text()));
 	        }
+	        if (linksToReturn.size() == 0)
+	        {
+	        	//maybe we will have better luck with bing since we found nothing on google
+	        	return getLinksFromBing(encodedSearchQuery, site);
+	        }
 	        return linksToReturn.toArray(new SearchResult[linksToReturn.size()]);
 	    }
 	    catch (IOException e) {
 	        e.printStackTrace();
 	        return linksToReturn.toArray(new SearchResult[linksToReturn.size()]);
 	    }
+	}
+	
+	/**
+	 * A backup search provider in case google search fails. This method is marked private and is called from getLinksFromGoogle. It should not be called in any other class.
+	 */
+	private SearchResult [] getLinksFromBing(String searchQuery, String site)
+	{
+		ArrayList<SearchResult> linksToReturn = new ArrayList<SearchResult>();
+		String encodingScheme = "UTF-8";
+    	String queryToEncode = "site:" + site + " " + searchQuery;
+    	String encodedSearchQuery;
+		try {
+			encodedSearchQuery = URLEncoder.encode(queryToEncode, encodingScheme);
+			Document bingResultDocument = Jsoup.connect("https://www.bing.com/search?q="+encodedSearchQuery).userAgent(getRandomUserAgent()).referrer("http://www.bing.com").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
+			Elements links = bingResultDocument.select("a[href*=" + site);
+			for(Element link : links) {
+				linksToReturn.add(new SearchResult(link.attr("href")));
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			return linksToReturn.toArray(new SearchResult[linksToReturn.size()]);
+		}
+        return linksToReturn.toArray(new SearchResult[linksToReturn.size()]);
 	}
 
 	protected static boolean fileExistsAtURL(String URLName){

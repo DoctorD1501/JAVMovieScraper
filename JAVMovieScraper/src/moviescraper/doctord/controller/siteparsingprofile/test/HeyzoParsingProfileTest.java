@@ -68,10 +68,12 @@ public class HeyzoParsingProfileTest {
 	@Test public void testOriginalTitle(){
 		OriginalTitle originalTitle = profile.scrapeOriginalTitle();
 		System.out.println("originalTitle = " + originalTitle);
-		assertEquals("Wrong original title", "ロリカワ�?人気絶頂コスドルを撮影会�?�ヤッ�?�ゃ�?��?��?��?� - �?��??り�?��??", originalTitle.getOriginalTitle());
+		assertEquals("Wrong original title", "ロリカワ！人気絶頂コスドルを撮影会でヤッちゃいました - おぐりみく", originalTitle.getOriginalTitle());
 	}
 	
-	@Test public void testRating(){
+	//Not testing rating for now due to this site no longer supporting rating scraping. This used to be doable without using js
+	//but now the rating requires js to on the parser to get the rating
+	/*@Test public void testRating(){
 		Rating rating = profile.scrapeRating();
 		System.out.println("rating = " + rating);
 		assertEquals(
@@ -79,7 +81,7 @@ public class HeyzoParsingProfileTest {
 				(new Double(rating.getRatingOutOfTen()).doubleValue() > 0.1)
 						&& (new Double(rating.getRatingOutOfTen())
 								.doubleValue() < 10.0), true);
-	}
+	}*/
 	
 	@Test public void testYear(){
 		Year year = profile.scrapeYear();

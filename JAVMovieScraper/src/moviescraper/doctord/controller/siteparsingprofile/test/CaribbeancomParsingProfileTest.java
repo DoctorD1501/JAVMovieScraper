@@ -115,7 +115,7 @@ public class CaribbeancomParsingProfileTest {
 	@Test
 	public void testScrapeGenre(){
 		ArrayList<Genre> genreList = parser.scrapeGenres();
-		assertEquals("Wrong genre", "Exclusive Video", genreList.get(0).getGenre());
+		assertEquals("Wrong genre", "Original Video", genreList.get(0).getGenre());
 	}
 	
 	@Test
