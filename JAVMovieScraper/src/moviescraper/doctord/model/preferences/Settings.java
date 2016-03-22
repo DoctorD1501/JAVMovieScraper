@@ -49,9 +49,9 @@ public class Settings {
 		}
 	}
 
-	protected <K extends Key> void setBooleanValue(K preferenceName, boolean preferenceValue) {
+	protected <K extends Key> void setBooleanValue(K preferenceName, Boolean preferenceValue) {
 		String key = preferenceName.getKey();
-		if(preferenceValue)
+		if(preferenceValue.booleanValue())
 			programPreferences.setProperty(key, "true");
 		else
 			programPreferences.setProperty(key, "false");
@@ -65,7 +65,7 @@ public class Settings {
 	 * @param defaultValue the value to return if the preference has not been set
 	 * @return
 	 */
-	protected <K extends Key> boolean getBooleanValue(K preferenceName, boolean defaultValue) {
+	protected <K extends Key> Boolean getBooleanValue(K preferenceName, Boolean defaultValue) {
 		String fieldValue = preferenceName.getKey();
 		String preferenceValue = programPreferences.getProperty(fieldValue);
 		if(preferenceValue == null)

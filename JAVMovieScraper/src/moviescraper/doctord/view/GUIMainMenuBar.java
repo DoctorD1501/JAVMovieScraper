@@ -7,6 +7,8 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import javax.swing.Icon;
 import javax.swing.JCheckBoxMenuItem;
@@ -53,6 +55,31 @@ public class GUIMainMenuBar extends JMenuBar{
 		initializeMenus();
 	}
 	
+	/**
+	 * Allows you to create a new JCheckBoxMenuItem using Lambda expressions. The preferenceSetterFunction function will be called to change the value when the 
+	 * menu item is checked and the initial value will be determined by the value returned by preferenceGetterFunction.
+	 * @param checkboxTitle - Text of menu item to create
+	 * @param preferenceSetterFunction - setter function called when checkbox item clicked
+	 * @param preferenceGetterFunction - function to return initial value of the checkbox
+	 * @return
+	 */
+	private JCheckBoxMenuItem createCheckBoxMenuItem(String checkboxTitle, Consumer<Boolean> preferenceSetterFunction, 
+			Supplier<Boolean> preferenceGetterFunction)
+	{
+		JCheckBoxMenuItem checkBoxMenuItemToCreate = new JCheckBoxMenuItem(checkboxTitle);
+		checkBoxMenuItemToCreate.setState(preferenceGetterFunction.get());
+		checkBoxMenuItemToCreate.addItemListener(e -> {
+			if(e.getStateChange() == ItemEvent.SELECTED) {
+				preferenceSetterFunction.accept(true);
+			}
+			else if(e.getStateChange() == ItemEvent.DESELECTED) {
+				preferenceSetterFunction.accept(false);
+			}
+			
+		});
+		return checkBoxMenuItemToCreate;
+	}
+	
 	private void initializePreferencesMenu(){
 		
 
@@ -61,321 +88,131 @@ public class GUIMainMenuBar extends JMenuBar{
 		preferenceMenu.setMnemonic(KeyEvent.VK_P);
 		preferenceMenu.getAccessibleContext().setAccessibleDescription(
 				"Preferences for JAVMovieScraper");
+		createAllCheckBoxMenus(preferenceMenu);	
+		add(preferenceMenu);
 
+	}
+	
+	private void createAllCheckBoxMenus(JMenu preferenceMenu) {
 		//Checkbox for writing fanart and poster
-		JCheckBoxMenuItem writeFanartAndPosters = new JCheckBoxMenuItem("Write fanart and poster files");
-		writeFanartAndPosters.setState(getPreferences().getWriteFanartAndPostersPreference());
-		writeFanartAndPosters.addItemListener(new ItemListener() {
-
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				//save the menu choice off to the preference object (and the disk based settings file)
-				if(e.getStateChange() == ItemEvent.SELECTED)
-					getPreferences().setWriteFanartAndPostersPreference(true);
-				else if(e.getStateChange() == ItemEvent.DESELECTED)
-					getPreferences().setWriteFanartAndPostersPreference(false);
-
-			}
-		});
+		JCheckBoxMenuItem writeFanartAndPosters = createCheckBoxMenuItem(
+				"Write fanart and poster files", 
+				b -> getPreferences().setWriteFanartAndPostersPreference(b), 
+				() -> getPreferences().getWriteFanartAndPostersPreference());
 		preferenceMenu.add(writeFanartAndPosters);
 
 		//Checkbox for overwriting fanart and poster
-		JCheckBoxMenuItem overwriteFanartAndPosters = new JCheckBoxMenuItem("Overwrite fanart, poster, and folder.jpg files");
-		overwriteFanartAndPosters.setState(getPreferences().getOverWriteFanartAndPostersPreference());
-		overwriteFanartAndPosters.addItemListener(new ItemListener() {
-
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				//save the menu choice off to the preference object (and the disk based settings file)
-				if(e.getStateChange() == ItemEvent.SELECTED)
-					getPreferences().setOverWriteFanartAndPostersPreference(true);
-				else if(e.getStateChange() == ItemEvent.DESELECTED)
-					getPreferences().setOverWriteFanartAndPostersPreference(false);
-
-			}
-		});
+		JCheckBoxMenuItem overwriteFanartAndPosters = createCheckBoxMenuItem(
+				"Overwrite fanart, poster, and folder.jpg files", 
+				b -> getPreferences().setOverWriteFanartAndPostersPreference(b), 
+				() -> getPreferences().getOverWriteFanartAndPostersPreference());
 		preferenceMenu.add(overwriteFanartAndPosters);
 
-		//Checkbox for overwriting writing actors to .actor folder
-		JCheckBoxMenuItem writeActorImages = new JCheckBoxMenuItem("Write Actor Images");
-		writeActorImages.setState(getPreferences().getDownloadActorImagesToActorFolderPreference());
-		writeActorImages.addItemListener(new ItemListener() {
-
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				//save the menu choice off to the preference object (and the disk based settings file)
-				if(e.getStateChange() == ItemEvent.SELECTED)
-					getPreferences().setDownloadActorImagesToActorFolderPreference(true);
-				else if(e.getStateChange() == ItemEvent.DESELECTED)
-					getPreferences().setDownloadActorImagesToActorFolderPreference(false);
-
-			}
-		});
+		//Checkbox for overwriting writing actors to .actor folder	
+		JCheckBoxMenuItem writeActorImages = createCheckBoxMenuItem(
+				"Write Actor Images", 
+				b -> getPreferences().setDownloadActorImagesToActorFolderPreference(b), 
+				() -> getPreferences().getDownloadActorImagesToActorFolderPreference());
 		preferenceMenu.add(writeActorImages);
-
+		
 		//Checkbox for scraping extrafanart		
-		JCheckBoxMenuItem scrapeExtraFanart = new JCheckBoxMenuItem("Write Extrafanart When Writing Data to a Directory or Moving File to a Directory");
-		scrapeExtraFanart.setState(getPreferences().getExtraFanartScrapingEnabledPreference());
-		scrapeExtraFanart.addItemListener(new ItemListener() {
-
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				//save the menu choice off to the preference object (and the disk based settings file)
-				if(e.getStateChange() == ItemEvent.SELECTED)
-					getPreferences().setExtraFanartScrapingEnabledPreference(true);
-				else if(e.getStateChange() == ItemEvent.DESELECTED)
-					getPreferences().setExtraFanartScrapingEnabledPreference(false);
-
-			}
-		});
+		JCheckBoxMenuItem scrapeExtraFanart = createCheckBoxMenuItem(
+				"Write Extrafanart When Writing Data to a Directory or Moving File to a Directory", 
+				b -> getPreferences().setExtraFanartScrapingEnabledPreference(b), 
+				() -> getPreferences().getExtraFanartScrapingEnabledPreference());
 		preferenceMenu.add(scrapeExtraFanart);
 
-		//Checkbox for also creating folder.jpg	in addition to the poster file jpg
-		JCheckBoxMenuItem createFolderJpg = new JCheckBoxMenuItem("Create folder.jpg for each folder");
-		createFolderJpg.setState(getPreferences().getCreateFolderJpgEnabledPreference());
-		createFolderJpg.addItemListener(new ItemListener() {
-
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				//save the menu choice off to the preference object (and the disk based settings file)
-				if(e.getStateChange() == ItemEvent.SELECTED)
-					getPreferences().setCreateFolderJpgEnabledPreference(true);
-				else if(e.getStateChange() == ItemEvent.DESELECTED)
-					getPreferences().setCreateFolderJpgEnabledPreference(false);
-
-			}
-		});
+		//Checkbox for also creating folder.jpg	in addition to the poster file jpg	
+		JCheckBoxMenuItem createFolderJpg = createCheckBoxMenuItem(
+				"Create folder.jpg for each folder", 
+				b -> getPreferences().setCreateFolderJpgEnabledPreference(b), 
+				() -> getPreferences().getCreateFolderJpgEnabledPreference());
 		preferenceMenu.add(createFolderJpg);
 
 		//Checkbox for using fanart.jpg and poster.jpg, not moviename-fanart.jpg and moviename-poster.jpg
-		JCheckBoxMenuItem noMovieNameInImageFiles = new JCheckBoxMenuItem("Save poster and fanart as fanart.jpg and poster.jpg instead of moviename-fanart.jpg and moviename-poster.jpg");
-		noMovieNameInImageFiles.setState(getPreferences().getNoMovieNameInImageFiles());
-		noMovieNameInImageFiles.addItemListener(new ItemListener() {
-
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				//save the menu choice off to the preference object (and the disk based settings file)
-				if(e.getStateChange() == ItemEvent.SELECTED)
-					getPreferences().setNoMovieNameInImageFiles(true);
-				else if(e.getStateChange() == ItemEvent.DESELECTED)
-					getPreferences().setNoMovieNameInImageFiles(false);
-
-			}
-		});
+		JCheckBoxMenuItem noMovieNameInImageFiles = createCheckBoxMenuItem(
+				"Save poster and fanart as fanart.jpg and poster.jpg instead of moviename-fanart.jpg and moviename-poster.jpg", 
+				b -> getPreferences().setNoMovieNameInImageFiles(b), 
+				() -> getPreferences().getNoMovieNameInImageFiles());
 		preferenceMenu.add(noMovieNameInImageFiles);
 
 		//Checkbox for writing the trailer to file
-		JCheckBoxMenuItem writeTrailerToFile = new JCheckBoxMenuItem("Write Trailer To File");
-		writeTrailerToFile.setState(getPreferences().getWriteTrailerToFile());
-		writeTrailerToFile.addItemListener(new ItemListener() {
-
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				//save the menu choice off to the preference object (and the disk based settings file)
-				if(e.getStateChange() == ItemEvent.SELECTED)
-					getPreferences().setWriteTrailerToFile(true);
-				else if(e.getStateChange() == ItemEvent.DESELECTED)
-					getPreferences().setWriteTrailerToFile(false);
-
-			}
-		});
+		JCheckBoxMenuItem writeTrailerToFile = createCheckBoxMenuItem(
+				"Write Trailer To File", 
+				b -> getPreferences().setWriteTrailerToFile(b), 
+				() -> getPreferences().getWriteTrailerToFile());
 		preferenceMenu.add(writeTrailerToFile);
 
 		//Checkbox for naming .nfo file movie.nfo instead of using movie name in file
-		JCheckBoxMenuItem nfoNamedMovieDotNfo = new JCheckBoxMenuItem(".nfo file named movie.nfo instead of using movie name");
-		nfoNamedMovieDotNfo.setState(getPreferences().getNfoNamedMovieDotNfo());
-		nfoNamedMovieDotNfo.addItemListener(new ItemListener() {
-
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				//save the menu choice off to the preference object (and the disk based settings file)
-				if(e.getStateChange() == ItemEvent.SELECTED)
-					getPreferences().setNfoNamedMovieDotNfo(true);
-				else if(e.getStateChange() == ItemEvent.DESELECTED)
-					getPreferences().setNfoNamedMovieDotNfo(false);
-
-			}
-		});
+		JCheckBoxMenuItem nfoNamedMovieDotNfo = createCheckBoxMenuItem(
+				".nfo file named movie.nfo instead of using movie name", 
+				b -> getPreferences().setNfoNamedMovieDotNfo(b), 
+				() -> getPreferences().getNfoNamedMovieDotNfo());
 		preferenceMenu.add(nfoNamedMovieDotNfo);
 
-		/*
-		//Made obsolete by amalgamation handling this functionality now
-		//Checkbox for using IAFD Actors instead of Data18
-		JCheckBoxMenuItem useIAFDForActors = new JCheckBoxMenuItem("Using IAFD Actors instead of Data18");
-		useIAFDForActors.setState(getPreferences().getUseIAFDForActors());
-		useIAFDForActors.addItemListener(new ItemListener() {
-
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				//save the menu choice off to the preference object (and the disk based settings file)
-				if(e.getStateChange() == ItemEvent.SELECTED)
-					getPreferences().setUseIAFDForActors(true);
-				else if(e.getStateChange() == ItemEvent.DESELECTED)
-					getPreferences().setUseIAFDForActors(false);
-
-			}
-		});
-		preferenceMenu.add(useIAFDForActors);
-		*/
-
 		//Checkbox for renaming Movie file
-		JCheckBoxMenuItem renameMovieFile = new JCheckBoxMenuItem("Rename Movie File");
-		
-		renameMovieFile.setState(getPreferences().getRenameMovieFile());
-		renameMovieFile.addItemListener(new ItemListener() {
-
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				//save the menu choice off to the preference object (and the disk based settings file)
-				if(e.getStateChange() == ItemEvent.SELECTED)
-					getPreferences().setRenameMovieFile(true);
-				else if(e.getStateChange() == ItemEvent.DESELECTED)
-					getPreferences().setRenameMovieFile(false);
-
-			}
-		});
+		JCheckBoxMenuItem renameMovieFile = createCheckBoxMenuItem(
+				"Rename Movie File", 
+				b -> getPreferences().setRenameMovieFile(b), 
+				() -> getPreferences().getRenameMovieFile());
 		preferenceMenu.add(renameMovieFile);
 
 		//Checkbox for scraping JAV files in japanese instead of english when clicking scrape jav
-		JCheckBoxMenuItem scrapeInJapanese = new JCheckBoxMenuItem("Scrape JAV Movies in Japanese Instead of English");
-		scrapeInJapanese.setState(getPreferences().getScrapeInJapanese());
-		scrapeInJapanese.addItemListener(new ItemListener() {
-
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				//save the menu choice off to the preference object (and the disk based settings file)
-				if(e.getStateChange() == ItemEvent.SELECTED)
-					getPreferences().setScrapeInJapanese(true);
-				else if(e.getStateChange() == ItemEvent.DESELECTED)
-					getPreferences().setScrapeInJapanese(false);
-
-			}
-		});
+		JCheckBoxMenuItem scrapeInJapanese = createCheckBoxMenuItem(
+				"Scrape JAV Movies in Japanese Instead of English", 
+				b -> getPreferences().setScrapeInJapanese(b), 
+				() -> getPreferences().getScrapeInJapanese());
 		preferenceMenu.add(scrapeInJapanese);
 		
 		//Checkbox for scraping dialog box allowing the user to override the URL used when scraping
-		JCheckBoxMenuItem promptForUserProvidedURL = new JCheckBoxMenuItem("Provide the URL yourself when scraping");
-		promptForUserProvidedURL.setState(getPreferences().getPromptForUserProvidedURLWhenScraping());
-		promptForUserProvidedURL.addItemListener(new ItemListener() {
-
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				//save the menu choice off to the preference object (and the disk based settings file)
-				if(e.getStateChange() == ItemEvent.SELECTED)
-					getPreferences().setPromptForUserProvidedURLWhenScraping(true);
-				else if(e.getStateChange() == ItemEvent.DESELECTED)
-					getPreferences().setPromptForUserProvidedURLWhenScraping(false);
-
-			}
-		});
+		JCheckBoxMenuItem promptForUserProvidedURL = createCheckBoxMenuItem(
+				"Provide the URL yourself when scraping", 
+				b -> getPreferences().setPromptForUserProvidedURLWhenScraping(b), 
+				() -> getPreferences().getPromptForUserProvidedURLWhenScraping());
 		preferenceMenu.add(promptForUserProvidedURL);
 		
 		//Checkbox for option if the ID is just considered the first word in the file
-		JCheckBoxMenuItem isFirstWordOfFileID = new JCheckBoxMenuItem("Use First Word of File for ID Instead of Last");
-		isFirstWordOfFileID.setState(getPreferences().getIsFirstWordOfFileID());
-		isFirstWordOfFileID.addItemListener(new ItemListener() {
-
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				//save the menu choice off to the preference object (and the disk based settings file)
-				if(e.getStateChange() == ItemEvent.SELECTED)
-					getPreferences().setIsFirstWordOfFileID(true);
-				else if(e.getStateChange() == ItemEvent.DESELECTED)
-					getPreferences().setIsFirstWordOfFileID(false);
-
-			}
-		});
+		JCheckBoxMenuItem isFirstWordOfFileID = createCheckBoxMenuItem(
+				"Use First Word of File for ID Instead of Last", 
+				b -> getPreferences().setIsFirstWordOfFileID(b), 
+				() -> getPreferences().getIsFirstWordOfFileID());
 		preferenceMenu.add(isFirstWordOfFileID);
 		
 		
 		//Checkbox for option to append the ID to start of the title field
-		JCheckBoxMenuItem appendIDToStartOfTitle = new JCheckBoxMenuItem("Append ID to Start of Title Field When Scraping");
-		appendIDToStartOfTitle.setState(getPreferences().getAppendIDToStartOfTitle());
-		appendIDToStartOfTitle.addItemListener(new ItemListener() {
-
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				//save the menu choice off to the preference object (and the disk based settings file)
-				if(e.getStateChange() == ItemEvent.SELECTED)
-					getPreferences().setAppendIDToStartOfTitle(true);
-				else if(e.getStateChange() == ItemEvent.DESELECTED)
-					getPreferences().setAppendIDToStartOfTitle(false);
-
-			}
-		});
+		JCheckBoxMenuItem appendIDToStartOfTitle = createCheckBoxMenuItem(
+				"Append ID to Start of Title Field When Scraping", 
+				b -> getPreferences().setAppendIDToStartOfTitle(b), 
+				() -> getPreferences().getAppendIDToStartOfTitle());
 		preferenceMenu.add(appendIDToStartOfTitle);
 		
 		//Checkbox for option to use file name as the scraped title every time
-		JCheckBoxMenuItem useFilenameAsScrapedMovieTitle = new JCheckBoxMenuItem("Use Filename as Title When Scraping");
-		useFilenameAsScrapedMovieTitle.setState(getPreferences().getUseFileNameAsTitle());
-		useFilenameAsScrapedMovieTitle.addItemListener(new ItemListener() {
-
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				//save the menu choice off to the preference object (and the disk based settings file)
-				if(e.getStateChange() == ItemEvent.SELECTED)
-					getPreferences().setUseFileNameAsTitle(true);
-				else if(e.getStateChange() == ItemEvent.DESELECTED)
-					getPreferences().setUseFileNameAsTitle(false);
-
-			}
-		});
+		JCheckBoxMenuItem useFilenameAsScrapedMovieTitle = createCheckBoxMenuItem(
+				"Use Filename as Title When Scraping", 
+				b -> getPreferences().setUseFileNameAsTitle(b), 
+				() -> getPreferences().getUseFileNameAsTitle());
 		preferenceMenu.add(useFilenameAsScrapedMovieTitle);
 		
 		//Checkbox for whether the user needs to manually select the art while scraping
-		JCheckBoxMenuItem selectArtManuallyWhenScraping = new JCheckBoxMenuItem("Select Art Manually When Scraping");
-		selectArtManuallyWhenScraping.setState(getPreferences().getSelectArtManuallyWhenScraping());
-		selectArtManuallyWhenScraping.addItemListener(new ItemListener() {
-
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				//save the menu choice off to the preference object (and the disk based settings file)
-				if(e.getStateChange() == ItemEvent.SELECTED)
-					getPreferences().setSelectArtManuallyWhenScraping(true);
-				else if(e.getStateChange() == ItemEvent.DESELECTED)
-					getPreferences().setSelectArtManuallyWhenScraping(false);
-
-			}
-		});
+		JCheckBoxMenuItem selectArtManuallyWhenScraping = createCheckBoxMenuItem(
+				"Select Art Manually When Scraping", 
+				b -> getPreferences().setSelectArtManuallyWhenScraping(b), 
+				() -> getPreferences().getSelectArtManuallyWhenScraping());
 		preferenceMenu.add(selectArtManuallyWhenScraping);
 		
-		//Checkbox for whether the user needs to manually select the search result when scraping
-		JCheckBoxMenuItem selectSearchResultManuallyWhenScraping = new JCheckBoxMenuItem("Select Search Results Manually When Scraping");
-		selectSearchResultManuallyWhenScraping.setState(getPreferences().getSelectSearchResultManuallyWhenScraping());
-		selectSearchResultManuallyWhenScraping.addItemListener(new ItemListener() {
-
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				//save the menu choice off to the preference object (and the disk based settings file)
-				if(e.getStateChange() == ItemEvent.SELECTED)
-					getPreferences().setSelectSearchResultManuallyWhenScraping(true);
-				else if(e.getStateChange() == ItemEvent.DESELECTED)
-					getPreferences().setSelectSearchResultManuallyWhenScraping(false);
-
-			}
-		});
+		//Checkbox for whether the user needs to manually select the search result when scraping	
+		JCheckBoxMenuItem selectSearchResultManuallyWhenScraping = createCheckBoxMenuItem(
+				"Select Search Results Manually When Scraping", 
+				b -> getPreferences().setSelectSearchResultManuallyWhenScraping(b), 
+				() -> getPreferences().getSelectSearchResultManuallyWhenScraping());
 		preferenceMenu.add(selectSearchResultManuallyWhenScraping);
 		
-		//Checkbox for whether the user needs to manually confirm the results of each clean up file operation
-		JCheckBoxMenuItem confirmNameForFileNameCleanup = new JCheckBoxMenuItem("Confirm New Name Each Time for \"Clean Up File Name\"");
-		confirmNameForFileNameCleanup.setState(getPreferences().getConfirmCleanUpFileNameNameBeforeRenaming());
-		confirmNameForFileNameCleanup.addItemListener(new ItemListener() {
-
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				//save the menu choice off to the preference object (and the disk based settings file)
-				if(e.getStateChange() == ItemEvent.SELECTED)
-					getPreferences().setConfirmCleanUpFileNameNameBeforeRenaming(true);
-				else if(e.getStateChange() == ItemEvent.DESELECTED)
-					getPreferences().setConfirmCleanUpFileNameNameBeforeRenaming(false);
-
-			}
-		});
+		//Checkbox for whether the user needs to manually confirm the results of each clean up file operation	
+		JCheckBoxMenuItem confirmNameForFileNameCleanup = createCheckBoxMenuItem(
+				"Confirm New Name Each Time for \\\"Clean Up File Name\\\"", 
+				b -> getPreferences().setConfirmCleanUpFileNameNameBeforeRenaming(b), 
+				() -> getPreferences().getConfirmCleanUpFileNameNameBeforeRenaming());
 		preferenceMenu.add(confirmNameForFileNameCleanup);
-		
-		
-		add(preferenceMenu);
-
 	}
 	
 	
