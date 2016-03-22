@@ -470,8 +470,7 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
 			System.out.println("Prompting the user for a url for " + siteScraper);
 			 String userProvidedURL = (String)JOptionPane.showInputDialog(
 		             null,
-		             "Enter URL of " + siteScraper.toString() + " to scrape from:" + "\n" + 
-		             "fileName" + " :",
+		             "Enter URL of " + siteScraper.toString() + " to scrape from:",
 		             "Scrape from this URL...",
 		             JOptionPane.PLAIN_MESSAGE,
 		             null,
