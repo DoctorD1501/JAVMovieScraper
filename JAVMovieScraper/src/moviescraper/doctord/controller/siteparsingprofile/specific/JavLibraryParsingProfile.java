@@ -41,6 +41,7 @@ import moviescraper.doctord.model.dataitem.Title;
 import moviescraper.doctord.model.dataitem.Top250;
 import moviescraper.doctord.model.dataitem.Votes;
 import moviescraper.doctord.model.dataitem.Year;
+import moviescraper.doctord.model.preferences.MoviescraperPreferences;
 
 public class JavLibraryParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
@@ -73,11 +74,15 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 
 	public JavLibraryParsingProfile(Document document) {
 		super(document);
-		siteLanguageToScrape = "en";
+		siteLanguageToScrape = determineLanguageToUse();
 	}
 
 	public JavLibraryParsingProfile() {
-		siteLanguageToScrape = "en";
+		siteLanguageToScrape = determineLanguageToUse();
+	}
+	
+	private String determineLanguageToUse() {
+		return MoviescraperPreferences.getInstance().getScrapeInJapanese() ? "ja" : "en";
 	}
 	
 	public JavLibraryParsingProfile(Document document, String siteLanguageToScrape)
