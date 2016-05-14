@@ -64,7 +64,7 @@ public class AsyncImageComponent extends JPanel implements ImageConsumer, MouseL
     	super.addMouseListener(this);
     	
     	setURLFromThumb();
-        new ImageLoader(this, url).execute();
+        new ImageLoader(this, url, thumb == null ? false : thumb.isModified()).execute();
     }
     
     public void setIcon(Thumb thumb, Dimension newSize)
@@ -73,7 +73,7 @@ public class AsyncImageComponent extends JPanel implements ImageConsumer, MouseL
     	this.thumb = thumb;
     	this.setPreferredSize(newSize);
     	setURLFromThumb();
-    	new ImageLoader(this, url).execute();
+    	new ImageLoader(this, url, thumb.isModified()).execute();
     }
     
     public void setIcon(Thumb thumb)
@@ -81,10 +81,11 @@ public class AsyncImageComponent extends JPanel implements ImageConsumer, MouseL
     	//this.resizedImage = null;
     	this.thumb = thumb;
     	setURLFromThumb();
-    	new ImageLoader(this, url).execute();
+    	new ImageLoader(this, url, thumb.isModified()).execute();
     }
     
     
+   /* 
     public void setIcon(BufferedImage image)
     {
     	//this.resizedImage = null;
@@ -104,7 +105,7 @@ public class AsyncImageComponent extends JPanel implements ImageConsumer, MouseL
     	setURLFromThumb();
     	repaint();
     }
-    
+    */
     
     private void setURLFromThumb()
     {
@@ -214,23 +215,28 @@ public class AsyncImageComponent extends JPanel implements ImageConsumer, MouseL
         private ImageConsumer consumer;
         URL url;
         BufferedImage pictureLoaded;
+        boolean isImageModified; //whether to use javCoverCropRoutine to crop the image
 
-        public ImageLoader(ImageConsumer consumer, URL url) {
+        public ImageLoader(ImageConsumer consumer, URL url, boolean isImageModified) {
         	this.url = url;
             this.consumer = consumer;
+            this.isImageModified = isImageModified;
         }
 
         @Override
         protected BufferedImage doInBackground() throws IOException {
 
-        	if(ImageCache.isImageCached(url))
+        	if(ImageCache.isImageCached(url, isImageModified))
         	{
-        		pictureLoaded = Thumb.convertToBufferedImage(ImageCache.getImageFromCache(url));
+        		pictureLoaded = Thumb.convertToBufferedImage(ImageCache.getImageFromCache(url, isImageModified));
         	}
         	else
         	{
         		pictureLoaded = ImageIO.read(url);
-        		ImageCache.putImageInCache(url, pictureLoaded);
+        		if(isImageModified) {
+        			pictureLoaded = Thumb.convertToBufferedImage(pictureLoaded);
+        		}
+        		ImageCache.putImageInCache(url, pictureLoaded, isImageModified);
         	}
             return pictureLoaded;
 

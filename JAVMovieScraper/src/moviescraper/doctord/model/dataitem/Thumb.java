@@ -95,8 +95,9 @@ public class Thumb extends MovieDataItem {
 	{
 		//System.out.println("old crop method being called");
 		thumbURL = new URL(url);
+		isImageModified = true;
 		//get our image from the cache, if it exists. otherwise, download it from the URL and put in the cache
-		BufferedImage tempImage = (BufferedImage)ImageCache.getImageFromCache(thumbURL);
+		BufferedImage tempImage = (BufferedImage)ImageCache.getImageFromCache(thumbURL, isImageModified);
 		int newXLeft = (int) (0 + (tempImage.getWidth()*(horizontalPercentLeft/100))); //left x bound of rectangle
 		int newXRight = (int) (tempImage.getWidth() - (tempImage.getWidth()*(horizontalPercentRight/100)));// right x bound of rectangle
 		int newYTop = (int) (0 + (tempImage.getHeight()*(verticalPercentTop/100))); //top y bound of rectangle
@@ -104,17 +105,15 @@ public class Thumb extends MovieDataItem {
 		tempImage = tempImage.getSubimage(newXLeft, newYTop, newXRight - newXLeft, newYBottom - newYTop);
 		thumbImage = tempImage;
 		imageIconThumbImage = new ImageIcon(thumbImage);
-		isImageModified = true;
 		needToReloadThumbImage = false;
 	}
 	
 	public Thumb(String url, int croppedWidth) throws IOException {
 		thumbURL = new URL(url);
-		BufferedImage tempImage = (BufferedImage)ImageCache.getImageFromCache(thumbURL);
+		this.isImageModified = true;
+		BufferedImage tempImage = (BufferedImage)ImageCache.getImageFromCache(thumbURL, isImageModified);
 		int startWidth = tempImage.getWidth() - croppedWidth;
 		tempImage = tempImage.getSubimage(startWidth, 0, croppedWidth, tempImage.getHeight());
-		
-		this.isImageModified = true;
 		thumbImage = tempImage;
 		imageIconThumbImage = new ImageIcon(tempImage);
 		needToReloadThumbImage = false;
@@ -124,16 +123,45 @@ public class Thumb extends MovieDataItem {
 	{
 		
 		thumbURL = new URL(url);
-		BufferedImage tempImage = (BufferedImage)ImageCache.getImageFromCache(thumbURL);
+		BufferedImage tempImage = (BufferedImage)ImageCache.getImageFromCache(thumbURL, false); //get the unmodified, uncropped image
+		//just get the jpg from the url
+		String filename = fileNameFromURL(url);
 		//routine adapted from pythoncovercrop.py
-		if(useJavCoverCropRoutine)
-		{
-			int width = tempImage.getWidth();
-			int height = tempImage.getHeight();
+		if(useJavCoverCropRoutine) {
+			tempImage = doJavCoverCropRoutine(tempImage, filename);
+			this.isImageModified = true;
+			ImageCache.putImageInCache(thumbURL, tempImage, true); //cache cropped image so we don't need to do this again
+		}
+		else {
+			this.isImageModified = false;
+		}
+		thumbImage = tempImage;
+		imageIconThumbImage = new ImageIcon(tempImage);
+		needToReloadThumbImage = false;
+	}
+	
+	/**
+	 * Utility function to get the last part of a URL formatted string (the filename) and return it. Usually used in conjunction with {@link Thumb.doJavCoverCropRoutine}
+	 * @param url
+	 * @return
+	 */
+	public static String fileNameFromURL(String url) {
+		return url.substring(url.lastIndexOf("/") + 1, url.length());
+	}
+	
+	/**
+	 * Crops a JAV DVD jacket image so that only the cover is returned. This usually means the left half of the jacket image is cropped out.
+	 * @param originalImage - Image you wish to crop
+	 * @param filename - filename of the image. If you have a URL, you can get this from {@link Thumb.fileNameFromURL} 
+	 * @return A new BufferedImage object with the back part of the jacket cover cropped out
+	 */
+	public static BufferedImage doJavCoverCropRoutine(BufferedImage originalImage, String filename) {
+			
+			BufferedImage tempImage;
+			int width = originalImage.getWidth();
+			int height = originalImage.getHeight();
 			int croppedWidth = (int) ( width / 2.11);
 			
-			//just get the jpg from the url
-			String filename = url.substring(url.lastIndexOf("/") + 1, url.length());
 			//Presets
 
 			//SOD (SDMS, SDDE) - crop 3 pixels
@@ -199,17 +227,12 @@ public class Thumb extends MovieDataItem {
 			//handling some weird inverted covers
 			if(filename.contains("DNPD"))
 			{
-				tempImage = tempImage.getSubimage(0,0,croppedWidth,height);
+				tempImage = originalImage.getSubimage(0,0,croppedWidth,height);
 			}
 			else
-				tempImage = tempImage.getSubimage(width-croppedWidth,0,croppedWidth,height);
-			this.isImageModified = true;
-		}
-		if(!useJavCoverCropRoutine)
-			this.isImageModified = false;
-		thumbImage = tempImage;
-		imageIconThumbImage = new ImageIcon(tempImage);
-		needToReloadThumbImage = false;
+				tempImage = originalImage.getSubimage(width-croppedWidth,0,croppedWidth,height);
+			
+		return tempImage;
 	}
 	
 	/**
@@ -217,11 +240,12 @@ public class Thumb extends MovieDataItem {
 	 */
 	public Thumb (String leftImage, String rightImage) throws IOException {
 		setThumbURL(new URL(leftImage));
-		BufferedImage leftBufferedImage = (BufferedImage)ImageCache.getImageFromCache( new URL(leftImage) );
-		BufferedImage rightBufferedImage = (BufferedImage)ImageCache.getImageFromCache( new URL(rightImage) );
+		this.isImageModified = true;
+		BufferedImage leftBufferedImage = (BufferedImage)ImageCache.getImageFromCache(new URL(leftImage), isImageModified);
+		BufferedImage rightBufferedImage = (BufferedImage)ImageCache.getImageFromCache(new URL(rightImage), isImageModified);
 		BufferedImage joinedImage = joinBufferedImage(leftBufferedImage, rightBufferedImage);
 		setImage(joinedImage);
-		this.isImageModified = true;
+
 	}
 	
 	private static BufferedImage joinBufferedImage(BufferedImage img1,
@@ -306,7 +330,7 @@ public class Thumb extends MovieDataItem {
 		{
 			//rather than downloading the image every time, we can instead see if it's already in the cache
 			//if it's not in the cache, then we will actually download the image
-			thumbImage = ImageCache.getImageFromCache(thumbURL);
+			thumbImage = ImageCache.getImageFromCache(thumbURL, isImageModified);
 			imageIconThumbImage = new ImageIcon(thumbImage);
 
 			needToReloadThumbImage = false;
@@ -320,7 +344,7 @@ public class Thumb extends MovieDataItem {
 	 */
 	public boolean isCached()
 	{
-		return ImageCache.isImageCached(thumbURL);
+		return ImageCache.isImageCached(thumbURL, isImageModified);
 	}
 	
 	public Image getPreviewImage() throws IOException
@@ -332,7 +356,7 @@ public class Thumb extends MovieDataItem {
 		}
 		if(needToReloadPreviewImage || previewThumbImage == null)
 		{
-			previewThumbImage = ImageCache.getImageFromCache(previewURL);
+			previewThumbImage = ImageCache.getImageFromCache(previewURL, isImageModified);
 			previewIconThumbImage = new ImageIcon(previewThumbImage);
 			needToReloadPreviewImage = false;
 		}
