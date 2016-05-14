@@ -26,7 +26,7 @@ public class AboutDialog extends JDialog {
 	private static final String versionString = "v0.2.17-alpha";
 	private static final String nameString = "JAVMovieScraper";
 	private static final String aboutString = 
-			"Scrape XBMC and Kodi movie metadata and automatically rename " +
+			"Scrape Kodi movie metadata and automatically rename " +
 			"files for Japanese Adult Videos (JAV), American Adult DVDs, " +
 			"and American Adult Webcontent";
 	

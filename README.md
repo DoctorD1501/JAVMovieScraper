@@ -1,7 +1,7 @@
 JAVMovieScraper
 ===============
 
-JAVMovieScraper is a Java Swing program to scrape English [XBMC](http://xbmc.org/) and [Kodi](http://kodi.tv/) metadata for Japanese Adult Videos (JAV) found on JavLibrary.com, R18.com, DMM.co.jp, 1000Giri, Caribbeancompr.com (Carribeancom Premium), AV Entertainment, Kin8Tengoku, Tokyo Hot, 1pondo, HEYZO, American adult DVDs and web content found on Data18.com and and adult dvds on The Movie Database (TMDb) and Excalibur Films.
+JAVMovieScraper is a Java Swing program to scrape English [Kodi](http://kodi.tv/) metadata for Japanese Adult Videos (JAV) found on JavLibrary.com, R18.com, DMM.co.jp, 1000Giri, Caribbeancompr.com (Carribeancom Premium), AV Entertainment, Kin8Tengoku, Tokyo Hot, 1pondo, HEYZO, American adult DVDs and web content found on Data18.com and and adult dvds on The Movie Database (TMDb) and Excalibur Films.
 
 As no one site has a complete set of English metadata, the program amalgamates metadeta info from a variety of sources, including dmm.co.jp, javlibrary.com, javbus.com, squareplus.co.jp, and actionjav.com.
 The data is then fed through a machine translation (if original data is in Japanese) and then quality checked to sanitize it and poster elements are cropped so only the cover is shown.
@@ -83,7 +83,7 @@ The [list of site name abbreviations](https://raw.githubusercontent.com/DoctorD1
 
 
 ## What If I Use Plex?
-XBMC Metadata is compatible with [Plex](https://plex.tv/) using the [XBMCnfoMovieImporter](https://forums.plex.tv/index.php/topic/38402-metadata-agents-for-exported-xbmc-library/) from the [Unsupported Appstore Channel](https://forums.plex.tv/index.php/topic/25523-unsupported-as-in-totally-unofficial-appstore/).
+Kodi metadata is compatible with [Plex](https://plex.tv/) using the [XBMCnfoMovieImporter](https://forums.plex.tv/index.php/topic/38402-metadata-agents-for-exported-xbmc-library/) ([github link here](https://github.com/gboudreau/XBMCnfoMoviesImporter.bundle)).
 
-## Other Good Programs for Viewing/Browsing XBMC Scraped Files
-Try [Media Companion](https://mediacompanion.codeplex.com/). It's easier to use when sitting at a computer than XBMC because the interface is designed for keyboard & mouse use rather than a remote and large screen.
+## Other Good Programs for Viewing/Browsing Kodi Scraped Files
+Try [Media Companion](https://mediacompanion.codeplex.com/). It's easier to use when sitting at a computer than Kodi because the interface is designed for keyboard & mouse use rather than a remote and large screen.

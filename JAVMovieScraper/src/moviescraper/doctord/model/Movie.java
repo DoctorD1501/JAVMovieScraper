@@ -34,7 +34,7 @@ import moviescraper.doctord.controller.siteparsingprofile.specific.Data18WebCont
 import moviescraper.doctord.controller.siteparsingprofile.specific.DmmParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.IAFDParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.JavLibraryParsingProfile;
-import moviescraper.doctord.controller.xmlserialization.XbmcXmlMovieBean;
+import moviescraper.doctord.controller.xmlserialization.KodiXmlMovieBean;
 import moviescraper.doctord.model.dataitem.*;
 import moviescraper.doctord.model.dataitem.Runtime;
 import moviescraper.doctord.model.preferences.MoviescraperPreferences;
@@ -262,7 +262,7 @@ public class Movie {
 					else break;
 				}
 			}
-			XbmcXmlMovieBean xmlMovieBean = XbmcXmlMovieBean.makeFromXML(targetFileStr);
+			KodiXmlMovieBean xmlMovieBean = KodiXmlMovieBean.makeFromXML(targetFileStr);
 			fisTargetFile.close();
 			if(xmlMovieBean != null)
 			{
@@ -487,7 +487,7 @@ public class Movie {
 	}
 	public void writeToFile(File nfoFile, File posterFile, File fanartFile, File currentlySelectedFolderJpgFile, File targetFolderForExtraFanartFolderAndActorFolder, File trailerFile, MoviescraperPreferences preferences) throws IOException {
 		// Output the movie to XML using XStream and a proxy class to
-		// translate things to a format that xbmc expects
+		// translate things to a format that Kodi expects
 		
 		//ID only appended if preference set and not already at the start of the title
 		if(!title.getTitle().startsWith(id.getId()))
@@ -496,7 +496,7 @@ public class Movie {
 		}
 		
 		
-		String xml = new XbmcXmlMovieBean(this).toXML();
+		String xml = new KodiXmlMovieBean(this).toXML();
 		// add the xml header since xstream doesn't do this
 		xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>"
 				+ "\n" + xml;

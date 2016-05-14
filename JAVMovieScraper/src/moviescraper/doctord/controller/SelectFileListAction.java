@@ -10,7 +10,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import org.apache.commons.io.IOUtils;
-import moviescraper.doctord.controller.xmlserialization.XbmcXmlMovieBean;
+import moviescraper.doctord.controller.xmlserialization.KodiXmlMovieBean;
 import moviescraper.doctord.model.Movie;
 import moviescraper.doctord.model.dataitem.Thumb;
 import moviescraper.doctord.view.GUIMain;
@@ -120,7 +120,7 @@ public class SelectFileListAction implements ListSelectionListener {
 					else break;
 				}
 			}
-			XbmcXmlMovieBean xmlMovieBean = XbmcXmlMovieBean.makeFromXML(targetFileStr);
+			KodiXmlMovieBean xmlMovieBean = KodiXmlMovieBean.makeFromXML(targetFileStr);
 			if(xmlMovieBean != null)
 			{
 				Movie movieFromNfo = xmlMovieBean.toMovie();

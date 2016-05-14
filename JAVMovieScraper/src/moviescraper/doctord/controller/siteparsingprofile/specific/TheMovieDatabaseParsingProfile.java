@@ -46,7 +46,7 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 	//that might be useful as a future preference value
 	//includeAdult also must be true for adult results to be returned
 	private boolean onlyReturnAdultResults = true; 
-	//This is XBMC/Kodi's key - hopefully this is OK to use as I'm scraping XBMC data...
+	//This is Kodi's key - hopefully this is OK to use as I'm scraping Kodi data...
 	private final String tmdbKey = "f7f51775877e0bb6703520952b3c7840";
 	private final String movieImagePathPrefix = "https://image.tmdb.org/t/p/original";
 	private final String movieImageThumbnailPathPrefix = "https://image.tmdb.org/t/p/w130";
