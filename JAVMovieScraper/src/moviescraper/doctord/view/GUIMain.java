@@ -106,8 +106,8 @@ public class GUIMain {
 	private String originalJavLibraryMovieTitleBeforeAmalgamate;
 
 	//Dimensions of various elements
-	private static final int defaultMainFrameX = 1024;
-	private static final int defaultMainFrameY = 768;
+	private static final int defaultMainFrameX = 1045;
+	private static final int defaultMainFrameY = 850;
 
 	private final static boolean debugMessages = false;
 	private GUIMainButtonPanel buttonPanel;
