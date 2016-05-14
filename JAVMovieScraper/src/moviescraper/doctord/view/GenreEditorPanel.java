@@ -1,7 +1,6 @@
 package moviescraper.doctord.view;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,7 +20,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 
-import moviescraper.doctord.controller.UtilityFunctions;
 import moviescraper.doctord.model.dataitem.Genre;
 
 
@@ -36,7 +34,6 @@ public class GenreEditorPanel extends JPanel implements ItemListener {
 	
 	private static final int DEFAULT_GENRE_LENGTH = 15;
 	
-	@SuppressWarnings("unchecked")
 	public GenreEditorPanel(final List<Genre> genreList){
 		super(new BorderLayout());
 		this.originalGenreList = genreList;

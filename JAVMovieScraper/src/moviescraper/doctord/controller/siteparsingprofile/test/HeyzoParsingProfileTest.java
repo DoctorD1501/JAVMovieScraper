@@ -11,7 +11,6 @@ import moviescraper.doctord.controller.siteparsingprofile.specific.HeyzoParsingP
 import moviescraper.doctord.model.dataitem.Actor;
 import moviescraper.doctord.model.dataitem.Genre;
 import moviescraper.doctord.model.dataitem.OriginalTitle;
-import moviescraper.doctord.model.dataitem.Rating;
 import moviescraper.doctord.model.dataitem.ReleaseDate;
 import moviescraper.doctord.model.dataitem.Runtime;
 import moviescraper.doctord.model.dataitem.Thumb;

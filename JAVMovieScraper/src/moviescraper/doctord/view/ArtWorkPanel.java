@@ -2,9 +2,6 @@ package moviescraper.doctord.view;
 
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.GraphicsEnvironment;
-import java.awt.Image;
-import java.awt.Transparency;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
@@ -13,11 +10,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-import javax.imageio.ImageIO;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
@@ -38,14 +32,9 @@ public class ArtWorkPanel extends JPanel implements ComponentListener {
 
 	private static final long serialVersionUID = 9061046066424044803L;
 
-	//private ArtWorkPanel artworkPanel;
-
 	private AsyncImageComponent lblPosterIcon;
 	private AsyncImageComponent lblFanartIcon;
 	private static final String artworkTooltip = "Double click to change image.";
-
-	private Image posterImage;
-	private Image fanartImage;
 
 	//initial max sizes = values can change when window is resized
 	private static int maximumPosterSizeX = 400;
@@ -73,14 +62,6 @@ public class ArtWorkPanel extends JPanel implements ComponentListener {
 		lblPosterIcon = new AsyncImageComponent(null, false, null, false, true, false);
 		lblPosterIcon.setPreferredSize(new Dimension(maximumPosterSizeX, maximumPosterSizeY));
 		lblPosterIcon.setToolTipText(artworkTooltip);
-		
-
-		//Dimension posterSize = new Dimension(posterSizeX, posterSizeY);
-		// posterImage is initially a transparent poster size rectangle
-
-		posterImage = createEmptyImage(maximumPosterSizeX, maximumPosterSizeY);
-		//ImageIcon posterIcon = new ImageIcon(posterImage);
-		//lblPosterIcon.setIcon(posterIcon, posterImage);
 		lblPosterIcon.setAlignmentX(Component.LEFT_ALIGNMENT);
 		lblPosterIcon.setAlignmentY(Component.CENTER_ALIGNMENT);
 		lblPosterIcon.addMouseListener(new MouseListenerShowArtPicker(false));
@@ -89,10 +70,6 @@ public class ArtWorkPanel extends JPanel implements ComponentListener {
 		lblFanartIcon = new AsyncImageComponent(null, false, null, false, true, false);
 		lblFanartIcon.setPreferredSize(new Dimension(maximumFanartSizeX, maximumFanartSizeY));
 		lblFanartIcon.setToolTipText(artworkTooltip);
-		// fanartImage is initially a transparent rectangle
-		fanartImage = createEmptyImage(maximumFanartSizeX, maximumFanartSizeY);
-		//ImageIcon fanartIcon = new ImageIcon(fanartImage);
-		//lblFanartIcon.setIcon(fanartIcon);
 		lblFanartIcon.setAlignmentX(Component.LEFT_ALIGNMENT);
 		lblFanartIcon.setAlignmentY(Component.BOTTOM_ALIGNMENT);
 		lblFanartIcon.addMouseListener(new MouseListenerShowArtPicker(true));
@@ -106,78 +83,27 @@ public class ArtWorkPanel extends JPanel implements ComponentListener {
 		oldSize = getBounds().getSize();
 	}
 
-	private Image createEmptyImage(int x, int y) {
-		int xToUse = Math.max(x, 1);
-		int yToUse = Math.max(y, y);
-		return GraphicsEnvironment.getLocalGraphicsEnvironment()
-				.getDefaultScreenDevice().getDefaultConfiguration()
-				.createCompatibleImage(xToUse, yToUse, Transparency.TRANSLUCENT);
-	}
-
 	public void clearPictures() {
 		clearFanart();
 		clearPoster();
 	}
 
 	public void clearFanart() {
-		//lblFanartIcon.setIcon( new ImageIcon(createEmptyImage(maximumFanartSizeX, maximumFanartSizeY)) );
 		lblFanartIcon.clear();
 	}
 
 	public void clearPoster() {
-		//lblPosterIcon.setIcon( new ImageIcon(createEmptyImage(maximumPosterSizeX, maximumPosterSizeY)) );
 		lblPosterIcon.clear();
-		//lblPosterIcon.setIcon( null );
-	}
-
-	public void setNewFanart(Image fanart, boolean updateSourceImages) {
-		if(updateSourceImages)
-		{
-			fanartImage = fanart;
-		}
-		//lblFanartIcon.setIcon(new ImageIcon(fanart));
-	}
-
-	public void setNewFanart(ImageIcon fanart, boolean updateSourceImages) {
-		if(updateSourceImages)
-		{
-			fanartImage = fanart.getImage();
-		}
-		//lblFanartIcon.setIcon(fanart);
-	}
-
-	public void setNewPoster(Image poster, boolean updateSourceImages) {
-		if(updateSourceImages)
-		{
-			posterImage = poster;
-		}
-		//lblPosterIcon.setIcon(new ImageIcon(poster));
-	}
-
-	public void setNewPoster(ImageIcon poster, boolean updateSourceImages) {
-		if(updateSourceImages)
-		{
-			posterImage = poster.getImage();
-		}
-		//lblPosterIcon.setIcon(poster);
 	}
 
 	private void updatePosterAndFanartSizes(){
 		updatingPosterAndFanartSizes = true;
-		BufferedImage bufferedFanartImg = Thumb.convertToBufferedImage(fanartImage);
-		if(bufferedFanartImg != null)
+		if(lblFanartIcon != null)
 		{
-			//BufferedImage fanartScaledImage = ArtWorkPanel.resizeToFanart(lblFanartIcon.get);
-			//this.setNewFanart(fanartScaledImage, false);
 			Dimension newSize = calculateDimensionFit(lblFanartIcon.getWidth(), lblFanartIcon.getHeight(), maximumPosterSizeX, maximumFanartSizeY);
 			lblFanartIcon.setPreferredSize(newSize);
 			lblFanartIcon.repaint();
 		}
-
-		//BufferedImage posterImg = Thumb.convertToBufferedImage(posterImage);
-		//BufferedImage posterScaledImage = ArtWorkPanel.resizeToPoster(posterImg);
-		//this.setNewPoster(posterScaledImage, false);
-
 	}
 
 	public static BufferedImage resizeToFanart(BufferedImage image) {
@@ -229,16 +155,6 @@ public class ArtWorkPanel extends JPanel implements ComponentListener {
 			File standardFanartJpg = new File(Movie.getFileNameOfFanart(gui.getCurrentlySelectedMovieFileList().get(0), false));
 			if (gui.getCurrentlySelectedPosterFileList().get(0).exists()) {
 				try {
-					/*BufferedImage img = ImageIO.read(gui.getCurrentlySelectedPosterFileList().get(0));
-					if(img != null)
-					{
-						//we're doing a resize so store off the original img so if we resize again we don't lose quality
-						posterImage = img;
-						BufferedImage scaledImage = ArtWorkPanel.resizeToPoster(img);
-						this.setNewPoster(scaledImage, false);
-						posterFileUpdateOccured = true;
-					}
-					*/
 					lblPosterIcon.setIcon(new Thumb(gui.getCurrentlySelectedPosterFileList().get(0)), new Dimension(maximumPosterSizeX, maximumPosterSizeY));
 					posterFileUpdateOccured = true;
 				} catch (IOException e) {
@@ -248,18 +164,6 @@ public class ArtWorkPanel extends JPanel implements ComponentListener {
 			if(gui.getCurrentlySelectedFanartFileList().get(0).exists())
 			{
 				try {
-					/*BufferedImage img = ImageIO.read(gui.getCurrentlySelectedFanartFileList().get(0));
-					if(img != null)
-					{
-						//we're doing a resize so store off the original img so if we resize again we don't lose quality
-						fanartImage = img;
-						BufferedImage scaledImage = ArtWorkPanel.resizeToFanart(img);
-						if(scaledImage != null)
-						{
-							this.setNewFanart(scaledImage, false);
-							fanartFileUpdateOccured = true;
-						}
-					}*/
 					lblFanartIcon.setIcon(new Thumb(gui.getCurrentlySelectedFanartFileList().get(0)), new Dimension(maximumFanartSizeX, maximumFanartSizeY));
 					fanartFileUpdateOccured = true;
 				} catch (IOException e) {
@@ -270,13 +174,6 @@ public class ArtWorkPanel extends JPanel implements ComponentListener {
 			if(gui.getCurrentlySelectedMovieFileList().get(0).isDirectory() && potentialOtherPosterJpg.exists() && !posterFileUpdateOccured)
 			{
 				try {
-					/*BufferedImage img = ImageIO.read(potentialOtherPosterJpg);
-					if(img != null)
-					{
-						BufferedImage scaledImage = ArtWorkPanel.resizeToPoster(img);
-						//this.setNewPoster(scaledImage, true);
-						posterFileUpdateOccured = true;
-					}*/
 					lblPosterIcon.setIcon(new Thumb(potentialOtherPosterJpg), new Dimension(maximumPosterSizeX, maximumPosterSizeY));
 					posterFileUpdateOccured = true;
 
@@ -288,13 +185,6 @@ public class ArtWorkPanel extends JPanel implements ComponentListener {
 			if(gui.getCurrentlySelectedMovieFileList().get(0).isDirectory() && potentialOtherFanartJpg.exists() && !fanartFileUpdateOccured)
 			{
 				try {
-					/*BufferedImage img = ImageIO.read(potentialOtherFanartJpg);
-					if(img != null)
-					{
-						BufferedImage scaledImage = ArtWorkPanel.resizeToFanart(img);
-						this.setNewFanart(scaledImage, true);
-						fanartFileUpdateOccured = true;
-					}*/
 					lblFanartIcon.setIcon(new Thumb(potentialOtherFanartJpg), new Dimension(maximumFanartSizeX, maximumFanartSizeY));
 					fanartFileUpdateOccured = true;
 
@@ -307,8 +197,6 @@ public class ArtWorkPanel extends JPanel implements ComponentListener {
 			if(standardPosterJpg.exists() && !posterFileUpdateOccured)
 			{
 				try {
-					/*this.setNewPoster(new ImageIcon(
-							standardPosterJpg.getCanonicalPath()), true);*/
 					lblPosterIcon.setIcon(new Thumb(standardPosterJpg), new Dimension(maximumPosterSizeX, maximumPosterSizeY));
 					posterFileUpdateOccured = true;
 				} catch (IOException e) {
@@ -320,13 +208,6 @@ public class ArtWorkPanel extends JPanel implements ComponentListener {
 			if(standardFanartJpg.exists() && !fanartFileUpdateOccured)
 			{
 				try {
-					/*BufferedImage img = ImageIO.read(standardFanartJpg);
-					if(img != null)
-					{
-						BufferedImage scaledImage = ArtWorkPanel.resizeToFanart(img);
-						this.setNewFanart(scaledImage, true);
-						fanartFileUpdateOccured = true;
-					}*/
 					lblFanartIcon.setIcon(new Thumb(standardFanartJpg), new Dimension(maximumFanartSizeX, maximumFanartSizeY));
 					fanartFileUpdateOccured = true;
 				} catch (IOException e) {
@@ -339,12 +220,6 @@ public class ArtWorkPanel extends JPanel implements ComponentListener {
 			try {
 				if(gui.getFileDetailPanel().currentMovie.getPosters().length > 0 )
 				{
-					/*Image posterImage = gui.getFileDetailPanel().currentMovie.getPosters()[0]
-							.getThumbImage();
-					ImageIcon newPosterIcon = new ImageIcon(posterImage);
-					BufferedImage img = (BufferedImage) newPosterIcon.getImage();
-					BufferedImage scaledImage = ArtWorkPanel.resizeToPoster(img);
-					this.setNewPoster(scaledImage, true);*/
 					lblPosterIcon.setIcon(gui.getFileDetailPanel().currentMovie.getPosters()[0], new Dimension(maximumPosterSizeX, maximumPosterSizeY));
 					posterFileUpdateOccured = true;
 				}
@@ -358,14 +233,6 @@ public class ArtWorkPanel extends JPanel implements ComponentListener {
 		if (gui.movieToWriteToDiskList.size() > 0 && gui.movieToWriteToDiskList.get(0) != null && gui.movieToWriteToDiskList.get(0).hasFanart() && !fanartFileUpdateOccured) {
 			if(gui.getFileDetailPanel().currentMovie.getFanart().length > 0)
 			{
-				/*fanartImage = gui.getFileDetailPanel().currentMovie.getFanart()[0]
-						.getThumbImage();
-				ImageIcon newFanartIcon = new ImageIcon(fanartImage);
-				BufferedImage img = (BufferedImage) newFanartIcon.getImage();
-				BufferedImage scaledImage = ArtWorkPanel.resizeToFanart(img);
-				fanartImage = img;
-				this.setNewFanart(scaledImage, false);
-				*/
 				lblFanartIcon.setIcon(gui.getFileDetailPanel().currentMovie.getFanart()[0], new Dimension(maximumFanartSizeX, maximumFanartSizeY));
 				fanartFileUpdateOccured = true;
 				
@@ -388,7 +255,6 @@ public class ArtWorkPanel extends JPanel implements ComponentListener {
 		if(oldSize.width != 0 && oldSize.height != 0 && !updatingPosterAndFanartSizes )
 		{
 			maximumPosterSizeX *= oldSizeToNewSizeScaleWidth;
-			//maximumPosterSizeY *= oldSizeToNewSizeScaleHeight;
 			maximumFanartSizeX = maximumPosterSizeX;
 			maximumFanartSizeY = newSize.height - maximumPosterSizeY - 25;
 
