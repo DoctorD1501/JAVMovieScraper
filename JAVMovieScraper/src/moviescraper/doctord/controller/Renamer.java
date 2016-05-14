@@ -109,7 +109,7 @@ public class Renamer {
 		if(newPath.startsWith(doublePathSeperator))
 		{
 			cutPath = doublePathSeperator;
-			newPath = path.substring(2,path.length());
+			newPath = newPath.substring(2,newPath.length());
 		}
 		while(newPath.contains(doublePathSeperator))
 		{

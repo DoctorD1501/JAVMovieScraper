@@ -84,7 +84,23 @@ public class WriteFileDataAction implements ActionListener {
 								}
 								else if(oldMovieFile.isFile())
 								{
-									FileUtils.moveFile(oldMovieFile, newMovieFile);
+									/* Faster on network shares to move to directory then rename */
+									File oldMovieDirectoryFile = oldMovieFile.getParentFile().getCanonicalFile();
+									File newMovieDirectoryFile = newMovieFile.getParentFile().getCanonicalFile();
+									File oldMovieNameFile = new File(oldMovieFile.getName());
+									File newMovieNameFile = new File(newMovieFile.getName());
+									
+									if(!newMovieDirectoryFile.equals(oldMovieDirectoryFile))
+									{
+										// Move to new directory
+										FileUtils.moveFileToDirectory(oldMovieFile, newMovieDirectoryFile, true);
+									}
+									
+									// Create paths based on new directory and rename file
+									File newDirOldNameFile = new File(newMovieDirectoryFile, oldMovieNameFile.toString());
+									File newDirNewNameFile = new File(newMovieDirectoryFile, newMovieNameFile.toString());
+									
+									FileUtils.moveFile(newDirOldNameFile, newDirNewNameFile);
 								}
 							}
 							catch(FileExistsException e)
