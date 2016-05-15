@@ -68,7 +68,7 @@ public class Movie {
 
 	private Title title;
 	
-	private List<Title> allTitles = new ArrayList<Title>();
+	private List<Title> allTitles = new ArrayList<Title>(); //this is currently not used for much; it used to allow the user to select from one of each title in a drop down box on the file detail panel, but now that amalgamation is here, that feature is not needed as much. It may make sense to put in a generic way to handle selecting between data item sources from amalgamation on a per item basis in the file detail panel, however
 
 	private Top250 top250;
 	

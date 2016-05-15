@@ -251,7 +251,6 @@ public class ArtWorkPanel extends JPanel implements ComponentListener {
 
 		Dimension newSize = e.getComponent().getBounds().getSize();
 		double oldSizeToNewSizeScaleWidth = (double) newSize.width / (double) oldSize.width; 
-		//double oldSizeToNewSizeScaleHeight = (double) newSize.height / (double) oldSize.height;
 		if(oldSize.width != 0 && oldSize.height != 0 && !updatingPosterAndFanartSizes )
 		{
 			maximumPosterSizeX *= oldSizeToNewSizeScaleWidth;

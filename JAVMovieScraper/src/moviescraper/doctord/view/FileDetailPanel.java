@@ -629,6 +629,13 @@ public class FileDetailPanel extends JPanel {
 		//Actors and Genres are automatically generated
 		actorList.updateUI();		
 		artWorkPanel.updateView(forcePosterUpdate, guiMain);
+		
+		if(txtFieldMovieTitleText.getText().length() > 0) {
+			guiMain.enableFileWrite();
+		}
+		else {
+			guiMain.disableFileWrite();
+		}
 	}
 
 
