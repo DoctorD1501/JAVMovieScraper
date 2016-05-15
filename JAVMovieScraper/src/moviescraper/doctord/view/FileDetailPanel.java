@@ -3,7 +3,6 @@ package moviescraper.doctord.view;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
@@ -13,10 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.AbstractListModel;
-import javax.swing.ComboBoxEditor;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -631,10 +627,7 @@ public class FileDetailPanel extends JPanel {
 		
 		
 		//Actors and Genres are automatically generated
-		actorList.updateUI();
-		
-		//txtFieldMovieTitleText.updateUI();
-		
+		actorList.updateUI();		
 		artWorkPanel.updateView(forcePosterUpdate, guiMain);
 	}
 
