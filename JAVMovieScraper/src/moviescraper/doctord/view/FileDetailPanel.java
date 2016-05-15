@@ -50,7 +50,7 @@ public class FileDetailPanel extends JPanel {
 
 	private static final long serialVersionUID = 7088761619568387476L;
 	
-	private JComboBox<String> comboBoxMovieTitleText;
+	private JTextField txtFieldMovieTitleText;
 	private JTextField txtFieldOriginalTitleText;
 	private JTextField txtFieldScrapedYearText;
 	private JTextField txtFieldIDCurrentMovie;
@@ -143,19 +143,13 @@ public class FileDetailPanel extends JPanel {
 		JLabel lblTitle = new JLabel("Title:");
 		fileDetailsPanel.add(lblTitle, getLayoutPositionString(COLUMN_LABEL, ROW_TITLE));
 		
-		//using this workaround for JComboBox constructor for problem with generics in WindowBuilder as per this stackoverflow thread: https://stackoverflow.com/questions/8845139/jcombobox-warning-preventing-opening-the-design-page-in-eclipse
-		comboBoxMovieTitleText = new JComboBox<String>();
-		//Prevent the title of a really long moving from making the combo box way too long
-		//Instead it will only show the first part and the user will have to scroll in the editing box to see the rest
-		comboBoxMovieTitleText.setPrototypeDisplayValue("AAAAAAAAAAAAAAAAAAAAAAAAAAA");
-		comboBoxMovieTitleText.setModel( new TitleListModel() );
-		comboBoxMovieTitleText.addActionListener(new ActionListener(){
+		txtFieldMovieTitleText = new JTextField();
+		txtFieldMovieTitleText.addActionListener(new ActionListener(){
 	        @Override
 	        public void actionPerformed(ActionEvent e) {
-	            System.out.println("action performed on title");
 	            if(currentMovie != null)
 	            {
-	            	String newValue = (String) comboBoxMovieTitleText.getSelectedItem();
+	            	String newValue = (String) txtFieldMovieTitleText.getText();
 	            	if(newValue != null && newValue.length() > 0)
 	            	{
 	            		currentMovie.setTitle(new Title(newValue));
@@ -167,7 +161,7 @@ public class FileDetailPanel extends JPanel {
 	            }
 	        }
 	    });
-		comboBoxMovieTitleText.getEditor().getEditorComponent().addKeyListener(new KeyAdapter() {
+		txtFieldMovieTitleText.addKeyListener(new KeyListener() {
 			
 			@Override
 			public void keyTyped(KeyEvent e) {}
@@ -175,7 +169,7 @@ public class FileDetailPanel extends JPanel {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				System.out.println("Key released");
-				String newValue = (String) comboBoxMovieTitleText.getSelectedItem();
+				String newValue = (String) txtFieldMovieTitleText.getText();
             	if(newValue != null && newValue.length() > 0)
             	{
             		currentMovie.setTitle(new Title(newValue));
@@ -191,7 +185,7 @@ public class FileDetailPanel extends JPanel {
 			public void keyPressed(KeyEvent e) {}
 			
 		});
-		fileDetailsPanel.add(comboBoxMovieTitleText, getLayoutPositionString(COLUMN_FORM_FIELD, ROW_TITLE));
+		fileDetailsPanel.add(txtFieldMovieTitleText, getLayoutPositionString(COLUMN_FORM_FIELD, ROW_TITLE));
 
 
 
@@ -618,8 +612,7 @@ public class FileDetailPanel extends JPanel {
 				this.setTitleEditable(true);
 		//end
 		}
-		comboBoxMovieTitleText.setModel( new TitleListModel() );
-		comboBoxMovieTitleText.setEditable(true);
+		txtFieldMovieTitleText.setText(currentMovie.getTitle().getTitle());
 		txtFieldOriginalTitleText.setText( currentMovie.getOriginalTitle().getOriginalTitle() );
 		txtFieldOriginalTitleText.setCaretPosition(0);
 		txtFieldScrapedYearText.setText( currentMovie.getYear().getYear() );
@@ -636,20 +629,11 @@ public class FileDetailPanel extends JPanel {
 		tagList.setText(toTagListFormat(currentMovie.getTags()));
 		tagList.setCaretPosition(0);
 		
-		//select first Title 
-		//TODO: for some reason this has the side effect of clearing out the data item source of the title in the movieToWriteToDiskList so I may need to revisit this later
-		if ( comboBoxMovieTitleText.getItemCount() > 0 )
-		{
-			comboBoxMovieTitleText.setSelectedIndex(0);
-		}
 		
 		//Actors and Genres are automatically generated
 		actorList.updateUI();
 		
-		comboBoxMovieTitleText.updateUI();
-        ComboBoxEditor editor = comboBoxMovieTitleText.getEditor();
-        JTextField textField = (JTextField)editor.getEditorComponent();
-        textField.setCaretPosition(0);
+		//txtFieldMovieTitleText.updateUI();
 		
 		artWorkPanel.updateView(forcePosterUpdate, guiMain);
 	}
@@ -664,7 +648,7 @@ public class FileDetailPanel extends JPanel {
 	}
 	
 	public void setTitleEditable(boolean value) {
-		comboBoxMovieTitleText.setEditable(value);
+		txtFieldMovieTitleText.setEditable(value);
 	}
 	
 	public ArtWorkPanel getArtWorkPanel() {
@@ -723,21 +707,6 @@ public class FileDetailPanel extends JPanel {
 		
 	}
 	
-	class TitleListModel extends DefaultComboBoxModel<String> {
-
-		private static final long serialVersionUID = -8954125792857066062L;
-
-		@Override
-		public int getSize() {
-			return currentMovie.getAllTitles().size();
-		}
-
-		@Override
-		public String getElementAt(int index) {
-			return currentMovie.getAllTitles().get(index).getTitle();
-		}
-		
-	}
 
 	public JList<Actor> getActorList() {
 		return actorList;
