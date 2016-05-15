@@ -51,6 +51,8 @@ public class GUIMainButtonPanel extends JPanel {
 	private GUIMain guiMain;
 	private Box box;
 	
+	private JButton btnWriteFileData;
+	
 	public GUIMainButtonPanel(GUIMain guiMain)
 	{
 		this.guiMain = guiMain;
@@ -211,9 +213,10 @@ public class GUIMainButtonPanel extends JPanel {
 	{
 		JToolBar fileOperationsButtons = new JToolBar("File");
 		
-		JButton btnWriteFileData = new JButton("Write File Data");
+		btnWriteFileData = new JButton("Write File Data");
+		btnWriteFileData.setEnabled(false); //this becomes enabled later when an actual movie is available to write out
 		btnWriteFileData.addActionListener(new WriteFileDataAction(guiMain));
-		btnWriteFileData.setToolTipText("Write out the .nfo file to disk");
+		btnWriteFileData.setToolTipText("Write out the .nfo file to disk. The movie must have a title for this to be enabled.");
 		btnWriteFileData.setIcon(initializeImageIcon("SaveButton"));
 		
 		JButton btnMoveFileToFolder = new JButton();
@@ -271,26 +274,10 @@ public class GUIMainButtonPanel extends JPanel {
 				Action action = ((JMenuItem)e.getSource()).getAction(); 
 				scrapeButton.setAction(action);
 				String scraperKey = (String)action.getValue(ScrapeAmalgamatedAction.SCRAPE_KEY);
-				//FIXME: fix error with below line of code for specific scraper
 				guiMain.getGuiSettings().setLastUsedScraper(scraperKey);
 			}
 		};
 		
-		/*
-		 * Depracated method
-		Action scrapeJavAction = new ScrapeMovieAction(guiMain);
-		Action scrapeJavAutoAction = new ScrapeMovieActionAutomatic(guiMain);
-		Action scrapeData18MovieAction = new ScrapeMovieActionData18Movie(guiMain);
-		Action scrapeData18WebContentAction = new ScrapeMovieActionData18WebContent(guiMain);
-		scrapeJavAction.putValue(Action.SMALL_ICON, japanIcon);	
-		scrapeJavAutoAction.putValue(Action.SMALL_ICON, japanIcon);	
-		scrapeData18MovieAction.putValue(Action.SMALL_ICON, data18Icon);
-		scrapeData18WebContentAction.putValue(Action.SMALL_ICON, data18Icon);
-		scrapeMenu.add(scrapeJavAction).addActionListener(scrapeActionListener);
-		scrapeMenu.add(scrapeJavAutoAction).addActionListener(scrapeActionListener);
-		scrapeMenu.add(scrapeData18MovieAction).addActionListener(scrapeActionListener);
-		scrapeMenu.add(scrapeData18WebContentAction).addActionListener(scrapeActionListener);
-		*/
 		Action scrapeAdultDVDAmalgamatedAction = new ScrapeAmalgamatedAction(guiMain, guiMain.getAllAmalgamationOrderingPreferences().getScraperGroupAmalgamationPreference(ScraperGroupName.AMERICAN_ADULT_DVD_SCRAPER_GROUP));
 		Action scrapeJAVAmalgamatedAction = new ScrapeAmalgamatedAction(guiMain, guiMain.getAllAmalgamationOrderingPreferences().getScraperGroupAmalgamationPreference(ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP));
 		
@@ -310,7 +297,6 @@ public class GUIMainButtonPanel extends JPanel {
 			ImageIcon icon = profile.getProfileIcon();
 			Action scrapeAction = new ScrapeAmalgamatedAction(guiMain, profile);
 			String siteName = item.toString();
-			//scrapeAction.putValue(Action.NAME, "Scrape " + siteName);
 			scrapeAction.putValue(Action.SMALL_ICON, icon);
 			menuItem.setAction(scrapeAction);
 			menuItem.setText(siteName);
@@ -333,5 +319,17 @@ public class GUIMainButtonPanel extends JPanel {
 		scrapeButtons.add(arrowButton);
 		
 		add(scrapeButtons);
+	}
+	
+	public void disableWriteFile() {
+		if (btnWriteFileData != null) {
+			btnWriteFileData.setEnabled(false);
+		}
+	}
+	
+	public void enableWriteFile() {
+		if (btnWriteFileData != null) {
+			btnWriteFileData.setEnabled(true);
+		}
 	}
 }

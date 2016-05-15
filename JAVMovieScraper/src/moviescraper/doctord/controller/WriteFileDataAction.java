@@ -50,9 +50,11 @@ public class WriteFileDataAction implements ActionListener {
 						//I don't think this should happen anymore, just display an error message instead of executing the above code
 						System.err.println("Code I thought was not supposed to execute did, WriteFileDataAction, line 59");
 					}
-					if(guiMain.movieToWriteToDiskList.get(movieNumberInList) == null)
+					if(guiMain.movieToWriteToDiskList.get(movieNumberInList) == null || 
+							guiMain.movieToWriteToDiskList.get(movieNumberInList).getTitle() == null || 
+							guiMain.movieToWriteToDiskList.get(movieNumberInList).getTitle().getTitle().length() == 0)
 					{
-						System.out.println("No match for this movie in the array, skipping writing");
+						System.out.println("No match for this movie in the array or there was no title filled in; skipping writing");
 						continue;
 					}
 					System.out.println("Writing this movie to file: "

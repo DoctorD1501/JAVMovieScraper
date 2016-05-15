@@ -27,7 +27,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Document;
 
 import moviescraper.doctord.controller.FileDownloaderUtilities;
-import moviescraper.doctord.controller.ScrapeMovieAction;
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.Data18MovieParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.Data18WebContentParsingProfile;
@@ -858,8 +857,7 @@ public class Movie {
 	}*/
 	
 	//Version that allows us to update the GUI while scraping
-	public static Movie scrapeMovie(File movieFile, SiteParsingProfile siteToParseFrom, String urlToScrapeFromDMM, boolean useURLtoScrapeFrom, ScrapeMovieAction scrapeMovieAction) throws IOException{
-		//System.out.println("movieFile = " + movieFile);
+	public static Movie scrapeMovie(File movieFile, SiteParsingProfile siteToParseFrom, String urlToScrapeFromDMM, boolean useURLtoScrapeFrom) throws IOException{
 		
 		//If the user manually canceled the results on this scraper in a dialog box, just return a null movie
 		if(siteToParseFrom.getDiscardResults())
@@ -867,19 +865,10 @@ public class Movie {
 		String searchString = siteToParseFrom.createSearchString(movieFile);
 		SearchResult [] searchResults = null;
 		int searchResultNumberToUse = 0;
-		int amountOfProgressToMakeEachTick = 0;
-		int numberOfTicksToMake = 3;
-		if(scrapeMovieAction != null)
-			amountOfProgressToMakeEachTick = scrapeMovieAction.getAmountOfProgressPerSubtask() / numberOfTicksToMake;
 		//no URL was passed in so we gotta figure it ourselves
 		if(!useURLtoScrapeFrom)
 		{
 		searchResults = siteToParseFrom.getSearchResults(searchString);
-		//make a progress tick - we parsed the site
-		if(scrapeMovieAction != null)
-		{
-			scrapeMovieAction.makeProgress(amountOfProgressToMakeEachTick, siteToParseFrom.toString() + " got search results.");
-		}
 		int levDistanceOfCurrentMatch = 999999; // just some super high number
 		String idFromMovieFile = SiteParsingProfile.findIDTagFromFile(movieFile, siteToParseFrom.isFirstWordOfFileIsID());
 		
@@ -923,10 +912,6 @@ public class Movie {
 				searchResultNumberToUse = 0;
 			}
 				
-			if(scrapeMovieAction != null)
-			{
-				scrapeMovieAction.makeProgress(amountOfProgressToMakeEachTick, siteToParseFrom.toString() + " found search result");
-			}
 		}
 		if (searchResults != null && searchResults.length > 0 && searchResults[searchResultNumberToUse].getUrlPath().length() > 0)
 		{
@@ -936,31 +921,14 @@ public class Movie {
 			Document searchMatch = SiteParsingProfile.downloadDocument(searchResultToUse);
 			siteToParseFrom.setDocument(searchMatch);
 			siteToParseFrom.setOverrideURLDMM(urlToScrapeFromDMM);
-			if(scrapeMovieAction != null)
-			{
-				scrapeMovieAction.makeProgress(amountOfProgressToMakeEachTick, siteToParseFrom.toString() + " found search result");
-			}
 			
 			Movie scrapedMovie = new Movie(siteToParseFrom);
-			if(scrapeMovieAction != null)
-			{
-				scrapeMovieAction.makeProgress(amountOfProgressToMakeEachTick, siteToParseFrom.toString() + " page scraped.");
-			}
 			return scrapedMovie;
 		}
 		else //no movie match found
 		{
-			if(scrapeMovieAction != null)
-			{
-				scrapeMovieAction.makeProgress(amountOfProgressToMakeEachTick, siteToParseFrom.toString() + " scraped movie from page - nothing found");
-			}
 			return null;
 		}
-	}
-
-	//Version that does not allow us to update GUI while scraping
-	public static Movie scrapeMovie(File movieFile, SiteParsingProfile siteToParseFrom, String urlToScrapeFromDMM, boolean useURLtoScrapeFrom) throws IOException{
-		return scrapeMovie(movieFile, siteToParseFrom, urlToScrapeFromDMM, useURLtoScrapeFrom, null);
 	}
 
 	public boolean hasAtLeastOneActorThumbnail() {

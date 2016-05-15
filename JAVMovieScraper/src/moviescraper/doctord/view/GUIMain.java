@@ -7,7 +7,6 @@ import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
-import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -68,14 +67,6 @@ public class GUIMain {
 	private AllAmalgamationOrderingPreferences allAmalgamationOrderingPreferences;
 
 	//scraped movies
-	@Deprecated private Movie currentlySelectedMovieDMM;
-	@Deprecated private Movie currentlySelectedMovieActionJav;
-	@Deprecated private Movie currentlySelectedMovieSquarePlus;
-	@Deprecated private Movie currentlySelectedMovieJavLibrary;
-	@Deprecated private Movie currentlySelectedMovieJavZoo;
-	@Deprecated private Movie currentlySelectedMovieCaribbeancomPremium;
-	@Deprecated private Movie currentlySelectedMovieData18Movie;
-	@Deprecated private Movie currentlySelectedMovieR18;
 	public List <Movie> movieToWriteToDiskList;
 
 	//Gui Elements
@@ -101,7 +92,7 @@ public class GUIMain {
 	private long m_time;
 
 	//Menus
-	JMenuBar menuBar;
+	GUIMainMenuBar menuBar;
 	JMenu preferenceMenu;
 	private String originalJavLibraryMovieTitleBeforeAmalgamate;
 
@@ -209,7 +200,8 @@ public class GUIMain {
 		frmMoviescraper.getContentPane().add(buttonPanel, BorderLayout.NORTH);
 		
 		//add in the menu bar
-		frmMoviescraper.setJMenuBar(new GUIMainMenuBar(this));
+		menuBar = new GUIMainMenuBar(this);
+		frmMoviescraper.setJMenuBar(menuBar);
 
 		int gap = 7;
 		fileListFileDetailSplitPane.setBorder(BorderFactory.createEmptyBorder());
@@ -370,15 +362,7 @@ public class GUIMain {
 	}
 
 	public void removeOldScrapedMovieReferences() {
-		setCurrentlySelectedMovieDMM(null);
-		setCurrentlySelectedMovieActionJav(null);
-		setCurrentlySelectedMovieSquarePlus(null);
-		setCurrentlySelectedMovieJavLibrary(null);
 		setOriginalJavLibraryMovieTitleBeforeAmalgamate(null);
-		setCurrentlySelectedMovieJavZoo(null);
-		setCurrentlySelectedMovieCaribbeancomPremium(null);
-		setCurrentlySelectedMovieData18Movie(null);
-		setCurrentlySelectedMovieR18(null);
 		if(movieToWriteToDiskList != null)
 			movieToWriteToDiskList.clear();
 	}
@@ -629,56 +613,6 @@ public class GUIMain {
 		this.currentlySelectedFanartFileList = currentlySelectedFanartFileList;
 	}
 
-	public Movie getCurrentlySelectedMovieDMM() {
-		return currentlySelectedMovieDMM;
-	}
-
-	public void setCurrentlySelectedMovieDMM(Movie currentlySelectedMovieDMM) {
-		this.currentlySelectedMovieDMM = currentlySelectedMovieDMM;
-	}
-
-	public Movie getCurrentlySelectedMovieJavLibrary() {
-		return currentlySelectedMovieJavLibrary;
-	}
-
-	public void setCurrentlySelectedMovieJavLibrary(
-			Movie currentlySelectedMovieJavLibrary) {
-		this.currentlySelectedMovieJavLibrary = currentlySelectedMovieJavLibrary;
-		if(this.currentlySelectedMovieJavLibrary != null && this.currentlySelectedMovieJavLibrary.getTitle() != null)
-			setOriginalJavLibraryMovieTitleBeforeAmalgamate(currentlySelectedMovieJavLibrary.getTitle().getTitle());
-		else
-		{
-			setOriginalJavLibraryMovieTitleBeforeAmalgamate(null);
-		}
-	}
-
-	public Movie getCurrentlySelectedMovieSquarePlus() {
-		return currentlySelectedMovieSquarePlus;
-	}
-
-	public void setCurrentlySelectedMovieSquarePlus(
-			Movie currentlySelectedMovieSquarePlus) {
-		this.currentlySelectedMovieSquarePlus = currentlySelectedMovieSquarePlus;
-	}
-
-	public Movie getCurrentlySelectedMovieActionJav() {
-		return currentlySelectedMovieActionJav;
-	}
-
-	public void setCurrentlySelectedMovieActionJav(
-			Movie currentlySelectedMovieActionJav) {
-		this.currentlySelectedMovieActionJav = currentlySelectedMovieActionJav;
-	}
-
-	public Movie getCurrentlySelectedMovieJavZoo() {
-		return currentlySelectedMovieJavZoo;
-	}
-
-	public void setCurrentlySelectedMovieJavZoo(
-			Movie currentlySelectedMovieJavZoo) {
-		this.currentlySelectedMovieJavZoo = currentlySelectedMovieJavZoo;
-	}
-
 	public JFileChooser getChooser() {
 		return chooser;
 	}
@@ -749,24 +683,6 @@ public class GUIMain {
 	public void setProgressMonitor(ProgressMonitor progressMonitor) {
 		this.progressMonitor = progressMonitor;
 	}
-
-	public Movie getCurrentlySelectedMovieCaribbeancomPremium() {
-		return currentlySelectedMovieCaribbeancomPremium;
-	}
-
-	public void setCurrentlySelectedMovieCaribbeancomPremium(
-			Movie currentlySelectedMovieCaribbeancomPremium) {
-		this.currentlySelectedMovieCaribbeancomPremium = currentlySelectedMovieCaribbeancomPremium;
-	}
-
-	public Movie getCurrentlySelectedMovieData18Movie() {
-		return currentlySelectedMovieData18Movie;
-	}
-
-	public void setCurrentlySelectedMovieData18Movie(
-			Movie currentlySelectedMovieData18Movie) {
-		this.currentlySelectedMovieData18Movie = currentlySelectedMovieData18Movie;
-	}
 	
 	public void showMessageConsolePanel(){
 		messageConsolePanel.setVisible(true);
@@ -786,14 +702,6 @@ public class GUIMain {
 	public void hideButtonPanel(){
 		buttonPanel.setVisible(false);
 		guiSettings.setShowToolbar(false);
-	}
-	
-	public Movie getCurrentlySelectedMovieR18() {
-		return currentlySelectedMovieR18;
-	}
-
-	public void setCurrentlySelectedMovieR18(Movie currentlySelectedMovieR18) {
-		this.currentlySelectedMovieR18 = currentlySelectedMovieR18;
 	}
 
 	public String getOriginalJavLibraryMovieTitleBeforeAmalgamate() {
@@ -821,6 +729,16 @@ public class GUIMain {
 	public void setAllAmalgamationOrderingPreferences(
 			AllAmalgamationOrderingPreferences allAmalgamationOrderingPreferences) {
 		this.allAmalgamationOrderingPreferences = allAmalgamationOrderingPreferences;
+	}
+	
+	public void enableFileWrite() {
+		menuBar.enableWriteFile();
+		buttonPanel.enableWriteFile();
+	}
+	
+	public void disableFileWrite() {
+		menuBar.disableWriteFile();
+		buttonPanel.disableWriteFile();
 	}
 	
 }

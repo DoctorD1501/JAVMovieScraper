@@ -12,6 +12,7 @@ import javax.swing.event.ListSelectionListener;
 import org.apache.commons.io.IOUtils;
 import moviescraper.doctord.controller.xmlserialization.KodiXmlMovieBean;
 import moviescraper.doctord.model.Movie;
+import moviescraper.doctord.model.MovieFactory;
 import moviescraper.doctord.model.dataitem.Thumb;
 import moviescraper.doctord.view.GUIMain;
 
@@ -39,8 +40,7 @@ public class SelectFileListAction implements ListSelectionListener {
 
 			} else {
 				//totally new selection
-				//if(guiMain.getFileList().getSelectedValuesList().size() == 1)
-					this.guiMain.removeOldSelectedFileReferences();
+				this.guiMain.removeOldSelectedFileReferences();
 
 				
 				for(File currentSelectedFile : this.guiMain.getFileList().getSelectedValuesList())
@@ -91,14 +91,36 @@ public class SelectFileListAction implements ListSelectionListener {
 				}
 				if(!readInAnInfo)
 				{
+					guiMain.movieToWriteToDiskList.add(MovieFactory.createEmptyMovie());
 					this.guiMain.updateAllFieldsOfFileDetailPanel(false, false);
 				}
 				this.guiMain.debugWriter("currentlySelectedMovieFileList: " + guiMain.getCurrentlySelectedMovieFileList());
 				this.guiMain.debugWriter("movieToWriteToDiskList: " + guiMain.movieToWriteToDiskList.size());
 				
-
+				//Update gui with whether we have a valid movie to write to disk
+				if(shouldFileWritingBeEnabled()) {
+					guiMain.enableFileWrite();
+				}
+				else {
+					guiMain.disableFileWrite();
+				}
 			}
 		}
+	}
+	
+	/**
+	 * 
+	 * @return true if any movie in the movie list has a title at least one letter long
+	 */
+	private boolean shouldFileWritingBeEnabled() {
+		boolean fileWritingEnabled = false;
+		for(Movie currentMovie : guiMain.movieToWriteToDiskList) {
+			if(currentMovie != null && currentMovie.getTitle() != null && currentMovie.getTitle().getTitle() != null && currentMovie.getTitle().getTitle().length() > 0) {
+				fileWritingEnabled = true;
+				break;
+			}
+		}
+		return fileWritingEnabled;
 	}
 	
 	protected void readMovieFromNfoFile(File nfoFile) {
@@ -142,31 +164,17 @@ public class SelectFileListAction implements ListSelectionListener {
 						currentPosters[0] = thumbFromDisk;
 					}
 				}
-
-				// The poster read from the URL is not resized. We used to do a resize here when this was only a jav scraper, but for now i've turned this off
-				else if (guiMain.movieToWriteToDiskList.get(0).hasPoster()) {
-					//Thumb[] currentPosters = movieToWriteToDiskList.get(0).getPosters();
-					//this was the old method before I wrote in method from pythoncovercrop. it is no longer used
-					/*currentPosters[0] = new Thumb(currentPosters[0].getThumbURL()
-						.toString(), 52.7, 0, 0, 0);*/
-					//for now don't resize
-					//currentPosters[0] = new Thumb(currentPosters[0].getThumbURL().toString(), true);
-				}
 			}
 		} catch (FileNotFoundException e) {
-			//JOptionPane.showMessageDialog(null, ExceptionUtils.getStackTrace(e),"Unhandled Exception",JOptionPane.ERROR_MESSAGE);
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
-			//JOptionPane.showMessageDialog(null, ExceptionUtils.getStackTrace(e),"Unhandled Exception",JOptionPane.ERROR_MESSAGE);
-
 		}
 		finally
 		{
 			try {
 				fisTargetFile.close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			finally

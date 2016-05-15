@@ -3,6 +3,7 @@ package moviescraper.doctord.view;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
@@ -151,39 +152,45 @@ public class FileDetailPanel extends JPanel {
 		comboBoxMovieTitleText.addActionListener(new ActionListener(){
 	        @Override
 	        public void actionPerformed(ActionEvent e) {
-	            
+	            System.out.println("action performed on title");
 	            if(currentMovie != null)
 	            {
 	            	String newValue = (String) comboBoxMovieTitleText.getSelectedItem();
-	            	if(newValue != null)
+	            	if(newValue != null && newValue.length() > 0)
 	            	{
 	            		currentMovie.setTitle(new Title(newValue));
+	            		guiMain.enableFileWrite();
+	            	}
+	            	else {
+	            		guiMain.disableFileWrite();
 	            	}
 	            }
 	        }
 	    });
-		comboBoxMovieTitleText.getEditor().getEditorComponent().addKeyListener(new KeyListener() {
+		comboBoxMovieTitleText.getEditor().getEditorComponent().addKeyListener(new KeyAdapter() {
 			
 			@Override
-			public void keyTyped(KeyEvent e) {
-			}
+			public void keyTyped(KeyEvent e) {}
 			
 			@Override
 			public void keyReleased(KeyEvent e) {
+				System.out.println("Key released");
 				String newValue = (String) comboBoxMovieTitleText.getSelectedItem();
-            	if(newValue != null)
+            	if(newValue != null && newValue.length() > 0)
             	{
             		currentMovie.setTitle(new Title(newValue));
+            		guiMain.enableFileWrite();
+            	}
+            	else {
+            		guiMain.disableFileWrite();
             	}
 				
 			}
 
 			@Override
-			public void keyPressed(KeyEvent e) {
-			}
+			public void keyPressed(KeyEvent e) {}
 			
 		});
-		//movieTitlePanel.add(comboBoxMovieTitleText);
 		fileDetailsPanel.add(comboBoxMovieTitleText, getLayoutPositionString(COLUMN_FORM_FIELD, ROW_TITLE));
 
 
@@ -607,30 +614,6 @@ public class FileDetailPanel extends JPanel {
 					this.getCurrentMovie().getAllTitles().add(new Title(fileName));
 			}
 			
-			if(guiMain.getCurrentlySelectedMovieR18() != null)
-				this.getCurrentMovie().getAllTitles().add( guiMain.getCurrentlySelectedMovieR18().getTitle() );
-			if(guiMain.getCurrentlySelectedMovieDMM() != null)
-				this.getCurrentMovie().getAllTitles().add( guiMain.getCurrentlySelectedMovieDMM().getTitle() );
-			if(guiMain.getCurrentlySelectedMovieJavLibrary() != null)
-			{
-				//we might have replaced JavLib's title during amalgamation, so let's get the original one
-				//before this happens in the drop down title list
-				if(guiMain.getOriginalJavLibraryMovieTitleBeforeAmalgamate() != null && 
-						guiMain.getOriginalJavLibraryMovieTitleBeforeAmalgamate().length() > 0)
-				{
-					this.getCurrentMovie().getAllTitles().add(new Title(guiMain.getOriginalJavLibraryMovieTitleBeforeAmalgamate()));
-				}
-				else
-				{
-					this.getCurrentMovie().getAllTitles().add( guiMain.getCurrentlySelectedMovieJavLibrary().getTitle() );
-				}
-			}
-			if(guiMain.getCurrentlySelectedMovieSquarePlus() != null)
-				this.getCurrentMovie().getAllTitles().add( guiMain.getCurrentlySelectedMovieSquarePlus().getTitle() );
-			if(guiMain.getCurrentlySelectedMovieActionJav() != null)
-				this.getCurrentMovie().getAllTitles().add( guiMain.getCurrentlySelectedMovieActionJav().getTitle() );
-			if(guiMain.getCurrentlySelectedMovieJavZoo() != null)
-				this.getCurrentMovie().getAllTitles().add( guiMain.getCurrentlySelectedMovieJavZoo().getTitle() );
 			if(this.getCurrentMovie().getAllTitles().size() > 0)
 				this.setTitleEditable(true);
 		//end
@@ -763,14 +746,6 @@ public class FileDetailPanel extends JPanel {
 	public void setActorList(JList<Actor> actorList) {
 		this.actorList = actorList;
 	}
-
-	/*public JList<Genre> getGenreList() {
-		return genreList;
-	}
-
-	public void setGenreList(JList<Genre> genreList) {
-		this.genreList = genreList;
-	}*/
 	
 	public JTextField getGenreList()
 	{

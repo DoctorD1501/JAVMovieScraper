@@ -46,6 +46,7 @@ public class GUIMainMenuBar extends JMenuBar{
 	private MoviescraperPreferences preferences;
 	private GUIMain guiMain;
 	
+	private JMenuItem writeFileMenuItem;
 
 	
 	public GUIMainMenuBar(GUIMain guiMain)
@@ -143,6 +144,13 @@ public class GUIMainMenuBar extends JMenuBar{
 				() -> getPreferences().getAppendIDToStartOfTitle());
 		submenu.add(appendIDToStartOfTitle);
 		
+		//Checkbox for option to use file name as the scraped title every time
+		JCheckBoxMenuItem useFilenameAsScrapedMovieTitle = createCheckBoxMenuItem(
+				"Title Field is Always Set as Filename", 
+				b -> getPreferences().setUseFileNameAsTitle(b), 
+				() -> getPreferences().getUseFileNameAsTitle());
+		submenu.add(useFilenameAsScrapedMovieTitle);
+		
 		return submenu;
 	}
 
@@ -183,12 +191,6 @@ public class GUIMainMenuBar extends JMenuBar{
 				() -> getPreferences().getIsFirstWordOfFileID());
 		submenu.add(isFirstWordOfFileID);
 		
-		//Checkbox for option to use file name as the scraped title every time
-		JCheckBoxMenuItem useFilenameAsScrapedMovieTitle = createCheckBoxMenuItem(
-				"Use Filename as Title When Scraping", 
-				b -> getPreferences().setUseFileNameAsTitle(b), 
-				() -> getPreferences().getUseFileNameAsTitle());
-		submenu.add(useFilenameAsScrapedMovieTitle);
 		
 		return submenu;
 	}
@@ -350,12 +352,14 @@ public class GUIMainMenuBar extends JMenuBar{
 		playMovie.addActionListener(new PlayMovieAction(guiMain));
 		fileMenu.add(playMovie);
 
-		JMenuItem writeFile = new JMenuItem("Write File Data");
-		writeFile.setMnemonic(KeyEvent.VK_W);
-		writeFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W,
+		writeFileMenuItem = new JMenuItem("Write File Data");
+		writeFileMenuItem.setToolTipText("Write out the .nfo file to disk. The movie must have a title for this to be enabled.");
+		writeFileMenuItem.setEnabled(false); //this becomes enabled later when there is an actual movie to write
+		writeFileMenuItem.setMnemonic(KeyEvent.VK_W);
+		writeFileMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W,
 				Event.CTRL_MASK));
-		writeFile.addActionListener(new WriteFileDataAction(guiMain));
-		fileMenu.add(writeFile);
+		writeFileMenuItem.addActionListener(new WriteFileDataAction(guiMain));
+		fileMenu.add(writeFileMenuItem);
 		
 		JMenuItem moveFile = new JMenuItem("Move File to New Folder");
 		moveFile.setMnemonic(KeyEvent.VK_M);
@@ -444,24 +448,6 @@ public class GUIMainMenuBar extends JMenuBar{
 		JMenu scrapeMenu = new JMenu("Scrape");
 		scrapeMenu.setMnemonic(KeyEvent.VK_S);
 		
-		/*Deprecated
-		JMenuItem scrapeJav = new JMenuItem(new ScrapeMovieAction(guiMain));
-		scrapeJav.setText(scrapeJav.getText() + "...");
-		scrapeJav.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, Event.CTRL_MASK | Event.SHIFT_MASK));
-		
-		JMenuItem scrapeJavAuto = new JMenuItem(new ScrapeMovieActionAutomatic(guiMain));
-		scrapeJavAuto.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, Event.CTRL_MASK));
-		
-		JMenuItem scrapeData18Movie = new JMenuItem(new ScrapeMovieActionData18Movie(guiMain));
-		scrapeData18Movie.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, Event.CTRL_MASK | Event.SHIFT_MASK));
-		
-		JMenuItem scrapeData18WebContent = new JMenuItem(new ScrapeMovieActionData18WebContent(guiMain));
-		scrapeData18WebContent.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, Event.CTRL_MASK));
-		scrapeMenu.add(scrapeJav);
-		scrapeMenu.add(scrapeJavAuto);
-		scrapeMenu.add(scrapeData18Movie);
-		scrapeMenu.add(scrapeData18WebContent);
-		*/
 		JMenuItem scrapeAdultDVDAmalgamated = new JMenuItem(new ScrapeAmalgamatedAction(guiMain, 
 				guiMain.getAllAmalgamationOrderingPreferences()
 				.getScraperGroupAmalgamationPreference(ScraperGroupName.AMERICAN_ADULT_DVD_SCRAPER_GROUP)));
@@ -542,6 +528,19 @@ public class GUIMainMenuBar extends JMenuBar{
 	
 	private MoviescraperPreferences getPreferences(){
 		return preferences;
+	}
+	
+	
+	public void disableWriteFile() {
+		if (writeFileMenuItem != null) {
+			writeFileMenuItem.setEnabled(false);
+		}
+	}
+	
+	public void enableWriteFile() {
+		if (writeFileMenuItem != null) {
+			writeFileMenuItem.setEnabled(true);
+		}
 	}
 
 }
