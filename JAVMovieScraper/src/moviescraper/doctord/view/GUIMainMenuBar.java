@@ -267,6 +267,13 @@ public class GUIMainMenuBar extends JMenuBar{
 				b -> getPreferences().setNfoNamedMovieDotNfo(b), 
 				() -> getPreferences().getNfoNamedMovieDotNfo());
 		submenu.add(nfoNamedMovieDotNfo);
+		
+		//Checkbox for whether to write the <thumb> tags into the nfo file
+		JCheckBoxMenuItem writeThumbTagsForPosterAndFanartToNfo = createCheckBoxMenuItem(
+				"Write <thumb> tags for poster and fanart into .nfo file", 
+				b -> getPreferences().setWriteThumbTagsForPosterAndFanartToNfo(b), 
+				() -> getPreferences().getWriteThumbTagsForPosterAndFanartToNfo());
+		submenu.add(writeThumbTagsForPosterAndFanartToNfo);
 
 		return submenu;
 	}
