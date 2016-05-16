@@ -8,7 +8,10 @@ The data is then fed through a machine translation (if original data is in Japan
 
 
 
-This program is in alpha. Please submit bugs and feature requests here on github on the issues page!
+This program is in alpha. Please submit bugs and feature requests here on github on the [issues page](https://github.com/DoctorD1501/JAVMovieScraper/issues).
+
+### [Download the latest JAVMovieScraper.jar release here to get started! ](https://github.com/DoctorD1501/JAVMovieScraper/releases)
+
 ## Screenshots
 Main Window
 ![alt text](https://github.com/DoctorD1501/JAVMovieScraper/blob/gh-pages/images/JAVMovieScraperScreenShot1%20-%20Main%20Window.jpg "Main Window")
