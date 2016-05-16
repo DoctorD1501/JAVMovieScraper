@@ -9,6 +9,7 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 import moviescraper.doctord.model.Movie;
 import moviescraper.doctord.model.dataitem.*;
 import moviescraper.doctord.model.dataitem.Runtime;
+import moviescraper.doctord.model.preferences.MoviescraperPreferences;
 
 /**
  * Class which handles serializing a Movie object to and from XML
@@ -56,6 +57,12 @@ public class KodiXmlMovieBean {
 
 	}
 
+	/**
+	 * Constructor - handles conversion of a Movie object to a KodiXmlMovieBean object.
+	 * Program preferences are taken into account when performing the object conversion so that, for example,
+	 * certain fields will not be written to the XML
+	 * @param movie - Movie to create the KodiXmlMovieBean from
+	 */
 	public KodiXmlMovieBean(Movie movie) {
 		title = movie.getTitle().getTitle();
 		originaltitle = movie.getOriginalTitle().getOriginalTitle();
@@ -72,13 +79,27 @@ public class KodiXmlMovieBean {
 		runtime = movie.getRuntime().getRuntime();
 		releasedate = movie.getReleaseDate().getReleaseDate();
 		studio = movie.getStudio().getStudio();
-		// thumb
-		thumb = new String[movie.getPosters().length];
-		for (int i = 0; i < movie.getPosters().length; i++) {
-			thumb[i] = movie.getPosters()[i].getThumbURL().toString();
+		
+		// thumb - aka Posters
+		// Preference value allows the user to not write out poster values to the file
+		if(MoviescraperPreferences.getInstance().getWriteThumbTagsForPosterAndFanartToNfo()) {
+			thumb = new String[movie.getPosters().length];
+			for (int i = 0; i < movie.getPosters().length; i++) {
+				thumb[i] = movie.getPosters()[i].getThumbURL().toString();
+			}
+		}
+		else {
+			thumb = new String[0];
 		}
 		
-		fanart = new KodiXmlFanartBean(movie.getFanart());
+		//fanart
+		// Preference value allows the user to not write out fanart values to the file
+		if(MoviescraperPreferences.getInstance().getWriteThumbTagsForPosterAndFanartToNfo()) {
+			fanart = new KodiXmlFanartBean(movie.getFanart());
+		}
+		else {
+			fanart = new KodiXmlFanartBean(new Thumb[0]);
+		}
 		
 		mpaa = movie.getMpaa().getMPAARating();
 		id = movie.getId().getId();
