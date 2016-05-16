@@ -139,7 +139,7 @@ public class FileDetailPanel extends JPanel {
 		JLabel lblTitle = new JLabel("Title:");
 		fileDetailsPanel.add(lblTitle, getLayoutPositionString(COLUMN_LABEL, ROW_TITLE));
 		
-		txtFieldMovieTitleText = new JTextField();
+		txtFieldMovieTitleText = new JTextField("", DEFAULT_TEXTFIELD_LENGTH);
 		txtFieldMovieTitleText.addActionListener(new ActionListener(){
 	        @Override
 	        public void actionPerformed(ActionEvent e) {
