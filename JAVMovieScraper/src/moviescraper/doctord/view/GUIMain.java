@@ -4,7 +4,6 @@ import java.awt.EventQueue;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JOptionPane;
@@ -47,6 +46,8 @@ import java.awt.event.MouseListener;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
+import javafx.embed.swing.JFXPanel;
+import javafx.stage.DirectoryChooser;
 import javax.swing.BoxLayout;
 import javax.swing.event.ListSelectionListener;
 
@@ -80,7 +81,7 @@ public class GUIMain {
 	private JScrollPane fileListScrollPane;
 	private JSplitPane fileListFileDetailSplitPane;
 	private JList<File> fileList;
-	private JFileChooser chooser;
+	private DirectoryChooser chooser;
 	
 	private MessageConsolePanel messageConsolePanel;
 	
@@ -103,6 +104,9 @@ public class GUIMain {
 	private final static boolean debugMessages = false;
 	private GUIMainButtonPanel buttonPanel;
 
+	//JavaFX stuff
+	private final JFXPanel fxPanel = new JFXPanel(); //ensures the JavaFX library is loaded - allows us to use DirectoryChooser later on
+	
 	/**
 	 * Launch the application.
 	 */
@@ -613,11 +617,11 @@ public class GUIMain {
 		this.currentlySelectedFanartFileList = currentlySelectedFanartFileList;
 	}
 
-	public JFileChooser getChooser() {
+	public DirectoryChooser getChooser() {
 		return chooser;
 	}
 
-	public void setChooser(JFileChooser chooser) {
+	public void setChooser(DirectoryChooser chooser) {
 		this.chooser = chooser;
 	}
 

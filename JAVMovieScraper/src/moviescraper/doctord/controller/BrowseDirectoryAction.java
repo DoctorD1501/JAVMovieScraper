@@ -5,62 +5,66 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileFilter;
-
+import javax.swing.SwingUtilities;
+import javafx.application.Platform;
+import javafx.stage.DirectoryChooser;
 import moviescraper.doctord.view.GUIMain;
 
 public class BrowseDirectoryAction implements ActionListener {
-	/**
-	 * 
-	 */
 	private final GUIMain guiMain;
-
-	/**
-	 * @param guiMain
-	 */
 	public BrowseDirectoryAction(GUIMain guiMain) {
 		this.guiMain = guiMain;
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		this.guiMain.setChooser(new JFileChooser());
-		//remember our last used directory and start the search there
-		if(this.guiMain.getGuiSettings().getLastUsedDirectory().exists())
-			this.guiMain.getChooser().setCurrentDirectory(this.guiMain.getGuiSettings().getLastUsedDirectory());
-		this.guiMain.getChooser().setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-		this.guiMain.getChooser().setAcceptAllFileFilterUsed(false);
-		this.guiMain.getChooser().setFileFilter( new FileFilter(){
+		this.guiMain.setChooser(createDirectoryFileChooser());
+		// remember our last used directory and start the search there
+		if (this.guiMain.getGuiSettings().getLastUsedDirectory().exists())
+			this.guiMain.getChooser().setInitialDirectory(this.guiMain.getGuiSettings().getLastUsedDirectory());
 
-	            @Override
-	            public boolean accept(File f) {
-	                return f.isDirectory();
-	            }
+		// required so we have access to
+		// this variable inside the
+		// runnable
+		final GUIMain myGuiMain = this.guiMain;
 
-	            @Override
-	            public String getDescription() {
-	                return "Directories only";
-	            }
-	        });
-		int returnVal = this.guiMain.getChooser().showOpenDialog(this.guiMain.getFrmMoviescraper());
-		if (returnVal == JFileChooser.APPROVE_OPTION) {
+		Platform.runLater(new Runnable() {
+			@Override
+			// run on javafx thread - required since our file chooser is a
+			// javafx thing
+			public void run() {
+				File returnVal = myGuiMain.getChooser().showDialog(null);
+				if (returnVal != null) {
 
-			this.guiMain.setCurrentlySelectedDirectoryList(this.guiMain.getChooser().getSelectedFile());
+					SwingUtilities.invokeLater(new Runnable() {
+						@Override
+						public void run() {
+							// run back on swing thread - the rest of the
+							// program is swing :)
+							myGuiMain.setCurrentlySelectedDirectoryList(returnVal);
 
-			//display a wait cursor while repopulating the list
-			//as this can sometimes be slow
-			try{
-				this.guiMain.getFrmMoviescraper().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-				this.guiMain.updateFileListModel(this.guiMain.getCurrentlySelectedDirectoryList(), false);
+							// display a wait cursor while repopulating the list
+							// as this can sometimes be slow
+							try {
+								myGuiMain.getFrmMoviescraper()
+										.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+								myGuiMain.updateFileListModel(myGuiMain.getCurrentlySelectedDirectoryList(), false);
+							} finally {
+								myGuiMain.getGuiSettings()
+										.setLastUsedDirectory(myGuiMain.getCurrentlySelectedDirectoryList());
+								myGuiMain.getFrmMoviescraper().setCursor(Cursor.getDefaultCursor());
+							}
+						}
+					});
+				}
 			}
-			finally
-			{
-				this.guiMain.getGuiSettings().setLastUsedDirectory(this.guiMain.getCurrentlySelectedDirectoryList());
-				this.guiMain.getFrmMoviescraper().setCursor(Cursor.getDefaultCursor());
-			}
+		});
 
-
-		}
+	}
+	
+	private static DirectoryChooser createDirectoryFileChooser() {
+		DirectoryChooser fileChooser = new DirectoryChooser();
+        fileChooser.setTitle("Pick Scraping Directory");
+        return fileChooser;
 	}
 }
