@@ -10,6 +10,7 @@ import javax.swing.JOptionPane;
 
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.model.Movie;
+import moviescraper.doctord.model.MovieFactory;
 import moviescraper.doctord.model.preferences.MoviescraperPreferences;
 import moviescraper.doctord.view.GUIMain;
 
@@ -45,6 +46,8 @@ public class MoveToNewFolderAction extends AbstractAction {
 				//set the cursor to busy as this could take more than 1 or 2 seconds while files are copied or extrafanart is downloaded from the internet
 				this.guiMain.getFrmMoviescraper().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 				boolean usedReanmerModule = false;
+				boolean isFileDirectory = false;
+				Movie currentMovie = MovieFactory.createEmptyMovie();
 				if (this.guiMain.getCurrentlySelectedMovieFileList() != null
 						&& this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList).exists() 
 						&& this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList).isFile()) {
@@ -58,7 +61,7 @@ public class MoveToNewFolderAction extends AbstractAction {
 							&& this.guiMain.movieToWriteToDiskList.size() > 0
 							&& this.guiMain.movieToWriteToDiskList.get(movieNumberInList) != null) {
 						File fileToRename = this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList);
-						Movie currentMovie = this.guiMain.movieToWriteToDiskList.get(movieNumberInList);
+						currentMovie = this.guiMain.movieToWriteToDiskList.get(movieNumberInList);
 						
 						/*String possibleID = this.guiMain.movieToWriteToDiskList.get(movieNumberInList).getId().getId()
 								.toUpperCase();
@@ -84,10 +87,11 @@ public class MoveToNewFolderAction extends AbstractAction {
 						//Figure out all the new names
 						destinationDirectoryPrefix = renamer.getNewFileName(true);
 						usedReanmerModule = true;
+						isFileDirectory = fileToRename.isDirectory();
 
 					}
 					File destDir;
-					if(usedReanmerModule)
+					if(usedReanmerModule && (isFileDirectory || currentMovie.hasValidTitle()))
 					{
 						destDir = new File(destinationDirectoryPrefix);
 					}
@@ -97,7 +101,7 @@ public class MoveToNewFolderAction extends AbstractAction {
 							this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList).getParentFile()
 							.getCanonicalPath()
 							+ pathSeperator
-							+ destinationDirectoryPrefix
+							/*+ destinationDirectoryPrefix */
 							+ SiteParsingProfile.stripDiscNumber(FilenameUtils
 									.getBaseName(this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList)
 											.getName())));
