@@ -533,7 +533,8 @@ public class GUIMain {
 	public File[] actorFolderFiles(int movieNumberInList) {
 		ArrayList<File> actorFiles = new ArrayList<File>();
 		if(movieToWriteToDiskList != null 
-				&& movieToWriteToDiskList.size() > 0 
+				&& movieToWriteToDiskList.size() > 0
+				&& movieToWriteToDiskList.size() > movieNumberInList
 				&& movieToWriteToDiskList.get(movieNumberInList) != null
 				&& movieToWriteToDiskList.get(movieNumberInList).getActors() != null)
 		{

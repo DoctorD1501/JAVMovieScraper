@@ -51,8 +51,7 @@ public class WriteFileDataAction implements ActionListener {
 						System.err.println("Code I thought was not supposed to execute did, WriteFileDataAction, line 59");
 					}
 					if(guiMain.movieToWriteToDiskList.get(movieNumberInList) == null || 
-							guiMain.movieToWriteToDiskList.get(movieNumberInList).getTitle() == null || 
-							guiMain.movieToWriteToDiskList.get(movieNumberInList).getTitle().getTitle().length() == 0)
+							!guiMain.movieToWriteToDiskList.get(movieNumberInList).hasValidTitle())
 					{
 						System.out.println("No match for this movie in the array or there was no title filled in; skipping writing");
 						continue;

@@ -220,8 +220,7 @@ public class Movie {
 	private void appendIDToStartOfTitle()
 	{
 		if(MoviescraperPreferences.getInstance().getAppendIDToStartOfTitle() && id != null && 
-				id.getId() != null && id.getId().trim().length() > 0 && title != null &&
-				title.getTitle() != null && title.getTitle().length() > 0)
+				id.getId() != null && id.getId().trim().length() > 0 && hasValidTitle())
 		{
 			title.setTitle(id.getId() + " - " + title.getTitle());
 		}

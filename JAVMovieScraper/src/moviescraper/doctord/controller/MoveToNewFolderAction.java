@@ -59,6 +59,7 @@ public class MoveToNewFolderAction extends AbstractAction {
 					
 					if (this.guiMain.movieToWriteToDiskList != null 
 							&& this.guiMain.movieToWriteToDiskList.size() > 0
+							&& this.guiMain.movieToWriteToDiskList.size() > movieNumberInList
 							&& this.guiMain.movieToWriteToDiskList.get(movieNumberInList) != null) {
 						File fileToRename = this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList);
 						currentMovie = this.guiMain.movieToWriteToDiskList.get(movieNumberInList);
@@ -101,14 +102,16 @@ public class MoveToNewFolderAction extends AbstractAction {
 							this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList).getParentFile()
 							.getCanonicalPath()
 							+ pathSeperator
-							/*+ destinationDirectoryPrefix */
 							+ SiteParsingProfile.stripDiscNumber(FilenameUtils
 									.getBaseName(this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList)
 											.getName())));
 					}
 					this.guiMain.clearAllFieldsOfFileDetailPanel();
 					//copy over the .actor folder items to the destination folder, but only if the preference is set and the usual sanity checking is done
-					if (this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList).isFile() && this.guiMain.getCurrentlySelectedActorsFolderList() != null && this.guiMain.getPreferences().getDownloadActorImagesToActorFolderPreference())
+					if (this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList).isFile() 
+							&& this.guiMain.getCurrentlySelectedActorsFolderList() != null
+							&& this.guiMain.getCurrentlySelectedActorsFolderList().size() > movieNumberInList
+							&& this.guiMain.getPreferences().getDownloadActorImagesToActorFolderPreference())
 					{
 						File [] actorFilesToCopy = this.guiMain.actorFolderFiles(movieNumberInList);
 						File actorsFolderDestDir = new File(destDir.getPath() + File.separator + ".actors");

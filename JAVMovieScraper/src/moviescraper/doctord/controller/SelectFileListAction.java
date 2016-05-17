@@ -115,7 +115,7 @@ public class SelectFileListAction implements ListSelectionListener {
 	private boolean shouldFileWritingBeEnabled() {
 		boolean fileWritingEnabled = false;
 		for(Movie currentMovie : guiMain.movieToWriteToDiskList) {
-			if(currentMovie != null && currentMovie.getTitle() != null && currentMovie.getTitle().getTitle() != null && currentMovie.getTitle().getTitle().length() > 0) {
+			if(currentMovie != null && currentMovie.hasValidTitle()) {
 				fileWritingEnabled = true;
 				break;
 			}
