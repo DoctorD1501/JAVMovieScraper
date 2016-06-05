@@ -105,6 +105,9 @@ public class GUIMain {
 	private GUIMainButtonPanel buttonPanel;
 
 	//JavaFX stuff
+	//Ignore warnings about this not being used. It is used for the file browser. 
+	//You can comment this variable out and you will see the file browsing no longer works :)
+	@SuppressWarnings("unused")
 	private final JFXPanel fxPanel = new JFXPanel(); //ensures the JavaFX library is loaded - allows us to use DirectoryChooser later on
 	
 	/**

@@ -13,6 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
+import moviescraper.doctord.model.Movie;
 import moviescraper.doctord.model.SearchResult;
 import moviescraper.doctord.model.dataitem.Actor;
 import moviescraper.doctord.model.dataitem.Director;
@@ -144,6 +145,32 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 		Element plotElement = document.select("div.gen12 p:contains(Story:)").first();
 		if(plotElement != null)
 			return new Plot(plotElement.ownText());
+		//maybe if this is a scene, there is a link to the full movie where we can grab the plot from there
+		else if(plotElement == null) {
+			Element relatedMovieTextElement = document.select("div p:containsOwn(Related Movie:)").first();
+			//the actual related movie is the text's parent's previous element, if it is there
+			if(relatedMovieTextElement != null && relatedMovieTextElement.parent() != null && relatedMovieTextElement.parent().previousElementSibling() != null) {
+				Element relatedMovieElement = relatedMovieTextElement.parent().previousElementSibling().select("a[href*=/movies/]").first();
+				if(relatedMovieElement != null) {
+					//Using the full movie's plot since this is a single scene and it does not have its own plot
+					String urlOfMovie = relatedMovieElement.attr("href");
+					if(urlOfMovie != null && urlOfMovie.length() > 0) {
+						Data18MovieParsingProfile parser = new Data18MovieParsingProfile();
+						parser.setOverridenSearchResult(urlOfMovie);
+						try {
+							Document doc = Jsoup.connect(urlOfMovie).userAgent(getRandomUserAgent()).referrer("http://www.google.com").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
+							parser.setDocument(doc);
+							Plot data18FullMoviePlot = parser.scrapePlot();
+							System.out.println("Using full movie's plot instead of scene's plot (which wasn't found): " + data18FullMoviePlot.getPlot());
+							return data18FullMoviePlot;
+						}
+						catch(IOException e) {
+							return Plot.BLANK_PLOT;
+						}
+					}
+				}
+			}
+		}
 		return Plot.BLANK_PLOT;
 	}
 

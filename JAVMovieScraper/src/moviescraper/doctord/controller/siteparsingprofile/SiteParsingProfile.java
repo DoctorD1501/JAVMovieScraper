@@ -84,7 +84,8 @@ public abstract class SiteParsingProfile implements DataItemSource{
 
 	public Document document; // the base page to start parsing from
 	
-	public String overrideURLDMM;
+	@Deprecated
+	public String overrideURLDMM; //TODO: no longer used variable - will be removed later
 	
 	private boolean extraFanartScrapingEnabled = false;
 	
