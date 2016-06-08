@@ -106,9 +106,8 @@ public class RenamerGUI extends JFrame {
 	public RenamerGUI(final MoviescraperPreferences preferences, Movie sampleMovie, File sampleFile) {
 		this.setTitle("Rename Settings");
 		this.setIconImage(GUICommon.getProgramIcon());
-		System.out.println("calling constr with sampleMovie = " + sampleMovie);
 		this.sampleMovie = sampleMovie;
-		if(this.sampleMovie == null)
+		if(this.sampleMovie == null || !this.sampleMovie.hasValidTitle())
 			this.sampleMovie = getFakeMovie();
 		if(sampleFile == null)
 			this.sampleFile = getFakeFile();
@@ -319,11 +318,7 @@ public class RenamerGUI extends JFrame {
 		return new File("C:/Temp/Good old Movie.avi");
 	}
 
-	private Movie getFakeMovie() {
-		
-		if(sampleMovie != null)
-			return sampleMovie;
-		
+	private Movie getFakeMovie() {		
 		
 		Actor actorA = new Actor("Actor A", null, null);
 		Actor actorB = new Actor("Actor B", null, null);
