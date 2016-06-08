@@ -3,6 +3,7 @@ package moviescraper.doctord.controller.siteparsingprofile.specific;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,7 +47,7 @@ import moviescraper.doctord.model.dataitem.Year;
 public class R18ParsingProfile extends SiteParsingProfile implements SpecificProfile {
 	
 	private static final SimpleDateFormat r18ReleaseDateFormat = new SimpleDateFormat("MMM. dd,yyyy", Locale.ENGLISH);
-	
+	private static final SimpleDateFormat r18ReleaseDateFormatAlternate = new SimpleDateFormat("MMM dd,yyyy", Locale.ENGLISH);
 	@Override
 	public String getParserName() {
 		return "R18.com";
@@ -127,7 +128,14 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 		Element releaseDateElement = document.select("div.product-details dl dt:contains(Release Date) ~ dd").first();
 		if(releaseDateElement != null && releaseDateElement.text().length() > 4)
 		{
-			return new ReleaseDate(releaseDateElement.text().trim(), r18ReleaseDateFormat);
+			//months abbreviated e.g.: "Oct."
+			SimpleDateFormat formatToUse = r18ReleaseDateFormat;
+			//month did not get abreviated
+			if (!releaseDateElement.text().trim().contains(".")) {
+				formatToUse = r18ReleaseDateFormatAlternate;
+			}
+			ReleaseDate releaseDate = new ReleaseDate(releaseDateElement.text().trim(), formatToUse);
+			return releaseDate;	
 		}
 		return ReleaseDate.BLANK_RELEASEDATE;
 	}
