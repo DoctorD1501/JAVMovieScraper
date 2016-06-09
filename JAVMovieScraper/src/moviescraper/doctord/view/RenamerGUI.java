@@ -318,7 +318,11 @@ public class RenamerGUI extends JFrame {
 		return new File("C:/Temp/Good old Movie.avi");
 	}
 
-	private Movie getFakeMovie() {		
+	private Movie getFakeMovie() {
+		
+		if(sampleMovie != null && sampleMovie.hasValidTitle())
+			return sampleMovie;
+		
 		
 		Actor actorA = new Actor("Actor A", null, null);
 		Actor actorB = new Actor("Actor B", null, null);
