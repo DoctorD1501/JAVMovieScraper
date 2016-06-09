@@ -144,34 +144,35 @@ public class ArtWorkPanel extends JPanel implements ComponentListener {
 	public void updateView(boolean forceUpdatePoster, GUIMain gui) {
 		boolean posterFileUpdateOccured = false;
 		boolean fanartFileUpdateOccured = false;
+		int indexOfShownMovie = gui.getFileDetailPanel().currentListIndexOfDisplayedMovie;
 		if(!forceUpdatePoster && gui.getCurrentlySelectedMovieFileList().size() > 0)
 		{
 			// try to get the poster from a local file, if it exists
 			//Maybe there is a file in the directory just called folder.jpg
-			File potentialOtherPosterJpg = new File(Movie.getFileNameOfPoster(gui.getCurrentlySelectedMovieFileList().get(0), true));
-			File potentialOtherFanartJpg = new File(Movie.getFileNameOfFanart(gui.getCurrentlySelectedMovieFileList().get(0), true));
+			File potentialOtherPosterJpg = new File(Movie.getFileNameOfPoster(gui.getCurrentlySelectedMovieFileList().get(indexOfShownMovie), true));
+			File potentialOtherFanartJpg = new File(Movie.getFileNameOfFanart(gui.getCurrentlySelectedMovieFileList().get(indexOfShownMovie), true));
 			//the poster would be called moviename-poster.jpg
-			File standardPosterJpg = new File(Movie.getFileNameOfPoster(gui.getCurrentlySelectedMovieFileList().get(0), false));
-			File standardFanartJpg = new File(Movie.getFileNameOfFanart(gui.getCurrentlySelectedMovieFileList().get(0), false));
-			if (gui.getCurrentlySelectedPosterFileList().get(0).exists()) {
+			File standardPosterJpg = new File(Movie.getFileNameOfPoster(gui.getCurrentlySelectedMovieFileList().get(indexOfShownMovie), false));
+			File standardFanartJpg = new File(Movie.getFileNameOfFanart(gui.getCurrentlySelectedMovieFileList().get(indexOfShownMovie), false));
+			if (gui.getCurrentlySelectedPosterFileList().get(indexOfShownMovie).exists()) {
 				try {
-					lblPosterIcon.setIcon(new Thumb(gui.getCurrentlySelectedPosterFileList().get(0)), new Dimension(maximumPosterSizeX, maximumPosterSizeY));
+					lblPosterIcon.setIcon(new Thumb(gui.getCurrentlySelectedPosterFileList().get(indexOfShownMovie)), new Dimension(maximumPosterSizeX, maximumPosterSizeY));
 					posterFileUpdateOccured = true;
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			}
-			if(gui.getCurrentlySelectedFanartFileList().get(0).exists())
+			if(gui.getCurrentlySelectedFanartFileList().get(indexOfShownMovie).exists())
 			{
 				try {
-					lblFanartIcon.setIcon(new Thumb(gui.getCurrentlySelectedFanartFileList().get(0)), new Dimension(maximumFanartSizeX, maximumFanartSizeY));
+					lblFanartIcon.setIcon(new Thumb(gui.getCurrentlySelectedFanartFileList().get(indexOfShownMovie)), new Dimension(maximumFanartSizeX, maximumFanartSizeY));
 					fanartFileUpdateOccured = true;
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			}
 			//well we didn't find a poster file we were expecting, try to see if there is any file named poster.jpg in there
-			if(gui.getCurrentlySelectedMovieFileList().get(0).isDirectory() && potentialOtherPosterJpg.exists() && !posterFileUpdateOccured)
+			if(gui.getCurrentlySelectedMovieFileList().get(indexOfShownMovie).isDirectory() && potentialOtherPosterJpg.exists() && !posterFileUpdateOccured)
 			{
 				try {
 					lblPosterIcon.setIcon(new Thumb(potentialOtherPosterJpg), new Dimension(maximumPosterSizeX, maximumPosterSizeY));
@@ -182,7 +183,7 @@ public class ArtWorkPanel extends JPanel implements ComponentListener {
 				}
 			}
 			//well we didn't find a fanart file we were expecting, try to see if there is any file named fanart.jpg in there
-			if(gui.getCurrentlySelectedMovieFileList().get(0).isDirectory() && potentialOtherFanartJpg.exists() && !fanartFileUpdateOccured)
+			if(gui.getCurrentlySelectedMovieFileList().get(indexOfShownMovie).isDirectory() && potentialOtherFanartJpg.exists() && !fanartFileUpdateOccured)
 			{
 				try {
 					lblFanartIcon.setIcon(new Thumb(potentialOtherFanartJpg), new Dimension(maximumFanartSizeX, maximumFanartSizeY));
@@ -216,7 +217,7 @@ public class ArtWorkPanel extends JPanel implements ComponentListener {
 			}
 		}
 		// otherwise read it from the URL specified by the object since we couldn't find any local file
-		if (gui.movieToWriteToDiskList.size() > 0 && gui.movieToWriteToDiskList.get(0) != null && gui.movieToWriteToDiskList.get(0).hasPoster() && !posterFileUpdateOccured) {
+		if (gui.movieToWriteToDiskList.size() > 0 && gui.movieToWriteToDiskList.get(indexOfShownMovie) != null && gui.movieToWriteToDiskList.get(indexOfShownMovie).hasPoster() && !posterFileUpdateOccured) {
 			try {
 				if(gui.getFileDetailPanel().currentMovie.getPosters().length > 0 )
 				{
@@ -230,7 +231,7 @@ public class ArtWorkPanel extends JPanel implements ComponentListener {
 		}
 
 		//try to read the fanart from the url since we couldn't find any local file
-		if (gui.movieToWriteToDiskList.size() > 0 && gui.movieToWriteToDiskList.get(0) != null && gui.movieToWriteToDiskList.get(0).hasFanart() && !fanartFileUpdateOccured) {
+		if (gui.movieToWriteToDiskList.size() > 0 && gui.movieToWriteToDiskList.get(indexOfShownMovie) != null && gui.movieToWriteToDiskList.get(indexOfShownMovie).hasFanart() && !fanartFileUpdateOccured) {
 			if(gui.getFileDetailPanel().currentMovie.getFanart().length > 0)
 			{
 				lblFanartIcon.setIcon(gui.getFileDetailPanel().currentMovie.getFanart()[0], new Dimension(maximumFanartSizeX, maximumFanartSizeY));

@@ -465,6 +465,7 @@ public class GUIMain {
 
 	//Update the File Detail Panel GUI so the user can see what is scraped in
 	public void updateAllFieldsOfFileDetailPanel(boolean forceUpdatePoster, boolean newMovieWasSet) {
+			fileDetailPanel.currentListIndexOfDisplayedMovie = 0;
 			fileDetailPanel.updateView(forceUpdatePoster, newMovieWasSet);
 	}
 

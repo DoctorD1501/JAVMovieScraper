@@ -11,8 +11,9 @@ import java.util.Map;
 import moviescraper.doctord.controller.FileDownloaderUtilities;
 
 public class ImageCache {
-	private static Map<URL, Image> cache = Collections.synchronizedMap(new HashMap<URL, Image>());
-	private static Map<URL, Image> modifiedImageCache = Collections.synchronizedMap(new HashMap<URL, Image>());
+	private static final int initialCapacity = 200;
+	private static Map<URL, Image> cache = Collections.synchronizedMap(new HashMap<URL, Image>(initialCapacity));
+	private static Map<URL, Image> modifiedImageCache = Collections.synchronizedMap(new HashMap<URL, Image>(initialCapacity));
 	
 	public static Image getImageFromCache(URL url, boolean isImageModified) throws IOException
 	{
@@ -47,6 +48,7 @@ public class ImageCache {
                 System.out.println("We ran out of memory..clearing the cache. It was size " + cache.size() 
                 		+ " before the clear");
                 cacheToUse.clear();
+                System.gc();
                 return FileDownloaderUtilities.getImageFromUrl(url);
             }
 			catch(IOException e)
@@ -66,6 +68,8 @@ public class ImageCache {
 		//Ideally, I would boot out old items first, but I would need a new data structure to do this, probably
 		//by using a library already written that handles all the cache stuff rather than just using a map like I'm doing
 		//in this class
+		
+		//TODO: purge old items instead of the whole world. get a real cache library from a 3rd party
 		if(cacheToUse.size() > 300)
 		{
 			System.out.println("Clearing cache - cache had " + cacheToUse.size() + " items before clearing.");

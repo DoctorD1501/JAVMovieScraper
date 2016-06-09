@@ -83,15 +83,13 @@ public class WebReleaseRenamer extends ReleaseRenamer {
 		return readFromCSVFile("/moviescraper/doctord/controller/releaserenamer/SiteNameAbbreviations.csv");
 	}
 
-	public List<CSVRecord> readFromCSVFile(String filePath) throws IOException
-	{
-		InputStream inputStream = getClass().getResourceAsStream(filePath);
+	public List<CSVRecord> readFromCSVFile(String filePath) throws IOException {
 		CSVFormat format = CSVFormat.RFC4180.withDelimiter(',').withCommentMarker('#');
-		CSVParser parser = new CSVParser(new InputStreamReader(inputStream), format);
-		List<CSVRecord> csvRecords = parser.getRecords();
-		parser.close();
-		inputStream.close();
-		return csvRecords;
+		try (InputStream inputStream = getClass().getResourceAsStream(filePath);
+				CSVParser parser = new CSVParser(new InputStreamReader(inputStream), format);) {
+			List<CSVRecord> csvRecords = parser.getRecords();
+			return csvRecords;
+		}
 	}
 
 }

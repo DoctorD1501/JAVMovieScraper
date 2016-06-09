@@ -3,6 +3,7 @@ package moviescraper.doctord.controller;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -28,8 +29,11 @@ public class FileDownloaderUtilities {
 	
 	public static Image getImageFromUrl(URL url) throws IOException
 	{
-		Image imageFromUrl = ImageIO.read(FileDownloaderUtilities.getDefaultUrlConnection(url).getInputStream());
-		return imageFromUrl;
+		URLConnection urlConnectionToUse = FileDownloaderUtilities.getDefaultUrlConnection(url);
+		try (InputStream inputStreamToUse = urlConnectionToUse.getInputStream();) {
+			Image imageFromUrl = ImageIO.read(inputStreamToUse);
+			return imageFromUrl;
+		}
 	}
 	
 	public static void writeURLToFile(URL url, File file) throws IOException

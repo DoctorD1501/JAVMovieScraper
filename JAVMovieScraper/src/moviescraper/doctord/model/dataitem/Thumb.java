@@ -6,6 +6,7 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.lang.ref.SoftReference;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -20,10 +21,13 @@ import org.apache.commons.io.FileUtils;
 public class Thumb extends MovieDataItem {
 	private URL thumbURL;
 	private URL previewURL; //smaller version of the image used in GUI pickers
-	Image thumbImage;
-	Image previewThumbImage;
-	ImageIcon imageIconThumbImage;
-	ImageIcon previewIconThumbImage;
+	
+	//use soft references here to hold onto our memory of a loaded up image for as long as possible and only GC it when we have no choice
+	//note that the strong reference will be in the image cache. the image cache has logic in place to purge items if it gets too full
+	private SoftReference<? extends Image> thumbImage;
+	private SoftReference<? extends Image> previewThumbImage;
+	private SoftReference<? extends ImageIcon> imageIconThumbImage;
+	private SoftReference<? extends ImageIcon> previewIconThumbImage;
 	private String thumbLabel;
 	private boolean loadedFromDisk;
 	protected final static int connectionTimeout = 10000; //10 seconds
@@ -42,9 +46,9 @@ public class Thumb extends MovieDataItem {
 	}
 
 	public ImageIcon getImageIconThumbImage() {
-		if(thumbURL == null && imageIconThumbImage != null)
+		if(thumbURL == null && imageIconThumbImage.get() != null)
 		{
-			return imageIconThumbImage;
+			return imageIconThumbImage.get();
 		}
 		try {
 			getThumbImage();
@@ -52,12 +56,12 @@ public class Thumb extends MovieDataItem {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return imageIconThumbImage;
+		return imageIconThumbImage.get();
 	}
 	
 	public ImageIcon getPreviewImageIconThumbImage(){
-		if(previewURL == null && previewIconThumbImage != null)
-			return previewIconThumbImage;
+		if(previewURL == null && previewIconThumbImage.get() != null)
+			return previewIconThumbImage.get();
 		try{
 			getPreviewImage();
 		}
@@ -65,7 +69,7 @@ public class Thumb extends MovieDataItem {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return previewIconThumbImage;
+		return previewIconThumbImage.get();
 	}
 
 
@@ -77,8 +81,8 @@ public class Thumb extends MovieDataItem {
 	}
 
 	public void setThumbImage(Image thumbImage) {
-		this.thumbImage = thumbImage;
-		this.imageIconThumbImage = new ImageIcon(this.thumbImage);
+		this.thumbImage = new SoftReference<Image>(thumbImage);
+		this.imageIconThumbImage = new SoftReference<ImageIcon>(new ImageIcon(this.thumbImage.get()));
 		needToReloadThumbImage = false;
 	}
 
@@ -91,6 +95,8 @@ public class Thumb extends MovieDataItem {
 	}
 
 	//call this with whole numbers for percents; must be smaller than 100 and greater than 0
+	//Don't use this anymore - it will mess up the new soft references
+	@Deprecated
 	public Thumb (String url, double horizontalPercentLeft, double horizontalPercentRight, double verticalPercentTop, double verticalPercentBottom) throws IOException
 	{
 		//System.out.println("old crop method being called");
@@ -103,19 +109,21 @@ public class Thumb extends MovieDataItem {
 		int newYTop = (int) (0 + (tempImage.getHeight()*(verticalPercentTop/100))); //top y bound of rectangle
 		int newYBottom = (int) (tempImage.getHeight() - (tempImage.getHeight()*(verticalPercentBottom/100))); //bottom y bound of rectangle
 		tempImage = tempImage.getSubimage(newXLeft, newYTop, newXRight - newXLeft, newYBottom - newYTop);
-		thumbImage = tempImage;
-		imageIconThumbImage = new ImageIcon(thumbImage);
+		thumbImage = new SoftReference<Image>(tempImage);
+		imageIconThumbImage = new SoftReference<ImageIcon>(new ImageIcon(thumbImage.get()));
 		needToReloadThumbImage = false;
 	}
 	
+	@Deprecated
+	//Don't use this anymore  - it will mess up the new soft references
 	public Thumb(String url, int croppedWidth) throws IOException {
 		thumbURL = new URL(url);
 		this.isImageModified = true;
 		BufferedImage tempImage = (BufferedImage)ImageCache.getImageFromCache(thumbURL, isImageModified);
 		int startWidth = tempImage.getWidth() - croppedWidth;
 		tempImage = tempImage.getSubimage(startWidth, 0, croppedWidth, tempImage.getHeight());
-		thumbImage = tempImage;
-		imageIconThumbImage = new ImageIcon(tempImage);
+		thumbImage = new SoftReference<Image>(tempImage);
+		imageIconThumbImage = new SoftReference<ImageIcon>(new ImageIcon(tempImage));
 		needToReloadThumbImage = false;
 	}
 	
@@ -135,8 +143,8 @@ public class Thumb extends MovieDataItem {
 		else {
 			this.isImageModified = false;
 		}
-		thumbImage = tempImage;
-		imageIconThumbImage = new ImageIcon(tempImage);
+		thumbImage = new SoftReference<BufferedImage>(tempImage);
+		imageIconThumbImage = new SoftReference<ImageIcon>(new ImageIcon(tempImage));
 		needToReloadThumbImage = false;
 	}
 	
@@ -314,8 +322,8 @@ public class Thumb extends MovieDataItem {
 	}
 
 	public void setImage(Image thumbImage){
-		this.thumbImage = thumbImage;
-		this.imageIconThumbImage = new ImageIcon(thumbImage);
+		this.thumbImage = new SoftReference<Image>(thumbImage);
+		this.imageIconThumbImage = new SoftReference<ImageIcon>(new ImageIcon(thumbImage));
 		needToReloadThumbImage = false;
 	}
 
@@ -324,18 +332,18 @@ public class Thumb extends MovieDataItem {
 		if(thumbURL == null)
 		{
 			needToReloadThumbImage = false;
-			return thumbImage;
+			return thumbImage.get();
 		}
-		if((needToReloadThumbImage) || (thumbImage == null))
+		if((needToReloadThumbImage) || (thumbImage == null) || thumbImage.get() == null)
 		{
 			//rather than downloading the image every time, we can instead see if it's already in the cache
 			//if it's not in the cache, then we will actually download the image
-			thumbImage = ImageCache.getImageFromCache(thumbURL, isImageModified);
-			imageIconThumbImage = new ImageIcon(thumbImage);
+			thumbImage = new SoftReference<Image>(ImageCache.getImageFromCache(thumbURL, isImageModified));
+			imageIconThumbImage = new SoftReference<ImageIcon>(new ImageIcon(thumbImage.get()));
 
 			needToReloadThumbImage = false;
 		}
-		return thumbImage;
+		return thumbImage.get();
 	}
 	
 	/**
@@ -352,15 +360,15 @@ public class Thumb extends MovieDataItem {
 		if(previewURL == null)
 		{
 			needToReloadPreviewImage = false;
-			return previewThumbImage;
+			return previewThumbImage.get();
 		}
-		if(needToReloadPreviewImage || previewThumbImage == null)
+		if(needToReloadPreviewImage || previewThumbImage == null || previewThumbImage.get() == null)
 		{
-			previewThumbImage = ImageCache.getImageFromCache(previewURL, isImageModified);
-			previewIconThumbImage = new ImageIcon(previewThumbImage);
+			previewThumbImage = new SoftReference<Image>(ImageCache.getImageFromCache(previewURL, isImageModified));
+			previewIconThumbImage = new SoftReference<ImageIcon>(new ImageIcon(previewThumbImage.get()));
 			needToReloadPreviewImage = false;
 		}
-		return previewThumbImage;
+		return previewThumbImage.get();
 	}
 
 	@Override
@@ -448,19 +456,23 @@ public class Thumb extends MovieDataItem {
 		this.isImageModified = value;
 	}
 	
-	public BufferedImage toBufferedImage()
+	public BufferedImage toBufferedImage() throws IOException
 	{
-	    if (thumbImage instanceof BufferedImage)
+		//in case our reference has gone cold, reget it from the cache/internet
+		if (thumbImage.get() == null) {
+			getThumbImage();
+		}
+	    if (thumbImage.get() instanceof BufferedImage)
 	    {
-	        return (BufferedImage) thumbImage;
+	        return (BufferedImage) thumbImage.get();
 	    }
 
 	    // Create a buffered image
-	    BufferedImage bimage = new BufferedImage(thumbImage.getWidth(null), thumbImage.getHeight(null), BufferedImage.TYPE_INT_RGB);
+	    BufferedImage bimage = new BufferedImage(thumbImage.get().getWidth(null), thumbImage.get().getHeight(null), BufferedImage.TYPE_INT_RGB);
 
 	    // Draw the image on to the buffered image
 	    Graphics2D bGr = bimage.createGraphics();
-	    bGr.drawImage(thumbImage, 0, 0, null);
+	    bGr.drawImage(thumbImage.get(), 0, 0, null);
 	    bGr.dispose();
 
 	    // Return the buffered image

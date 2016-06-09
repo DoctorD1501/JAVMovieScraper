@@ -1,5 +1,6 @@
 package moviescraper.doctord.view;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,6 +14,7 @@ import java.util.List;
 
 import javax.swing.AbstractListModel;
 import javax.swing.DefaultListModel;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -64,6 +66,8 @@ public class FileDetailPanel extends JPanel {
 	private final static int DEFAULT_TEXTFIELD_LENGTH = 35;
 	
 	public GUIMain guiMain;
+	
+	public int currentListIndexOfDisplayedMovie = 0;
 
 	private JTextField txtFieldReleaseDateText;
 	
@@ -71,18 +75,23 @@ public class FileDetailPanel extends JPanel {
 	private static final int COLUMN_FORM_FIELD = 4;
 	private static final int COLUMN_ARTWORK_PANEL = 6;
 	
-	private static final int ROW_TITLE = 2;
+	private static final int ROW_CHANGE_MOVIE_BUTTONS = 2;
 	private static final int ROW_ARTWORK_PANEL = 2;
-	private static final int ROW_ORIGINAL_TITLE = 4;
-	private static final int ROW_YEAR = 6;
-	private static final int ROW_RELEASE_DATE = 8;
-	private static final int ROW_ID = 10;
-	private static final int ROW_STUDIO = 12;
-	private static final int ROW_MOVIE_SET = 14;
-	private static final int ROW_PLOT = 16;
-	private static final int ROW_GENRES = 18;
-	private static final int ROW_TAGS = 20;
-	private static final int ROW_ACTORS = 22;
+	private static final int ROW_TITLE = 4;
+	private static final int ROW_ORIGINAL_TITLE = 6;
+	private static final int ROW_YEAR = 8;
+	private static final int ROW_RELEASE_DATE = 10;
+	private static final int ROW_ID = 12;
+	private static final int ROW_STUDIO = 14;
+	private static final int ROW_MOVIE_SET = 16;
+	private static final int ROW_PLOT = 18;
+	private static final int ROW_GENRES = 20;
+	private static final int ROW_TAGS = 22;
+	private static final int ROW_ACTORS = 24;
+
+	private JButton previousMovieButton;
+
+	private JButton nextMovieButton;
 	
 
 	/**
@@ -104,7 +113,9 @@ public class FileDetailPanel extends JPanel {
 			},
 			new RowSpec[] {
 				FormFactory.RELATED_GAP_ROWSPEC, //1 - empty space
-				FormFactory.DEFAULT_ROWSPEC, //2 - Title and artwork panel
+				FormFactory.DEFAULT_ROWSPEC, //navigation buttons and artwork panel
+				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC, //2 - Title
 				FormFactory.RELATED_GAP_ROWSPEC,//3 - empty space
 				FormFactory.DEFAULT_ROWSPEC,//4 - original title
 				FormFactory.RELATED_GAP_ROWSPEC,//5 - empty space
@@ -128,14 +139,20 @@ public class FileDetailPanel extends JPanel {
 				FormFactory.RELATED_GAP_ROWSPEC//23 - empty space
 				});
 		
-
-		
-		
-		//formLayout.setColumnGroups(new int[][]{{4, 6}});
-		
 		fileDetailsPanel.setLayout(formLayout);
 
 
+		previousMovieButton = new JButton("Previous Movie");
+		previousMovieButton.addActionListener(e -> handlePreviousMovieSelected());
+		nextMovieButton = new JButton("Next Movie");
+		nextMovieButton.addActionListener(e -> handleNextMovieSelected());
+		JPanel movieNavigationButtonsPanel = new JPanel(new BorderLayout());
+		movieNavigationButtonsPanel.add(previousMovieButton, BorderLayout.WEST);
+		movieNavigationButtonsPanel.add(nextMovieButton, BorderLayout.EAST);
+
+		
+		fileDetailsPanel.add(movieNavigationButtonsPanel, getLayoutPositionString(COLUMN_FORM_FIELD, ROW_CHANGE_MOVIE_BUTTONS));
+		
 		JLabel lblTitle = new JLabel("Title:");
 		fileDetailsPanel.add(lblTitle, getLayoutPositionString(COLUMN_LABEL, ROW_TITLE));
 		
@@ -164,7 +181,6 @@ public class FileDetailPanel extends JPanel {
 			
 			@Override
 			public void keyReleased(KeyEvent e) {
-				System.out.println("Key released");
 				String newValue = (String) txtFieldMovieTitleText.getText();
             	if(newValue != null && newValue.length() > 0)
             	{
@@ -542,6 +558,60 @@ public class FileDetailPanel extends JPanel {
 
 		
 	}
+	
+	/**
+	 * Updates the view by setting the previous selected movie as the movie which is showing
+	 */
+	private void handlePreviousMovieSelected() {
+		previousMovieButton.setEnabled(false);
+		try {
+			int positionOfCurrentMovie = findPositionOfCurrentlySelectedMovie();
+			int positionOfPreviousMovie = positionOfCurrentMovie - 1;
+			if(positionOfCurrentMovie >= 0 && positionOfPreviousMovie < guiMain.movieToWriteToDiskList.size() && positionOfPreviousMovie >= 0) {
+				Movie nextMovie = guiMain.movieToWriteToDiskList.get(positionOfPreviousMovie);
+				if (nextMovie != null) {
+					currentListIndexOfDisplayedMovie = positionOfPreviousMovie;
+					setNewMovie(nextMovie, false, false);
+				}
+			}
+		}
+		finally {
+			previousMovieButton.setEnabled(true);
+		}
+	}
+
+	/**
+	 * Updates the view by setting the next selected movie as the movie which is showing
+	 */
+	private void handleNextMovieSelected() {
+		nextMovieButton.setEnabled(false);
+		try {
+			int positionOfCurrentMovie = findPositionOfCurrentlySelectedMovie();
+			int positionOfNextMovie = positionOfCurrentMovie + 1;
+			if(positionOfCurrentMovie >= 0 && positionOfNextMovie < guiMain.movieToWriteToDiskList.size()) {
+				Movie nextMovie = guiMain.movieToWriteToDiskList.get(positionOfNextMovie);
+				if (nextMovie != null) {
+					currentListIndexOfDisplayedMovie = positionOfNextMovie;
+					setNewMovie(nextMovie, false, false);
+				}
+			}
+		}
+		finally {
+			nextMovieButton.setEnabled(true);
+		}
+	}
+	
+	//returns -1 if not found
+	private int findPositionOfCurrentlySelectedMovie() {
+		if(guiMain != null && guiMain.movieToWriteToDiskList != null) {
+			for(int i = 0; i < guiMain.movieToWriteToDiskList.size(); i++) {
+				if(guiMain.movieToWriteToDiskList.get(i).equals(currentMovie))
+					return i;
+			}
+		}
+		return -1;
+	}
+	
 	/**
 	 * Sets a new movie and updates a view
 	 * @param newMovie the movie this fileDetailPanel will show
@@ -589,11 +659,11 @@ public class FileDetailPanel extends JPanel {
 		//begin
 		if ((movieToWriteToDiskList == null || movieToWriteToDiskList.size() == 0) && !newMovieWasSet) {
 			clearView();
-		} else if (movieToWriteToDiskList != null && movieToWriteToDiskList.get(0) != null) {
+		} else if (movieToWriteToDiskList != null && movieToWriteToDiskList.get(currentListIndexOfDisplayedMovie) != null) {
 			if(!newMovieWasSet)
 				clearView();
 			if(!newMovieWasSet)
-				this.setCurrentMovie(movieToWriteToDiskList.get(0));
+				this.setCurrentMovie(movieToWriteToDiskList.get(currentListIndexOfDisplayedMovie));
 
 			//All the titles from the various versions scraped of this movie from the different sites
 			if(movieToWriteToDiskList != null)
