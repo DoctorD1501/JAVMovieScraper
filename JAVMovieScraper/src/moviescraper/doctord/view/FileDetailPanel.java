@@ -590,6 +590,9 @@ public class FileDetailPanel extends JPanel {
 				pathTextField.setCaretPosition(0);
 			}
 		}
+		else {
+			pathTextField.setText("");
+		}
 		
 	}
 
@@ -598,13 +601,15 @@ public class FileDetailPanel extends JPanel {
 	 */
 	private void handlePreviousMovieSelected() {
 		int positionOfCurrentMovie = findPositionOfCurrentlySelectedMovie();
+		if(positionOfCurrentMovie == -1)
+			positionOfCurrentMovie = currentListIndexOfDisplayedMovie;
 		int positionOfPreviousMovie = positionOfCurrentMovie - 1;
 		if(positionOfCurrentMovie >= 0 && positionOfPreviousMovie < guiMain.movieToWriteToDiskList.size() && positionOfPreviousMovie >= 0) {
-			Movie nextMovie = guiMain.movieToWriteToDiskList.get(positionOfPreviousMovie);
-			if (nextMovie != null) {
+			Movie previousMovie = guiMain.movieToWriteToDiskList.get(positionOfPreviousMovie);
+			//if (previousMovie != null) {
 				currentListIndexOfDisplayedMovie = positionOfPreviousMovie;
-				setNewMovie(nextMovie, false, false);
-			}
+				setNewMovie(previousMovie, false, false);
+			//}
 		}
 	}
 
@@ -614,21 +619,24 @@ public class FileDetailPanel extends JPanel {
 	private void handleNextMovieSelected() {
 
 		int positionOfCurrentMovie = findPositionOfCurrentlySelectedMovie();
+		if(positionOfCurrentMovie == -1)
+			positionOfCurrentMovie = currentListIndexOfDisplayedMovie;
 		int positionOfNextMovie = positionOfCurrentMovie + 1;
 		if(positionOfCurrentMovie >= 0 && positionOfNextMovie < guiMain.movieToWriteToDiskList.size()) {
 			Movie nextMovie = guiMain.movieToWriteToDiskList.get(positionOfNextMovie);
-			if (nextMovie != null) {
+			//if (nextMovie != null) {
 				currentListIndexOfDisplayedMovie = positionOfNextMovie;
 				setNewMovie(nextMovie, false, false);
-			}
+			//}
 		}
 	}
 	
 	//returns -1 if not found
 	private int findPositionOfCurrentlySelectedMovie() {
-		if(guiMain != null && guiMain.movieToWriteToDiskList != null) {
+		if(guiMain != null && guiMain.movieToWriteToDiskList != null && currentMovie != null) {
 			for(int i = 0; i < guiMain.movieToWriteToDiskList.size(); i++) {
-				if(guiMain.movieToWriteToDiskList.get(i).equals(currentMovie))
+				if(guiMain.movieToWriteToDiskList.get(i) != null && 
+				guiMain.movieToWriteToDiskList.get(i).equals(currentMovie))
 					return i;
 			}
 		}
@@ -658,6 +666,13 @@ public class FileDetailPanel extends JPanel {
 			setCurrentMovie(newMovie);
 			updateView(forcePosterUpdate, modifyWriteToDiskList);
 		}
+		else {
+			clearView();
+			updatePathTextField();
+			changeEnabledStatusOfPreviousAndNextButtons();
+			updateNumberInListSelectedLabel();
+			updateView(true,false);
+		}
 	}
 	
 	public void clearView() {
@@ -676,7 +691,7 @@ public class FileDetailPanel extends JPanel {
 		
 		List<Movie> movieToWriteToDiskList = guiMain.getMovieToWriteToDiskList();
 		//do i need this?
-		currentListIndexOfDisplayedMovie = Math.max(findPositionOfCurrentlySelectedMovie(),0);
+		//currentListIndexOfDisplayedMovie = Math.max(findPositionOfCurrentlySelectedMovie(),0);
 		
 		if(newMovieWasSet && movieToWriteToDiskList.size() == 0)
 		{
