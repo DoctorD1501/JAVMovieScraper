@@ -14,7 +14,6 @@ import org.apache.commons.io.IOUtils;
 import moviescraper.doctord.controller.xmlserialization.KodiXmlMovieBean;
 import moviescraper.doctord.model.Movie;
 import moviescraper.doctord.model.MovieFactory;
-import moviescraper.doctord.model.dataitem.Thumb;
 import moviescraper.doctord.view.GUIMain;
 
 public class SelectFileListAction implements ListSelectionListener {

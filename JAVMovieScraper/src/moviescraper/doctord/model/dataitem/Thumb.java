@@ -114,19 +114,6 @@ public class Thumb extends MovieDataItem {
 		needToReloadThumbImage = false;
 	}
 	
-	@Deprecated
-	//Don't use this anymore  - it will mess up the new soft references
-	public Thumb(String url, int croppedWidth) throws IOException {
-		thumbURL = new URL(url);
-		this.isImageModified = true;
-		BufferedImage tempImage = (BufferedImage)ImageCache.getImageFromCache(thumbURL, isImageModified);
-		int startWidth = tempImage.getWidth() - croppedWidth;
-		tempImage = tempImage.getSubimage(startWidth, 0, croppedWidth, tempImage.getHeight());
-		thumbImage = new SoftReference<Image>(tempImage);
-		imageIconThumbImage = new SoftReference<ImageIcon>(new ImageIcon(tempImage));
-		needToReloadThumbImage = false;
-	}
-	
 	public Thumb(String url, boolean useJavCoverCropRoutine) throws IOException
 	{
 		
