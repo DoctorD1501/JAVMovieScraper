@@ -1,6 +1,5 @@
 package moviescraper.doctord.view;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -46,6 +45,8 @@ import com.jgoodies.forms.layout.RowSpec;
 
 public class FileDetailPanel extends JPanel {
 
+	private static final String NO_FILE_SELECTED = "No File Selected";
+
 	private static final long serialVersionUID = 7088761619568387476L;
 	
 	private JTextField txtFieldMovieTitleText;
@@ -77,21 +78,26 @@ public class FileDetailPanel extends JPanel {
 	
 	private static final int ROW_CHANGE_MOVIE_BUTTONS = 2;
 	private static final int ROW_ARTWORK_PANEL = 2;
-	private static final int ROW_TITLE = 4;
-	private static final int ROW_ORIGINAL_TITLE = 6;
-	private static final int ROW_YEAR = 8;
-	private static final int ROW_RELEASE_DATE = 10;
-	private static final int ROW_ID = 12;
-	private static final int ROW_STUDIO = 14;
-	private static final int ROW_MOVIE_SET = 16;
-	private static final int ROW_PLOT = 18;
-	private static final int ROW_GENRES = 20;
-	private static final int ROW_TAGS = 22;
-	private static final int ROW_ACTORS = 24;
+	private static final int ROW_FILE_PATH = 4;
+	private static final int ROW_TITLE = 6;
+	private static final int ROW_ORIGINAL_TITLE = 8;
+	private static final int ROW_YEAR = 10;
+	private static final int ROW_RELEASE_DATE = 12;
+	private static final int ROW_ID = 14;
+	private static final int ROW_STUDIO = 16;
+	private static final int ROW_MOVIE_SET = 18;
+	private static final int ROW_PLOT = 20;
+	private static final int ROW_GENRES = 22;
+	private static final int ROW_TAGS = 24;
+	private static final int ROW_ACTORS = 26;
 
 	private JButton previousMovieButton;
 
 	private JButton nextMovieButton;
+
+	private JTextField pathTextField;
+
+	private JLabel numberInListSelectedLabel;
 	
 
 	/**
@@ -113,45 +119,61 @@ public class FileDetailPanel extends JPanel {
 			},
 			new RowSpec[] {
 				FormFactory.RELATED_GAP_ROWSPEC, //1 - empty space
-				FormFactory.DEFAULT_ROWSPEC, //navigation buttons and artwork panel
-				FormFactory.RELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC, //2 - Title
-				FormFactory.RELATED_GAP_ROWSPEC,//3 - empty space
-				FormFactory.DEFAULT_ROWSPEC,//4 - original title
-				FormFactory.RELATED_GAP_ROWSPEC,//5 - empty space
-				FormFactory.DEFAULT_ROWSPEC,//6 - Year
+				FormFactory.DEFAULT_ROWSPEC, //2 - navigation buttons and artwork panel
+				FormFactory.RELATED_GAP_ROWSPEC, //3  - empty space
+				FormFactory.DEFAULT_ROWSPEC, //4 - File Path
+				FormFactory.RELATED_GAP_ROWSPEC, //5 - empty space
+				FormFactory.DEFAULT_ROWSPEC, //6 - Title
 				FormFactory.RELATED_GAP_ROWSPEC,//7 - empty space
-				FormFactory.DEFAULT_ROWSPEC,//8 - Release Date
+				FormFactory.DEFAULT_ROWSPEC,//8 - original title
 				FormFactory.RELATED_GAP_ROWSPEC,//9 - empty space
-				FormFactory.DEFAULT_ROWSPEC,//10 - ID
+				FormFactory.DEFAULT_ROWSPEC,//10 - Year
 				FormFactory.RELATED_GAP_ROWSPEC,//11 - empty space
-				FormFactory.DEFAULT_ROWSPEC,//12 - Studio
+				FormFactory.DEFAULT_ROWSPEC,//12 - Release Date
 				FormFactory.RELATED_GAP_ROWSPEC,//13 - empty space
-				FormFactory.DEFAULT_ROWSPEC,//14 - Movie set
+				FormFactory.DEFAULT_ROWSPEC,//14 - ID
 				FormFactory.RELATED_GAP_ROWSPEC,//15 - empty space
-				FormFactory.DEFAULT_ROWSPEC,//16 - Plot
+				FormFactory.DEFAULT_ROWSPEC,//16 - Studio
 				FormFactory.RELATED_GAP_ROWSPEC,//17 - empty space
-				FormFactory.DEFAULT_ROWSPEC,//18 - genres
+				FormFactory.DEFAULT_ROWSPEC,//18 - Movie set
 				FormFactory.RELATED_GAP_ROWSPEC,//19 - empty space
-				FormFactory.DEFAULT_ROWSPEC,//20 - tags
+				FormFactory.DEFAULT_ROWSPEC,//20 - Plot
 				FormFactory.RELATED_GAP_ROWSPEC,//21 - empty space
-				RowSpec.decode("fill:pref:grow"),//22 - actors
-				FormFactory.RELATED_GAP_ROWSPEC//23 - empty space
+				FormFactory.DEFAULT_ROWSPEC,//22 - genres
+				FormFactory.RELATED_GAP_ROWSPEC,//23 - empty space
+				FormFactory.DEFAULT_ROWSPEC,//24 - tags
+				FormFactory.RELATED_GAP_ROWSPEC,//25 - empty space
+				RowSpec.decode("fill:pref:grow"),//26 - actors
+				FormFactory.RELATED_GAP_ROWSPEC//27 - empty space
 				});
 		
 		fileDetailsPanel.setLayout(formLayout);
 
-
-		previousMovieButton = new JButton("Previous Movie");
+		//next and previous buttons
+		previousMovieButton = new JButton("<< Previous Movie");
 		previousMovieButton.addActionListener(e -> handlePreviousMovieSelected());
-		nextMovieButton = new JButton("Next Movie");
+		numberInListSelectedLabel = new JLabel("0 / 0");
+		nextMovieButton = new JButton("Next Movie >>");
 		nextMovieButton.addActionListener(e -> handleNextMovieSelected());
-		JPanel movieNavigationButtonsPanel = new JPanel(new BorderLayout());
-		movieNavigationButtonsPanel.add(previousMovieButton, BorderLayout.WEST);
-		movieNavigationButtonsPanel.add(nextMovieButton, BorderLayout.EAST);
+		JPanel movieNavigationButtonsPanel = new JPanel();		
+		movieNavigationButtonsPanel.add(previousMovieButton);
+		movieNavigationButtonsPanel.add(numberInListSelectedLabel);
+		movieNavigationButtonsPanel.add(nextMovieButton);
+		changeEnabledStatusOfPreviousAndNextButtons();
+		fileDetailsPanel.add(movieNavigationButtonsPanel, getLayoutPositionString(COLUMN_FORM_FIELD, ROW_CHANGE_MOVIE_BUTTONS));
 
 		
-		fileDetailsPanel.add(movieNavigationButtonsPanel, getLayoutPositionString(COLUMN_FORM_FIELD, ROW_CHANGE_MOVIE_BUTTONS));
+		//Path
+		JLabel lblPath = new JLabel("Path:");
+		pathTextField = new JTextField(NO_FILE_SELECTED, DEFAULT_TEXTFIELD_LENGTH);
+		pathTextField.setEditable(false);
+		updatePathTextField();
+		fileDetailsPanel.add(pathTextField, getLayoutPositionString(COLUMN_FORM_FIELD, ROW_FILE_PATH));
+		fileDetailsPanel.add(lblPath, getLayoutPositionString(COLUMN_LABEL, ROW_FILE_PATH));
+		
+		
+		
+		//Movie title
 		
 		JLabel lblTitle = new JLabel("Title:");
 		fileDetailsPanel.add(lblTitle, getLayoutPositionString(COLUMN_LABEL, ROW_TITLE));
@@ -559,24 +581,30 @@ public class FileDetailPanel extends JPanel {
 		
 	}
 	
+	public void updatePathTextField() {
+		int positionOfCurrentMovie = findPositionOfCurrentlySelectedMovie();
+		if (positionOfCurrentMovie >= 0 && guiMain.getCurrentlySelectedMovieFileList().size() > positionOfCurrentMovie) {
+			File currentlyShowingFile = guiMain.getCurrentlySelectedMovieFileList().get(positionOfCurrentMovie);
+			if(currentlyShowingFile != null && currentlyShowingFile.exists()) {
+				pathTextField.setText(currentlyShowingFile.getAbsolutePath().toString());
+				pathTextField.setCaretPosition(0);
+			}
+		}
+		
+	}
+
 	/**
 	 * Updates the view by setting the previous selected movie as the movie which is showing
 	 */
 	private void handlePreviousMovieSelected() {
-		previousMovieButton.setEnabled(false);
-		try {
-			int positionOfCurrentMovie = findPositionOfCurrentlySelectedMovie();
-			int positionOfPreviousMovie = positionOfCurrentMovie - 1;
-			if(positionOfCurrentMovie >= 0 && positionOfPreviousMovie < guiMain.movieToWriteToDiskList.size() && positionOfPreviousMovie >= 0) {
-				Movie nextMovie = guiMain.movieToWriteToDiskList.get(positionOfPreviousMovie);
-				if (nextMovie != null) {
-					currentListIndexOfDisplayedMovie = positionOfPreviousMovie;
-					setNewMovie(nextMovie, false, false);
-				}
+		int positionOfCurrentMovie = findPositionOfCurrentlySelectedMovie();
+		int positionOfPreviousMovie = positionOfCurrentMovie - 1;
+		if(positionOfCurrentMovie >= 0 && positionOfPreviousMovie < guiMain.movieToWriteToDiskList.size() && positionOfPreviousMovie >= 0) {
+			Movie nextMovie = guiMain.movieToWriteToDiskList.get(positionOfPreviousMovie);
+			if (nextMovie != null) {
+				currentListIndexOfDisplayedMovie = positionOfPreviousMovie;
+				setNewMovie(nextMovie, false, false);
 			}
-		}
-		finally {
-			previousMovieButton.setEnabled(true);
 		}
 	}
 
@@ -584,20 +612,15 @@ public class FileDetailPanel extends JPanel {
 	 * Updates the view by setting the next selected movie as the movie which is showing
 	 */
 	private void handleNextMovieSelected() {
-		nextMovieButton.setEnabled(false);
-		try {
-			int positionOfCurrentMovie = findPositionOfCurrentlySelectedMovie();
-			int positionOfNextMovie = positionOfCurrentMovie + 1;
-			if(positionOfCurrentMovie >= 0 && positionOfNextMovie < guiMain.movieToWriteToDiskList.size()) {
-				Movie nextMovie = guiMain.movieToWriteToDiskList.get(positionOfNextMovie);
-				if (nextMovie != null) {
-					currentListIndexOfDisplayedMovie = positionOfNextMovie;
-					setNewMovie(nextMovie, false, false);
-				}
+
+		int positionOfCurrentMovie = findPositionOfCurrentlySelectedMovie();
+		int positionOfNextMovie = positionOfCurrentMovie + 1;
+		if(positionOfCurrentMovie >= 0 && positionOfNextMovie < guiMain.movieToWriteToDiskList.size()) {
+			Movie nextMovie = guiMain.movieToWriteToDiskList.get(positionOfNextMovie);
+			if (nextMovie != null) {
+				currentListIndexOfDisplayedMovie = positionOfNextMovie;
+				setNewMovie(nextMovie, false, false);
 			}
-		}
-		finally {
-			nextMovieButton.setEnabled(true);
 		}
 	}
 	
@@ -652,6 +675,9 @@ public class FileDetailPanel extends JPanel {
 	public void updateView(boolean forcePosterUpdate, boolean newMovieWasSet) {
 		
 		List<Movie> movieToWriteToDiskList = guiMain.getMovieToWriteToDiskList();
+		//do i need this?
+		currentListIndexOfDisplayedMovie = Math.max(findPositionOfCurrentlySelectedMovie(),0);
+		
 		if(newMovieWasSet && movieToWriteToDiskList.size() == 0)
 		{
 			movieToWriteToDiskList.add(currentMovie);
@@ -679,6 +705,7 @@ public class FileDetailPanel extends JPanel {
 		//end
 		}
 		txtFieldMovieTitleText.setText(currentMovie.getTitle().getTitle());
+		txtFieldMovieTitleText.setCaretPosition(0);
 		txtFieldOriginalTitleText.setText( currentMovie.getOriginalTitle().getOriginalTitle() );
 		txtFieldOriginalTitleText.setCaretPosition(0);
 		txtFieldScrapedYearText.setText( currentMovie.getYear().getYear() );
@@ -706,8 +733,39 @@ public class FileDetailPanel extends JPanel {
 		else {
 			guiMain.disableFileWrite();
 		}
+		updatePathTextField();
+		changeEnabledStatusOfPreviousAndNextButtons();
+		updateNumberInListSelectedLabel();
 	}
 
+
+	private void changeEnabledStatusOfPreviousAndNextButtons() {
+		List<Movie> movieList = guiMain.getMovieToWriteToDiskList();
+		
+		//no movies to scroll through
+		if(movieList.size() == 0) {
+			nextMovieButton.setEnabled(false);
+			previousMovieButton.setEnabled(false);
+			return;
+		}
+		if((currentListIndexOfDisplayedMovie - 1) < 0) {
+			previousMovieButton.setEnabled(false);
+		}
+		else previousMovieButton.setEnabled(true);
+		
+		if((currentListIndexOfDisplayedMovie + 1) >= movieList.size()) {
+			nextMovieButton.setEnabled(false);
+		}
+		else nextMovieButton.setEnabled(true);
+		
+	}
+	
+	//Updates the label which shows what movie number we are on: e.g. 1/5
+	private void updateNumberInListSelectedLabel() {
+		int movieNumberIAmOn = currentListIndexOfDisplayedMovie + 1;
+		int numberOfMovies = guiMain.getMovieToWriteToDiskList().size();
+		numberInListSelectedLabel.setText(movieNumberIAmOn + " / " + numberOfMovies);
+	}
 
 	public Movie getCurrentMovie() {
 		return currentMovie;
