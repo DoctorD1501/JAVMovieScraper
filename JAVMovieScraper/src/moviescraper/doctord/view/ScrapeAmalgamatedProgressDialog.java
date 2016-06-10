@@ -304,10 +304,8 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
 					promptUserToPickPoster();
 					promptUserToPickFanart();
 					
-					guiMain.getFileDetailPanel().setNewMovie(currentAmalgamatedMovie, true, true);
-					//I really shouldn't have to add this again here as setting the new movie above should do this, but that code is currently weirdly written and sometimes doesn't set it, so I've put an extra check here
-					if(!guiMain.movieToWriteToDiskList.contains(currentAmalgamatedMovie))
-						guiMain.movieToWriteToDiskList.add(currentAmalgamatedMovie);
+					guiMain.movieToWriteToDiskList.add(currentAmalgamatedMovie);
+					guiMain.getFileDetailPanel().setNewMovie(currentAmalgamatedMovie, true, false);
 				}
 				//scrape the next selected item
 				boolean weAreDone = !scrapeNextItemIfNeeded();

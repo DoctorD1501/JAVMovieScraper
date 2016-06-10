@@ -79,13 +79,10 @@ public class AllAmalgamationOrderingPreferences {
 		}
 		else
 		{
-			try {
-				InputStream inputFromFile = new FileInputStream(settingsFileName);
-				JsonReader jr = new JsonReader(inputFromFile);
+			try (InputStream inputFromFile = new FileInputStream(settingsFileName);
+					JsonReader jr = new JsonReader(inputFromFile);) {
+
 				AllAmalgamationOrderingPreferences jsonObject = (AllAmalgamationOrderingPreferences) jr.readObject();
-				
-				jr.close();
-				inputFromFile.close();
 				System.out.println("Read in amalgamation preferences from " + settingsFileName);
 				return jsonObject;
 			} catch (FileNotFoundException e) {
@@ -103,18 +100,15 @@ public class AllAmalgamationOrderingPreferences {
 		return this;
 	}
 	
-	public void saveToPreferencesFile() throws FileNotFoundException
-	{
-		FileOutputStream outputStream = new FileOutputStream(settingsFileName);
-		JsonWriter jw = new JsonWriter(outputStream);
-		jw.write(this);
-		jw.close();
-		try {
-			outputStream.close();
-		} catch (IOException e) {
-			e.printStackTrace();
+	public void saveToPreferencesFile() throws FileNotFoundException {
+		try (FileOutputStream outputStream = new FileOutputStream(settingsFileName);
+				JsonWriter jw = new JsonWriter(outputStream);) {
+			jw.write(this);
+			System.out.println("Saved amalgamation preferences to " + settingsFileName);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
-		System.out.println("Saved amalgamation preferences to " + settingsFileName);
 	}
 	
 	public void initializeDefaultPreferences(boolean saveToDisk){

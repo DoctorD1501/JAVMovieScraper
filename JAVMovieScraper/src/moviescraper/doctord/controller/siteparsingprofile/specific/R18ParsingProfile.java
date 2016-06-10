@@ -128,13 +128,22 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 		Element releaseDateElement = document.select("div.product-details dl dt:contains(Release Date) ~ dd").first();
 		if(releaseDateElement != null && releaseDateElement.text().length() > 4)
 		{
+			String releaseDateText = releaseDateElement.text().trim();
+			
+			//gah why is this site so inconsistent. September should be Sep., not "Sept.". 
+			//They randomly decide how many letters they want each month to take.
+			if(releaseDateText.contains("Sept.")) {
+				releaseDateText = releaseDateText.replaceFirst(Pattern.quote("Sept."), "Sep.");
+			}
+			
 			//months abbreviated e.g.: "Oct."
 			SimpleDateFormat formatToUse = r18ReleaseDateFormat;
 			//month did not get abreviated
-			if (!releaseDateElement.text().trim().contains(".")) {
+			if (!releaseDateText.contains(".")) {
 				formatToUse = r18ReleaseDateFormatAlternate;
 			}
-			ReleaseDate releaseDate = new ReleaseDate(releaseDateElement.text().trim(), formatToUse);
+
+			ReleaseDate releaseDate = new ReleaseDate(releaseDateText, formatToUse);
 			return releaseDate;	
 		}
 		return ReleaseDate.BLANK_RELEASEDATE;

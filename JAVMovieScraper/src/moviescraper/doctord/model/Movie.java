@@ -116,82 +116,36 @@ public class Movie {
 
 	public Movie(SiteParsingProfile siteToScrapeFrom) {
 		title = siteToScrapeFrom.scrapeTitle();
-		title.setDataItemSource(siteToScrapeFrom);
+		
 		
 		originalTitle = siteToScrapeFrom.scrapeOriginalTitle();
-		originalTitle.setDataItemSource(siteToScrapeFrom);
-		
 		sortTitle = siteToScrapeFrom.scrapeSortTitle();
-		sortTitle.setDataItemSource(siteToScrapeFrom);
-		
 		set = siteToScrapeFrom.scrapeSet();
-		set.setDataItemSource(siteToScrapeFrom);
-		
 		rating = siteToScrapeFrom.scrapeRating();
-		rating.setDataItemSource(siteToScrapeFrom);
-		
 		year = siteToScrapeFrom.scrapeYear();
-		year.setDataItemSource(siteToScrapeFrom);
-		
 		top250 = siteToScrapeFrom.scrapeTop250();
-		top250.setDataItemSource(siteToScrapeFrom);
-		
 		trailer = siteToScrapeFrom.scrapeTrailer();
-		trailer.setDataItemSource(siteToScrapeFrom);
-		
 		votes = siteToScrapeFrom.scrapeVotes();
-		votes.setDataItemSource(siteToScrapeFrom);
-		
 		outline = siteToScrapeFrom.scrapeOutline();
-		outline.setDataItemSource(siteToScrapeFrom);
-		
 		plot = siteToScrapeFrom.scrapePlot();
-		plot.setDataItemSource(siteToScrapeFrom);
-		
 		tagline = siteToScrapeFrom.scrapeTagline();
-		tagline.setDataItemSource(siteToScrapeFrom);
-		
 		studio = siteToScrapeFrom.scrapeStudio();
-		studio.setDataItemSource(siteToScrapeFrom);
-		
 		releaseDate = siteToScrapeFrom.scrapeReleaseDate();
-		releaseDate.setDataItemSource(siteToScrapeFrom);
-		
 		runtime = siteToScrapeFrom.scrapeRuntime();
-		runtime.setDataItemSource(siteToScrapeFrom);
-		
 		posters = siteToScrapeFrom.scrapePosters();
-		setDataItemSourceOnThumbs(posters, siteToScrapeFrom);
-		
 		fanart = siteToScrapeFrom.scrapeFanart();
-		setDataItemSourceOnThumbs(fanart, siteToScrapeFrom);
-		
 		extraFanart = siteToScrapeFrom.scrapeExtraFanart();
-		setDataItemSourceOnThumbs(extraFanart, siteToScrapeFrom);
-		
 		mpaa = siteToScrapeFrom.scrapeMPAA();
-		mpaa.setDataItemSource(siteToScrapeFrom);
-		
 		id = siteToScrapeFrom.scrapeID();
-		id.setDataItemSource(siteToScrapeFrom);
-		
 		actors = siteToScrapeFrom.scrapeActors();
-		for(Actor currentActor : actors)
-			currentActor.setDataItemSource(siteToScrapeFrom);
-		
 		genres = siteToScrapeFrom.scrapeGenres();
-		for(Genre currentGenre : genres)
-			currentGenre.setDataItemSource(siteToScrapeFrom);
-		
 		tags = siteToScrapeFrom.scrapeTags();
-		for(Tag currentTag : tags)
-		{
-			currentTag.setDataItemSource(siteToScrapeFrom);
-		}
-		
 		directors = siteToScrapeFrom.scrapeDirectors();
-		for(Director currentDirector : directors)
-			currentDirector.setDataItemSource(siteToScrapeFrom);
+		
+		setAllDataItemSources(siteToScrapeFrom);
+		
+
+
 		
 		String fileNameOfScrapedMovie = siteToScrapeFrom.getFileNameOfScrapedMovie();
 		if(fileNameOfScrapedMovie != null && fileNameOfScrapedMovie.trim().length() > 0)
@@ -212,6 +166,46 @@ public class Movie {
 
 			
 		
+	}
+
+	/**
+	 * @param siteToScrapeFrom
+	 */
+	private void setAllDataItemSources(SiteParsingProfile siteToScrapeFrom) {
+		originalTitle.setDataItemSource(siteToScrapeFrom);
+		title.setDataItemSource(siteToScrapeFrom);
+		sortTitle.setDataItemSource(siteToScrapeFrom);
+		set.setDataItemSource(siteToScrapeFrom);
+		rating.setDataItemSource(siteToScrapeFrom);
+		year.setDataItemSource(siteToScrapeFrom);
+		top250.setDataItemSource(siteToScrapeFrom);
+		trailer.setDataItemSource(siteToScrapeFrom);
+		votes.setDataItemSource(siteToScrapeFrom);
+		outline.setDataItemSource(siteToScrapeFrom);
+		plot.setDataItemSource(siteToScrapeFrom);
+		tagline.setDataItemSource(siteToScrapeFrom);
+		studio.setDataItemSource(siteToScrapeFrom);
+		releaseDate.setDataItemSource(siteToScrapeFrom);
+		runtime.setDataItemSource(siteToScrapeFrom);
+		setDataItemSourceOnThumbs(posters, siteToScrapeFrom);
+		setDataItemSourceOnThumbs(fanart, siteToScrapeFrom);
+		setDataItemSourceOnThumbs(extraFanart, siteToScrapeFrom);
+		mpaa.setDataItemSource(siteToScrapeFrom);
+		id.setDataItemSource(siteToScrapeFrom);
+		
+		for(Actor currentActor : actors)
+			currentActor.setDataItemSource(siteToScrapeFrom);
+		
+		for(Genre currentGenre : genres)
+			currentGenre.setDataItemSource(siteToScrapeFrom);
+		
+		for(Tag currentTag : tags)
+		{
+			currentTag.setDataItemSource(siteToScrapeFrom);
+		}
+		
+		for(Director currentDirector : directors)
+			currentDirector.setDataItemSource(siteToScrapeFrom);
 	}
 	
 	/**
@@ -242,9 +236,8 @@ public class Movie {
 	public static Movie createMovieFromNfo(File nfoFile) throws IOException
 	{
 		Movie movieFromNfo = null;
-		FileInputStream fisTargetFile = null;
-		try {
-			fisTargetFile = new FileInputStream(nfoFile);
+		try (FileInputStream fisTargetFile = new FileInputStream(nfoFile);)  {
+			
 			String targetFileStr = IOUtils.toString(fisTargetFile, "UTF-8");
 			//Sometimes there's some junk before the prolog tag. Do a workaround to remove that junk.
 			//This really isn't the cleanest way to do this, but it'll work for now
@@ -261,17 +254,12 @@ public class Movie {
 				}
 			}
 			KodiXmlMovieBean xmlMovieBean = KodiXmlMovieBean.makeFromXML(targetFileStr);
-			fisTargetFile.close();
 			if(xmlMovieBean != null)
 			{
 				
 				movieFromNfo = xmlMovieBean.toMovie();
 			}
 			return movieFromNfo;
-		}
-		finally
-		{
-			fisTargetFile.close();
 		}
 	}
 
@@ -539,10 +527,10 @@ public class Movie {
 				if(writePoster && posterFile != null && posterToSaveToDisk.isModified())
 				{
 					System.out.println("Writing poster to " + posterFile);
-					FileImageOutputStream posterFileOutput = new FileImageOutputStream(posterFile);
-					writer.setOutput(posterFileOutput);
-					writer.write(null, image, iwp);
-					posterFileOutput.close();
+					try (FileImageOutputStream posterFileOutput = new FileImageOutputStream(posterFile);) {
+						writer.setOutput(posterFileOutput);
+						writer.write(null, image, iwp);
+					}
 				}
 				//write out the poster file without reencoding it and resizing it
 				else if((!posterFile.exists() ||  writePosterIfAlreadyExists) && posterToSaveToDisk != null && posterToSaveToDisk.getThumbURL() != null)
@@ -562,10 +550,10 @@ public class Movie {
 						if(!currentlySelectedFolderJpgFile.exists() || (currentlySelectedFolderJpgFile.exists() && writePosterIfAlreadyExists))
 						{
 							System.out.println("Writing folder to " + currentlySelectedFolderJpgFile);
-							FileImageOutputStream folderFileOutput = new FileImageOutputStream(currentlySelectedFolderJpgFile);
-							writer.setOutput(folderFileOutput);
-							writer.write(null, image, iwp);
-							folderFileOutput.close();
+							try (FileImageOutputStream folderFileOutput = new FileImageOutputStream(currentlySelectedFolderJpgFile);) {
+								writer.setOutput(folderFileOutput);
+								writer.write(null, image, iwp);
+							}
 						}
 						else
 						{
@@ -593,7 +581,13 @@ public class Movie {
 			//can save ourself redownloading the image if it's already in memory, but we dont want to reencode the image, so only do this if it's modified
 			if(fanartToSaveToDisk.getImageIconThumbImage() != null && fanartToSaveToDisk.isModified())
 			{
-				ImageIO.write(fanartToSaveToDisk.toBufferedImage(), "jpg", fanartFile);
+				try {
+					ImageIO.write(fanartToSaveToDisk.toBufferedImage(), "jpg", fanartFile);
+				}
+				catch (IOException e) {
+					System.err.println("Failed to write fanart due to io error");
+					e.printStackTrace();
+				}
 			}
 			//download the url and save it out to disk
 			else FileDownloaderUtilities.writeURLToFile(fanartToSaveToDisk.getThumbURL(), fanartFile);

@@ -10,6 +10,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.SwingUtilities;
 
 import java.awt.BorderLayout;
 
@@ -386,43 +387,47 @@ public class GUIMain {
 	}
 
 	public void updateFileListModel(File currentlySelectedDirectory, boolean keepSelectionsAndReferences) {
-		try{
-			getFrmMoviescraper().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-			File [] filesToList = showFileListSorted(currentlySelectedDirectory);
-			List<File> selectValuesListBeforeUpdate = getFileList().getSelectedValuesList();
+		//make sure this happens on the event dispatch thread, since it can be called from, for example, a background thread that is writing 		the files 
+		 SwingUtilities.invokeLater(() -> {
+			 try{
+					getFrmMoviescraper().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+					File [] filesToList = showFileListSorted(currentlySelectedDirectory);
+					List<File> selectValuesListBeforeUpdate = getFileList().getSelectedValuesList();
 
-			//We don't want to fire the listeners events when reselecting the items because this 
-			//will cause us additional IO that is not needed as the program rereads the nfo.
-			//To avoid this, we can save out the old listener, remove it, select the items and then add it back
-			ListSelectionListener[] fileListSelectionListener = null;
-			if(keepSelectionsAndReferences)
-			{
-				fileListSelectionListener = getFileList().getListSelectionListeners();
-				getFileList().removeListSelectionListener(getFileList().getListSelectionListeners()[0]);
-			}
-			listModelFiles.removeAllElements();
-			for (File file : filesToList) {
-				listModelFiles.addElement(file);
-			}
-			if(!keepSelectionsAndReferences)
-			{
-				removeOldScrapedMovieReferences();
-				removeOldSelectedFileReferences();
-			}
-			//select the old values we had before we updated the list
-			for(File currentValueToSelect : selectValuesListBeforeUpdate)
-			{
-				getFileList().setSelectedValue(currentValueToSelect, false);
-			}
-			if(keepSelectionsAndReferences && fileListSelectionListener != null)
-			{
-				getFileList().addListSelectionListener(fileListSelectionListener[0]);
-			}
-		}
-		finally
-		{
-			getFrmMoviescraper().setCursor(Cursor.getDefaultCursor());
-		}
+					//We don't want to fire the listeners events when reselecting the items because this 
+					//will cause us additional IO that is not needed as the program rereads the nfo.
+					//To avoid this, we can save out the old listener, remove it, select the items and then add it back
+					ListSelectionListener[] fileListSelectionListener = null;
+					if(keepSelectionsAndReferences)
+					{
+						fileListSelectionListener = getFileList().getListSelectionListeners();
+						getFileList().removeListSelectionListener(getFileList().getListSelectionListeners()[0]);
+					}
+					listModelFiles.removeAllElements();
+					for (File file : filesToList) {
+						listModelFiles.addElement(file);
+					}
+					if(!keepSelectionsAndReferences)
+					{
+						removeOldScrapedMovieReferences();
+						removeOldSelectedFileReferences();
+					}
+					//select the old values we had before we updated the list
+					for(File currentValueToSelect : selectValuesListBeforeUpdate)
+					{
+						getFileList().setSelectedValue(currentValueToSelect, false);
+					}
+					if(keepSelectionsAndReferences && fileListSelectionListener != null)
+					{
+						getFileList().addListSelectionListener(fileListSelectionListener[0]);
+					}
+				}
+				finally
+				{
+					getFrmMoviescraper().setCursor(Cursor.getDefaultCursor());
+				}
+		 });
+		
 	}
 
 	private File[] showFileListSorted(File currentlySelectedDirectory) {
@@ -465,6 +470,7 @@ public class GUIMain {
 
 	//Update the File Detail Panel GUI so the user can see what is scraped in
 	public void updateAllFieldsOfFileDetailPanel(boolean forceUpdatePoster, boolean newMovieWasSet) {
+			fileDetailPanel.currentListIndexOfDisplayedMovie = 0;
 			fileDetailPanel.updateView(forceUpdatePoster, newMovieWasSet);
 	}
 

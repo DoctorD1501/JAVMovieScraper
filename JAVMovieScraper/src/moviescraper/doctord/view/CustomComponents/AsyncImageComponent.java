@@ -122,6 +122,10 @@ public class AsyncImageComponent extends JPanel implements ImageConsumer, MouseL
 
     @Override
 	public void imageLoaded(BufferedImage img) {
+    	//clean up old references, just to be safe
+    	this.resizedImage = null;
+    	this.img = null;
+    	
     	this.img = img;
     	if(img != null)
     	{
@@ -248,6 +252,12 @@ public class AsyncImageComponent extends JPanel implements ImageConsumer, MouseL
                 	consumer.imageLoaded(pictureLoaded);
             } catch (Exception exp) {
                 exp.printStackTrace();
+            }
+            finally {
+            	//clean up after ourselves so we don't keep any references around
+            	pictureLoaded = null;
+            	url = null;
+            	consumer = null;
             }
         }           
     }

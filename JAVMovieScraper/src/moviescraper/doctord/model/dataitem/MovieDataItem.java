@@ -23,7 +23,11 @@ public abstract class MovieDataItem {
 	}
 
 	public void setDataItemSource(DataItemSource dataItemSource) {
-		this.dataItemSource = dataItemSource;
+		//Why do we create an instance of the same type? This is because a parsing profile can contain
+		//a large document object which is the HTML of the entire page. we don't care about that. we only care
+		//where this object came from, not the HTML of that page
+		//if we don't retain the object that had all the HTML, it can get garbage collected
+		this.dataItemSource = dataItemSource.createInstanceOfSameType();
 	}
 	
 	public String dataItemSourceToString(){
