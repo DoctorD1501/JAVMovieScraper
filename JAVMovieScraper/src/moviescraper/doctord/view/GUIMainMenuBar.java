@@ -290,6 +290,7 @@ public class GUIMainMenuBar extends JMenuBar{
 		
 		JMenuItem renameSettings = new JMenuItem("Rename Settings...");
 		renameSettings.addActionListener(new ActionListener() {
+			@SuppressWarnings("unused") //simply calling the new for RenamerGUI below will show the dialog
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Movie currentSelectedMovie = null;
