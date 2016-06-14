@@ -177,8 +177,8 @@ public class GUIMain {
 		setCurrentlySelectedFolderJpgFileList(new ArrayList<File>());
 		setCurrentlySelectedFanartFileList(new ArrayList<File>());
 		setCurrentlySelectedTrailerFileList(new ArrayList<File>());
-		currentlySelectedActorsFolderList = new ArrayList<File>();
-		movieToWriteToDiskList = new ArrayList<Movie>();
+		currentlySelectedActorsFolderList = new ArrayList<>();
+		movieToWriteToDiskList = new ArrayList<>();
 		frmMoviescraper = new JFrame();
 		frmMovieScraperBlocker = new WindowBlocker();
 		//set up the window that sits above the frame and can block input to this frame if needed while a dialog is open
@@ -233,8 +233,8 @@ public class GUIMain {
 		defaultHomeDirectory = getGuiSettings().getLastUsedDirectory();
 		setCurrentlySelectedDirectoryList(defaultHomeDirectory);
 		
-		listModelFiles = new DefaultListModel<File>();
-		setFileList(new JList<File>(listModelFiles));
+		listModelFiles = new DefaultListModel<>();
+		setFileList(new JList<>(listModelFiles));
 
 		//add in a keyListener so that you can start typing letters in the list and it will take you to that item in the list
 		//if you type the second letter within CHAR_DELTA amount of time that will count as the Nth letter of the search
@@ -540,7 +540,7 @@ public class GUIMain {
 
 
 	public File[] actorFolderFiles(int movieNumberInList) {
-		ArrayList<File> actorFiles = new ArrayList<File>();
+		ArrayList<File> actorFiles = new ArrayList<>();
 		if(movieToWriteToDiskList != null 
 				&& movieToWriteToDiskList.size() > 0
 				&& movieToWriteToDiskList.size() > movieNumberInList

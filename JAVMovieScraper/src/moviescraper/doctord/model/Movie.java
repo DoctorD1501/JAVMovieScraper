@@ -68,7 +68,7 @@ public class Movie {
 
 	private Title title;
 	
-	private List<Title> allTitles = new ArrayList<Title>(); //this is currently not used for much; it used to allow the user to select from one of each title in a drop down box on the file detail panel, but now that amalgamation is here, that feature is not needed as much. It may make sense to put in a generic way to handle selecting between data item sources from amalgamation on a per item basis in the file detail panel, however
+	private List<Title> allTitles = new ArrayList<>(); //this is currently not used for much; it used to allow the user to select from one of each title in a drop down box on the file detail panel, but now that amalgamation is here, that feature is not needed as much. It may make sense to put in a generic way to handle selecting between data item sources from amalgamation on a per item basis in the file detail panel, however
 
 	private Top250 top250;
 	
@@ -488,7 +488,7 @@ public class Movie {
 				+ "\n" + xml;
 		System.out.println("Xml I am writing to file: \n" + xml);
 		
-		if(nfoFile != null && xml != null && xml.length() > 0)
+		if(nfoFile != null && xml.length() > 0)
 			nfoFile.delete();
 		FileUtils.writeStringToFile(nfoFile, xml,
 				org.apache.commons.lang3.CharEncoding.UTF_8);
@@ -512,7 +512,7 @@ public class Movie {
 				(writePoster || createFolderJpgEnabledPreference) && 
 				((posterFile.exists() == writePosterIfAlreadyExists) || (!posterFile.exists() || (createFolderJpgEnabledPreference))))
 		{
-			if(posterToSaveToDisk.isModified() || createFolderJpgEnabledPreference || !posterFile.exists() || writePosterIfAlreadyExists)
+			if(posterToSaveToDisk != null && (posterToSaveToDisk.isModified() || createFolderJpgEnabledPreference || !posterFile.exists() || writePosterIfAlreadyExists))
 			{
 				//reencode the jpg since we probably did a resize
 				Iterator<ImageWriter> iter = ImageIO.getImageWritersByFormatName("jpeg");
@@ -524,7 +524,7 @@ public class Movie {
 				// 1 specifies minimum compression and maximum quality
 				IIOImage image = new IIOImage((RenderedImage) posterToSaveToDisk.getThumbImage(), null, null);
 				
-				if(writePoster && posterFile != null && posterToSaveToDisk.isModified())
+				if(writePoster && posterToSaveToDisk.isModified())
 				{
 					System.out.println("Writing poster to " + posterFile);
 					try (FileImageOutputStream posterFileOutput = new FileImageOutputStream(posterFile);) {
@@ -533,7 +533,7 @@ public class Movie {
 					}
 				}
 				//write out the poster file without reencoding it and resizing it
-				else if((!posterFile.exists() ||  writePosterIfAlreadyExists) && posterToSaveToDisk != null && posterToSaveToDisk.getThumbURL() != null)
+				else if((!posterFile.exists() ||  writePosterIfAlreadyExists) &&  posterToSaveToDisk.getThumbURL() != null)
 				{
 					System.out.println("Writing poster file from nfo: " + posterFile);
 					FileDownloaderUtilities.writeURLToFile(posterToSaveToDisk.getThumbURL(), posterFile);
@@ -628,7 +628,7 @@ public class Movie {
 			actorFolder = new File(targetFolder.getParent() + File.separator + ".actors");
 		}
 		//Don't create an empty .actors folder with no actors underneath it
-		if(this.hasAtLeastOneActorThumbnail() && targetFolder != null && actorFolder != null)
+		if(this.hasAtLeastOneActorThumbnail() && actorFolder != null)
 		{
 			FileUtils.forceMkdir(actorFolder);
 			//on windows this new folder should have the hidden attribute; on unix it is already "hidden" by having a . in front of the name
@@ -688,7 +688,7 @@ public class Movie {
 		return fileName;
 	}
 	
-	public static String getFileNameOfNfo(File file, boolean nfoNamedMovieDotNfo)
+	public static String getFileNameOfNfo(File file, Boolean nfoNamedMovieDotNfo)
 	{
 		if(nfoNamedMovieDotNfo)
 		{
@@ -967,10 +967,10 @@ public class Movie {
 	}
 
 	public static Movie getEmptyMovie() {
-		ArrayList<Actor> actors = new ArrayList<Actor>();
+		ArrayList<Actor> actors = new ArrayList<>();
 		ArrayList<Director> directors = new ArrayList<>();
-		ArrayList<Genre> genres = new ArrayList<Genre>();
-		ArrayList<Tag> tags = new ArrayList<Tag>();
+		ArrayList<Genre> genres = new ArrayList<>();
+		ArrayList<Tag> tags = new ArrayList<>();
 		
 		Thumb[] fanart = new Thumb[0]; 
 		Thumb[] extraFanart = new Thumb[0]; 
@@ -1022,7 +1022,7 @@ public class Movie {
 	{
 		if (posterToGoToFront != null) {
 
-			ArrayList<Thumb> existingPosters = new ArrayList<Thumb>(
+			ArrayList<Thumb> existingPosters = new ArrayList<>(
 					Arrays.asList(getPosters()));
 			boolean didListContainPoster = existingPosters.remove(posterToGoToFront);
 			if(didListContainPoster)
@@ -1045,7 +1045,7 @@ public class Movie {
 	{
 		if (fanartToGoToFront != null) {
 
-			ArrayList<Thumb> existingFanarts = new ArrayList<Thumb>(
+			ArrayList<Thumb> existingFanarts = new ArrayList<>(
 					Arrays.asList(getFanart()));
 			boolean didListContainPoster = existingFanarts.remove(fanartToGoToFront);
 			if(didListContainPoster)

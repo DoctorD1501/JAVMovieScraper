@@ -268,14 +268,14 @@ public class JavZooParsingProfile extends SiteParsingProfile implements Specific
 		Elements genreElements = document.select(".genre");
 		if(genreElements != null)
 		{
-			ArrayList<Genre> genreList = new ArrayList<Genre>(genreElements.size());
+			ArrayList<Genre> genreList = new ArrayList<>(genreElements.size());
 			for(Element currentGenre: genreElements)
 			{
 				genreList.add(new Genre(currentGenre.text().trim()));
 			}
 			return genreList;
 		}
-		return new ArrayList<Genre>();
+		return new ArrayList<>();
 	}
 
 	@Override
@@ -283,7 +283,7 @@ public class JavZooParsingProfile extends SiteParsingProfile implements Specific
 		Elements actorElements = document.select("div#avatar-waterfall a.avatar-box");
 		if(actorElements != null)
 		{
-			ArrayList<Actor> actorList = new ArrayList<Actor>(actorElements.size());
+			ArrayList<Actor> actorList = new ArrayList<>(actorElements.size());
 			for(Element currentActor : actorElements)
 			{
 				String actorName = currentActor.select("span").first().text().trim();
@@ -307,7 +307,7 @@ public class JavZooParsingProfile extends SiteParsingProfile implements Specific
 			}
 			return actorList;
 		}
-		return new ArrayList<Actor>();
+		return new ArrayList<>();
 	}
 
 	@Override
@@ -315,13 +315,13 @@ public class JavZooParsingProfile extends SiteParsingProfile implements Specific
 		Element directorElement = document.select("div.row.movie p:contains(Director:)").first();
 		if(directorElement != null)
 		{
-			ArrayList<Director> directorList = new ArrayList<Director>(1);
+			ArrayList<Director> directorList = new ArrayList<>(1);
 			String directorNameText = directorElement.text().trim();
 			directorNameText = directorNameText.replaceFirst(Pattern.quote("Director: "), "");
 			directorList.add(new Director(directorNameText, null));
 			return directorList;
 		}
-		else return new ArrayList<Director>();
+		else return new ArrayList<>();
 	}
 
 	@Override
@@ -358,7 +358,7 @@ public class JavZooParsingProfile extends SiteParsingProfile implements Specific
 
 	@Override
 	public SearchResult[] getSearchResults(String searchString) throws IOException {
-		LinkedList<SearchResult> linksList = new LinkedList<SearchResult>();
+		LinkedList<SearchResult> linksList = new LinkedList<>();
 		try{
 			Document doc = Jsoup.connect(searchString).userAgent("Mozilla").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
 			{
@@ -397,7 +397,7 @@ public class JavZooParsingProfile extends SiteParsingProfile implements Specific
 
 	@Override
 	public Thumb[] scrapeExtraFanart() {
-		ArrayList<Thumb> imageList = new ArrayList<Thumb>();
+		ArrayList<Thumb> imageList = new ArrayList<>();
 
 		Elements sampleBoxImageLinks = document.select("div.sample-box li a[href]");
 		if (sampleBoxImageLinks != null) {

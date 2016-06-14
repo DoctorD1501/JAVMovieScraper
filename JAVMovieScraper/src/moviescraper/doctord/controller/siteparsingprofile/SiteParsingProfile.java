@@ -282,7 +282,7 @@ public abstract class SiteParsingProfile implements DataItemSource{
 	public SearchResult [] getLinksFromGoogle(String searchQuery, String site)
 	{
 		//System.out.println("calling get links from google with searchQuery = " + searchQuery);
-		ArrayList<SearchResult> linksToReturn = new ArrayList<SearchResult>();
+		ArrayList<SearchResult> linksToReturn = new ArrayList<>();
 	    try{
 	    	String encodingScheme = "UTF-8";
 	    	String queryToEncode = "site:" + site + " " + searchQuery;
@@ -333,7 +333,7 @@ public abstract class SiteParsingProfile implements DataItemSource{
 	 */
 	private SearchResult [] getLinksFromBing(String searchQuery, String site)
 	{
-		ArrayList<SearchResult> linksToReturn = new ArrayList<SearchResult>();
+		ArrayList<SearchResult> linksToReturn = new ArrayList<>();
 		String encodingScheme = "UTF-8";
     	String queryToEncode = "site:" + site + " " + searchQuery;
     	String encodedSearchQuery;

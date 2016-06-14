@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.FileNotFoundException;
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.EnumSet;
@@ -225,7 +224,7 @@ public class AmalgamationSettingsDialog {
 	{
 		if(amalgamationPreferenceListModel != null)
 		{
-			LinkedList<DataItemSource> sppiAllValues = new LinkedList<DataItemSource>();
+			LinkedList<DataItemSource> sppiAllValues = new LinkedList<>();
 			for(int i = 0; i < amalgamationPreferenceListModel.getSize(); i++)
 			{
 				sppiAllValues.add(amalgamationPreferenceListModel.get(i));
@@ -330,7 +329,7 @@ public class AmalgamationSettingsDialog {
 				.complementOf(EnumSet
 						.of(ScraperGroupName.DEFAULT_SCRAPER_GROUP));
 		
-		JComboBox<ScraperGroupName> comboBox = new JComboBox<ScraperGroupName>(
+		JComboBox<ScraperGroupName> comboBox = new JComboBox<>(
 				everythingButDefaultGroup
 						.toArray(new ScraperGroupName[everythingButDefaultGroup
 								.size()]));
@@ -352,12 +351,12 @@ public class AmalgamationSettingsDialog {
 	private JList<DataItemSource> createOverallAmalgamationPreferenceList()
 	{
 		if(overallAmalgamationPreferenceListModel == null)
-			overallAmalgamationPreferenceListModel = new DefaultListModel<DataItemSource>();
+			overallAmalgamationPreferenceListModel = new DefaultListModel<>();
 		else
 			overallAmalgamationPreferenceListModel.clear();
 		if(overallAmalgamationPreferenceList == null)
 		{
-			overallAmalgamationPreferenceList = new JList<DataItemSource>(overallAmalgamationPreferenceListModel);
+			overallAmalgamationPreferenceList = new JList<>(overallAmalgamationPreferenceListModel);
 			overallAmalgamationPreferenceList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			overallAmalgamationPreferenceList.setCellRenderer(new DataItemSourceRenderer());
 		}
@@ -375,7 +374,7 @@ public class AmalgamationSettingsDialog {
 	{
 		if(specificFieldAmalgamationPreferenceListModel == null)
 		{
-			specificFieldAmalgamationPreferenceListModel = new DefaultListModel<DataItemSource>();
+			specificFieldAmalgamationPreferenceListModel = new DefaultListModel<>();
 		}
 		else
 		{
@@ -396,7 +395,7 @@ public class AmalgamationSettingsDialog {
 		
 		if(specificFieldAmalgamationPreferenceList == null)
 		{
-			specificFieldAmalgamationPreferenceList = new JList<DataItemSource>(specificFieldAmalgamationPreferenceListModel);
+			specificFieldAmalgamationPreferenceList = new JList<>(specificFieldAmalgamationPreferenceListModel);
 			specificFieldAmalgamationPreferenceList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			specificFieldAmalgamationPreferenceList.setCellRenderer(new DataItemSourceRenderer());
 		}
@@ -413,7 +412,7 @@ public class AmalgamationSettingsDialog {
 		{
 			panelHeaderSpecificFieldAmalgamationPreference.setText("<html>Using <b>Default</b> Ordering for " + getNameOfCurrentMovieFieldSelected() + "</html>");
 			//we need to create a new object for this field copied from the overall ordering using the same type as the original items
-			listData = new LinkedList<DataItemSource>();
+			listData = new LinkedList<>();
 			DataItemSourceAmalgamationPreference overallPrefs = amalgamationPreferences.getScraperGroupAmalgamationPreference((ScraperGroupName) scraperGroupNameComboBox.getSelectedItem()).getOverallAmalgamationPreference();
 			LinkedList<DataItemSource> overallPrefsDataItems = overallPrefs.getAmalgamationPreferenceOrder();
 			for(DataItemSource currentItem : overallPrefsDataItems)
@@ -439,12 +438,12 @@ public class AmalgamationSettingsDialog {
 	
 	private JList<Field> createMovieFieldsList()
 	{
-		movieFieldsListModel = new DefaultListModel<Field>();
+		movieFieldsListModel = new DefaultListModel<>();
 		List<Field> listData = ScraperGroupAmalgamationPreference.getMoviefieldNames();
 		for(Field currentField : listData)
 			movieFieldsListModel.addElement(currentField);
 		
-		jListMovieFields = new JList<Field>(movieFieldsListModel);
+		jListMovieFields = new JList<>(movieFieldsListModel);
 		jListMovieFields.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		jListMovieFields.addListSelectionListener(new ListSelectionListener() {
 			
@@ -490,12 +489,8 @@ public class AmalgamationSettingsDialog {
 		if (result == JOptionPane.OK_OPTION) {
 
 			
-			try {
-				amalgamationPreferences.saveToPreferencesFile();
-				guiMain.reinitializeAmalgamationPreferencesFromFile();
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			}
+			amalgamationPreferences.saveToPreferencesFile();
+			guiMain.reinitializeAmalgamationPreferencesFromFile();
 			
 			return true;
 		}

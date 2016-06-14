@@ -196,7 +196,7 @@ public class Renamer {
 		File posterFile = new File(Movie.getFileNameOfPoster(fileToRename, preferences.getNoMovieNameInImageFiles()));
 		File fanartFile = new File(Movie.getFileNameOfFanart(fileToRename, preferences.getNoMovieNameInImageFiles()));
 		File trailerFile = new File(Movie.getFileNameOfTrailer(fileToRename));
-		if(nfoFile != null && nfoFile.exists() && fileToRename.exists())
+		if(nfoFile.exists() && fileToRename.exists())
 		{
 			Movie movieReadFromNfo = Movie.createMovieFromNfo(nfoFile);
 			if(movieReadFromNfo != null && movieReadFromNfo.getTitle() != null)

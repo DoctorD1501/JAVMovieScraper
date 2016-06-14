@@ -51,13 +51,13 @@ public class TranslateString {
 		String [] splitBySentenceEnders = japaneseKanjiString.split("(?=" + japaneseSentenceEnders + ")");
 		
 		//Split our sentences into maxCharPerRequest sized chunks, in case we had some super long sentence
-		List<List<String>> allSplits = new ArrayList<List<String>>();
+		List<List<String>> allSplits = new ArrayList<>();
 		for(int i = 0; i < splitBySentenceEnders.length; i++)
 		{
 			allSplits.add(splitStringIntoArrayList(splitBySentenceEnders[i],maxCharsPerRequest));
 		}
 		//flatten out our list so we can look through it easily
-		List<String> runTranslationFromThisList = new ArrayList<String>(splitBySentenceEnders.length);
+		List<String> runTranslationFromThisList = new ArrayList<>(splitBySentenceEnders.length);
 		for(List<String> current : allSplits)
 		{
 			runTranslationFromThisList.addAll(current);
@@ -123,7 +123,7 @@ public class TranslateString {
 	}
 	
 	private static List<String> splitStringIntoArrayList(String text, int stringSizePerIndex){
-		List<String> strings = new ArrayList<String>();
+		List<String> strings = new ArrayList<>();
 		int index = 0;
 		while (index < text.length()) {
 		    strings.add(text.substring(index, Math.min(index + stringSizePerIndex,text.length())));

@@ -179,7 +179,7 @@ public class OnePondoParsingProfile extends SiteParsingProfile implements Specif
 	@Override
 	public Thumb[] scrapePosters() {
 		try {
-			ArrayList<Thumb> thumbList = new ArrayList<Thumb>();
+			ArrayList<Thumb> thumbList = new ArrayList<>();
 			String bannerURL = "http://www.1pondo.tv/assets/sample/" + scrapeID().getId() + "/str.jpg";
 			System.out.println("bannerURL = " + bannerURL);
 			String backgroundURLTwo = "http://www.1pondo.tv/assets/sample/" + scrapeID().getId() + "/2.jpg";
@@ -210,7 +210,7 @@ public class OnePondoParsingProfile extends SiteParsingProfile implements Specif
 	@Override
 	public Thumb[] scrapeFanart() {
 		try {
-			ArrayList<Thumb> thumbList = new ArrayList<Thumb>();
+			ArrayList<Thumb> thumbList = new ArrayList<>();
 			String bannerURL = "http://www.1pondo.tv/assets/sample/" + scrapeID().getId() + "/str.jpg";
 			String backgroundURLOne = "http://www.1pondo.tv/assets/sample/" + scrapeID().getId() + "/1.jpg";
 			String backgroundURLTwo = "http://www.1pondo.tv/assets/sample/" + scrapeID().getId() + "/2.jpg";
@@ -289,13 +289,13 @@ public class OnePondoParsingProfile extends SiteParsingProfile implements Specif
 	@Override
 	public ArrayList<Genre> scrapeGenres() {
 		//For now, I wasn't able to find any genres on the page
-		ArrayList<Genre> genreList = new ArrayList<Genre>();
+		ArrayList<Genre> genreList = new ArrayList<>();
 		return genreList;
 	}
 
 	@Override
 	public ArrayList<Actor> scrapeActors() {
-		ArrayList<Actor> actorList = new ArrayList<Actor>(1);
+		ArrayList<Actor> actorList = new ArrayList<>(1);
 		Element profileArea = document.select("div#profile-area").first();
 		if(profileArea != null)
 		{
@@ -318,7 +318,7 @@ public class OnePondoParsingProfile extends SiteParsingProfile implements Specif
 	@Override
 	public ArrayList<Director> scrapeDirectors() {
 		//No Directors listed for this site, return an empty list
-		ArrayList<Director> directorList = new ArrayList<Director>();
+		ArrayList<Director> directorList = new ArrayList<>();
 		return directorList;
 	}
 

@@ -319,7 +319,7 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 	public ArrayList<Genre> scrapeGenres() {
 		//We want to get genres for sure, but maybe keywords should be <tags>?
 		//I'm leaving keywords out for now but may revist them at a later date
-		ArrayList<Genre> genreList = new ArrayList<Genre>();
+		ArrayList<Genre> genreList = new ArrayList<>();
 		JSONObject pageJSON = getMovieJSON();
 		if(pageJSON != null)
 		{
@@ -343,7 +343,7 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 
 	@Override
 	public ArrayList<Actor> scrapeActors() {
-		ArrayList<Actor> actorList = new ArrayList<Actor>();
+		ArrayList<Actor> actorList = new ArrayList<>();
 		JSONObject pageJSON = getMovieJSON();
 		if(pageJSON != null)
 		{
@@ -389,7 +389,7 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 
 	@Override
 	public ArrayList<Director> scrapeDirectors() {
-		ArrayList<Director> directorList = new ArrayList<Director>();
+		ArrayList<Director> directorList = new ArrayList<>();
 		JSONObject pageJSON = getMovieJSON();
 		if(pageJSON != null)
 		{
@@ -470,7 +470,7 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 		try {
 			JSONObject searchResultPageJSON = getJSONObjectFromURL(searchString);
 			JSONArray resultsArray = searchResultPageJSON.getJSONArray("results");
-			ArrayList<SearchResult> searchResults = new ArrayList<SearchResult>();
+			ArrayList<SearchResult> searchResults = new ArrayList<>();
 			for(int i = 0; i < resultsArray.length(); i++)
 			{
 				JSONObject currentSearchResult = resultsArray.getJSONObject(i);
@@ -481,7 +481,7 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 				if(isAdultMovie || !onlyReturnAdultResults)
 				{
 					SearchResult searchResultToAdd;
-					if(posterPath != null && posterPath.length() > 0)
+					if(posterPath.length() > 0)
 						searchResultToAdd = new SearchResult(getAPIURLPathFromMovieID(movieID), movieTitle, new Thumb(posterPath));
 					else
 						searchResultToAdd = new SearchResult(getAPIURLPathFromMovieID(movieID), movieTitle);

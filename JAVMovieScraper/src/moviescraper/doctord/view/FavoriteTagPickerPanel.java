@@ -26,7 +26,7 @@ public class FavoriteTagPickerPanel extends FavoriteItemPickerPanel {
 	
 	public static ArrayList<Tag> getFavoriteTagsFromPreferences() {
 		String[] existingFavoriteTagsArray = MoviescraperPreferences.getInstance().getfrequentlyUsedTags().split(listSeperator);
-		ArrayList<Tag> favoriteTagsToReturn = new ArrayList<Tag>(existingFavoriteTagsArray.length);
+		ArrayList<Tag> favoriteTagsToReturn = new ArrayList<>(existingFavoriteTagsArray.length);
 		for(String existingFavoriteTag : existingFavoriteTagsArray)
 		{
 			favoriteTagsToReturn.add(new Tag(existingFavoriteTag));

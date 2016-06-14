@@ -244,7 +244,7 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 
 	@Override
 	public ArrayList<Genre> scrapeGenres() {
-		ArrayList<Genre> genreList = new ArrayList<Genre>();
+		ArrayList<Genre> genreList = new ArrayList<>();
 		Element genreElement = document.select("font:containsOwn(Fetish:) + a").first();
 		if(genreElement != null)
 		{
@@ -259,7 +259,7 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 
 	@Override
 	public ArrayList<Actor> scrapeActors() {
-		ArrayList<Actor> actorList = new ArrayList<Actor>();
+		ArrayList<Actor> actorList = new ArrayList<>();
 		Element firstActorList = document.select("font:containsOwn(Starring:) + font").first();
 		Elements actorListElements = firstActorList.select("a");
 		for(Element currentActor : actorListElements)
@@ -320,7 +320,7 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 
 	@Override
 	public ArrayList<Director> scrapeDirectors() {
-		ArrayList<Director> directorList = new ArrayList<Director>();
+		ArrayList<Director> directorList = new ArrayList<>();
 		Element directorElement = document.select("font:containsOwn(Director:) + a").first();
 		if(directorElement != null)
 		{
@@ -399,7 +399,7 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 		//Unfortunately, they don't use things like ids or classes much which makes it hard to get the right element without resorting to 
 		//hackery like width=600 stuff
 		Elements foundMovies = doc.select("table[width=600]:contains(Wish List) tr tbody:has(img)");
-		LinkedList<SearchResult> searchList = new LinkedList<SearchResult>();
+		LinkedList<SearchResult> searchList = new LinkedList<>();
 		
 		for(Element movie: foundMovies){
 			String urlPath = movie.select("a").first().attr("href");

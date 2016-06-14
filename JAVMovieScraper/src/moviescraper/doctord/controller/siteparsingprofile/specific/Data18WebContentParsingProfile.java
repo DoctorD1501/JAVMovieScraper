@@ -145,7 +145,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 		if(plotElement != null)
 			return new Plot(plotElement.ownText());
 		//maybe if this is a scene, there is a link to the full movie where we can grab the plot from there
-		else if(plotElement == null) {
+		else {
 			Element relatedMovieTextElement = document.select("div p:containsOwn(Related Movie:)").first();
 			//the actual related movie is the text's parent's previous element, if it is there
 			if(relatedMovieTextElement != null && relatedMovieTextElement.parent() != null && relatedMovieTextElement.parent().previousElementSibling() != null) {
@@ -187,8 +187,8 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 	@Override
 	public Thumb[] scrapePosters() {
 		//If scene is from a page that has video stills, grab the posters from the trailer link
-		ArrayList<Thumb> posters = new ArrayList<Thumb>();
-		ArrayList<Thumb> trailerImages = new ArrayList<Thumb>();
+		ArrayList<Thumb> posters = new ArrayList<>();
+		ArrayList<Thumb> trailerImages = new ArrayList<>();
 		
 		Elements trailerImgElements = document.select("img.noborder[title=Scene Preview], div#moviewrap img[src*=/big.jpg], img.noborder[alt=Play this video]:not(img.noborder[src*=play.png]), div#pretrailer a[href*=/trailer] img.noborder:not(img.noborder[src*=play.png])");
 		Elements videoStills = document.select("div:containsOwn(Video Stills:) ~ div img");
@@ -223,7 +223,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 		
 		
 		//otherwise, find split scene links from a full movie
-		ArrayList<String> contentLinks = new ArrayList<String>();
+		ArrayList<String> contentLinks = new ArrayList<>();
 		String docLocation = document.location();
 		//in rare cases the content id used on the viewer page is not the same as that of the url of the page itself
 		String contentIDFromViewerFoundOnPage = "";
@@ -366,7 +366,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 
 	@Override
 	public ArrayList<Genre> scrapeGenres() {
-		ArrayList<Genre> genreList = new ArrayList<Genre>();
+		ArrayList<Genre> genreList = new ArrayList<>();
 		//Elements genreElements = document.select("span.gensmall ~ a");
 		Elements genreElements = document.select("div.p8 div div div:contains(Categories) a, div.gen12 div:contains(Categories) a");
 		if (genreElements != null)
@@ -390,7 +390,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 	@Override
 	public ArrayList<Actor> scrapeActors() {
 		Elements actorElements = document.select("p:contains(Starring:) a.bold");
-		ArrayList<Actor> actorList = new ArrayList<Actor>();
+		ArrayList<Actor> actorList = new ArrayList<>();
 		if(actorElements != null)
 		{
 			for(Element currentActorElement : actorElements)
@@ -457,7 +457,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 
 	@Override
 	public ArrayList<Director> scrapeDirectors() {
-		ArrayList<Director> directorList = new ArrayList<Director>();
+		ArrayList<Director> directorList = new ArrayList<>();
 		return directorList;
 	}
 
@@ -521,7 +521,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 		scrapedPosters = null;
 		if(useSiteSearch)
 		{
-			ArrayList<SearchResult> linksList = new ArrayList<SearchResult>();
+			ArrayList<SearchResult> linksList = new ArrayList<>();
 			Document doc = Jsoup.connect(searchString).userAgent("Mozilla").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
 			Elements movieSearchResultElements = doc.select("div.bscene");
 			if(movieSearchResultElements == null || movieSearchResultElements.size() == 0)
@@ -626,7 +626,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 	 */
 	public SearchResult[] removeInvalidGoogleResults(SearchResult [] googleResults)
 	{
-		LinkedList<SearchResult> modifiedSearchResultList = new LinkedList<SearchResult>();
+		LinkedList<SearchResult> modifiedSearchResultList = new LinkedList<>();
 		for(int i = 0; i < googleResults.length; i++)
 		{
 			//System.out.println("initial goog results = " + googleResults[i].getUrlPath());

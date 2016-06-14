@@ -326,7 +326,7 @@ public class RenamerGUI extends JFrame {
 		
 		Actor actorA = new Actor("Actor A", null, null);
 		Actor actorB = new Actor("Actor B", null, null);
-		ArrayList<Actor> actors = new ArrayList<Actor>(5);
+		ArrayList<Actor> actors = new ArrayList<>(5);
 		Collections.addAll(actors, actorA, actorB);
 		
 		Director directorA = new Director("Director Name", null);
@@ -338,12 +338,12 @@ public class RenamerGUI extends JFrame {
 
 		Genre genreA = new Genre("GenreA");
 		Genre genreB = new Genre("GenreB");
-		ArrayList<Genre> genres = new ArrayList<Genre>(5);
+		ArrayList<Genre> genres = new ArrayList<>(5);
 		Collections.addAll(genres, genreA, genreB);
 		
 		Tag tagA = new Tag("TagA");
 		Tag tagB = new Tag("TagB");
-		ArrayList<Tag> tags = new ArrayList<Tag>(5);
+		ArrayList<Tag> tags = new ArrayList<>(5);
 		
 		Collections.addAll(tags, tagA, tagB);
 		

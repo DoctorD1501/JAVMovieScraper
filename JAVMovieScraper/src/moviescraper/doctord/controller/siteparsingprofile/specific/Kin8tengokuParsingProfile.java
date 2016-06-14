@@ -153,7 +153,7 @@ public class Kin8tengokuParsingProfile extends SiteParsingProfile implements Spe
 
 	@Override
 	public Thumb[] scrapeExtraFanart() {
-		ArrayList<Thumb> extraFanart = new ArrayList<Thumb>();
+		ArrayList<Thumb> extraFanart = new ArrayList<>();
 		return extraFanart.toArray(new Thumb[extraFanart.size()]);
 	}
 

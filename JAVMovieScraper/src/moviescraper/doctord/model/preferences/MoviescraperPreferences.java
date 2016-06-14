@@ -63,7 +63,7 @@ public class MoviescraperPreferences extends Settings {
 
 	public Boolean getOverWriteFanartAndPostersPreference()
 	{
-		return getBooleanValue(Key.overwriteFanartAndPosters, true);
+		return getBooleanValue(Key.overwriteFanartAndPosters, Boolean.TRUE);
 	}
 
 	public void setWriteFanartAndPostersPreference(Boolean preferenceValue){
@@ -104,7 +104,7 @@ public class MoviescraperPreferences extends Settings {
 	}
 
 	public Boolean getNoMovieNameInImageFiles(){
-		return getBooleanValue(Key.noMovieNameInImageFiles, false);
+		return getBooleanValue(Key.noMovieNameInImageFiles, Boolean.FALSE);
 	}
 
 	public void setNoMovieNameInImageFiles(Boolean preferenceValue){
@@ -112,7 +112,7 @@ public class MoviescraperPreferences extends Settings {
 	}
 
 	public Boolean getWriteTrailerToFile(){
-		return getBooleanValue(Key.writeTrailerToFile, false);
+		return getBooleanValue(Key.writeTrailerToFile, Boolean.FALSE);
 	}
 
 	public void setWriteTrailerToFile(Boolean preferenceValue){
@@ -120,7 +120,7 @@ public class MoviescraperPreferences extends Settings {
 	}
 
 	public Boolean getNfoNamedMovieDotNfo(){
-		return getBooleanValue(Key.nfoNamedMovieDotNfo, false);
+		return getBooleanValue(Key.nfoNamedMovieDotNfo, Boolean.FALSE);
 	}
 
 	public void setNfoNamedMovieDotNfo(Boolean preferenceValue){
@@ -128,7 +128,7 @@ public class MoviescraperPreferences extends Settings {
 	}
 
 	public Boolean getUseIAFDForActors() {
-		return getBooleanValue(Key.useIAFDForActors, false);
+		return getBooleanValue(Key.useIAFDForActors, Boolean.FALSE);
 	}
 
 	public void setUseIAFDForActors(Boolean preferenceValue) {
@@ -160,7 +160,7 @@ public class MoviescraperPreferences extends Settings {
 	}
 
 	public Boolean getRenameMovieFile() {
-		return getBooleanValue(Key.renameMovieFile, false);
+		return getBooleanValue(Key.renameMovieFile, Boolean.FALSE);
 	}
 
 	public void setRenameMovieFile(Boolean preferenceValue) {
@@ -168,7 +168,7 @@ public class MoviescraperPreferences extends Settings {
 	}
 
 	public Boolean getScrapeInJapanese(){
-		return getBooleanValue(Key.scrapeInJapanese, false);
+		return getBooleanValue(Key.scrapeInJapanese, Boolean.FALSE);
 	}
 
 	public void setScrapeInJapanese(Boolean preferenceValue){
@@ -176,7 +176,7 @@ public class MoviescraperPreferences extends Settings {
 	}
 	
 	public Boolean getPromptForUserProvidedURLWhenScraping(){
-		return getBooleanValue(Key.promptForUserProvidedURLWhenScraping, false);
+		return getBooleanValue(Key.promptForUserProvidedURLWhenScraping, Boolean.FALSE);
 	}
 
 	public void setPromptForUserProvidedURLWhenScraping(Boolean preferenceValue){
@@ -184,7 +184,7 @@ public class MoviescraperPreferences extends Settings {
 	}
 	
 	public Boolean getIsFirstWordOfFileID(){
-		return getBooleanValue(Key.isFirstWordOfFileID, false);
+		return getBooleanValue(Key.isFirstWordOfFileID, Boolean.FALSE);
 	}
 	
 	public void setIsFirstWordOfFileID(Boolean preferenceValue){
@@ -192,7 +192,7 @@ public class MoviescraperPreferences extends Settings {
 	}
 	
 	public Boolean getAppendIDToStartOfTitle(){
-		return getBooleanValue(Key.appendIDToStartOfTitle, false);
+		return getBooleanValue(Key.appendIDToStartOfTitle, Boolean.FALSE);
 	}
 	
 	public void setAppendIDToStartOfTitle(Boolean preferenceValue){
@@ -200,7 +200,7 @@ public class MoviescraperPreferences extends Settings {
 	}
 	
 	public Boolean getUseFileNameAsTitle(){
-		return getBooleanValue(Key.useFilenameAsTitle, false);
+		return getBooleanValue(Key.useFilenameAsTitle, Boolean.FALSE);
 	}
 	
 	public void setUseFileNameAsTitle(Boolean preferenceValue){
@@ -209,7 +209,7 @@ public class MoviescraperPreferences extends Settings {
 	
 	public Boolean getSelectArtManuallyWhenScraping()
 	{
-		return getBooleanValue(Key.selectArtManuallyWhenScraping, true);
+		return getBooleanValue(Key.selectArtManuallyWhenScraping, Boolean.TRUE);
 	}
 	
 	public void setSelectArtManuallyWhenScraping(Boolean preferenceValue)
@@ -219,7 +219,7 @@ public class MoviescraperPreferences extends Settings {
 	
 	public Boolean getSelectSearchResultManuallyWhenScraping()
 	{
-		return getBooleanValue(Key.selectSearchResultManuallyWhenScraping, false);
+		return getBooleanValue(Key.selectSearchResultManuallyWhenScraping, Boolean.FALSE);
 	}
 	
 	public void setSelectSearchResultManuallyWhenScraping(Boolean preferenceValue)
@@ -229,7 +229,7 @@ public class MoviescraperPreferences extends Settings {
 	
 	public Boolean getConfirmCleanUpFileNameNameBeforeRenaming()
 	{
-		return getBooleanValue(Key.confirmCleanUpFileNameNameBeforeRenaming, true);
+		return getBooleanValue(Key.confirmCleanUpFileNameNameBeforeRenaming, Boolean.TRUE);
 	}
 	
 	public void setConfirmCleanUpFileNameNameBeforeRenaming(Boolean preferenceValue)

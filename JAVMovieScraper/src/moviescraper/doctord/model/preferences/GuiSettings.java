@@ -35,11 +35,11 @@ public class GuiSettings extends Settings {
 	
 	
 	public boolean getShowToolbar(){
-		return getBooleanValue(Key.showToolbar, true);
+		return getBooleanValue(Key.showToolbar, Boolean.TRUE).booleanValue();
 	}
 	
 	public void setShowToolbar(boolean preferenceValue){
-		setBooleanValue(Key.showToolbar, preferenceValue);
+		setBooleanValue(Key.showToolbar, new Boolean(preferenceValue));
 	}
 	
 	public boolean getShowOutputPanel(){

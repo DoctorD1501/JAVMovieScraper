@@ -26,7 +26,7 @@ public class FavoriteGenrePickerPanel extends FavoriteItemPickerPanel {
 	
 	public static ArrayList<Genre> getFavoriteGenresFromPreferences() {
 		String[] existingFavoriteGenresArray = MoviescraperPreferences.getInstance().getfrequentlyUsedGenres().split(listSeperator);
-		ArrayList<Genre> favoriteGenresToReturn = new ArrayList<Genre>(existingFavoriteGenresArray.length);
+		ArrayList<Genre> favoriteGenresToReturn = new ArrayList<>(existingFavoriteGenresArray.length);
 		for(String existingFavoriteGenre : existingFavoriteGenresArray)
 		{
 			favoriteGenresToReturn.add(new Genre(existingFavoriteGenre));

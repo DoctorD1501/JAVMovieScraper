@@ -137,7 +137,7 @@ public class GenreEditorPanel extends JPanel implements ItemListener {
 	}
 	
 	private List<Genre> cloneOriginalGenreListDeepCopy() {
-		ArrayList<Genre> clonedList = new ArrayList<Genre>(originalGenreList.size());
+		ArrayList<Genre> clonedList = new ArrayList<>(originalGenreList.size());
 		for (Genre originalGenre : originalGenreList)
 		{
 			clonedList.add(new Genre(originalGenre.getGenre()));

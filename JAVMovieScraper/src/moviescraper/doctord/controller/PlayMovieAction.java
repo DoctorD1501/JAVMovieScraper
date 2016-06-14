@@ -48,7 +48,7 @@ public class PlayMovieAction implements ActionListener {
 						if(movieFilesInFolder.length > 0)
 						{
 							//Filter out the trailer files and then sort the list so we play any stacked movies in sequential order
-							List<File> fileList = new LinkedList<File>(Arrays.asList(movieFilesInFolder));
+							List<File> fileList = new LinkedList<>(Arrays.asList(movieFilesInFolder));
 							fileList = filterFiles(fileList);
 							Collections.sort(fileList);
 							
@@ -57,7 +57,7 @@ public class PlayMovieAction implements ActionListener {
 					}
 					//We are selecting an actual movie file. Get all stacked movie files and play them in alphabetical order. Remove trailer files as well from our playlist
 					else{
-						List<File> stackedMovieFiles = new LinkedList<File>();
+						List<File> stackedMovieFiles = new LinkedList<>();
 						
 						File currentDirectory = this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList).getParentFile();
 						String currentlySelectedMovieFileWihoutStackSuffix = SiteParsingProfile.stripDiscNumber(FilenameUtils.removeExtension(this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList).getName()));

@@ -42,7 +42,7 @@ public class SelectionDialog extends JPanel {
 	 */
 	public SelectionDialog(SearchResult[] searchResults, String siteName) {
 		panel.setLayout(new BorderLayout());
-		labelList = new JList<SearchResult>(searchResults);
+		labelList = new JList<>(searchResults);
 		labelList.setCellRenderer(new SearchResultsRenderer());
 		labelList.setVisible(true);
 		JScrollPane pane = new JScrollPane(labelList);

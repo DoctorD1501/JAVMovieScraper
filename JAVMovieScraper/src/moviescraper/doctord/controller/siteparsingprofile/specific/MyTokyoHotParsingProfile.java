@@ -180,7 +180,7 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 
 	@Override
 	public Thumb[] scrapePosters() {
-		ArrayList<Thumb> posters  = new ArrayList<Thumb>();
+		ArrayList<Thumb> posters  = new ArrayList<>();
 		Element trailerBackgroundImage = document.select("video[poster]").first();
 		if(trailerBackgroundImage != null)
 		{
@@ -249,7 +249,7 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 
 	@Override
 	public ArrayList<Genre> scrapeGenres() {
-		ArrayList<Genre> genreList = new ArrayList<Genre>();
+		ArrayList<Genre> genreList = new ArrayList<>();
 		Elements genreElements = null;
 		if(getScrapingLanguage() == Language.ENGLISH)
 			genreElements = document.select("dl.info dt:contains(Category) + dd a, dl.info dt:contains(カテゴリ) + dd a");
@@ -270,7 +270,7 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 
 	@Override
 	public ArrayList<Actor> scrapeActors() {
-		ArrayList<Actor> actorList = new ArrayList<Actor>();
+		ArrayList<Actor> actorList = new ArrayList<>();
 		Elements actressElements = null;
 		if(getScrapingLanguage() == Language.ENGLISH)
 			actressElements = document.select("dl.info dt:contains(Actress) + dd a, dl.info dt:contains(出演者) + dd a");
@@ -309,7 +309,7 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 
 	@Override
 	public ArrayList<Director> scrapeDirectors() {
-		return new ArrayList<Director>();
+		return new ArrayList<>();
 	}
 
 	@Override

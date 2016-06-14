@@ -317,7 +317,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 		// full URL, however
 		Elements extraArtElementsSmallSize = document.select("div#sample-image-block img.mg-b6");
 
-		ArrayList<Thumb> posters = new ArrayList<Thumb>(
+		ArrayList<Thumb> posters = new ArrayList<>(
 				1 + extraArtElementsSmallSize.size());
 		String posterLink = postersElement.attr("href");
 		if(posterLink == null || posterLink.length() < 1)
@@ -422,7 +422,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 	public ArrayList<Genre> scrapeGenres() {
 		Elements genreElements = document
 				.select("table.mg-b12 tr td a[href*=article=keyword/id=]");
-		ArrayList<Genre> genres = new ArrayList<Genre>(genreElements.size());
+		ArrayList<Genre> genres = new ArrayList<>(genreElements.size());
 		for (Element genreElement : genreElements) {
 			// get the link so we can examine the id and do some sanity cleanup
 			// and perhaps some better translation that what google has, if we
@@ -471,6 +471,8 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 		case "1013":
 			betterGenreTranslatedString = "Nurse";
 			break;
+		default:
+			break;
 		}
 
 
@@ -514,7 +516,9 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 		case "24489":  
 			betterActressTranslatedString = "Chichi Asada"; break;
 		case "20631":  
-			betterActressTranslatedString = "Mitsuki An"; break;	
+			betterActressTranslatedString = "Mitsuki An"; break;
+		default:
+			break;	
 
 		}
 
@@ -533,6 +537,8 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 			return false;
 		case "6102": // "Sample Video" This is not a genre!
 			return false;
+		default:
+			break;
 		}
 		return true;
 	}
@@ -542,7 +548,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 		// scrape all the actress IDs
 		Elements actressIDElements = document
 				.select("span#performer a[href*=article=actress/id=]");
-		ArrayList<Actor> actorList = new ArrayList<Actor>(
+		ArrayList<Actor> actorList = new ArrayList<>(
 				actressIDElements.size());
 		for (Element actressIDLink : actressIDElements) {
 			String actressIDHref = actressIDLink.attr("href");
@@ -656,7 +662,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 
 	@Override
 	public ArrayList<Director> scrapeDirectors() {
-		ArrayList<Director> directors = new ArrayList<Director>();
+		ArrayList<Director> directors = new ArrayList<>();
 		Element directorElement = document.select(
 				"table.mg-b20 tr td a[href*=article=director/id=]").first();
 		if (directorElement != null && directorElement.hasText()) {
@@ -713,8 +719,8 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 		boolean firstPageScraping = true;
 		Document searchResultsPage = Jsoup.connect(searchString).timeout(CONNECTION_TIMEOUT_VALUE).get();
 		Element nextPageLink = searchResultsPage.select("div.list-capt div.list-boxcaptside.list-boxpagenation ul li:not(.terminal) a").last();
-		ArrayList<SearchResult> searchResults = new ArrayList<SearchResult>();
-		ArrayList<String> pagesVisited = new ArrayList<String>();
+		ArrayList<SearchResult> searchResults = new ArrayList<>();
+		ArrayList<String> pagesVisited = new ArrayList<>();
 		while(firstPageScraping || nextPageLink != null)
 		{
 		nextPageLink = searchResultsPage.select("div.list-capt div.list-boxcaptside.list-boxpagenation ul li:not(.terminal) a").last();
@@ -791,7 +797,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 	
 	public SearchResult[] getSearchResultsWithoutDVDLinks(String dmmSearchString) throws IOException {
 		SearchResult[] allSearchResult = getSearchResults(dmmSearchString);
-		List<SearchResult> filteredSearchResults = new LinkedList<SearchResult>();
+		List<SearchResult> filteredSearchResults = new LinkedList<>();
 		for(SearchResult currentSR : allSearchResult)
 		{
 			System.out.println("current SR = " + currentSR.getUrlPath());

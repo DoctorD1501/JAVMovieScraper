@@ -65,6 +65,7 @@ public class MessageConsole
 	public void redirectOut(Color textColor, PrintStream printStream)
 	{
 		ConsoleOutputStream cos = new ConsoleOutputStream(textColor, printStream);
+		//TODO: There's a warning here, however if I use a try with resources the message console breaks
 		System.setOut( new PrintStream(cos, true) );
 	}
 
@@ -86,6 +87,7 @@ public class MessageConsole
 	public void redirectErr(Color textColor, PrintStream printStream)
 	{
 		ConsoleOutputStream cos = new ConsoleOutputStream(textColor, printStream);
+		//TODO: There's a warning here, however if I use a try with resources the message console breaks
 		System.setErr( new PrintStream(cos, true) );
 	}
 

@@ -208,7 +208,7 @@ public class ScrapeAmalgamatedMovieWorker extends SwingWorker<Void, Map<SitePars
 					
 					self.numberOfScrapesFinished++;
 					System.out.println("Movie scraped = " + returnMovie);
-					Map<SiteParsingProfile, Movie> resultToPublish = new HashMap<SiteParsingProfile, Movie>();
+					Map<SiteParsingProfile, Movie> resultToPublish = new HashMap<>();
 					resultToPublish.put(siteScraper, returnMovie);
 					self.publish(resultToPublish);
 					self.progress = amtOfProgressFinal + self.progress;

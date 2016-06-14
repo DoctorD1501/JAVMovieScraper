@@ -511,8 +511,8 @@ public class FileDetailPanel extends JPanel {
 		JLabel lblActors = new JLabel("Actors:");
 		fileDetailsPanel.add(lblActors, getLayoutPositionString(COLUMN_LABEL, ROW_ACTORS));
 
-		actorList = new JList<Actor>(new ActorItemListModel());
-		List<File> currentlySelectedActorsFolderList = new ArrayList<File>();
+		actorList = new JList<>(new ActorItemListModel());
+		List<File> currentlySelectedActorsFolderList = new ArrayList<>();
 		if(gui != null)
 			currentlySelectedActorsFolderList = gui.getCurrentlySelectedActorsFolderList();
 		actorList.setCellRenderer(new ActressListRenderer(currentlySelectedActorsFolderList));
@@ -707,14 +707,11 @@ public class FileDetailPanel extends JPanel {
 				this.setCurrentMovie(movieToWriteToDiskList.get(currentListIndexOfDisplayedMovie));
 
 			//All the titles from the various versions scraped of this movie from the different sites
-			if(movieToWriteToDiskList != null)
-			{
-				this.getCurrentMovie().getAllTitles().add(getCurrentMovie().getTitle());
-				String fileName = this.getCurrentMovie().getFileName();
-				if(fileName != null && fileName.trim().length() > 0)
-					this.getCurrentMovie().getAllTitles().add(new Title(fileName));
-			}
-			
+			this.getCurrentMovie().getAllTitles().add(getCurrentMovie().getTitle());
+			String fileName = this.getCurrentMovie().getFileName();
+			if(fileName != null && fileName.trim().length() > 0)
+				this.getCurrentMovie().getAllTitles().add(new Title(fileName));
+
 			if(this.getCurrentMovie().getAllTitles().size() > 0)
 				this.setTitleEditable(true);
 		//end

@@ -199,7 +199,7 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements
 	@Override
 	public Thumb[] scrapePosters() {
 		ID id = scrapeID();
-		ArrayList<Thumb> posters = new ArrayList<Thumb>();
+		ArrayList<Thumb> posters = new ArrayList<>();
 		if(id != null && id.getId().length() > 0)
 		{
 			String trailerPoster = "http://www.caribbeancom.com/moviepages/" + id.getId() + "/images/" + "l_l.jpg";
@@ -239,8 +239,8 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements
 	@Override
 	public Thumb[] scrapeExtraFanart() {
 		Thumb[] posters = scrapePosters();
-		List<Thumb> posterList = new LinkedList<Thumb>(Arrays.asList(posters));
-		if(posterList != null && posterList.size() > 0)
+		List<Thumb> posterList = new LinkedList<>(Arrays.asList(posters));
+		if(posterList.size() > 0)
 			posterList.remove(0);
 		return posterList.toArray(new Thumb[posterList.size()]);
 	}
@@ -267,7 +267,7 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements
 	@Override
 	public ArrayList<Genre> scrapeGenres() {
 		initializeJapaneseDocument();
-		ArrayList<Genre> genreList = new ArrayList<Genre>();
+		ArrayList<Genre> genreList = new ArrayList<>();
 		Elements genres = japaneseDocument.select("div.movie-info dl.movie-info-cat:contains(カテゴリー:) dd ");
 		if(genres != null)
 		{
@@ -286,7 +286,7 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements
 
 	@Override
 	public ArrayList<Actor> scrapeActors() {
-		ArrayList<Actor> actorList = new ArrayList<Actor>();
+		ArrayList<Actor> actorList = new ArrayList<>();
 		initializeJapaneseDocument();
 		//Element actorEnglishSearchElement = document.select("table.info_table tbody tr td.property:contains(Starring:) ~ td a").first();
 		Elements japaneseActors = japaneseDocument.select("div.movie-info dl dt:contains(出演:) ~ dd a");
@@ -328,7 +328,7 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements
 	@Override
 	public ArrayList<Director> scrapeDirectors() {
 		//No Director information on the site
-		return new ArrayList<Director>();
+		return new ArrayList<>();
 	}
 
 	@Override

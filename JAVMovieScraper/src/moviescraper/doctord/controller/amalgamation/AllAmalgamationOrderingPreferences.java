@@ -33,7 +33,7 @@ public class AllAmalgamationOrderingPreferences {
 	private static final String settingsFileName = "AmalgamationSettings.json";
 	
 	public AllAmalgamationOrderingPreferences(){
-		allAmalgamationOrderingPreferences = new Hashtable<ScraperGroupName, ScraperGroupAmalgamationPreference>();
+		allAmalgamationOrderingPreferences = new Hashtable<>();
 	}
 
 	
@@ -101,7 +101,7 @@ public class AllAmalgamationOrderingPreferences {
 		return this;
 	}
 	
-	public void saveToPreferencesFile() throws FileNotFoundException {
+	public void saveToPreferencesFile() {
 		try (FileOutputStream outputStream = new FileOutputStream(settingsFileName);
 				JsonWriter jw = new JsonWriter(outputStream);) {
 			jw.write(this);
@@ -124,12 +124,7 @@ public class AllAmalgamationOrderingPreferences {
 		//TODO: define a default ordering for all other scraper types
 		
 		if (saveToDisk) {
-			// Save our preferences to disk
-			try {
-				saveToPreferencesFile();
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			}
+			saveToPreferencesFile();
 		}
 	}
 	

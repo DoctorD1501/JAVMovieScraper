@@ -32,16 +32,16 @@ public class MovieFactory {
 	public static Movie createEmptyMovie() {
 			
 			
-			ArrayList<Actor> actors = new ArrayList<Actor>();
+			ArrayList<Actor> actors = new ArrayList<>();
 			
 			ArrayList<Director> directors = new ArrayList<>();
 			
 			Thumb[] fanart = new Thumb[0]; 
 			Thumb[] extraFanart = new Thumb[0]; 
 
-			ArrayList<Genre> genres = new ArrayList<Genre>();
+			ArrayList<Genre> genres = new ArrayList<>();
 			
-			ArrayList<Tag> tags = new ArrayList<Tag>();
+			ArrayList<Tag> tags = new ArrayList<>();
 			
 			
 			ID id = ID.BLANK_ID;

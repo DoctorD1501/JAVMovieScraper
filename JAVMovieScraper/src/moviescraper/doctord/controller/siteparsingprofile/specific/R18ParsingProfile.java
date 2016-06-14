@@ -246,7 +246,7 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 
 	@Override
 	public Thumb[] scrapeExtraFanart() {
-		List<Thumb> thumbList = new LinkedList<Thumb>();
+		List<Thumb> thumbList = new LinkedList<>();
 		
 		Elements previewProductGalleryImgLinks = document.select(".product-gallery li a img");
 		
@@ -307,7 +307,7 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 
 	@Override
 	public ArrayList<Genre> scrapeGenres() {
-		ArrayList<Genre> genreList = new ArrayList<Genre>();
+		ArrayList<Genre> genreList = new ArrayList<>();
 		Elements genreElements = document.select("div.product-details dl dt:contains(Categories:) ~ dd a");
 		if(genreElements != null)
 		{
@@ -326,7 +326,7 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 
 	@Override
 	public ArrayList<Actor> scrapeActors() {
-		ArrayList<Actor> actorList = new ArrayList<Actor>();
+		ArrayList<Actor> actorList = new ArrayList<>();
 		Elements actorElementTabs = document.select("div.js-tab-contents div[id]");
 		if(actorElementTabs != null)
 		{
@@ -350,7 +350,7 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 						}
 						
 					}
-					else if(actorName != null)
+					else
 					{
 						Actor actorWithoutThumb = new Actor(actorName,"",null);
 						actorList.add(actorWithoutThumb);
@@ -363,7 +363,7 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 
 	@Override
 	public ArrayList<Director> scrapeDirectors() {
-		ArrayList<Director> directorList = new ArrayList<Director>();
+		ArrayList<Director> directorList = new ArrayList<>();
 		Element studioElement = document.select("div.product-details dl dt:contains(Director:) + dd").first();
 		if(studioElement != null)
 		{

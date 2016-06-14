@@ -91,7 +91,7 @@ public class ScraperGroupAmalgamationPreference {
 	public void setCustomOrderingForField(Field field, DataItemSourceAmalgamationPreference newValue)
 	{
 		if (customAmalgamationOrderPerField == null) {
-			customAmalgamationOrderPerField = new Hashtable<String, DataItemSourceAmalgamationPreference>(
+			customAmalgamationOrderPerField = new Hashtable<>(
 					Movie.class.getDeclaredFields().length);
 		}
 		customAmalgamationOrderPerField.put(field.getName(), newValue);
@@ -109,10 +109,10 @@ public class ScraperGroupAmalgamationPreference {
 	
 	public static List<Field> getMoviefieldNames()
 	{
-		LinkedList<Field> fieldNames = new LinkedList<Field>();
+		LinkedList<Field> fieldNames = new LinkedList<>();
 		Movie currentMovie = Movie.getEmptyMovie();
 		String[] disallowedFieldNames = {"readTimeout","connectionTimeout","preferredFanartToWriteToDisk","allTitles", "fileName"};
-		ArrayList<String> disallowedFieldNamesArrayList = new ArrayList<String>(Arrays.asList(disallowedFieldNames));
+		ArrayList<String> disallowedFieldNamesArrayList = new ArrayList<>(Arrays.asList(disallowedFieldNames));
 		for (Field field : currentMovie.getClass().getDeclaredFields()) {
 			String fieldName = field.getName();
 			if(!disallowedFieldNamesArrayList.contains(fieldName))

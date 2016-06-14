@@ -150,7 +150,7 @@ public class TheMovieDatabaseParsingProfileTest {
 	}
 	
 	@Test
-	public void testExtraFanart() throws IOException
+	public void testExtraFanart()
 	{
 		//Thumb  [] extraFanart = profile.scrapeExtraFanart();
 	}

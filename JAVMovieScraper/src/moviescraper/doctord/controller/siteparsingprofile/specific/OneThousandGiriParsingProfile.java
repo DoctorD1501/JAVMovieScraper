@@ -231,7 +231,7 @@ public class OneThousandGiriParsingProfile extends SiteParsingProfile implements
 	public ArrayList<Genre> scrapeGenres() {
 		initializeJapaneseDocument();
 		Elements genreElements;
-		ArrayList<Genre> genreList = new ArrayList<Genre>();
+		ArrayList<Genre> genreList = new ArrayList<>();
 		if(getScrapingLanguage().equals(Language.ENGLISH))
 			genreElements = document.select("table.detail tbody tr th:contains(Type) + td a, table.detail tbody tr th:contains(Genres) + td a");
 		else
@@ -257,7 +257,7 @@ public class OneThousandGiriParsingProfile extends SiteParsingProfile implements
 	public ArrayList<Actor> scrapeActors() {
 		initializeJapaneseDocument();
 		Elements actorElements;
-		ArrayList<Actor> actorList = new ArrayList<Actor>();
+		ArrayList<Actor> actorList = new ArrayList<>();
 		if(getScrapingLanguage().equals(Language.ENGLISH))
 			actorElements = document.select("table.detail tbody tr th:contains(Name) + td a");
 		else
@@ -279,7 +279,7 @@ public class OneThousandGiriParsingProfile extends SiteParsingProfile implements
 	@Override
 	public ArrayList<Director> scrapeDirectors() {
 		//No Director info on this site
-		return new ArrayList<Director>();
+		return new ArrayList<>();
 	}
 
 	@Override

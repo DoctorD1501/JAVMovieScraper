@@ -117,7 +117,7 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
 	public void reinitializeScrapingForNextMovie()
 	{
 		currentAmalgamatedMovie = null;
-		currentMovieList = new LinkedList<Movie>();
+		currentMovieList = new LinkedList<>();
 		for(ScraperProgressView currentScraperProgressView : scraperProgressViews)
 		{
 			currentScraperProgressView.resetPanelForNextScrape();
@@ -327,7 +327,7 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
 				newValue.removeAll(Collections.singleton(null));
 				for(Map<SiteParsingProfile, Movie> currentMap : newValue)
 				{
-					List<Movie> currentMovies = new ArrayList<Movie>(currentMap.values());
+					List<Movie> currentMovies = new ArrayList<>(currentMap.values());
 					currentMovies.removeAll(Collections.singleton(null));
 					currentMovieList.addAll(currentMovies);
 				}

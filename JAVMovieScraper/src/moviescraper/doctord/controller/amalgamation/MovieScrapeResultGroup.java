@@ -57,7 +57,7 @@ public class MovieScrapeResultGroup {
 		this.amalgamationPreferenceOrderForEntireMovieGroup = amalgamationPreferenceOrder;
 	}
 	
-	private ArrayList<?> getPreferredMovieDataItemAsArrayList(Class<?> classOfMovieDataItem) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
+	private ArrayList<?> getPreferredMovieDataItemAsArrayList(Class<?> classOfMovieDataItem) throws SecurityException, IllegalAccessException, IllegalArgumentException
 	{
 		ArrayList<?> arrayList;
 		arrayList = getPreferredMovieDataItem(classOfMovieDataItem).length > 0 ? (ArrayList<?>) getPreferredMovieDataItem(classOfMovieDataItem)[0] : new ArrayList<>();
@@ -179,7 +179,7 @@ public class MovieScrapeResultGroup {
 	 */
 	private ArrayList<Actor> amalgamateActor(Movie sourceMovie, Movie movieToGetExtraInfoFrom)
 	{
-		ArrayList<Actor> amalgamatedActorList = new ArrayList<Actor>();
+		ArrayList<Actor> amalgamatedActorList = new ArrayList<>();
 		boolean changeMade = false;
 		if(sourceMovie.getActors() != null && movieToGetExtraInfoFrom.getActors() != null)
 		{
@@ -210,9 +210,9 @@ public class MovieScrapeResultGroup {
 	
 	
 	private Object[] getPreferredMovieDataItem(@SuppressWarnings("rawtypes") Class classOfMovieDataItem)
-			throws NoSuchMethodException, SecurityException,
-			InstantiationException, IllegalAccessException,
-			IllegalArgumentException, InvocationTargetException {
+			throws SecurityException,
+			IllegalAccessException,
+			IllegalArgumentException {
 
 		Object[] preferredValueOrder = new Object[amalgamationPreferenceOrderForEntireMovieGroup
 				.getOverallAmalgamationPreference()
@@ -339,7 +339,7 @@ public class MovieScrapeResultGroup {
 	
 	//used for thumb arrays and such
 	private Thumb[] getPreferredArrayMovieDataItem(String fieldName) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-		ArrayList<Thumb[]> preferredValueOrder = new ArrayList<Thumb[]>(amalgamationPreferenceOrderForEntireMovieGroup.getOverallAmalgamationPreference().getAmalgamationPreferenceOrder().size());
+		ArrayList<Thumb[]> preferredValueOrder = new ArrayList<>(amalgamationPreferenceOrderForEntireMovieGroup.getOverallAmalgamationPreference().getAmalgamationPreferenceOrder().size());
 		for(int i = 0; i < amalgamationPreferenceOrderForEntireMovieGroup.getAmalgamationPreference(null).getAmalgamationPreferenceOrder().size(); i++)
 		{
 			preferredValueOrder.add(null);

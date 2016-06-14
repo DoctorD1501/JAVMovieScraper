@@ -175,7 +175,7 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 
 	@Override
 	public Thumb[] scrapePosters() {
-		ArrayList<Thumb> thumbList = new ArrayList<Thumb>();
+		ArrayList<Thumb> thumbList = new ArrayList<>();
 		String scrapedId = scrapeID().getId();
 		try {
 			//gallery links
@@ -241,7 +241,7 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 
 	@Override
 	public ArrayList<Genre> scrapeGenres() {
-		ArrayList<Genre> genreList = new ArrayList<Genre>();
+		ArrayList<Genre> genreList = new ArrayList<>();
 		Elements genreElements = document.select("div.movieInfo a[href*=/listpages/category");
 		if(genreElements != null)
 		{
@@ -257,7 +257,7 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 	@Override
 	public ArrayList<Actor> scrapeActors() {
 		Elements actorElements = document.select("div.movieInfo span.dataInfo a[href*=/listpages/actor");
-		ArrayList<Actor> actorList = new ArrayList<Actor>();
+		ArrayList<Actor> actorList = new ArrayList<>();
 		for(Element currentActor : actorElements)
 		{
 			String actorName = currentActor.text().trim();
@@ -294,7 +294,7 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 
 	@Override
 	public ArrayList<Director> scrapeDirectors() {
-		return new ArrayList<Director>();
+		return new ArrayList<>();
 	}
 
 	@Override

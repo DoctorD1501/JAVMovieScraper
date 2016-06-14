@@ -81,12 +81,12 @@ public class Thumb extends MovieDataItem {
 	}
 
 	public void setThumbImage(Image thumbImage) {
-		this.thumbImage = new SoftReference<Image>(thumbImage);
-		this.imageIconThumbImage = new SoftReference<ImageIcon>(new ImageIcon(this.thumbImage.get()));
+		this.thumbImage = new SoftReference<>(thumbImage);
+		this.imageIconThumbImage = new SoftReference<>(new ImageIcon(this.thumbImage.get()));
 		needToReloadThumbImage = false;
 	}
 
-	public Thumb (URL thumbURL) throws IOException
+	public Thumb (URL thumbURL)
 	{
 		//Delay the call to actually reading in the thumbImage until it is needed
 		this.thumbURL = thumbURL;
@@ -110,7 +110,7 @@ public class Thumb extends MovieDataItem {
 		int newYBottom = (int) (tempImage.getHeight() - (tempImage.getHeight()*(verticalPercentBottom/100))); //bottom y bound of rectangle
 		tempImage = tempImage.getSubimage(newXLeft, newYTop, newXRight - newXLeft, newYBottom - newYTop);
 		thumbImage = new SoftReference<Image>(tempImage);
-		imageIconThumbImage = new SoftReference<ImageIcon>(new ImageIcon(thumbImage.get()));
+		imageIconThumbImage = new SoftReference<>(new ImageIcon(thumbImage.get()));
 		needToReloadThumbImage = false;
 	}
 	
@@ -130,8 +130,8 @@ public class Thumb extends MovieDataItem {
 		else {
 			this.isImageModified = false;
 		}
-		thumbImage = new SoftReference<BufferedImage>(tempImage);
-		imageIconThumbImage = new SoftReference<ImageIcon>(new ImageIcon(tempImage));
+		thumbImage = new SoftReference<>(tempImage);
+		imageIconThumbImage = new SoftReference<>(new ImageIcon(tempImage));
 		needToReloadThumbImage = false;
 	}
 	
@@ -303,14 +303,14 @@ public class Thumb extends MovieDataItem {
 	}
 
 	//change the thumb's image and URL at the same time
-	public void setImage(URL thumbURL) throws IOException {
+	public void setImage(URL thumbURL) {
 		this.thumbURL = thumbURL;
 		needToReloadThumbImage = false;
 	}
 
 	public void setImage(Image thumbImage){
-		this.thumbImage = new SoftReference<Image>(thumbImage);
-		this.imageIconThumbImage = new SoftReference<ImageIcon>(new ImageIcon(thumbImage));
+		this.thumbImage = new SoftReference<>(thumbImage);
+		this.imageIconThumbImage = new SoftReference<>(new ImageIcon(thumbImage));
 		needToReloadThumbImage = false;
 	}
 
@@ -325,8 +325,8 @@ public class Thumb extends MovieDataItem {
 		{
 			//rather than downloading the image every time, we can instead see if it's already in the cache
 			//if it's not in the cache, then we will actually download the image
-			thumbImage = new SoftReference<Image>(ImageCache.getImageFromCache(thumbURL, isImageModified));
-			imageIconThumbImage = new SoftReference<ImageIcon>(new ImageIcon(thumbImage.get()));
+			thumbImage = new SoftReference<>(ImageCache.getImageFromCache(thumbURL, isImageModified));
+			imageIconThumbImage = new SoftReference<>(new ImageIcon(thumbImage.get()));
 
 			needToReloadThumbImage = false;
 		}
@@ -351,8 +351,8 @@ public class Thumb extends MovieDataItem {
 		}
 		if(needToReloadPreviewImage || previewThumbImage == null || previewThumbImage.get() == null)
 		{
-			previewThumbImage = new SoftReference<Image>(ImageCache.getImageFromCache(previewURL, isImageModified));
-			previewIconThumbImage = new SoftReference<ImageIcon>(new ImageIcon(previewThumbImage.get()));
+			previewThumbImage = new SoftReference<>(ImageCache.getImageFromCache(previewURL, isImageModified));
+			previewIconThumbImage = new SoftReference<>(new ImageIcon(previewThumbImage.get()));
 			needToReloadPreviewImage = false;
 		}
 		return previewThumbImage.get();

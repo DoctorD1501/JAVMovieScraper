@@ -121,7 +121,7 @@ public class KodiXmlMovieBean {
 
 		
 		// actor
-		actor = new ArrayList<KodiXmlActorBean>(movie.getActors().size());
+		actor = new ArrayList<>(movie.getActors().size());
 		for (Actor currentActor : movie.getActors()) {
 			if(currentActor.getThumb() != null && currentActor.getThumb().getThumbURL() != null)
 			{
@@ -139,10 +139,10 @@ public class KodiXmlMovieBean {
 
 	public Movie toMovie() throws IOException {
 		
-		ArrayList<Actor> actors = new ArrayList<Actor>();
+		ArrayList<Actor> actors = new ArrayList<>();
 		if(actor != null)
 		{
-			actors = new ArrayList<Actor>(actor.size());
+			actors = new ArrayList<>(actor.size());
 			for (KodiXmlActorBean currentActor : actor) {
 				actors.add(currentActor.toActor());
 			}
@@ -170,7 +170,7 @@ public class KodiXmlMovieBean {
 			fanartThumbs = new Thumb[0];
 		}
 		
-		ArrayList<Genre> genres = new ArrayList<Genre>();
+		ArrayList<Genre> genres = new ArrayList<>();
 		if(genre != null)
 		{
 			for (int i = 0; i < genre.length; i++)
@@ -179,7 +179,7 @@ public class KodiXmlMovieBean {
 			}
 		}
 		
-		ArrayList<Tag> tags = new ArrayList<Tag>();
+		ArrayList<Tag> tags = new ArrayList<>();
 		if(tag != null)
 		{
 			for (int i = 0; i < tag.length; i++)
@@ -188,10 +188,10 @@ public class KodiXmlMovieBean {
 			}
 		}
 		
-		ArrayList<Director> directors = new ArrayList<Director>();
+		ArrayList<Director> directors = new ArrayList<>();
 		if(director !=null)
 		{
-			directors = new ArrayList<Director>(director.length);
+			directors = new ArrayList<>(director.length);
 			for(int i = 0; i <director.length; i++)
 			{
 				directors.add(new Director(director[i],null));

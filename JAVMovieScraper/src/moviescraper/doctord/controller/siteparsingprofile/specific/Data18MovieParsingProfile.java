@@ -125,7 +125,7 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 				else return Year.BLANK_YEAR;
 			}
 		}
-		else if(releaseDateElement != null)
+		else
 		{
 			String releaseDateText = releaseDateElement.text().trim();
 			//just get the last 4 letters which is the year
@@ -256,8 +256,8 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 		}
 		//find split scene links from a full movie
 		Elements sceneContentLinks = document.select("div[onmouseout]:matches(Scene \\d\\d?)");
-		ArrayList<String> contentLinks = new ArrayList<String>();
-		ArrayList<Thumb> extraFanart = new ArrayList<Thumb>();
+		ArrayList<String> contentLinks = new ArrayList<>();
+		ArrayList<Thumb> extraFanart = new ArrayList<>();
 		if(sceneContentLinks != null)
 		{
 			//get just the id from url of the content
@@ -323,7 +323,7 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 
 	@Override
 	public ArrayList<Genre> scrapeGenres() {
-		ArrayList<Genre> genreList = new ArrayList<Genre>();
+		ArrayList<Genre> genreList = new ArrayList<>();
 		Elements genreElements = document.select("div.gen12:has(b:containsOwn(Categories:)) p a[href*=/movies/], div.p8:has(div:containsOwn(Categories:)) a[href*=/movies/]");
 		System.out.println("genreElements = " + genreElements);
 		if (genreElements != null)
@@ -342,7 +342,7 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 	@Override
 	public ArrayList<Actor> scrapeActors() {
 		Elements actorElements = document.select("p.line1 a img");
-		ArrayList<Actor> actorList = new ArrayList<Actor>();
+		ArrayList<Actor> actorList = new ArrayList<>();
 		if(actorElements != null)
 		{
 			for(Element currentActorElement : actorElements)
@@ -383,7 +383,7 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 
 	@Override
 	public ArrayList<Director> scrapeDirectors() {
-		ArrayList<Director> directorList = new ArrayList<Director>();
+		ArrayList<Director> directorList = new ArrayList<>();
 		Element directorElement = document.select("a[href*=director=]").first();
 		if(directorElement != null)
 		{
@@ -447,7 +447,7 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 		System.out.println("Trying to scrape with URL = " + searchString);
 		if(useSiteSearch)
 		{
-			ArrayList<SearchResult> linksList = new ArrayList<SearchResult>();
+			ArrayList<SearchResult> linksList = new ArrayList<>();
 			Document doc = Jsoup.connect(searchString).userAgent("Mozilla").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
 			Elements movieSearchResultElements = doc.select("div[style=float: left; padding: 6px; width: 130px;]");
 			if(movieSearchResultElements == null || movieSearchResultElements.size() == 0)
@@ -467,7 +467,7 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 					Thumb currentMovieThumb = new Thumb(currentMovie.select("img").attr("src"));
 					linksList.add(new SearchResult(currentMovieURL, currentMovieTitle, currentMovieThumb));
 					if(releaseDateMap == null)
-						releaseDateMap = new HashMap<String, String>();
+						releaseDateMap = new HashMap<>();
 					//I'm putting into a static variable that never gets freed, so this could be a potential memory leak
 					//TODO: find a better way to do this without a global variable
 					releaseDateMap.put(currentMovieURL, releaseDateText);
