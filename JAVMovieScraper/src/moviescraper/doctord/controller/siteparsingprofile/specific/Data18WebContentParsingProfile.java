@@ -535,7 +535,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 				for(Element currentMovie : movieSearchResultElements)
 				{
 					String currentMovieURL = currentMovie.select("a").first().attr("href");
-					String currentMovieTitle = currentMovie.select("span.gen11 a").first().text();
+					String currentMovieTitle = currentMovie.select("a").first().text();
 					String releaseDateText = currentMovie.ownText();
 					if(releaseDateText != null && releaseDateText.length() > 0)
 						currentMovieTitle = currentMovieTitle + " (" + releaseDateText + ")";
