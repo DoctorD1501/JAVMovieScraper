@@ -17,6 +17,7 @@ import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile.Scr
 import moviescraper.doctord.controller.siteparsingprofile.specific.ActionJavParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.Data18MovieParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.DmmParsingProfile;
+import moviescraper.doctord.controller.siteparsingprofile.specific.DmmComParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.ExcaliburFilmsParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.IAFDParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.JavBusParsingProfile;
@@ -59,6 +60,8 @@ public class AllAmalgamationOrderingPreferences {
 			initializeAmericanAdultDVDScraperGroupDefaultPreferences();
 		if(scraperGroupName == ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP)
 			initializeJAVCensoredGroupDefaultPreferences();
+		if(scraperGroupName == ScraperGroupName.IV_SCRAPER_GROUP)
+			initializeIVGroupDefaultPreferences();
 	}
 
 
@@ -262,6 +265,102 @@ public class AllAmalgamationOrderingPreferences {
 			
 			allAmalgamationOrderingPreferences
 					.put(ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP,
+							preferences);
+		} catch (NoSuchFieldException e) {
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void initializeIVGroupDefaultPreferences()
+	{
+		System.out.println("Initializing default iv preferences");
+		
+		//IV Preferences
+		
+		DataItemSourceAmalgamationPreference overallOrdering = new DataItemSourceAmalgamationPreference(
+				new DmmComParsingProfile());
+		
+		
+		ScraperGroupAmalgamationPreference preferences = new ScraperGroupAmalgamationPreference(
+				ScraperGroupName.IV_SCRAPER_GROUP,
+				overallOrdering);
+		
+		//Specific preferences for each field of IV
+		try {
+			// Original title
+			DataItemSourceAmalgamationPreference bestContentForOriginalTitle = new DataItemSourceAmalgamationPreference(
+					new DmmParsingProfile());
+			preferences.setCustomOrderingForField("originalTitle", bestContentForOriginalTitle);
+			
+			
+			// ID
+			DataItemSourceAmalgamationPreference bestContentForID = new DataItemSourceAmalgamationPreference(
+					new DmmComParsingProfile());
+			preferences
+					.setCustomOrderingForField("id", bestContentForID);
+			
+			// Title
+			DataItemSourceAmalgamationPreference bestContentForTitle = new DataItemSourceAmalgamationPreference(
+					new DmmComParsingProfile());
+			preferences.setCustomOrderingForField("title", bestContentForTitle);
+
+			// Plot
+			DataItemSourceAmalgamationPreference bestContentForPlot = new DataItemSourceAmalgamationPreference(
+					new DmmComParsingProfile());
+			preferences.setCustomOrderingForField("plot", bestContentForPlot);
+
+			// Set
+			DataItemSourceAmalgamationPreference bestContentForSet = new DataItemSourceAmalgamationPreference(
+					new DmmComParsingProfile());
+			preferences.setCustomOrderingForField("set", bestContentForSet);
+
+			// Studio
+			DataItemSourceAmalgamationPreference bestContentForStudio = new DataItemSourceAmalgamationPreference(
+					new DmmComParsingProfile());
+			preferences.setCustomOrderingForField("studio", bestContentForStudio);
+
+			// Genre
+			DataItemSourceAmalgamationPreference bestContentForGenres = new DataItemSourceAmalgamationPreference(
+					new DmmComParsingProfile());
+			preferences.setCustomOrderingForField("genres", bestContentForGenres);
+
+			// Actors & Directors
+			DataItemSourceAmalgamationPreference bestContentForActorsAndDirectors = new DataItemSourceAmalgamationPreference(
+					new DmmComParsingProfile());
+			preferences.setCustomOrderingForField("actors", bestContentForActorsAndDirectors);
+			preferences.setCustomOrderingForField("directors", bestContentForActorsAndDirectors);
+			
+
+			// Fanart and posters and extraFanart
+			DataItemSourceAmalgamationPreference bestContentForPosterAndFanart = new DataItemSourceAmalgamationPreference(
+					new DmmComParsingProfile());
+			preferences.setCustomOrderingForField("posters", bestContentForPosterAndFanart);
+			preferences.setCustomOrderingForField("fanart", bestContentForPosterAndFanart);
+			preferences.setCustomOrderingForField("extraFanart", bestContentForPosterAndFanart);
+
+
+			// Trailer
+			DataItemSourceAmalgamationPreference bestContentForTrailer = new DataItemSourceAmalgamationPreference(
+					new DmmComParsingProfile());
+			preferences.setCustomOrderingForField("trailer", bestContentForTrailer);
+
+			// Ratings
+			DataItemSourceAmalgamationPreference bestContentForRating = new DataItemSourceAmalgamationPreference(
+					new DmmComParsingProfile());
+			preferences.setCustomOrderingForField("rating", bestContentForRating);
+
+
+			// Year, release date, runtime
+			DataItemSourceAmalgamationPreference bestContentForDateAndTime = new DataItemSourceAmalgamationPreference(
+					new DmmComParsingProfile());
+			preferences.setCustomOrderingForField("year", bestContentForDateAndTime);
+			preferences.setCustomOrderingForField("releaseDate", bestContentForDateAndTime);
+			preferences.setCustomOrderingForField("runtime", bestContentForDateAndTime);
+			
+			allAmalgamationOrderingPreferences
+					.put(ScraperGroupName.IV_SCRAPER_GROUP,
 							preferences);
 		} catch (NoSuchFieldException e) {
 			e.printStackTrace();

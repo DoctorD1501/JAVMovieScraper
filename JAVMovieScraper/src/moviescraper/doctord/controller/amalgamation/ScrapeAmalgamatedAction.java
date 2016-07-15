@@ -25,7 +25,7 @@ public class ScrapeAmalgamatedAction extends AbstractAction {
 	public ScrapeAmalgamatedAction(GUIMain guiMain, ScraperGroupAmalgamationPreference scraperGroupAmalgamationPreference) {
 		this.guiMain = guiMain;
 		this.scraperGroupAmalgamationPreference = scraperGroupAmalgamationPreference;
-		initializeDefaultValues("Scrape Adult Amalgamated " + scraperGroupAmalgamationPreference.toFriendlyString());
+		initializeDefaultValues("Scrape Amalgamated " + scraperGroupAmalgamationPreference.toFriendlyString());
 	}
 	
 	private void initializeDefaultValues(String name)

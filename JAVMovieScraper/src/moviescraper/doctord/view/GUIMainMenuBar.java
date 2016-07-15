@@ -466,9 +466,13 @@ public class GUIMainMenuBar extends JMenuBar{
 		scrapeJAVAmalgamated.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, Event.CTRL_MASK));
 		scrapeJAVAmalgamated.setIcon(GUIMainButtonPanel.initializeImageIcon("Japan"));
 		
+		JMenuItem scrapeIVAmalgamated = new JMenuItem(new ScrapeAmalgamatedAction(guiMain, guiMain.getAllAmalgamationOrderingPreferences().getScraperGroupAmalgamationPreference(ScraperGroupName.IV_SCRAPER_GROUP)));
+		scrapeIVAmalgamated.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, Event.CTRL_MASK));
+		scrapeIVAmalgamated.setIcon(GUIMainButtonPanel.initializeImageIcon("Japan"));
+		
 		scrapeMenu.add(scrapeAdultDVDAmalgamated);
 		scrapeMenu.add(scrapeJAVAmalgamated);
-		
+		scrapeMenu.add(scrapeIVAmalgamated);
 		
 		JMenu specificMenu = new JMenu("Specific Scrape");
 		scrapeMenu.add(specificMenu);

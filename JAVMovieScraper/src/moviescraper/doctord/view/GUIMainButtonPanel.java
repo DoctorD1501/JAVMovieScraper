@@ -280,13 +280,15 @@ public class GUIMainButtonPanel extends JPanel {
 		
 		Action scrapeAdultDVDAmalgamatedAction = new ScrapeAmalgamatedAction(guiMain, guiMain.getAllAmalgamationOrderingPreferences().getScraperGroupAmalgamationPreference(ScraperGroupName.AMERICAN_ADULT_DVD_SCRAPER_GROUP));
 		Action scrapeJAVAmalgamatedAction = new ScrapeAmalgamatedAction(guiMain, guiMain.getAllAmalgamationOrderingPreferences().getScraperGroupAmalgamationPreference(ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP));
+		Action scrapeIVAmalgamatedAction = new ScrapeAmalgamatedAction(guiMain, guiMain.getAllAmalgamationOrderingPreferences().getScraperGroupAmalgamationPreference(ScraperGroupName.IV_SCRAPER_GROUP));
 		
 		scrapeAdultDVDAmalgamatedAction.putValue(Action.SMALL_ICON, appIcon);
 		scrapeJAVAmalgamatedAction.putValue(Action.SMALL_ICON, japanIcon);
-
+		scrapeIVAmalgamatedAction.putValue(Action.SMALL_ICON, japanIcon);
 		
 		scrapeMenu.add(scrapeAdultDVDAmalgamatedAction).addActionListener(scrapeActionListener);
 		scrapeMenu.add(scrapeJAVAmalgamatedAction).addActionListener(scrapeActionListener);
+		scrapeMenu.add(scrapeIVAmalgamatedAction).addActionListener(scrapeActionListener);
 		
 		JMenu specificMenu = new JMenu("Specific Scrape");
 		scrapeMenu.add(specificMenu);
