@@ -153,7 +153,7 @@ public class DmmComParsingProfile extends SiteParsingProfile implements Specific
 		Element ratingElement = document.select(".d-review__average strong")
 				.first();
 		if (ratingElement != null)
-			return new Rating(dmmMaxRating, ratingElement.text().replace("点", ""));
+			return new Rating(dmmMaxRating, ratingElement.text().replace("ç‚¹", ""));
 		else
 			return Rating.BLANK_RATING;
 	}
@@ -462,15 +462,6 @@ public class DmmComParsingProfile extends SiteParsingProfile implements Specific
 	private String betterGenreTranslation(String text, String genreID) {
 		String betterGenreTranslatedString = "";
 		switch (genreID) {
-		case "5001":
-			betterGenreTranslatedString = "Creampie";
-			break;
-		case "5002":
-			betterGenreTranslatedString = "Fellatio";
-			break;
-		case "1013":
-			betterGenreTranslatedString = "Nurse";
-			break;
 		}
 
 
@@ -481,41 +472,6 @@ public class DmmComParsingProfile extends SiteParsingProfile implements Specific
 	private String betterActressTranslation(String text, String actressID) {
 		String betterActressTranslatedString = "";
 		switch (actressID) {
-		case "17802":
-			betterActressTranslatedString = "Tsubomi"; break;
-		case "27815":
-			betterActressTranslatedString = "Sakura Aida"; break;
-		case "1014395":
-			betterActressTranslatedString = "Yuria Ashina"; break;
-		case "1001819": 
-			betterActressTranslatedString = "Emiri Himeno"; break;
-		case "1006261": 
-			betterActressTranslatedString = "Uta Kohaku"; break;
-		case "101792": 
-			betterActressTranslatedString = "Nico Nohara"; break;
-		case "1015472": 
-			betterActressTranslatedString = "Tia"; break;
-		case "1016186": 
-			betterActressTranslatedString = "Yuko Shiraki";	break;
-		case "1009910":  
-			betterActressTranslatedString = "Hana Nonoka"; break;
-		case "1016458":  
-			betterActressTranslatedString = "Eve Hoshino"; break;
-		case "1019676":  
-			betterActressTranslatedString = "Rie Tachikawa"; break;
-		case "1017201":  
-			betterActressTranslatedString = "Meisa Chibana"; break;
-		case "1018387":  
-			betterActressTranslatedString = "Nami Itoshino"; break;
-		case "1014108":  
-			betterActressTranslatedString = "Juria Tachibana"; break;
-		case "1016575":  
-			betterActressTranslatedString = "Chika Kitano"; break;
-		case "24489":  
-			betterActressTranslatedString = "Chichi Asada"; break;
-		case "20631":  
-			betterActressTranslatedString = "Mitsuki An"; break;	
-
 		}
 
 		return betterActressTranslatedString;
@@ -529,9 +485,11 @@ public class DmmComParsingProfile extends SiteParsingProfile implements Specific
 	// The genre ID would be 6004 which is passed in as the String
 	private boolean acceptGenreID(String genreID) {
 		switch (genreID) {
-		case "6529": // "DVD Toaster" WTF is this? Nuke it!
+		case "6529": // "DVD Toaster"
 			return false;
-		case "6102": // "Sample Video" This is not a genre!
+		case "6102": // "Sample Video"
+			return false;
+		case "73160": // "Bluray"
 			return false;
 		}
 		return true;
@@ -541,106 +499,12 @@ public class DmmComParsingProfile extends SiteParsingProfile implements Specific
 	public ArrayList<Actor> scrapeActors() {
 		// scrape all the actress IDs
 		Elements actressIDElements = document
-				.select("span#performer a[href*=article=actress/id=]");
+				.select("a[href*=article=actor/id=]");
 		ArrayList<Actor> actorList = new ArrayList<Actor>(
 				actressIDElements.size());
-		for (Element actressIDLink : actressIDElements) {
-			String actressIDHref = actressIDLink.attr("href");
-			String actressNameKanji = actressIDLink.text();
-			String actressID = actressIDHref.substring(
-					actressIDHref.indexOf("id=") + 3,
-					actressIDHref.length() - 1);
-			String actressPageURL = "http://actress.dmm.com/-/detail/=/actress_id="
-					+ actressID + "/";
-			try {
-				Document actressPage = Jsoup.connect(actressPageURL).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE)
-						.get();
-				Element actressNameElement = actressPage.select("td.t1 h1")
-						.first();
-				Element actressThumbnailElement = actressPage.select(
-						"tr.area-av30.top td img").first();
-				String actressThumbnailPath = actressThumbnailElement.attr("src");
-				//Sometimes the translation service from google gives us weird engrish instead of a name, so let's compare it to the thumbnail file name for the image as a sanity check
-				//if the names aren't close enough, we'll use the thumbnail name
-				//many times the thumbnail name is off by a letter or two or has a number in it, which is why we just don't use this all the time...
-				String actressNameFromThumbnailPath = actressThumbnailPath.substring(actressThumbnailPath.lastIndexOf('/')+1, actressThumbnailPath.lastIndexOf('.'));
-
-				//To do a proper comparison using Lev distance, let's fix case, make first name appear first get rid of numbers
-				actressNameFromThumbnailPath = actressNameFromThumbnailPath.replaceAll("[0-9]", "");
-				actressNameFromThumbnailPath = actressNameFromThumbnailPath.replaceAll("_"," ");
-				actressNameFromThumbnailPath = WordUtils.capitalize(actressNameFromThumbnailPath);
-				actressNameFromThumbnailPath = StringUtils.reverseDelimited(actressNameFromThumbnailPath, ' ');
-
-				// The actor's name is easier to google translate if we get the
-				// hiragana form of it.
-				// The hiragana form of it is between a '（' and a '）' (These are
-				// not parens but some japanese version of parens)
-				String actressNameHiragana = actressNameElement.text()
-						.substring(actressNameElement.text().indexOf('（') + 1,
-								actressNameElement.text().indexOf('）'));
-				// maybe we know in advance the translation system will be junk,
-				// so we check our manual override of people we know it will get
-				// the name wrong on
-				String actressNameEnglish = betterActressTranslation(
-						actressNameHiragana, actressID);
-				boolean didWeManuallyOverrideActress = false;
-				if (actressNameEnglish.equals("") && doGoogleTranslation) {
-					actressNameEnglish = TranslateString
-							.translateJapanesePersonNameToRomaji(actressNameHiragana);
-				}
-				else didWeManuallyOverrideActress = true;
-
-				//use the difference between the two strings to determine which is the better one. The google translate shouldn't be that many characters away from the thumbnail name, or it's garbage
-				//unless the thumbnail name was the generic "Nowprinting" one, in which case use the google translate
-				if(!actressNameFromThumbnailPath.equals("Nowprinting"))
-				{
-					int LevenshteinDistance = StringUtils.getLevenshteinDistance(actressNameEnglish, actressNameFromThumbnailPath);
-					if(LevenshteinDistance > 3 && !didWeManuallyOverrideActress)
-					{
-						//System.out.println("(We found a junk result from google translate, swapping over to cleaned up thumbnail name");
-						//System.out.println("Google translate's version of our name: " + actressNameEnglish + " Thumbnail name of person: " + actressNameFromThumbnailPath + " Lev Distance: " + LevenshteinDistance + ")");
-						actressNameEnglish = actressNameFromThumbnailPath;
-					}
-				}
-
-				//Sometimes DMM lists a fake under the Name "Main". It's weird and it's not a real person, so just ignore it.
-				if (!actressNameEnglish.equals("Main"))
-				{
-
-					if(doGoogleTranslation)
-					{
-						if(!actressThumbnailPath.contains("nowprinting.gif"))
-						{
-							actorList.add(new Actor(actressNameEnglish, "", new Thumb(
-									actressThumbnailPath)));
-						}
-						else
-						{
-							actorList.add(new Actor(actressNameEnglish,"",null));
-						}
-						
-					}
-					else
-					{
-						if(!actressThumbnailPath.contains("nowprinting.gif"))
-						{
-							actorList.add(new Actor(actressNameKanji,"",new Thumb(actressThumbnailPath)));
-						}
-						else
-						{
-							actorList.add(new Actor(actressNameKanji,"",null));
-						}
-					}
-				}
-
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
 		
-		//Get actors that are just a "Name" and have no page of their own (common on some web releases)
-		Elements nameOnlyActors = document.select("table.mg-b20 tr td:contains(�??�?：) + td");
+		// No actors have dedicated pages on DMM.com, so just scrape the base names
+		Elements nameOnlyActors = document.select("a[href*=article=actor/id=]");
 		for(Element currentNameOnlyActor : nameOnlyActors)
 		{
 			String actorName = currentNameOnlyActor.text().trim();
@@ -673,7 +537,7 @@ public class DmmComParsingProfile extends SiteParsingProfile implements Specific
 	@Override
 	public Studio scrapeStudio() {
 		Element studioElement = document.select(
-				"table.mg-b20 tr td a[href*=article=label/id=]").first();
+				"table.mg-b20 tr td a[href*=article=maker/id=]").first();
 		if (studioElement != null)
 		{
 			if(doGoogleTranslation)		
