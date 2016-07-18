@@ -253,10 +253,10 @@ public class EICBookParsingProfile extends SiteParsingProfile implements Specifi
 	@Override
 	public Plot scrapePlot() {
 		Element plotElement;
-		if (document.select("#player1") != null) { // If the page has a trailer
-			plotElement = document.select("#mainCon #dtSpec p:nth-child(4)").first();
-		} else { // If it doesn't
+		if (document.select("#player1") != null && document.select("#player1").isEmpty()) { // If the page has a trailer
 			plotElement = document.select("#mainCon #dtSpec p:nth-child(3)").first();
+		} else { // If it doesn't
+			plotElement = document.select("#mainCon #dtSpec p:nth-child(4)").first();
 		}
 		if(doGoogleTranslation)
 		{
@@ -295,7 +295,7 @@ public class EICBookParsingProfile extends SiteParsingProfile implements Specifi
 				// The actual .flv should be exposed in an attribute of the player.
 				String potentialTrailerURL = playerElement.select("param[value^=flv=]").first().attr("value").replaceAll("(flv=|\\u0026[a-z=:/.-]+)", "");
 				System.out.println("Trailer existed at: " + potentialTrailerURL);
-				return new Trailer(potentialTrailerURL);
+				return new Trailer(potentialTrailerURL.replace("https", "http"));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
