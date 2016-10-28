@@ -423,6 +423,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 			{
 				String actorPageLink = currentActorElement.attr("href");
 				String actorName = currentActorElement.text();
+                                System.out.println("Starring: " + actorName);
 				//Connect to the actor page to get the thumbnail
 				if(actorPageLink!= null)
 				{
