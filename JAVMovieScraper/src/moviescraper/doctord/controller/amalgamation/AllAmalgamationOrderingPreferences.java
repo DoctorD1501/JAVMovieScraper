@@ -84,7 +84,7 @@ public class AllAmalgamationOrderingPreferences {
 					JsonReader jr = new JsonReader(inputFromFile);) {
 
 				AllAmalgamationOrderingPreferences jsonObject = (AllAmalgamationOrderingPreferences) jr.readObject();
-				System.out.println("Read in amalgamation preferences from " + settingsFileName);
+				//System.out.println("Read in amalgamation preferences from " + settingsFileName);
 				return jsonObject;
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();

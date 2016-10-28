@@ -52,15 +52,40 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 	
 	@Override
 	public Title scrapeTitle() {
-		Element titleElement = document.select("div#centered.main2 div div h1.h1big, div#centered.main2 div h1").first();
-		if(titleElement != null)
-			return new Title(titleElement.text());
-		else return new Title("");
+            String localTitleReturn = "";
+            String localPropertyTitleText = "";
+        
+                Element propertyTitle = document.select("meta[name=twitter:title]").first();
+                localPropertyTitleText = propertyTitle.attr("content");
+                
+                if (localPropertyTitleText.length() > 1) {
+                    localTitleReturn = localPropertyTitleText;
+                    System.out.println("Title by Property: " + localTitleReturn);
+                } else {
+                    Element titleElement = document.select("div#centered.main2 div div h1.h1big, div#centered.main2 div h1").first();
+                    if(titleElement != null){
+                        localTitleReturn = titleElement.text();
+                        System.out.println("Title by Scrape: " + localTitleReturn);
+                    }
+                }
+                return new Title(localTitleReturn);
 	}
 
+        
 	@Override
 	public OriginalTitle scrapeOriginalTitle() {
-		return OriginalTitle.BLANK_ORIGINALTITLE;
+            String localTitleReturn = "";
+            String localPropertyTitleText = "";
+        
+                localPropertyTitleText = document.title();
+                if (localPropertyTitleText.length() > 1) {
+                    localTitleReturn = localPropertyTitleText;
+                    System.out.println("Original Title by Property: " + localTitleReturn);
+                } 
+         
+            return new OriginalTitle(localTitleReturn);               
+            
+            //return OriginalTitle.BLANK_ORIGINALTITLE;
 	}
 
 	@Override
