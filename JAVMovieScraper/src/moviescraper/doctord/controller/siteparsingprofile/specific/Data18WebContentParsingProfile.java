@@ -289,10 +289,11 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 		}
 		
 		//get "Official Poster"
-		Element officialPosterElement = document.select("a img[alt=poster]").first();
+		Element officialPosterElement = document.select("meta[property=og:image]").first();
 		if (officialPosterElement != null) {
 			try {
-				Thumb officialPosterThumb = new Thumb(fixIPAddressOfData18(officialPosterElement.attr("src")));
+				Thumb officialPosterThumb = new Thumb(fixIPAddressOfData18(officialPosterElement.attr("content")));
+                                System.out.println("Official Poster: " + officialPosterThumb);
 				posters.add(officialPosterThumb);
 				
 				//get the trailer images too, since items with an official poster tend to not have much else in them
