@@ -100,7 +100,6 @@ public class Thumb extends MovieDataItem {
 	public Thumb (String url, double horizontalPercentLeft, double horizontalPercentRight, double verticalPercentTop, double verticalPercentBottom) throws IOException
 	{
 		//System.out.println("old crop method being called");
-		thumbURL = new URL(url);
 		isImageModified = true;
 		//get our image from the cache, if it exists. otherwise, download it from the URL and put in the cache
 		BufferedImage tempImage = (BufferedImage)ImageCache.getImageFromCache(thumbURL, isImageModified);

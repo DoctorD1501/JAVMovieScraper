@@ -7,6 +7,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -275,16 +276,56 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 				}
 			}
 		}
-		
+
+                // Checking for changed and/or different contentIDs from the main/root item and building a new array
+                ArrayList<String> galleryLinks = new ArrayList<>();
+		for(String myID : contentLinks)
+		{
+                    String currentGalleryURL = "http://www.data18.com/content/" + myID;
+                    try {
+
+                            Document galleryDocument = Jsoup.connect(currentGalleryURL).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:5.0) Gecko/20100101 Firefox/5.0").get();
+                            if(galleryDocument!= null)
+                            {                    
+                                Elements galleryElement = galleryDocument.select("div a[href*=/viewer/]");
+                                Element linkElement = galleryElement.select("a[href*=/viewer/").first();
+                                if(linkElement != null)
+                                    {
+                                    String linkElementURL = linkElement.attr("href");
+                                    if(linkElementURL.contains("/"))
+                                    {
+                                         String [] parts = linkElementURL.split("/");
+                                         galleryLinks.add(parts[4]);
+                                    }
+                                }
+                            }
+                    } catch (IOException e) {
+                            e.printStackTrace();
+                            //continue; 
+                    }
+                }                
+                
+                // Results would be duplicated due to "Scene 1: xxxxxxxx" as well as "scene 1" later.  
+                // Just removing those to get a clean list of galleries
+                ArrayList<String> resultList = new ArrayList<>();
+                HashSet<String> set = new HashSet<>();
+                for (String link : galleryLinks){
+                    if (!set.contains(link)){
+                        resultList.add(link);
+                        set.add(link);
+                    }
+                }
+                
+
 		//for each id, go to the viewer page for that ID
-		for(String contentID : contentLinks)
+		//for(String contentID : contentLinks)
+		for(String contentID : resultList)
 		{
 			//int viewerPageNumber = 1;
 			for(int viewerPageNumber = 1; viewerPageNumber <= 15; viewerPageNumber++)
 			{
 				String currentViewerPageURL = "http://www.data18.com/viewer/" + contentID + "/" + String.format("%02d", viewerPageNumber);
 				try {
-					
 					Document viewerDocument = Jsoup.connect(currentViewerPageURL).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:5.0) Gecko/20100101 Firefox/5.0").get();
 					if(viewerDocument!= null)
 					{
@@ -307,7 +348,8 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 			
 			}
 		}
-		scrapedExtraFanart = extraFanart.toArray(new Thumb[extraFanart.size()]);
+     		scrapedExtraFanart = extraFanart.toArray(new Thumb[extraFanart.size()]);
+                System.out.println("Number of Thumbs: " + scrapedExtraFanart.length);                
 		return scrapedExtraFanart;
 	}
 
@@ -325,7 +367,7 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 	public ArrayList<Genre> scrapeGenres() {
 		ArrayList<Genre> genreList = new ArrayList<>();
 		Elements genreElements = document.select("div.gen12:has(b:containsOwn(Categories:)) p a[href*=/movies/], div.p8:has(div:containsOwn(Categories:)) a[href*=/movies/]");
-		System.out.println("genreElements = " + genreElements);
+		//System.out.println("genreElements = " + genreElements);
 		if (genreElements != null)
 		{
 			for(Element currentGenreElement : genreElements)
@@ -444,11 +486,11 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 	@Override
 	public SearchResult[] getSearchResults(String searchString)
 			throws IOException {
-		System.out.println("Trying to scrape with URL = " + searchString);
+		//System.out.println("Trying to scrape with URL = " + searchString);
 		if(useSiteSearch)
 		{
 			ArrayList<SearchResult> linksList = new ArrayList<>();
-			Document doc = Jsoup.connect(searchString).userAgent("Mozilla").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
+			Document doc = Jsoup.connect(searchString).userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:5.0) Gecko/20100101 Firefox/5.0").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
 			Elements movieSearchResultElements = doc.select("div[style=float: left; padding: 6px; width: 130px;]");
 			if(movieSearchResultElements == null || movieSearchResultElements.size() == 0)
 			{

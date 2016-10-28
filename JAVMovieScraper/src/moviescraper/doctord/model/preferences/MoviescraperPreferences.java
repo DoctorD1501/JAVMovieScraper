@@ -22,6 +22,7 @@ public class MoviescraperPreferences extends Settings {
 		renameMovieFile, //File will be renamed according to renamer rules when writing the movie file's metadata out to disk.
 		scrapeInJapanese, //For sites that support it, downloaded info will be in Japanese instead of English
 		promptForUserProvidedURLWhenScraping, //Prompt user to manually provide their own url when scraping a file. Useful if search just can't find a file, but the user knows what to use anyways. Not intended to be left on all the time.
+		considerUserSelectionOneURLWhenScraping, //Consider all selected items to be one 'movie'.  To keep from being prompted for each CD/Scene
 		isFirstWordOfFileID, //Usually the scraper expects the last word of the file to be the ID. This option if enabled will instead look at the first word. 
 		appendIDToStartOfTitle, //Scraped ID will be put as the first word of the title if enabled. Useful for people who like to keep releases from the same company alphabetically together.
 		useFilenameAsTitle, //Filename will be writen to the title field of the nfo file instead of using the scraped result
@@ -181,6 +182,14 @@ public class MoviescraperPreferences extends Settings {
 
 	public void setPromptForUserProvidedURLWhenScraping(Boolean preferenceValue){
 		setBooleanValue(Key.promptForUserProvidedURLWhenScraping, preferenceValue);
+	}
+
+        public Boolean getConsiderUserSelectionOneURLWhenScraping(){
+		return getBooleanValue(Key.considerUserSelectionOneURLWhenScraping, Boolean.FALSE);
+	}
+
+	public void setConsiderUserSelectionOneURLWhenScraping(Boolean preferenceValue){
+		setBooleanValue(Key.considerUserSelectionOneURLWhenScraping, preferenceValue);
 	}
 	
 	public Boolean getIsFirstWordOfFileID(){
