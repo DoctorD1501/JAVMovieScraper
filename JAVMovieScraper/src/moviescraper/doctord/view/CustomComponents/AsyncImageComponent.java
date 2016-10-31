@@ -8,7 +8,7 @@ import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
-
+import java.net.URLConnection;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
@@ -27,6 +27,7 @@ public class AsyncImageComponent extends JPanel implements ImageConsumer, MouseL
 	private BufferedImage img;
 	private BufferedImage resizedImage;
     URL url;
+    URL viewerUrl;
     Thumb thumb;
     private int preferredX = 135;
     private int preferredY = 135;
@@ -63,7 +64,10 @@ public class AsyncImageComponent extends JPanel implements ImageConsumer, MouseL
     	super.addMouseListener(this);
     	
     	setURLFromThumb();
-        new ImageLoader(this, url, thumb == null ? false : thumb.isModified()).execute();
+        getViewerURLFromThumb();
+        //System.out.println("ViewerURL: " + viewerUrl);
+        //System.out.println("ThumbURL: " + url);
+        new ImageLoader(this, url, viewerUrl, thumb == null ? false : thumb.isModified()).execute();
     }
     
     public void setIcon(Thumb thumb, Dimension newSize)
@@ -72,7 +76,7 @@ public class AsyncImageComponent extends JPanel implements ImageConsumer, MouseL
     	this.thumb = thumb;
     	this.setPreferredSize(newSize);
     	setURLFromThumb();
-    	new ImageLoader(this, url, thumb.isModified()).execute();
+    	new ImageLoader(this, url, viewerUrl, thumb.isModified()).execute();
     }
     
     public void setIcon(Thumb thumb)
@@ -80,7 +84,7 @@ public class AsyncImageComponent extends JPanel implements ImageConsumer, MouseL
     	//this.resizedImage = null;
     	this.thumb = thumb;
     	setURLFromThumb();
-    	new ImageLoader(this, url, thumb.isModified()).execute();
+    	new ImageLoader(this, url, viewerUrl, thumb.isModified()).execute();
     }
     
     
@@ -120,6 +124,20 @@ public class AsyncImageComponent extends JPanel implements ImageConsumer, MouseL
     	}
     }
 
+    private void getViewerURLFromThumb()
+    {
+    	if(thumb != null)
+    	{
+    		if(thumb.getViewerURL() != null)
+    			this.viewerUrl = thumb.getViewerURL();
+    	}
+    	else
+    	{
+    		this.viewerUrl = null;
+    	}
+    }
+
+    
     @Override
 	public void imageLoaded(BufferedImage img) {
     	//clean up old references, just to be safe
@@ -220,8 +238,8 @@ public class AsyncImageComponent extends JPanel implements ImageConsumer, MouseL
         BufferedImage pictureLoaded;
         boolean isImageModified; //whether to use javCoverCropRoutine to crop the image
 
-        public ImageLoader(ImageConsumer consumer, URL url, boolean isImageModified) {
-        	this.url = url;
+        public ImageLoader(ImageConsumer consumer, URL url, URL viewerUrl, boolean isImageModified) {
+            this.url = url;
             this.consumer = consumer;
             this.isImageModified = isImageModified;
         }
@@ -231,15 +249,29 @@ public class AsyncImageComponent extends JPanel implements ImageConsumer, MouseL
 
         	if(ImageCache.isImageCached(url, isImageModified))
         	{
-        		pictureLoaded = Thumb.convertToBufferedImage(ImageCache.getImageFromCache(url, isImageModified));
+                    pictureLoaded = Thumb.convertToBufferedImage(ImageCache.getImageFromCache(url, isImageModified));   
         	}
         	else
-        	{
-        		pictureLoaded = ImageIO.read(url);
-        		if(isImageModified) {
-        			pictureLoaded = Thumb.convertToBufferedImage(pictureLoaded);
-        		}
-        		ImageCache.putImageInCache(url, pictureLoaded, isImageModified);
+        	{             
+
+                try {
+                    URLConnection imageConnection = url.openConnection();
+                    imageConnection.setRequestProperty("User-Agent","Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_5) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.65 Safari/537.31");
+                    if (viewerUrl != null){
+                        imageConnection.setRequestProperty("Referer",viewerUrl.toString());   
+                    }
+                    pictureLoaded = ImageIO.read(imageConnection.getInputStream());
+                 
+                } catch(Throwable t) {
+                    System.out.println("Error: " + t.getMessage());
+                }
+
+               // System.out.println("Image URL:" + url + "        Viewer: " + viewerUrl);
+                
+                if(isImageModified) {
+                        pictureLoaded = Thumb.convertToBufferedImage(pictureLoaded);
+                }
+                ImageCache.putImageInCache(url, pictureLoaded, isImageModified);
         	}
             return pictureLoaded;
 
@@ -261,8 +293,6 @@ public class AsyncImageComponent extends JPanel implements ImageConsumer, MouseL
             }
         }           
     }
-
-
 
 	private void toggleSelected() {
 		if(selected)

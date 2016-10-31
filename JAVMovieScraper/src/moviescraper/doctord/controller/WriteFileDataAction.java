@@ -57,7 +57,7 @@ public class WriteFileDataAction implements ActionListener {
 						continue;
 					}
 					System.out.println("Writing this movie to file: "
-							+ guiMain.movieToWriteToDiskList);
+							+ guiMain.movieToWriteToDiskList.get(movieNumberInList).getTitle());
 					if(guiMain.movieToWriteToDiskList != null)
 					{
 						if ( guiMain.getPreferences().getRenameMovieFile() ) {

@@ -337,6 +337,8 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 							String previewURL = mainImageUrl.substring(0,mainImageUrl.length()-6) + "th8/" + mainImageUrl.substring(mainImageUrl.length()-6,mainImageUrl.length());
 							if(fileExistsAtURL(previewURL))
 								thumbToAdd.setPreviewURL(new URL(fixIPAddressOfData18(previewURL)));
+                                                        //System.out.println("Scraped Viewer: " + currentViewerPageURL);
+                                                        thumbToAdd.setViewerURL(new URL(currentViewerPageURL));
 							extraFanart.add(thumbToAdd);
 						}
 					}
@@ -349,7 +351,8 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 			}
 		}
      		scrapedExtraFanart = extraFanart.toArray(new Thumb[extraFanart.size()]);
-                System.out.println("Number of Thumbs: " + scrapedExtraFanart.length);                
+                System.out.println("Number of Thumbs: " + scrapedExtraFanart.length); 
+                    
 		return scrapedExtraFanart;
 	}
 

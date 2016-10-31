@@ -291,7 +291,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 						{
 							String mainImageUrl = imgElement.attr("src");
 							mainImageUrl = fixIPAddressOfData18(mainImageUrl);
-							if(fileExistsAtURL(mainImageUrl))
+							//if(fileExistsAtURL(mainImageUrl))
 							{
 								Thumb thumbToAdd = new Thumb(mainImageUrl);
 								String previewURL = mainImageUrl.substring(0,mainImageUrl.length()-6) + "th8/" + mainImageUrl.substring(mainImageUrl.length()-6,mainImageUrl.length());
@@ -301,6 +301,8 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 								if(fileExistsAtURL(previewURL))
 									thumbToAdd.setPreviewURL(new URL(previewURL));
 								//System.out.println("previewURL : " + previewURL);
+                                                                URL viewerPage = new URL(currentViewerPageURL);
+                                                                thumbToAdd.setViewerURL(viewerPage);
 								posters.add(thumbToAdd);
 							}
 						}
