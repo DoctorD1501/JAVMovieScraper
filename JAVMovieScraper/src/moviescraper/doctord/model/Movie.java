@@ -486,7 +486,7 @@ public class Movie {
 		// add the xml header since xstream doesn't do this
 		xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>"
 				+ "\n" + xml;
-		System.out.println("Xml I am writing to file: \n" + xml);
+		//System.out.println("Xml I am writing to file: \n" + xml);
 		
 		if(nfoFile != null && xml.length() > 0)
 			nfoFile.delete();

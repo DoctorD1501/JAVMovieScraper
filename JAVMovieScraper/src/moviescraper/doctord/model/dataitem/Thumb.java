@@ -21,6 +21,7 @@ import org.apache.commons.io.FileUtils;
 public class Thumb extends MovieDataItem {
 	private URL thumbURL;
 	private URL previewURL; //smaller version of the image used in GUI pickers
+        private URL viewerURL; //Link to the Viewer page for Data18 scrapes
 	
 	//use soft references here to hold onto our memory of a loaded up image for as long as possible and only GC it when we have no choice
 	//note that the strong reference will be in the image cache. the image cache has logic in place to purge items if it gets too full
@@ -100,7 +101,6 @@ public class Thumb extends MovieDataItem {
 	public Thumb (String url, double horizontalPercentLeft, double horizontalPercentRight, double verticalPercentTop, double verticalPercentBottom) throws IOException
 	{
 		//System.out.println("old crop method being called");
-		thumbURL = new URL(url);
 		isImageModified = true;
 		//get our image from the cache, if it exists. otherwise, download it from the URL and put in the cache
 		BufferedImage tempImage = (BufferedImage)ImageCache.getImageFromCache(thumbURL, isImageModified);
@@ -403,6 +403,15 @@ public class Thumb extends MovieDataItem {
 
 	public void setPreviewURL(URL previewURL) {
 		this.previewURL = previewURL;
+	}
+
+        
+	public URL getViewerURL() {
+		return viewerURL;
+	}
+
+	public void setViewerURL(URL viewerURL) {
+		this.viewerURL = viewerURL;
 	}
 
 	@Override

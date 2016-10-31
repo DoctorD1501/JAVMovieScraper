@@ -94,7 +94,7 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
 	public void setFilesBeingScrapedLabel() {
 		if (fileBeingScrapedLabel == null)
 			fileBeingScrapedLabel = new JLabel();
-		
+                
 		if (filesWeAreScraping != null && filesWeAreScraping.size() > 0) {
 			File currentFile = filesWeAreScraping.get(currentFileIndexToScrape);
 			if (currentFile != null) {
@@ -178,7 +178,7 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
 		if (filesAreSelected()) {
 				//start scraping the first item in the selected file list, further items will be scraped once this one completes and a "AllScrapesFinished" message is received
 				scrapeWithIndex(currentFileIndexToScrape);
-				
+                                
 		} else {
 			System.err.println("No file selected!");
 		}
@@ -258,7 +258,17 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
 	public boolean scrapeNextItemIfNeeded()
 	{
 		
-		
+                boolean considerUserSelectionOneURLWhenScraping = MoviescraperPreferences.getInstance().getConsiderUserSelectionOneURLWhenScraping();
+                if (considerUserSelectionOneURLWhenScraping){
+                    for (int i = 1; i < guiMain.getCurrentlySelectedMovieFileList().size(); i++){
+                        if(currentAmalgamatedMovie != null)
+                            {
+                                    guiMain.movieToWriteToDiskList.add(currentAmalgamatedMovie);
+                            }
+                    }
+                    currentFileIndexToScrape = guiMain.getCurrentlySelectedMovieFileList().size();
+                }
+                
 		if(filesAreSelected() && (currentFileIndexToScrape+1) < guiMain.getCurrentlySelectedMovieFileList().size())
 		{
 			currentFileIndexToScrape++;
