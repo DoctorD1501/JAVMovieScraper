@@ -63,7 +63,7 @@ public class SelectFileListAction implements ListSelectionListener {
 		
 		for(File currentSelectedFile : this.guiMain.getFileList().getSelectedValuesList())
 		{
-			this.guiMain.getCurrentlySelectedNfoFileList().add(new File(Movie
+                        this.guiMain.getCurrentlySelectedNfoFileList().add(new File(Movie
 					.getFileNameOfNfo(currentSelectedFile, this.guiMain.getPreferences().getNfoNamedMovieDotNfo())));
 			this.guiMain.getCurrentlySelectedPosterFileList().add(new File(Movie
 					.getFileNameOfPoster(currentSelectedFile, this.guiMain.getPreferences().getNoMovieNameInImageFiles())));

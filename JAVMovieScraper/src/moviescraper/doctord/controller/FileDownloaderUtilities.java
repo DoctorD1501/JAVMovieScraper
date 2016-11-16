@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.awt.image.BufferedImage;
+
 
 import javax.imageio.ImageIO;
 
@@ -41,4 +43,22 @@ public class FileDownloaderUtilities {
 		FileUtils.copyInputStreamToFile(FileDownloaderUtilities.getDefaultUrlConnection(url).getInputStream(), file);
 	}
 
+	public static void writeURLToFile(URL url, File file, URL viewerUrl) throws IOException
+	{
+                try {
+                    URLConnection imageConnection = url.openConnection();
+                    imageConnection.setRequestProperty("User-Agent","Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_5) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.65 Safari/537.31");
+                    if (viewerUrl != null){
+                        imageConnection.setRequestProperty("Referer",viewerUrl.toString());   
+                    }
+                    BufferedImage pictureLoaded = ImageIO.read(imageConnection.getInputStream());
+                    ImageIO.write(pictureLoaded, "jpg", file);
+                 
+                } catch(Throwable t) {
+                    System.out.println("Error: " + t.getMessage());
+                }            
+
+	}
+        
+        
 }
