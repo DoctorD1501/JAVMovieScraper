@@ -266,7 +266,7 @@ public class Thumb extends MovieDataItem {
 
 	public Thumb (String url) throws MalformedURLException 
 	{
-		if(url.length() > 1)
+		if(url != null && url.length() > 1)
 			thumbURL = new URL(url);
 		else
 			thumbURL = null;
