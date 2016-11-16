@@ -486,7 +486,7 @@ public class Movie {
 		// add the xml header since xstream doesn't do this
 		xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>"
 				+ "\n" + xml;
-		System.out.println("Xml I am writing to file: \n" + xml);
+		//System.out.println("Xml I am writing to file: \n" + xml);
 		
 		if(nfoFile != null && xml.length() > 0)
 			nfoFile.delete();
@@ -536,14 +536,14 @@ public class Movie {
 				else if((!posterFile.exists() ||  writePosterIfAlreadyExists) &&  posterToSaveToDisk.getThumbURL() != null)
 				{
 					System.out.println("Writing poster file from nfo: " + posterFile);
-					FileDownloaderUtilities.writeURLToFile(posterToSaveToDisk.getThumbURL(), posterFile);
+					FileDownloaderUtilities.writeURLToFile(posterToSaveToDisk.getThumbURL(), posterFile, posterToSaveToDisk.getViewerURL());
 				}
 				if(createFolderJpgEnabledPreference && currentlySelectedFolderJpgFile != null)
 				{
 					if(!posterToSaveToDisk.isModified() && (!currentlySelectedFolderJpgFile.exists() || (currentlySelectedFolderJpgFile.exists() && writePosterIfAlreadyExists)))
 					{
 						System.out.println("Writing folder.jpg (no changes) to " + currentlySelectedFolderJpgFile);
-						FileDownloaderUtilities.writeURLToFile(posterToSaveToDisk.getThumbURL(), currentlySelectedFolderJpgFile);
+						FileDownloaderUtilities.writeURLToFile(posterToSaveToDisk.getThumbURL(), currentlySelectedFolderJpgFile, posterToSaveToDisk.getViewerURL());
 					}
 					else
 					{
@@ -590,7 +590,7 @@ public class Movie {
 				}
 			}
 			//download the url and save it out to disk
-			else FileDownloaderUtilities.writeURLToFile(fanartToSaveToDisk.getThumbURL(), fanartFile);
+			else FileDownloaderUtilities.writeURLToFile(fanartToSaveToDisk.getThumbURL(), fanartFile, posterToSaveToDisk.getViewerURL());
 			}
 		}
 		

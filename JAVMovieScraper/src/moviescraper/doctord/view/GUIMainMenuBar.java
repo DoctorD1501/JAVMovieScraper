@@ -163,6 +163,13 @@ public class GUIMainMenuBar extends JMenuBar{
 				b -> getPreferences().setPromptForUserProvidedURLWhenScraping(b), 
 				() -> getPreferences().getPromptForUserProvidedURLWhenScraping());
 		submenu.add(promptForUserProvidedURL);
+                
+		//Checkbox for scraping dialog box allowing the user to override the URL used when scraping
+		JCheckBoxMenuItem considerUserSelectionOneURL = createCheckBoxMenuItem(
+				"Consider All Selections one Item", 
+				b -> getPreferences().setConsiderUserSelectionOneURLWhenScraping(b), 
+				() -> getPreferences().getConsiderUserSelectionOneURLWhenScraping());
+		submenu.add(considerUserSelectionOneURL);                
 		
 		//Checkbox for whether the user needs to manually select the art while scraping
 		JCheckBoxMenuItem selectArtManuallyWhenScraping = createCheckBoxMenuItem(

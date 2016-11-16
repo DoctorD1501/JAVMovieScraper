@@ -660,7 +660,7 @@ public class FileDetailPanel extends JPanel {
 	 * @param modifyWriteToDiskList - whether to modify the gui object's disk list by adding the currently viewed item if the disk list is empty
 	 */
 	public void setNewMovie(Movie newMovie, boolean forcePosterUpdate, boolean modifyWriteToDiskList) {
-		System.out.println("Setting new movie: " + newMovie);
+		//System.out.println("Setting new movie: " + newMovie);
 		if(newMovie != null)
 		{
 			setCurrentMovie(newMovie);
@@ -753,7 +753,8 @@ public class FileDetailPanel extends JPanel {
 
 	private void changeEnabledStatusOfPreviousAndNextButtons() {
 		List<Movie> movieList = guiMain.getMovieToWriteToDiskList();
-		
+                
+                System.out.println("Movie Size: " + movieList.size());
 		//no movies to scroll through
 		if(movieList.size() == 0) {
 			nextMovieButton.setEnabled(false);

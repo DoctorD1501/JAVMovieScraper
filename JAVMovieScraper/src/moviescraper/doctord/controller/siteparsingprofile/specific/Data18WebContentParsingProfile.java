@@ -52,15 +52,40 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 	
 	@Override
 	public Title scrapeTitle() {
-		Element titleElement = document.select("div#centered.main2 div div h1.h1big, div#centered.main2 div h1").first();
-		if(titleElement != null)
-			return new Title(titleElement.text());
-		else return new Title("");
+            String localTitleReturn = "";
+            String localPropertyTitleText = "";
+        
+                Element propertyTitle = document.select("meta[name=twitter:title]").first();
+                localPropertyTitleText = propertyTitle.attr("content");
+                
+                if (localPropertyTitleText.length() > 1) {
+                    localTitleReturn = localPropertyTitleText;
+                    System.out.println("Title by Property: " + localTitleReturn);
+                } else {
+                    Element titleElement = document.select("div#centered.main2 div div h1.h1big, div#centered.main2 div h1").first();
+                    if(titleElement != null){
+                        localTitleReturn = titleElement.text();
+                        System.out.println("Title by Scrape: " + localTitleReturn);
+                    }
+                }
+                return new Title(localTitleReturn);
 	}
 
+        
 	@Override
 	public OriginalTitle scrapeOriginalTitle() {
-		return OriginalTitle.BLANK_ORIGINALTITLE;
+            String localTitleReturn = "";
+            String localPropertyTitleText = "";
+        
+                localPropertyTitleText = document.title();
+                if (localPropertyTitleText.length() > 1) {
+                    localTitleReturn = localPropertyTitleText;
+                    System.out.println("Original Title by Property: " + localTitleReturn);
+                } 
+         
+            return new OriginalTitle(localTitleReturn);               
+            
+            //return OriginalTitle.BLANK_ORIGINALTITLE;
 	}
 
 	@Override
@@ -266,7 +291,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 						{
 							String mainImageUrl = imgElement.attr("src");
 							mainImageUrl = fixIPAddressOfData18(mainImageUrl);
-							if(fileExistsAtURL(mainImageUrl))
+							//if(fileExistsAtURL(mainImageUrl))
 							{
 								Thumb thumbToAdd = new Thumb(mainImageUrl);
 								String previewURL = mainImageUrl.substring(0,mainImageUrl.length()-6) + "th8/" + mainImageUrl.substring(mainImageUrl.length()-6,mainImageUrl.length());
@@ -276,6 +301,8 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 								if(fileExistsAtURL(previewURL))
 									thumbToAdd.setPreviewURL(new URL(previewURL));
 								//System.out.println("previewURL : " + previewURL);
+                                                                URL viewerPage = new URL(currentViewerPageURL);
+                                                                thumbToAdd.setViewerURL(viewerPage);
 								posters.add(thumbToAdd);
 							}
 						}
@@ -289,10 +316,11 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 		}
 		
 		//get "Official Poster"
-		Element officialPosterElement = document.select("a img[alt=poster]").first();
+		Element officialPosterElement = document.select("meta[property=og:image]").first();
 		if (officialPosterElement != null) {
 			try {
-				Thumb officialPosterThumb = new Thumb(fixIPAddressOfData18(officialPosterElement.attr("src")));
+				Thumb officialPosterThumb = new Thumb(fixIPAddressOfData18(officialPosterElement.attr("content")));
+                                System.out.println("Official Poster: " + officialPosterThumb);
 				posters.add(officialPosterThumb);
 				
 				//get the trailer images too, since items with an official poster tend to not have much else in them
@@ -397,6 +425,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 			{
 				String actorPageLink = currentActorElement.attr("href");
 				String actorName = currentActorElement.text();
+                                System.out.println("Starring: " + actorName);
 				//Connect to the actor page to get the thumbnail
 				if(actorPageLink!= null)
 				{
@@ -535,7 +564,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 				for(Element currentMovie : movieSearchResultElements)
 				{
 					String currentMovieURL = currentMovie.select("a").first().attr("href");
-					String currentMovieTitle = currentMovie.select("a").first().text();
+					String currentMovieTitle = currentMovie.select("span.gen11 a").first().text();
 					String releaseDateText = currentMovie.ownText();
 					if(releaseDateText != null && releaseDateText.length() > 0)
 						currentMovieTitle = currentMovieTitle + " (" + releaseDateText + ")";
