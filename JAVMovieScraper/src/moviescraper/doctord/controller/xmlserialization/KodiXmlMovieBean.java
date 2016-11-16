@@ -85,7 +85,14 @@ public class KodiXmlMovieBean {
 		if(MoviescraperPreferences.getInstance().getWriteThumbTagsForPosterAndFanartToNfo()) {
 			thumb = new String[movie.getPosters().length];
 			for (int i = 0; i < movie.getPosters().length; i++) {
-				thumb[i] = movie.getPosters()[i].getThumbURL().toString();
+				if (movie.getPosters()[i].getThumbURL() != null)
+				{
+					thumb[i] = movie.getPosters()[i].getThumbURL().toString();
+				}
+				else
+				{
+					thumb[i] = "";
+				}
 			}
 		}
 		else {
