@@ -18,6 +18,7 @@ import javax.swing.border.Border;
 import org.imgscalr.Scalr;
 import org.imgscalr.Scalr.Method;
 
+import moviescraper.doctord.controller.siteparsingprofile.specific.Data18SharedMethods;
 import moviescraper.doctord.model.ImageCache;
 import moviescraper.doctord.model.dataitem.Thumb;
 
@@ -27,7 +28,7 @@ public class AsyncImageComponent extends JPanel implements ImageConsumer, MouseL
 	private BufferedImage img;
 	private BufferedImage resizedImage;
     URL url;
-    URL viewerUrl;
+    URL referrerURL;
     Thumb thumb;
     private int preferredX = 135;
     private int preferredY = 135;
@@ -64,10 +65,10 @@ public class AsyncImageComponent extends JPanel implements ImageConsumer, MouseL
     	super.addMouseListener(this);
     	
     	setURLFromThumb();
-        getViewerURLFromThumb();
+        getReferrerURLFromThumb();
         //System.out.println("ViewerURL: " + viewerUrl);
         //System.out.println("ThumbURL: " + url);
-        new ImageLoader(this, url, viewerUrl, thumb == null ? false : thumb.isModified()).execute();
+        new ImageLoader(this, url, referrerURL, thumb == null ? false : thumb.isModified()).execute();
     }
     
     public void setIcon(Thumb thumb, Dimension newSize)
@@ -76,7 +77,7 @@ public class AsyncImageComponent extends JPanel implements ImageConsumer, MouseL
     	this.thumb = thumb;
     	this.setPreferredSize(newSize);
     	setURLFromThumb();
-    	new ImageLoader(this, url, viewerUrl, thumb.isModified()).execute();
+    	new ImageLoader(this, url, referrerURL, thumb.isModified()).execute();
     }
     
     public void setIcon(Thumb thumb)
@@ -84,7 +85,7 @@ public class AsyncImageComponent extends JPanel implements ImageConsumer, MouseL
     	//this.resizedImage = null;
     	this.thumb = thumb;
     	setURLFromThumb();
-    	new ImageLoader(this, url, viewerUrl, thumb.isModified()).execute();
+    	new ImageLoader(this, url, referrerURL, thumb.isModified()).execute();
     }
     
     
@@ -124,16 +125,16 @@ public class AsyncImageComponent extends JPanel implements ImageConsumer, MouseL
     	}
     }
 
-    private void getViewerURLFromThumb()
+    private void getReferrerURLFromThumb()
     {
     	if(thumb != null)
     	{
-    		if(thumb.getViewerURL() != null)
-    			this.viewerUrl = thumb.getViewerURL();
+    		if(thumb.getReferrerURL() != null)
+    			this.referrerURL = thumb.getReferrerURL();
     	}
     	else
     	{
-    		this.viewerUrl = null;
+    		this.referrerURL = null;
     	}
     }
 
@@ -235,13 +236,21 @@ public class AsyncImageComponent extends JPanel implements ImageConsumer, MouseL
 
         private ImageConsumer consumer;
         URL url;
+        URL referrerURL;
         BufferedImage pictureLoaded;
         boolean isImageModified; //whether to use javCoverCropRoutine to crop the image
 
-        public ImageLoader(ImageConsumer consumer, URL url, URL viewerUrl, boolean isImageModified) {
+        public ImageLoader(ImageConsumer consumer, URL url, URL referrerURL, boolean isImageModified) {
             this.url = url;
             this.consumer = consumer;
             this.isImageModified = isImageModified;
+            this.referrerURL = referrerURL;
+            
+            //So far only data18 has been a problem, so we make it the referrer every time
+            if (this.referrerURL == null)
+            {
+            	this.referrerURL = Data18SharedMethods.getReferrerURLFromImageURL(url);
+            }
         }
 
         @Override
@@ -249,7 +258,7 @@ public class AsyncImageComponent extends JPanel implements ImageConsumer, MouseL
 
         	if(ImageCache.isImageCached(url, isImageModified))
         	{
-                    pictureLoaded = Thumb.convertToBufferedImage(ImageCache.getImageFromCache(url, isImageModified));   
+                    pictureLoaded = Thumb.convertToBufferedImage(ImageCache.getImageFromCache(url, isImageModified, referrerURL));   
         	}
         	else
         	{             
@@ -257,8 +266,8 @@ public class AsyncImageComponent extends JPanel implements ImageConsumer, MouseL
                 try {
                     URLConnection imageConnection = url.openConnection();
                     imageConnection.setRequestProperty("User-Agent","Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_5) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.65 Safari/537.31");
-                    if (viewerUrl != null){
-                        imageConnection.setRequestProperty("Referer",viewerUrl.toString());   
+                    if (referrerURL != null){
+                        imageConnection.setRequestProperty("Referer",referrerURL.toString());   
                     }
                     pictureLoaded = ImageIO.read(imageConnection.getInputStream());
                  

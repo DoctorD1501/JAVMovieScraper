@@ -21,6 +21,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import moviescraper.doctord.controller.siteparsingprofile.SecurityPassthrough;
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.model.Movie;
 import moviescraper.doctord.model.SearchResult;
@@ -45,7 +46,7 @@ import moviescraper.doctord.model.dataitem.Top250;
 import moviescraper.doctord.model.dataitem.Votes;
 import moviescraper.doctord.model.dataitem.Year;
 
-public class Data18MovieParsingProfile extends SiteParsingProfile implements SpecificProfile {
+public class Data18MovieParsingProfile extends SiteParsingProfile implements SpecificProfile, SecurityPassthrough {
 	
 	boolean useSiteSearch = true;
 	String yearFromFilename = "";
@@ -552,6 +553,17 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 				return new ReleaseDate(releaseDate);
 		}
 		return ReleaseDate.BLANK_RELEASEDATE;
+	}
+	
+	@Override
+	public boolean requiresSecurityPassthrough(Document document) {
+		return Data18SharedMethods.requiresSecurityPassthrough(document);
+	}
+
+
+	@Override
+	public Document runSecurityPassthrough(Document document, SearchResult originalSearchResult) {
+		return Data18SharedMethods.runSecurityPassthrough(document, originalSearchResult);
 	}
 
 }

@@ -12,6 +12,8 @@ import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FileUtils;
+
+import moviescraper.doctord.model.dataitem.Thumb;
 /**
  * Wrapper class around standard methods to download images from urls or write a url to a file 
  * so that set up a custom connection that allows us to set a user agent, etc.
@@ -31,11 +33,36 @@ public class FileDownloaderUtilities {
 	
 	public static Image getImageFromUrl(URL url) throws IOException
 	{
+		return getImageFromUrl(url, null);
+	}
+	
+	public static Image getImageFromUrl(URL url, URL viewerURL) throws IOException
+	{
 		URLConnection urlConnectionToUse = FileDownloaderUtilities.getDefaultUrlConnection(url);
+		urlConnectionToUse.setRequestProperty("User-Agent","Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_5) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.65 Safari/537.31");
+        if (viewerURL != null){
+        	urlConnectionToUse.setRequestProperty("Referer",viewerURL.toString());   
+        }
 		try (InputStream inputStreamToUse = urlConnectionToUse.getInputStream();) {
 			Image imageFromUrl = ImageIO.read(inputStreamToUse);
 			return imageFromUrl;
 		}
+	}
+	
+	public static Image getImageFromThumb(Thumb thumb)
+	{
+		if (thumb != null)
+		{
+			try {
+				return getImageFromUrl(thumb.getThumbURL(), thumb.getReferrerURL());
+			}
+			catch(IOException ex)
+			{
+				ex.printStackTrace();
+				return null;
+			}
+		}
+		return null;
 	}
 	
 	public static void writeURLToFile(URL url, File file) throws IOException

@@ -27,6 +27,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Document;
 
 import moviescraper.doctord.controller.FileDownloaderUtilities;
+import moviescraper.doctord.controller.siteparsingprofile.SecurityPassthrough;
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.Data18MovieParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.Data18WebContentParsingProfile;
@@ -536,14 +537,14 @@ public class Movie {
 				else if((!posterFile.exists() ||  writePosterIfAlreadyExists) &&  posterToSaveToDisk.getThumbURL() != null)
 				{
 					System.out.println("Writing poster file from nfo: " + posterFile);
-					FileDownloaderUtilities.writeURLToFile(posterToSaveToDisk.getThumbURL(), posterFile, posterToSaveToDisk.getViewerURL());
+					FileDownloaderUtilities.writeURLToFile(posterToSaveToDisk.getThumbURL(), posterFile, posterToSaveToDisk.getReferrerURL());
 				}
 				if(createFolderJpgEnabledPreference && currentlySelectedFolderJpgFile != null)
 				{
 					if(!posterToSaveToDisk.isModified() && (!currentlySelectedFolderJpgFile.exists() || (currentlySelectedFolderJpgFile.exists() && writePosterIfAlreadyExists)))
 					{
 						System.out.println("Writing folder.jpg (no changes) to " + currentlySelectedFolderJpgFile);
-						FileDownloaderUtilities.writeURLToFile(posterToSaveToDisk.getThumbURL(), currentlySelectedFolderJpgFile, posterToSaveToDisk.getViewerURL());
+						FileDownloaderUtilities.writeURLToFile(posterToSaveToDisk.getThumbURL(), currentlySelectedFolderJpgFile, posterToSaveToDisk.getReferrerURL());
 					}
 					else
 					{
@@ -590,7 +591,7 @@ public class Movie {
 				}
 			}
 			//download the url and save it out to disk
-			else FileDownloaderUtilities.writeURLToFile(fanartToSaveToDisk.getThumbURL(), fanartFile, posterToSaveToDisk.getViewerURL());
+			else FileDownloaderUtilities.writeURLToFile(fanartToSaveToDisk.getThumbURL(), fanartFile, posterToSaveToDisk.getReferrerURL());
 			}
 		}
 		
@@ -912,6 +913,15 @@ public class Movie {
 			//for now just set the movie to the first thing found unless we found a link which had something close to the ID
 			SearchResult searchResultToUse = searchResults[searchResultNumberToUse];
 			Document searchMatch = SiteParsingProfile.downloadDocument(searchResultToUse);
+			//Handle any captchas etc that prevent us from getting our result
+			if (searchMatch != null && SecurityPassthrough.class.isAssignableFrom(siteToParseFrom.getClass()))
+			{
+				SecurityPassthrough siteParsingProfileSecurityPassthrough = (SecurityPassthrough) siteToParseFrom;
+				if(siteParsingProfileSecurityPassthrough.requiresSecurityPassthrough(searchMatch))
+				{
+					searchMatch = siteParsingProfileSecurityPassthrough.runSecurityPassthrough(searchMatch, searchResultToUse);
+				}
+			}
 			siteToParseFrom.setDocument(searchMatch);
 			siteToParseFrom.setOverrideURLDMM(urlToScrapeFromDMM);
 			
