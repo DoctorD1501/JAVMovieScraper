@@ -14,14 +14,13 @@ import java.net.URL;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
+import moviescraper.doctord.controller.FileDownloaderUtilities;
 import moviescraper.doctord.model.ImageCache;
-
-import org.apache.commons.io.FileUtils;
 
 public class Thumb extends MovieDataItem {
 	private URL thumbURL;
 	private URL previewURL; //smaller version of the image used in GUI pickers
-        private URL viewerURL; //Link to the Viewer page for Data18 scrapes
+        private URL referrerURL; //Link to the referrer page (used when downloading the image requires this such as data 18)
 	
 	//use soft references here to hold onto our memory of a loaded up image for as long as possible and only GC it when we have no choice
 	//note that the strong reference will be in the image cache. the image cache has logic in place to purge items if it gets too full
@@ -94,31 +93,12 @@ public class Thumb extends MovieDataItem {
 		isImageModified = false;
 		needToReloadThumbImage = true;
 	}
-
-	//call this with whole numbers for percents; must be smaller than 100 and greater than 0
-	//Don't use this anymore - it will mess up the new soft references
-	@Deprecated
-	public Thumb (String url, double horizontalPercentLeft, double horizontalPercentRight, double verticalPercentTop, double verticalPercentBottom) throws IOException
-	{
-		//System.out.println("old crop method being called");
-		isImageModified = true;
-		//get our image from the cache, if it exists. otherwise, download it from the URL and put in the cache
-		BufferedImage tempImage = (BufferedImage)ImageCache.getImageFromCache(thumbURL, isImageModified);
-		int newXLeft = (int) (0 + (tempImage.getWidth()*(horizontalPercentLeft/100))); //left x bound of rectangle
-		int newXRight = (int) (tempImage.getWidth() - (tempImage.getWidth()*(horizontalPercentRight/100)));// right x bound of rectangle
-		int newYTop = (int) (0 + (tempImage.getHeight()*(verticalPercentTop/100))); //top y bound of rectangle
-		int newYBottom = (int) (tempImage.getHeight() - (tempImage.getHeight()*(verticalPercentBottom/100))); //bottom y bound of rectangle
-		tempImage = tempImage.getSubimage(newXLeft, newYTop, newXRight - newXLeft, newYBottom - newYTop);
-		thumbImage = new SoftReference<Image>(tempImage);
-		imageIconThumbImage = new SoftReference<>(new ImageIcon(thumbImage.get()));
-		needToReloadThumbImage = false;
-	}
 	
 	public Thumb(String url, boolean useJavCoverCropRoutine) throws IOException
 	{
 		
 		thumbURL = new URL(url);
-		BufferedImage tempImage = (BufferedImage)ImageCache.getImageFromCache(thumbURL, false); //get the unmodified, uncropped image
+		BufferedImage tempImage = (BufferedImage)ImageCache.getImageFromCache(thumbURL, false, referrerURL); //get the unmodified, uncropped image
 		//just get the jpg from the url
 		String filename = fileNameFromURL(url);
 		//routine adapted from pythoncovercrop.py
@@ -236,8 +216,8 @@ public class Thumb extends MovieDataItem {
 	public Thumb (String leftImage, String rightImage) throws IOException {
 		setThumbURL(new URL(leftImage));
 		this.isImageModified = true;
-		BufferedImage leftBufferedImage = (BufferedImage)ImageCache.getImageFromCache(new URL(leftImage), isImageModified);
-		BufferedImage rightBufferedImage = (BufferedImage)ImageCache.getImageFromCache(new URL(rightImage), isImageModified);
+		BufferedImage leftBufferedImage = (BufferedImage)ImageCache.getImageFromCache(new URL(leftImage), isImageModified, new URL(leftImage));
+		BufferedImage rightBufferedImage = (BufferedImage)ImageCache.getImageFromCache(new URL(rightImage), isImageModified, new URL(rightImage));
 		BufferedImage joinedImage = joinBufferedImage(leftBufferedImage, rightBufferedImage);
 		setImage(joinedImage);
 
@@ -266,7 +246,7 @@ public class Thumb extends MovieDataItem {
 
 	public Thumb (String url) throws MalformedURLException 
 	{
-		if(url.length() > 1)
+		if(url != null && url.length() > 1)
 			thumbURL = new URL(url);
 		else
 			thumbURL = null;
@@ -280,14 +260,6 @@ public class Thumb extends MovieDataItem {
 	public Thumb() {
 		this.isImageModified = false;
 		needToReloadThumbImage = false;
-	}
-	
-	public Thumb(File file, String url) throws IOException
-	{
-		this.setImage(ImageIO.read(file));
-		this.isImageModified = false;
-		this.thumbURL = new URL(url);
-		loadedFromDisk = true;
 	}
 	
 	public Thumb(File file) throws IOException
@@ -325,7 +297,7 @@ public class Thumb extends MovieDataItem {
 		{
 			//rather than downloading the image every time, we can instead see if it's already in the cache
 			//if it's not in the cache, then we will actually download the image
-			thumbImage = new SoftReference<>(ImageCache.getImageFromCache(thumbURL, isImageModified));
+			thumbImage = new SoftReference<>(ImageCache.getImageFromCache(thumbURL, isImageModified, referrerURL));
 			imageIconThumbImage = new SoftReference<>(new ImageIcon(thumbImage.get()));
 
 			needToReloadThumbImage = false;
@@ -351,7 +323,7 @@ public class Thumb extends MovieDataItem {
 		}
 		if(needToReloadPreviewImage || previewThumbImage == null || previewThumbImage.get() == null)
 		{
-			previewThumbImage = new SoftReference<>(ImageCache.getImageFromCache(previewURL, isImageModified));
+			previewThumbImage = new SoftReference<>(ImageCache.getImageFromCache(previewURL, isImageModified, referrerURL));
 			previewIconThumbImage = new SoftReference<>(new ImageIcon(previewThumbImage.get()));
 			needToReloadPreviewImage = false;
 		}
@@ -390,7 +362,7 @@ public class Thumb extends MovieDataItem {
 	}
 
 	public void writeImageToFile(File fileNameToWrite) throws IOException {
-			FileUtils.copyURLToFile(thumbURL, fileNameToWrite, connectionTimeout, readTimeout);
+		FileDownloaderUtilities.writeURLToFile(getThumbURL(), fileNameToWrite, getReferrerURL());
 	}
 
 	public boolean isLoadedFromDisk() {
@@ -406,12 +378,12 @@ public class Thumb extends MovieDataItem {
 	}
 
         
-	public URL getViewerURL() {
-		return viewerURL;
+	public URL getReferrerURL() {
+		return referrerURL;
 	}
 
 	public void setViewerURL(URL viewerURL) {
-		this.viewerURL = viewerURL;
+		this.referrerURL = viewerURL;
 	}
 
 	@Override

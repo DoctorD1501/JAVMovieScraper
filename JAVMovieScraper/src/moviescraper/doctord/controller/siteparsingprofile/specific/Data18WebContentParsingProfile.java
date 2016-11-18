@@ -12,6 +12,7 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import moviescraper.doctord.controller.siteparsingprofile.SecurityPassthrough;
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.model.SearchResult;
 import moviescraper.doctord.model.dataitem.Actor;
@@ -43,7 +44,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-public class Data18WebContentParsingProfile extends SiteParsingProfile implements SpecificProfile{
+public class Data18WebContentParsingProfile extends SiteParsingProfile implements SpecificProfile, SecurityPassthrough {
 	boolean useSiteSearch = true;
 	String yearFromFilename = "";
 	String fileName;
@@ -564,7 +565,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 				for(Element currentMovie : movieSearchResultElements)
 				{
 					String currentMovieURL = currentMovie.select("a").first().attr("href");
-					String currentMovieTitle = currentMovie.select("span.gen11 a").first().text();
+					String currentMovieTitle = currentMovie.select("p.gen11 a").first().text();
 					String releaseDateText = currentMovie.ownText();
 					if(releaseDateText != null && releaseDateText.length() > 0)
 						currentMovieTitle = currentMovieTitle + " (" + releaseDateText + ")";
@@ -678,4 +679,19 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 	public String getParserName() {
 		return "Data18 Web Content";
 	}
+
+
+	@Override
+	public boolean requiresSecurityPassthrough(Document document) {
+		return Data18SharedMethods.requiresSecurityPassthrough(document);
+	}
+
+
+	@Override
+	public Document runSecurityPassthrough(Document document, SearchResult originalSearchResult) {
+		return Data18SharedMethods.runSecurityPassthrough(document, originalSearchResult);
+	}
+
+
+
 }

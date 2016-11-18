@@ -27,7 +27,7 @@ public class Rating extends MovieDataItem {
 	 * @return
 	 */
 	public String getRatingOutOfTen(){
-			if (rating.equals("") || maxRating == 0.0)
+			if (rating == null || rating.equals("") || maxRating == 0.0)
 				return "";
 			try{
 			double ratingValue = Double.valueOf(rating).doubleValue();

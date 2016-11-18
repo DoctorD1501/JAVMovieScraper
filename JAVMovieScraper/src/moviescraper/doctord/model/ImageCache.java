@@ -15,7 +15,7 @@ public class ImageCache {
 	private static Map<URL, Image> cache = Collections.synchronizedMap(new HashMap<URL, Image>(initialCapacity));
 	private static Map<URL, Image> modifiedImageCache = Collections.synchronizedMap(new HashMap<URL, Image>(initialCapacity));
 	
-	public static Image getImageFromCache(URL url, boolean isImageModified) throws IOException
+	public static Image getImageFromCache(URL url, boolean isImageModified, URL referrerURL) throws IOException
 	{
 		Map<URL, Image> cacheToUse = isImageModified ? modifiedImageCache : cache;
 		
@@ -30,7 +30,7 @@ public class ImageCache {
 			try{
 				if(url != null)
 				{
-					Image imageFromUrl = FileDownloaderUtilities.getImageFromUrl(url);
+					Image imageFromUrl = FileDownloaderUtilities.getImageFromUrl(url, referrerURL);
 					if(imageFromUrl != null)
 					{
 						cacheToUse.put(url, imageFromUrl);

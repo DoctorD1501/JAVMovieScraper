@@ -121,7 +121,7 @@ public class ActressListRenderer extends DefaultListCellRenderer {
 					{
 						if(currentFile.isFile() && FilenameUtils.removeExtension(currentFile.getName()).equals(currentActorNameAsPotentialFileName)){
 							try {
-								return resizeToMaxDimensions(ImageCache.getImageFromCache(currentFile.toURI().toURL(), false));
+								return resizeToMaxDimensions(ImageCache.getImageFromCache(currentFile.toURI().toURL(), false, null));
 							} catch (MalformedURLException e) {
 								return new ImageIcon();
 							} catch (IOException e) {
