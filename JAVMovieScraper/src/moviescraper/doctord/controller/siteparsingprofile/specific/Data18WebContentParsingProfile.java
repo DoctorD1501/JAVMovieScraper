@@ -129,7 +129,8 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 		//case where the date is not a hyperlink, but just a month and a year
 		if ((releaseDateElement != null && releaseDateElement.text() != null && releaseDateElement
 				.text().contains("errors")) || releaseDateElement == null) {
-			releaseDateElement = document.select("span.gen11:containsOwn(Release date:) b:matches(.+\\d{4})").first();
+			//releaseDateElement = document.select("span.gen11:containsOwn(Release date:) b:matches(.+\\d{4})").first();
+			releaseDateElement = document.select("span.gen11:matchesOwn(Release date: .+\\d{4})").first();
 			if(releaseDateElement == null)
 			{
 				releaseDateElement = document.select("div p:contains(Date:) b").first();
@@ -138,7 +139,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 		}
 		if(releaseDateElement != null)
 		{
-			String releaseDateText = releaseDateElement.text().trim();
+			String releaseDateText = releaseDateElement.text().trim().replaceFirst("Release date: ", "");
 			if(releaseDateText.length() > 4)
 			{
 				return new ReleaseDate(releaseDateText, dateFormatToUse);
