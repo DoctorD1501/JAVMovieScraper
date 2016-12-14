@@ -253,7 +253,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 				playerPath = StringEscapeUtils.unescapeJava(playerPath);
 				URL playerURL = new URI(document.location()).resolve(playerPath).toURL();	
 				Document playerDocument = Jsoup.parse(playerURL, CONNECTION_TIMEOUT_VALUE);
-				URL iframeURL = new URL(playerDocument.select("iframe").first().attr("src"));
+				URL iframeURL = new URL(playerDocument.select("iframe").first().attr("abs:src"));
 				Document iframeDocument = Jsoup.parse(iframeURL, CONNECTION_TIMEOUT_VALUE);
 				String flashPlayerScript = iframeDocument.select("script").last().data();
 				Pattern pattern = Pattern.compile(".*flashvars.fid\\s*=\\s*\"([^\"]+).*flashvars.bid\\s*=\\s*\"(\\d)(w|s)\".*", Pattern.DOTALL);
@@ -319,9 +319,9 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 
 		ArrayList<Thumb> posters = new ArrayList<>(
 				1 + extraArtElementsSmallSize.size());
-		String posterLink = postersElement.attr("href");
+		String posterLink = postersElement.attr("abs:href");
 		if(posterLink == null || posterLink.length() < 1)
-			posterLink = postersElement.attr("src");
+			posterLink = postersElement.attr("abs:src");
 		try {
 			// for the poster, do a crop of the the right side of the dvd case image 
 			//(which includes both cover art and back art)
@@ -344,7 +344,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 
 				// We need to do some string manipulation and put a "jp" before the
 				// last dash in the URL to get the full size picture
-				String extraArtLinkSmall = item.attr("src");
+				String extraArtLinkSmall = item.attr("abs:src");
 				int indexOfLastDash = extraArtLinkSmall.lastIndexOf('-');
 				String URLpath = extraArtLinkSmall.substring(0, indexOfLastDash)
 						+ "jp" + extraArtLinkSmall.substring(indexOfLastDash);
@@ -427,8 +427,8 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 			// get the link so we can examine the id and do some sanity cleanup
 			// and perhaps some better translation that what google has, if we
 			// happen to know better
-			String href = genreElement.attr("href");
-			String genreID = genreElement.attr("href").substring(
+			String href = genreElement.attr("abs:href");
+			String genreID = genreElement.attr("abs:href").substring(
 					href.indexOf("id=") + 3, href.length() - 1);
 			if (acceptGenreID(genreID)) {
 				if(doGoogleTranslation == false)
@@ -551,7 +551,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 		ArrayList<Actor> actorList = new ArrayList<>(
 				actressIDElements.size());
 		for (Element actressIDLink : actressIDElements) {
-			String actressIDHref = actressIDLink.attr("href");
+			String actressIDHref = actressIDLink.attr("abs:href");
 			String actressNameKanji = actressIDLink.text();
 			String actressID = actressIDHref.substring(
 					actressIDHref.indexOf("id=") + 3,
@@ -565,7 +565,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 						.first();
 				Element actressThumbnailElement = actressPage.select(
 						"tr.area-av30.top td img").first();
-				String actressThumbnailPath = actressThumbnailElement.attr("src");
+				String actressThumbnailPath = actressThumbnailElement.attr("abs:src");
 				//Sometimes the translation service from google gives us weird engrish instead of a name, so let's compare it to the thumbnail file name for the image as a sanity check
 				//if the names aren't close enough, we'll use the thumbnail name
 				//many times the thumbnail name is off by a letter or two or has a number in it, which is why we just don't use this all the time...
@@ -727,7 +727,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 		String currentPageURL = searchResultsPage.baseUri();
 		String nextPageURL = "";
 		if(nextPageLink != null)
-			nextPageURL = nextPageLink.attr("href");
+			nextPageURL = nextPageLink.attr("abs:href");
 		pagesVisited.add(currentPageURL);
 		//I can probably combine this into one selector, but it wasn't working when I tried it,
 		//so for now I'm making each its own variable and looping through and adding in all the elements seperately
@@ -740,11 +740,11 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 		
 		//get /mono/dvd links
 		for (int i = 0; i < dvdLinks.size(); i++) {
-			String currentLink = dvdLinks.get(i).attr("href");
+			String currentLink = dvdLinks.get(i).attr("abs:href");
 			Element imageLinkElement = dvdLinks.get(i).select("img").first();
 			if(imageLinkElement != null)
 			{
-				Thumb currentPosterThumbnail = new Thumb(imageLinkElement.attr("src"));
+				Thumb currentPosterThumbnail = new Thumb(imageLinkElement.attr("abs:src"));
 				searchResults.add(new SearchResult(currentLink, "", currentPosterThumbnail));
 			}
 			else
@@ -754,11 +754,11 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 		}
 		//get /rental/ppr links
 		for (int i = 0; i < rentalElements.size(); i++) {
-			String currentLink = rentalElements.get(i).attr("href");
+			String currentLink = rentalElements.get(i).attr("abs:href");
 			Element imageLinkElement = rentalElements.get(i).select("img").first();
 			if(imageLinkElement != null)
 			{
-				Thumb currentPosterThumbnail = new Thumb(imageLinkElement.attr("src"));
+				Thumb currentPosterThumbnail = new Thumb(imageLinkElement.attr("abs:src"));
 				searchResults.add(new SearchResult(currentLink, "", currentPosterThumbnail));
 			}
 			else
@@ -768,12 +768,12 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 		}
 		//get /digital/videoa links
 		for (int i = 0; i < digitalElements.size(); i++) {
-			String currentLink = digitalElements.get(i).attr("href");
+			String currentLink = digitalElements.get(i).attr("abs:href");
 			System.out.println("currentLink = " + currentLink);
 			Element imageLinkElement = digitalElements.get(i).select("img").first();
 			if(imageLinkElement != null)
 			{
-				Thumb currentPosterThumbnail = new Thumb(imageLinkElement.attr("src"));
+				Thumb currentPosterThumbnail = new Thumb(imageLinkElement.attr("abs:src"));
 				searchResults.add(new SearchResult(currentLink, "", currentPosterThumbnail));
 			}
 			else
