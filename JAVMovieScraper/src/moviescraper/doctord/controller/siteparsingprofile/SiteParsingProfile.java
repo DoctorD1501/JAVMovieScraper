@@ -67,6 +67,8 @@ public abstract class SiteParsingProfile implements DataItemSource{
 		public String toString() {return "JAV Censored Group";}}, 
 		AMERICAN_ADULT_DVD_SCRAPER_GROUP {@Override
 			public String toString() {return "American Adult DVD";}}, 
+		IV_SCRAPER_GROUP {@Override
+			public String toString() {return "IV Group";}},
 		DEFAULT_SCRAPER_GROUP {@Override
 		public String toString() {return "Default Group";}}
 	}
