@@ -27,7 +27,7 @@ public class OnePondoParsingProfileTest {
 		profile = new OnePondoParsingProfile();
 		String searchString = profile.createSearchString(file);
 		System.out.println(searchString);
-		Document document = SiteParsingProfile.downloadDocumentFromURLString(searchString);
+		Document document = profile.downloadDocumentFromURLString(searchString);
 		profile.setDocument(document);
 	}
 

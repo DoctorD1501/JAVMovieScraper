@@ -1,5 +1,17 @@
 package moviescraper.doctord.controller.siteparsingprofile.specific;
 
+import moviescraper.doctord.controller.languagetranslation.Language;
+import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
+import moviescraper.doctord.model.SearchResult;
+import moviescraper.doctord.model.dataitem.*;
+import moviescraper.doctord.model.dataitem.Runtime;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.text.WordUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -9,38 +21,6 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.text.WordUtils;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
-import moviescraper.doctord.controller.languagetranslation.Language;
-import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
-import moviescraper.doctord.model.SearchResult;
-import moviescraper.doctord.model.dataitem.Actor;
-import moviescraper.doctord.model.dataitem.Director;
-import moviescraper.doctord.model.dataitem.Genre;
-import moviescraper.doctord.model.dataitem.ID;
-import moviescraper.doctord.model.dataitem.MPAARating;
-import moviescraper.doctord.model.dataitem.OriginalTitle;
-import moviescraper.doctord.model.dataitem.Outline;
-import moviescraper.doctord.model.dataitem.Plot;
-import moviescraper.doctord.model.dataitem.Rating;
-import moviescraper.doctord.model.dataitem.ReleaseDate;
-import moviescraper.doctord.model.dataitem.Runtime;
-import moviescraper.doctord.model.dataitem.Set;
-import moviescraper.doctord.model.dataitem.SortTitle;
-import moviescraper.doctord.model.dataitem.Studio;
-import moviescraper.doctord.model.dataitem.Tagline;
-import moviescraper.doctord.model.dataitem.Thumb;
-import moviescraper.doctord.model.dataitem.Title;
-import moviescraper.doctord.model.dataitem.Top250;
-import moviescraper.doctord.model.dataitem.Trailer;
-import moviescraper.doctord.model.dataitem.Votes;
-import moviescraper.doctord.model.dataitem.Year;
 
 public class MyTokyoHotParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
@@ -61,7 +41,7 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 		if(document != null && japaneseDocument == null)
 		{
 			String url = document.baseUri().replaceFirst(Pattern.quote("lang=en"), Pattern.quote("lang=ja"));
-			japaneseDocument = SiteParsingProfile.downloadDocumentFromURLString(url);
+			japaneseDocument = downloadDocumentFromURLString(url);
 		}
 	}
 

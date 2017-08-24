@@ -1,8 +1,9 @@
 package moviescraper.doctord.model.preferences;
 
+import org.apache.commons.lang3.SystemUtils;
+
 import java.io.File;
 
-import org.apache.commons.lang3.SystemUtils;
 
 public class GuiSettings extends Settings {
 	

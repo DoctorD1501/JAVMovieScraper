@@ -1,5 +1,8 @@
 package moviescraper.doctord.view.renderer;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.text.WordUtils;
+
 import java.awt.Component;
 import java.lang.reflect.Field;
 
@@ -8,8 +11,6 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.text.WordUtils;
 
 public class MovieFieldCellRenderer implements ListCellRenderer<Field> {
 	

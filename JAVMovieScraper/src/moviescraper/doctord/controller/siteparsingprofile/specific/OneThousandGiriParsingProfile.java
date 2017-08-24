@@ -50,7 +50,7 @@ public class OneThousandGiriParsingProfile extends SiteParsingProfile implements
 		{
 			String url = document.baseUri().replaceFirst("http://en", "http://www");
 			System.out.println("url = " + url);
-			japaneseDocument = SiteParsingProfile.downloadDocumentFromURLString(url);
+			japaneseDocument = downloadDocumentFromURLString(url);
 		}
 		else if(document != null && japaneseDocument == null)
 			japaneseDocument = document;

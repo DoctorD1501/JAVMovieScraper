@@ -1,7 +1,11 @@
 package moviescraper.doctord.controller.siteparsingprofile.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
+import moviescraper.doctord.model.Movie;
+import moviescraper.doctord.model.dataitem.Actor;
+import moviescraper.doctord.model.dataitem.Director;
+import org.apache.commons.lang3.StringUtils;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,13 +13,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Comparator;
 
-import org.apache.commons.lang3.StringUtils;
-import org.junit.Test;
-
-import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
-import moviescraper.doctord.model.Movie;
-import moviescraper.doctord.model.dataitem.Actor;
-import moviescraper.doctord.model.dataitem.Director;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public abstract class GenericParsingProfileTest {
 	

@@ -6,7 +6,7 @@ JAVMovieScraper is a Java Swing program to scrape English [Kodi](http://kodi.tv/
 As no one site has a complete set of English metadata, the program amalgamates metadeta info from a variety of sources, including dmm.co.jp, javlibrary.com, javbus.com, squareplus.co.jp, and actionjav.com.
 The data is then fed through a machine translation (if original data is in Japanese) and then quality checked to sanitize it and poster elements are cropped so only the cover is shown.
 
-
+[![Build Status](https://travis-ci.org/reapier/JAVMovieScraper.svg?branch=maven)](https://travis-ci.org/reapier/JAVMovieScraper)
 
 This program is in alpha. Please submit bugs and feature requests here on github on the [issues page](https://github.com/DoctorD1501/JAVMovieScraper/issues).
 

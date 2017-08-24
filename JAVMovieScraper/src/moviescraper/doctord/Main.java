@@ -1,39 +1,16 @@
 package moviescraper.doctord;
 
-import java.io.File;
-import java.io.IOException;
-
-import org.apache.commons.cli.BasicParser;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.OptionBuilder;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
-
 import moviescraper.doctord.controller.Renamer;
 import moviescraper.doctord.controller.releaserenamer.WebReleaseRenamer;
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
-import moviescraper.doctord.controller.siteparsingprofile.specific.AvEntertainmentParsingProfile;
-import moviescraper.doctord.controller.siteparsingprofile.specific.CaribbeancomParsingProfile;
-import moviescraper.doctord.controller.siteparsingprofile.specific.CaribbeancomPremiumParsingProfile;
-import moviescraper.doctord.controller.siteparsingprofile.specific.Data18MovieParsingProfile;
-import moviescraper.doctord.controller.siteparsingprofile.specific.Data18WebContentParsingProfile;
-import moviescraper.doctord.controller.siteparsingprofile.specific.DmmParsingProfile;
-import moviescraper.doctord.controller.siteparsingprofile.specific.ExcaliburFilmsParsingProfile;
-import moviescraper.doctord.controller.siteparsingprofile.specific.HeyzoParsingProfile;
-import moviescraper.doctord.controller.siteparsingprofile.specific.IAFDParsingProfile;
-import moviescraper.doctord.controller.siteparsingprofile.specific.JavBusParsingProfile;
-import moviescraper.doctord.controller.siteparsingprofile.specific.Kin8tengokuParsingProfile;
-import moviescraper.doctord.controller.siteparsingprofile.specific.MyTokyoHotParsingProfile;
-import moviescraper.doctord.controller.siteparsingprofile.specific.OnePondoParsingProfile;
-import moviescraper.doctord.controller.siteparsingprofile.specific.OneThousandGiriParsingProfile;
-import moviescraper.doctord.controller.siteparsingprofile.specific.TheMovieDatabaseParsingProfile;
-import moviescraper.doctord.controller.siteparsingprofile.specific.TokyoHotParsingProfile;
+import moviescraper.doctord.controller.siteparsingprofile.specific.*;
 import moviescraper.doctord.model.Movie;
 import moviescraper.doctord.model.preferences.MoviescraperPreferences;
 import moviescraper.doctord.view.GUIMain;
+import org.apache.commons.cli.*;
+
+import java.io.File;
+import java.io.IOException;
 
 public class Main {
 	private final static int MIN_HEAP = 768; 
@@ -316,9 +293,6 @@ public class Main {
 				break;
 			case "mytokyohot":
 				parsingProfile = new MyTokyoHotParsingProfile();
-				break;
-			case "tokyohot":
-				parsingProfile = new TokyoHotParsingProfile();
 				break;
 			case "iafd":
 				parsingProfile = new IAFDParsingProfile();

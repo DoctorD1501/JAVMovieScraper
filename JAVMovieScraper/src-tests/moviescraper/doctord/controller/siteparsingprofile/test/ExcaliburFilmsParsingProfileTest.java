@@ -1,11 +1,13 @@
 package moviescraper.doctord.controller.siteparsingprofile.test;
 
-import java.io.File;
-import java.io.IOException;
-import org.junit.BeforeClass;
-
 import moviescraper.doctord.controller.siteparsingprofile.specific.ExcaliburFilmsParsingProfile;
 import moviescraper.doctord.model.Movie;
+import org.junit.BeforeClass;
+
+import java.io.File;
+import java.io.IOException;
+
+import static org.junit.Assert.assertNotNull;
 
 public class ExcaliburFilmsParsingProfileTest extends GenericParsingProfileTest{
 
@@ -21,7 +23,8 @@ public class ExcaliburFilmsParsingProfileTest extends GenericParsingProfileTest{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
+		assertNotNull("Movie should be scrapped", actualMovie);
 		expectedMovie = GenericParsingProfileTest.createMovieFromFileName("ExcaliburFilmsSiteParsingProfileTestMovie.nfo");
 	}
 

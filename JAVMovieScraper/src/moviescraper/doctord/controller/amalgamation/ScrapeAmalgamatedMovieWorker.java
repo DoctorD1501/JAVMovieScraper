@@ -42,7 +42,8 @@ public class ScrapeAmalgamatedMovieWorker extends SwingWorker<Void, Map<SitePars
 	 * @param scraperGroupAmalgamationPreference
 	 * @param fileToScrape - file scraped if no gui (if there is a gui we use the state variable from there wich is the file to scrape)
 	 */
-	public ScrapeAmalgamatedMovieWorker(AllAmalgamationOrderingPreferences allAmalgamationOrderingPreferences, ScraperGroupAmalgamationPreference scraperGroupAmalgamationPreference, File fileToScrape, ScrapeAmalgamatedProgressDialog parent)
+	public ScrapeAmalgamatedMovieWorker(AllAmalgamationOrderingPreferences allAmalgamationOrderingPreferences,
+										ScraperGroupAmalgamationPreference scraperGroupAmalgamationPreference, File fileToScrape, ScrapeAmalgamatedProgressDialog parent)
 	{
 		runningWorkers = new HashMap<>();
 		progress = 0;
@@ -129,12 +130,6 @@ public class ScrapeAmalgamatedMovieWorker extends SwingWorker<Void, Map<SitePars
 
 		setProgress(0);
 		//failIfInterrupted();
-		
-		//get the latest version of the sraper group preference - if it's not there for whatever reason (usually from a specific scrape), just leave it alone
-		ScraperGroupAmalgamationPreference scraperGroupAmalgamationPreferenceNew = allAmalgamationOrderingPreferences.getScraperGroupAmalgamationPreference(scraperGroupAmalgamationPreference.getScraperGroupName());
-		if(scraperGroupAmalgamationPreferenceNew != null)
-			scraperGroupAmalgamationPreference = scraperGroupAmalgamationPreferenceNew;
-
 		LinkedList<DataItemSource> scraperList = scraperGroupAmalgamationPreference.getOverallAmalgamationPreference().getAmalgamationPreferenceOrder();
 		//calculate progress amount per worker
 		int numberOfScrapes = 0;
