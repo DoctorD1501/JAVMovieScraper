@@ -40,13 +40,7 @@ public class FanartPickerRenderer extends JLabel implements ListCellRenderer<Thu
 			BufferedImage scaledImage = Scalr.resize(img, Method.QUALITY, 250, 250, Scalr.OP_ANTIALIAS);
 			currentIcon = new ImageIcon(scaledImage);
 		}
-		if(currentIcon != null)
-		{
-			//ImageIcon currentIcon = entry.getImageIconThumbImage();
-			//Image scaledImg = currentIcon.getImage().getScaledInstance(200, 200, java.awt.Image.SCALE_SMOOTH);
-			//currentIcon = new ImageIcon(scaledImg);
-			setIcon(currentIcon);
-		}
+		setIcon(currentIcon);
 		if (isSelected) {
 			setBackground(HIGHLIGHT_COLOR);
 			setForeground(Color.white);

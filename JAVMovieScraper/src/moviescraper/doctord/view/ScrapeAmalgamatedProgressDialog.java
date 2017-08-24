@@ -94,7 +94,7 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
 	public void setFilesBeingScrapedLabel() {
 		if (fileBeingScrapedLabel == null)
 			fileBeingScrapedLabel = new JLabel();
-		
+                
 		if (filesWeAreScraping != null && filesWeAreScraping.size() > 0) {
 			File currentFile = filesWeAreScraping.get(currentFileIndexToScrape);
 			if (currentFile != null) {
@@ -117,7 +117,7 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
 	public void reinitializeScrapingForNextMovie()
 	{
 		currentAmalgamatedMovie = null;
-		currentMovieList = new LinkedList<Movie>();
+		currentMovieList = new LinkedList<>();
 		for(ScraperProgressView currentScraperProgressView : scraperProgressViews)
 		{
 			currentScraperProgressView.resetPanelForNextScrape();
@@ -132,8 +132,6 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
 	{
 		super(guiMain.getFrmMoviescraper());
 		setTitle("Scraping...");
-		//setModalityType(Dialog.ModalityType.DOCUMENT_MODAL);
-		//super("Scrape Amalgamated Action Test");
 		this.guiMain = guiMain;
 		this.filesWeAreScraping = guiMain.getCurrentlySelectedMovieFileList();
 		this.allAmalgamationOrderingPreferences = allAmalgamationOrderingPreferences;
@@ -145,15 +143,10 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
 		this.scraperGroupAmalgamationPreference = scraperGroupAmalgamationPreference;
 		currentMovieList = new LinkedList<>();
 		propertyListener = new AmalgamationPropertyChangeListener();
-		//propertyChangeSupport = new PropertyChangeSupport(this);
-		//fileDetailPanel = new FileDetailPanel(MoviescraperPreferences.getInstance(), new GUIMain());
-		//fileDetailPanel.setNewMovie(getFakeMovie(), false);
 		
 		JPanel overallPanel = new JPanel(new BorderLayout());
         this.setLocationRelativeTo(guiMain.getFrmMoviescraper());
-        //this.setSize(new Dimension(800,600));
         this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        //this.setPreferredSize(new Dimension(400, 200));
         this.add(overallPanel);
         progressBar = new JProgressBar(0, 100);
         progressBar.setValue(0);
@@ -183,17 +176,11 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
         southPanel.add(cancelButton, BorderLayout.SOUTH);
         southPanel.add(progressBar, BorderLayout.CENTER);
         overallPanel.add(southPanel, BorderLayout.SOUTH);
-        //overallPanel.add(fileDetailPanel, BorderLayout.CENTER);
         this.setVisible(true);
-		/*DataItemSourceAmalgamationPreference overallOrdering = new DataItemSourceAmalgamationPreference(
-				new TheMovieDatabaseParsingProfile(), new Data18MovieParsingProfile());
-		amalgamationPreferences = new ScraperGroupAmalgamationPreference(
-				ScraperGroupName.AMERICAN_ADULT_DVD_SCRAPER_GROUP,
-				overallOrdering);*/
 		if (filesAreSelected()) {
 				//start scraping the first item in the selected file list, further items will be scraped once this one completes and a "AllScrapesFinished" message is received
 				scrapeWithIndex(currentFileIndexToScrape);
-				
+                                
 		} else {
 			System.err.println("No file selected!");
 		}
@@ -205,8 +192,6 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
 	
 	private JPanel createScraperProgressPanel() {
 		JPanel scraperProgressPanel = new JPanel();
-		//scraperProgressViews = new LinkedList<>();
-		//JScrollPane listScroller = new JScrollPane(scraperProgressPanel);
 		scraperProgressPanel.setLayout(new BoxLayout(scraperProgressPanel, BoxLayout.Y_AXIS));
 		List<DataItemSource> activeScrapers = scraperGroupAmalgamationPreference.getActiveScrapersUsedInOverallPreference();
 		//update the state of what's active because it may have changed from elsewhere
@@ -275,7 +260,17 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
 	public boolean scrapeNextItemIfNeeded()
 	{
 		
-		
+                boolean considerUserSelectionOneURLWhenScraping = MoviescraperPreferences.getInstance().getConsiderUserSelectionOneURLWhenScraping();
+                if (considerUserSelectionOneURLWhenScraping){
+                    for (int i = 1; i < guiMain.getCurrentlySelectedMovieFileList().size(); i++){
+                        if(currentAmalgamatedMovie != null)
+                            {
+                                    guiMain.movieToWriteToDiskList.add(currentAmalgamatedMovie);
+                            }
+                    }
+                    currentFileIndexToScrape = guiMain.getCurrentlySelectedMovieFileList().size();
+                }
+                
 		if(filesAreSelected() && (currentFileIndexToScrape+1) < guiMain.getCurrentlySelectedMovieFileList().size())
 		{
 			currentFileIndexToScrape++;
@@ -305,8 +300,6 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
 			
 			firePropertyChange(evt.getPropertyName(), evt.getOldValue(), evt.getNewValue());
 
-			//String propertyName = evt.getPropertyName();
-			//System.out.println("property changed with name = " + propertyName + " and value = " + evt.getNewValue());
 			if(evt.getPropertyName().equals("progress"))
 			{
 				int progressAmount = (int)evt.getNewValue();
@@ -323,10 +316,8 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
 					promptUserToPickPoster();
 					promptUserToPickFanart();
 					
-					guiMain.getFileDetailPanel().setNewMovie(currentAmalgamatedMovie, true, true);
-					//I really shouldn't have to add this again here as setting the new movie above should do this, but that code is currently weirdly written and sometimes doesn't set it, so I've put an extra check here
-					if(!guiMain.movieToWriteToDiskList.contains(currentAmalgamatedMovie))
-						guiMain.movieToWriteToDiskList.add(currentAmalgamatedMovie);
+					guiMain.movieToWriteToDiskList.add(currentAmalgamatedMovie);
+					guiMain.getFileDetailPanel().setNewMovie(currentAmalgamatedMovie, true, false);
 				}
 				//scrape the next selected item
 				boolean weAreDone = !scrapeNextItemIfNeeded();
@@ -348,7 +339,7 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
 				newValue.removeAll(Collections.singleton(null));
 				for(Map<SiteParsingProfile, Movie> currentMap : newValue)
 				{
-					List<Movie> currentMovies = new ArrayList<Movie>(currentMap.values());
+					List<Movie> currentMovies = new ArrayList<>(currentMap.values());
 					currentMovies.removeAll(Collections.singleton(null));
 					currentMovieList.addAll(currentMovies);
 				}
@@ -366,8 +357,6 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
 			MovieScrapeResultGroup scrapedResultGroup = new MovieScrapeResultGroup(currentMovieList, prefToUse);
 			
 			currentAmalgamatedMovie = scrapedResultGroup.amalgamateMovie();
-			
-			//System.out.println("Amalgamated movie of " + currentMovieList + " is " + currentAmalgamatedMovie);
 		}
 		
 	}
@@ -402,12 +391,6 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
 		{
 			JPanel panel = new JPanel();
 			panel.setLayout(new BorderLayout());
-			/*JList<Thumb> labelList = new JList<Thumb>(thumbArray);
-			labelList.setCellRenderer(new FanartPickerRenderer());
-			labelList.setVisible(true);
-			JScrollPane pane = new JScrollPane(labelList);
-			panel.add(pane, BorderLayout.CENTER);
-			*/
 			JPanel thumbPane = new JPanel(new ModifiedFlowLayout());
 			AsyncImageComponent[] thumbPanels = new AsyncImageComponent[thumbArray.length];
 			boolean doAutoSelect = true;
@@ -472,8 +455,7 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
 			System.out.println("Prompting the user for a url for " + siteScraper);
 			 String userProvidedURL = (String)JOptionPane.showInputDialog(
 		             null,
-		             "Enter URL of " + siteScraper.toString() + " to scrape from:" + "\n" + 
-		             "fileName" + " :",
+		             "Enter URL of " + siteScraper.toString() + " to scrape from:",
 		             "Scrape from this URL...",
 		             JOptionPane.PLAIN_MESSAGE,
 		             null,

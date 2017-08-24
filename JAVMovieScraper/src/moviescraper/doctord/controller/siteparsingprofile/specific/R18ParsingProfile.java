@@ -46,7 +46,7 @@ import moviescraper.doctord.model.dataitem.Year;
 public class R18ParsingProfile extends SiteParsingProfile implements SpecificProfile {
 	
 	private static final SimpleDateFormat r18ReleaseDateFormat = new SimpleDateFormat("MMM. dd,yyyy", Locale.ENGLISH);
-	
+	private static final SimpleDateFormat r18ReleaseDateFormatAlternate = new SimpleDateFormat("MMM dd,yyyy", Locale.ENGLISH);
 	@Override
 	public String getParserName() {
 		return "R18.com";
@@ -127,7 +127,23 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 		Element releaseDateElement = document.select("div.product-details dl dt:contains(Release Date) ~ dd").first();
 		if(releaseDateElement != null && releaseDateElement.text().length() > 4)
 		{
-			return new ReleaseDate(releaseDateElement.text().trim(), r18ReleaseDateFormat);
+			String releaseDateText = releaseDateElement.text().trim();
+			
+			//gah why is this site so inconsistent. September should be Sep., not "Sept.". 
+			//They randomly decide how many letters they want each month to take.
+			if(releaseDateText.contains("Sept.")) {
+				releaseDateText = releaseDateText.replaceFirst(Pattern.quote("Sept."), "Sep.");
+			}
+			
+			//months abbreviated e.g.: "Oct."
+			SimpleDateFormat formatToUse = r18ReleaseDateFormat;
+			//month did not get abreviated
+			if (!releaseDateText.contains(".")) {
+				formatToUse = r18ReleaseDateFormatAlternate;
+			}
+
+			ReleaseDate releaseDate = new ReleaseDate(releaseDateText, formatToUse);
+			return releaseDate;	
 		}
 		return ReleaseDate.BLANK_RELEASEDATE;
 	}
@@ -230,7 +246,7 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 
 	@Override
 	public Thumb[] scrapeExtraFanart() {
-		List<Thumb> thumbList = new LinkedList<Thumb>();
+		List<Thumb> thumbList = new LinkedList<>();
 		
 		Elements previewProductGalleryImgLinks = document.select(".product-gallery li a img");
 		
@@ -291,7 +307,7 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 
 	@Override
 	public ArrayList<Genre> scrapeGenres() {
-		ArrayList<Genre> genreList = new ArrayList<Genre>();
+		ArrayList<Genre> genreList = new ArrayList<>();
 		Elements genreElements = document.select("div.product-details dl dt:contains(Categories:) ~ dd a");
 		if(genreElements != null)
 		{
@@ -310,7 +326,7 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 
 	@Override
 	public ArrayList<Actor> scrapeActors() {
-		ArrayList<Actor> actorList = new ArrayList<Actor>();
+		ArrayList<Actor> actorList = new ArrayList<>();
 		Elements actorElementTabs = document.select("div.js-tab-contents div[id]");
 		if(actorElementTabs != null)
 		{
@@ -334,7 +350,7 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 						}
 						
 					}
-					else if(actorName != null)
+					else
 					{
 						Actor actorWithoutThumb = new Actor(actorName,"",null);
 						actorList.add(actorWithoutThumb);
@@ -347,7 +363,7 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 
 	@Override
 	public ArrayList<Director> scrapeDirectors() {
-		ArrayList<Director> directorList = new ArrayList<Director>();
+		ArrayList<Director> directorList = new ArrayList<>();
 		Element studioElement = document.select("div.product-details dl dt:contains(Director:) + dd").first();
 		if(studioElement != null)
 		{

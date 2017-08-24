@@ -12,6 +12,7 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import moviescraper.doctord.controller.siteparsingprofile.SecurityPassthrough;
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.model.SearchResult;
 import moviescraper.doctord.model.dataitem.Actor;
@@ -43,7 +44,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-public class Data18WebContentParsingProfile extends SiteParsingProfile implements SpecificProfile{
+public class Data18WebContentParsingProfile extends SiteParsingProfile implements SpecificProfile, SecurityPassthrough {
 	boolean useSiteSearch = true;
 	String yearFromFilename = "";
 	String fileName;
@@ -52,15 +53,40 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 	
 	@Override
 	public Title scrapeTitle() {
-		Element titleElement = document.select("div#centered.main2 div div h1.h1big, div#centered.main2 div h1").first();
-		if(titleElement != null)
-			return new Title(titleElement.text());
-		else return new Title("");
+            String localTitleReturn = "";
+            String localPropertyTitleText = "";
+        
+                Element propertyTitle = document.select("meta[name=twitter:title]").first();
+                localPropertyTitleText = propertyTitle.attr("content");
+                
+                if (localPropertyTitleText.length() > 1) {
+                    localTitleReturn = localPropertyTitleText;
+                    System.out.println("Title by Property: " + localTitleReturn);
+                } else {
+                    Element titleElement = document.select("div#centered.main2 div div h1.h1big, div#centered.main2 div h1").first();
+                    if(titleElement != null){
+                        localTitleReturn = titleElement.text();
+                        System.out.println("Title by Scrape: " + localTitleReturn);
+                    }
+                }
+                return new Title(localTitleReturn);
 	}
 
+        
 	@Override
 	public OriginalTitle scrapeOriginalTitle() {
-		return OriginalTitle.BLANK_ORIGINALTITLE;
+            String localTitleReturn = "";
+            String localPropertyTitleText = "";
+        
+                localPropertyTitleText = document.title();
+                if (localPropertyTitleText.length() > 1) {
+                    localTitleReturn = localPropertyTitleText;
+                    System.out.println("Original Title by Property: " + localTitleReturn);
+                } 
+         
+            return new OriginalTitle(localTitleReturn);               
+            
+            //return OriginalTitle.BLANK_ORIGINALTITLE;
 	}
 
 	@Override
@@ -103,7 +129,8 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 		//case where the date is not a hyperlink, but just a month and a year
 		if ((releaseDateElement != null && releaseDateElement.text() != null && releaseDateElement
 				.text().contains("errors")) || releaseDateElement == null) {
-			releaseDateElement = document.select("span.gen11:containsOwn(Release date:) b:matches(.+\\d{4})").first();
+			//releaseDateElement = document.select("span.gen11:containsOwn(Release date:) b:matches(.+\\d{4})").first();
+			releaseDateElement = document.select("span.gen11:matchesOwn(Release date: .+\\d{4})").first();
 			if(releaseDateElement == null)
 			{
 				releaseDateElement = document.select("div p:contains(Date:) b").first();
@@ -112,7 +139,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 		}
 		if(releaseDateElement != null)
 		{
-			String releaseDateText = releaseDateElement.text().trim();
+			String releaseDateText = releaseDateElement.text().trim().replaceFirst("Release date: ", "");
 			if(releaseDateText.length() > 4)
 			{
 				return new ReleaseDate(releaseDateText, dateFormatToUse);
@@ -144,6 +171,32 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 		Element plotElement = document.select("div.gen12 p:contains(Story:)").first();
 		if(plotElement != null)
 			return new Plot(plotElement.ownText());
+		//maybe if this is a scene, there is a link to the full movie where we can grab the plot from there
+		else {
+			Element relatedMovieTextElement = document.select("div p:containsOwn(Related Movie:)").first();
+			//the actual related movie is the text's parent's previous element, if it is there
+			if(relatedMovieTextElement != null && relatedMovieTextElement.parent() != null && relatedMovieTextElement.parent().previousElementSibling() != null) {
+				Element relatedMovieElement = relatedMovieTextElement.parent().previousElementSibling().select("a[href*=/movies/]").first();
+				if(relatedMovieElement != null) {
+					//Using the full movie's plot since this is a single scene and it does not have its own plot
+					String urlOfMovie = relatedMovieElement.attr("href");
+					if(urlOfMovie != null && urlOfMovie.length() > 0) {
+						Data18MovieParsingProfile parser = new Data18MovieParsingProfile();
+						parser.setOverridenSearchResult(urlOfMovie);
+						try {
+							Document doc = Jsoup.connect(urlOfMovie).userAgent(getRandomUserAgent()).referrer("http://www.google.com").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
+							parser.setDocument(doc);
+							Plot data18FullMoviePlot = parser.scrapePlot();
+							System.out.println("Using full movie's plot instead of scene's plot (which wasn't found): " + data18FullMoviePlot.getPlot());
+							return data18FullMoviePlot;
+						}
+						catch(IOException e) {
+							return Plot.BLANK_PLOT;
+						}
+					}
+				}
+			}
+		}
 		return Plot.BLANK_PLOT;
 	}
 
@@ -161,8 +214,8 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 	@Override
 	public Thumb[] scrapePosters() {
 		//If scene is from a page that has video stills, grab the posters from the trailer link
-		ArrayList<Thumb> posters = new ArrayList<Thumb>();
-		ArrayList<Thumb> trailerImages = new ArrayList<Thumb>();
+		ArrayList<Thumb> posters = new ArrayList<>();
+		ArrayList<Thumb> trailerImages = new ArrayList<>();
 		
 		Elements trailerImgElements = document.select("img.noborder[title=Scene Preview], div#moviewrap img[src*=/big.jpg], img.noborder[alt=Play this video]:not(img.noborder[src*=play.png]), div#pretrailer a[href*=/trailer] img.noborder:not(img.noborder[src*=play.png])");
 		Elements videoStills = document.select("div:containsOwn(Video Stills:) ~ div img");
@@ -197,7 +250,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 		
 		
 		//otherwise, find split scene links from a full movie
-		ArrayList<String> contentLinks = new ArrayList<String>();
+		ArrayList<String> contentLinks = new ArrayList<>();
 		String docLocation = document.location();
 		//in rare cases the content id used on the viewer page is not the same as that of the url of the page itself
 		String contentIDFromViewerFoundOnPage = "";
@@ -240,7 +293,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 						{
 							String mainImageUrl = imgElement.attr("src");
 							mainImageUrl = fixIPAddressOfData18(mainImageUrl);
-							if(fileExistsAtURL(mainImageUrl))
+							//if(fileExistsAtURL(mainImageUrl))
 							{
 								Thumb thumbToAdd = new Thumb(mainImageUrl);
 								String previewURL = mainImageUrl.substring(0,mainImageUrl.length()-6) + "th8/" + mainImageUrl.substring(mainImageUrl.length()-6,mainImageUrl.length());
@@ -250,6 +303,8 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 								if(fileExistsAtURL(previewURL))
 									thumbToAdd.setPreviewURL(new URL(previewURL));
 								//System.out.println("previewURL : " + previewURL);
+                                                                URL viewerPage = new URL(currentViewerPageURL);
+                                                                thumbToAdd.setViewerURL(viewerPage);
 								posters.add(thumbToAdd);
 							}
 						}
@@ -263,10 +318,11 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 		}
 		
 		//get "Official Poster"
-		Element officialPosterElement = document.select("a img[alt=poster]").first();
+		Element officialPosterElement = document.select("meta[property=og:image]").first();
 		if (officialPosterElement != null) {
 			try {
-				Thumb officialPosterThumb = new Thumb(fixIPAddressOfData18(officialPosterElement.attr("src")));
+				Thumb officialPosterThumb = new Thumb(fixIPAddressOfData18(officialPosterElement.attr("content")));
+                                System.out.println("Official Poster: " + officialPosterThumb);
 				posters.add(officialPosterThumb);
 				
 				//get the trailer images too, since items with an official poster tend to not have much else in them
@@ -340,7 +396,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 
 	@Override
 	public ArrayList<Genre> scrapeGenres() {
-		ArrayList<Genre> genreList = new ArrayList<Genre>();
+		ArrayList<Genre> genreList = new ArrayList<>();
 		//Elements genreElements = document.select("span.gensmall ~ a");
 		Elements genreElements = document.select("div.p8 div div div:contains(Categories) a, div.gen12 div:contains(Categories) a");
 		if (genreElements != null)
@@ -364,13 +420,14 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 	@Override
 	public ArrayList<Actor> scrapeActors() {
 		Elements actorElements = document.select("p:contains(Starring:) a.bold");
-		ArrayList<Actor> actorList = new ArrayList<Actor>();
+		ArrayList<Actor> actorList = new ArrayList<>();
 		if(actorElements != null)
 		{
 			for(Element currentActorElement : actorElements)
 			{
 				String actorPageLink = currentActorElement.attr("href");
 				String actorName = currentActorElement.text();
+                                System.out.println("Starring: " + actorName);
 				//Connect to the actor page to get the thumbnail
 				if(actorPageLink!= null)
 				{
@@ -431,7 +488,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 
 	@Override
 	public ArrayList<Director> scrapeDirectors() {
-		ArrayList<Director> directorList = new ArrayList<Director>();
+		ArrayList<Director> directorList = new ArrayList<>();
 		return directorList;
 	}
 
@@ -495,7 +552,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 		scrapedPosters = null;
 		if(useSiteSearch)
 		{
-			ArrayList<SearchResult> linksList = new ArrayList<SearchResult>();
+			ArrayList<SearchResult> linksList = new ArrayList<>();
 			Document doc = Jsoup.connect(searchString).userAgent("Mozilla").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
 			Elements movieSearchResultElements = doc.select("div.bscene");
 			if(movieSearchResultElements == null || movieSearchResultElements.size() == 0)
@@ -509,7 +566,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 				for(Element currentMovie : movieSearchResultElements)
 				{
 					String currentMovieURL = currentMovie.select("a").first().attr("href");
-					String currentMovieTitle = currentMovie.select("span.gen11 a").first().text();
+					String currentMovieTitle = currentMovie.select("p.gen11 a").first().text();
 					String releaseDateText = currentMovie.ownText();
 					if(releaseDateText != null && releaseDateText.length() > 0)
 						currentMovieTitle = currentMovieTitle + " (" + releaseDateText + ")";
@@ -600,7 +657,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 	 */
 	public SearchResult[] removeInvalidGoogleResults(SearchResult [] googleResults)
 	{
-		LinkedList<SearchResult> modifiedSearchResultList = new LinkedList<SearchResult>();
+		LinkedList<SearchResult> modifiedSearchResultList = new LinkedList<>();
 		for(int i = 0; i < googleResults.length; i++)
 		{
 			//System.out.println("initial goog results = " + googleResults[i].getUrlPath());
@@ -623,4 +680,19 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 	public String getParserName() {
 		return "Data18 Web Content";
 	}
+
+
+	@Override
+	public boolean requiresSecurityPassthrough(Document document) {
+		return Data18SharedMethods.requiresSecurityPassthrough(document);
+	}
+
+
+	@Override
+	public Document runSecurityPassthrough(Document document, SearchResult originalSearchResult) {
+		return Data18SharedMethods.runSecurityPassthrough(document, originalSearchResult);
+	}
+
+
+
 }

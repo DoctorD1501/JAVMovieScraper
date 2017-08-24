@@ -157,8 +157,8 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 				BufferedImage read = ImageIO.read(fanart[0].getThumbURL());
 				if(read != null)
 				{
-					int newWidth = (int) ((1.0 - 0.526666) * read.getWidth());
-					thumbs.add( new Thumb(fanart[0].getThumbURL().toString(), newWidth));
+					//int newWidth = (int) ((1.0 - 0.526666) * read.getWidth());
+					thumbs.add( new Thumb(fanart[0].getThumbURL().toString(), true));
 				}
 			} catch (IOException e) {
 				e.printStackTrace();

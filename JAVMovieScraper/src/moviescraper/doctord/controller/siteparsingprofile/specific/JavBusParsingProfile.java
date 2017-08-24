@@ -265,7 +265,7 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 
 	@Override
 	public ArrayList<Genre> scrapeGenres() {
-		ArrayList<Genre> genreList = new ArrayList<Genre>();
+		ArrayList<Genre> genreList = new ArrayList<>();
 		Elements genreElements = document.select("span.genre a[href*=/genre/");
 		if(genreElements != null)
 		{
@@ -288,7 +288,7 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 
 	@Override
 	public ArrayList<Actor> scrapeActors() {
-		ArrayList<Actor> actorList = new ArrayList<Actor>();
+		ArrayList<Actor> actorList = new ArrayList<>();
 		Elements actorElements = document.select("div.star-box li a img");
 		if(actorElements != null)
 		{
@@ -319,7 +319,7 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 
 	@Override
 	public ArrayList<Director> scrapeDirectors() {
-		ArrayList<Director> directorList = new ArrayList<Director>();
+		ArrayList<Director> directorList = new ArrayList<>();
 		String directorWord = (scrapingLanguage == Language.ENGLISH) ? "Director:" : "監�?�:";
 		Element directorElement = document.select("span.header:containsOwn(" + directorWord + ") ~ a").first();
 		if(directorElement != null && directorElement.text().length() > 0)
@@ -367,7 +367,7 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 	@Override
 	public SearchResult[] getSearchResults(String searchString)
 			throws IOException {
-		ArrayList<SearchResult> linksList = new ArrayList<SearchResult>();
+		ArrayList<SearchResult> linksList = new ArrayList<>();
 		try{
 			Document doc = Jsoup.connect(searchString).userAgent("Mozilla").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
 			Elements videoLinksElements = doc.select("div.item");

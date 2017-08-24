@@ -184,7 +184,7 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 	@Override
 	public Thumb[] scrapePosters() {
 		
-		List<Thumb> posters = new LinkedList<Thumb>();
+		List<Thumb> posters = new LinkedList<>();
 		Element posterElement = document
 				.select("td.detail_main a[href*=/images/")
 				.first();
@@ -306,7 +306,7 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 
 	@Override
 	public ArrayList<Genre> scrapeGenres() {
-		ArrayList<Genre> genresReturned = new ArrayList<Genre>();
+		ArrayList<Genre> genresReturned = new ArrayList<>();
 		initializeJapaneseDocument();
 
 		Elements genreElementsInJapanese = japaneseDocument.select("dl.movie-info-cat dd a");
@@ -404,6 +404,8 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 		case "82_1": return "OL";
 		case "83_1": return "Maid";
 		case "84_1": return "Yukata / Kimono";
+		default:
+			break;
 		}
 		//System.out.println("No genre match for " + currentGenreCode);
 		return null;
@@ -411,7 +413,7 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 
 	@Override
 	public ArrayList<Actor> scrapeActors() {
-		ArrayList<Actor> actorList = new ArrayList<Actor>();
+		ArrayList<Actor> actorList = new ArrayList<>();
 		initializeJapaneseDocument();
 		Element actorElement = document
 				.select("tr td:contains(Starring:) ~ td a")
@@ -471,7 +473,7 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 
 	@Override
 	public ArrayList<Director> scrapeDirectors() {
-		return new ArrayList<Director>();
+		return new ArrayList<>();
 	}
 	@Override
 	public Trailer scrapeTrailer()

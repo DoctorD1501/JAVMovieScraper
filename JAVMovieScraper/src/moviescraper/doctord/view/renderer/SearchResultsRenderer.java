@@ -28,9 +28,9 @@ public class SearchResultsRenderer extends JLabel implements ListCellRenderer<Se
 			int index, boolean isSelected, boolean cellHasFocus) {
 		SearchResult entry = (SearchResult) value;
 		if(entry.getLabel().length() > 0)
-			setText("<html>" + "<p>" + entry.getLabel() + "</p>" + "<br>" + "<p>" + entry.getUrlPath() + "</p" +  "</html>");
+			setText("<html>" + "<p>" + entry.getLabel() + "</p>" + "<br>" + "<p>" + "<a href='" + entry.getUrlPath() + "'>" + entry.getUrlPath() + "</a></p" +  "</html>");
 		else
-			setText(entry.getUrlPath());
+			setText("<html>" + "<a href='" + entry.getUrlPath() + "'>" + entry.getUrlPath() + "</a></html>");
 		if(entry.getPreviewImage() != null && entry.getPreviewImage().getThumbURL() != null)
 			setIcon(entry.getPreviewImage().getImageIconThumbImage());
 		if (isSelected) {

@@ -1,55 +1,31 @@
 package moviescraper.doctord.view;
 
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import com.jgoodies.forms.layout.ColumnSpec;
+import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.FormSpecs;
+import com.jgoodies.forms.layout.RowSpec;
+import moviescraper.doctord.controller.EditGenresAction;
+import moviescraper.doctord.controller.EditTagsAction;
+import moviescraper.doctord.model.Movie;
+import moviescraper.doctord.model.dataitem.*;
+import moviescraper.doctord.model.preferences.MoviescraperPreferences;
+import moviescraper.doctord.view.AbstractFileDetailPanelEditGUI.Operation;
+import moviescraper.doctord.view.renderer.ActressListRenderer;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.AbstractListModel;
-import javax.swing.ComboBoxEditor;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListModel;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-
-import com.jgoodies.forms.layout.FormSpecs;
-import moviescraper.doctord.controller.EditGenresAction;
-import moviescraper.doctord.controller.EditTagsAction;
-import moviescraper.doctord.model.Movie;
-import moviescraper.doctord.model.dataitem.Actor;
-import moviescraper.doctord.model.dataitem.Genre;
-import moviescraper.doctord.model.dataitem.ID;
-import moviescraper.doctord.model.dataitem.OriginalTitle;
-import moviescraper.doctord.model.dataitem.Plot;
-import moviescraper.doctord.model.dataitem.ReleaseDate;
-import moviescraper.doctord.model.dataitem.Set;
-import moviescraper.doctord.model.dataitem.Studio;
-import moviescraper.doctord.model.dataitem.Tag;
-import moviescraper.doctord.model.dataitem.Title;
-import moviescraper.doctord.model.dataitem.Year;
-import moviescraper.doctord.model.preferences.MoviescraperPreferences;
-import moviescraper.doctord.view.AbstractFileDetailPanelEditGUI.Operation;
-import moviescraper.doctord.view.renderer.ActressListRenderer;
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.RowSpec;
-
 public class FileDetailPanel extends JPanel {
+
+	private static final String NO_FILE_SELECTED = "No File Selected";
 
 	private static final long serialVersionUID = 7088761619568387476L;
 	
-	private JComboBox<String> comboBoxMovieTitleText;
+	private JTextField txtFieldMovieTitleText;
 	private JTextField txtFieldOriginalTitleText;
 	private JTextField txtFieldScrapedYearText;
 	private JTextField txtFieldIDCurrentMovie;
@@ -67,6 +43,8 @@ public class FileDetailPanel extends JPanel {
 	private final static int DEFAULT_TEXTFIELD_LENGTH = 35;
 	
 	public GUIMain guiMain;
+	
+	public int currentListIndexOfDisplayedMovie = 0;
 
 	private JTextField txtFieldReleaseDateText;
 	
@@ -74,18 +52,28 @@ public class FileDetailPanel extends JPanel {
 	private static final int COLUMN_FORM_FIELD = 4;
 	private static final int COLUMN_ARTWORK_PANEL = 6;
 	
-	private static final int ROW_TITLE = 2;
+	private static final int ROW_CHANGE_MOVIE_BUTTONS = 2;
 	private static final int ROW_ARTWORK_PANEL = 2;
-	private static final int ROW_ORIGINAL_TITLE = 4;
-	private static final int ROW_YEAR = 6;
-	private static final int ROW_RELEASE_DATE = 8;
-	private static final int ROW_ID = 10;
-	private static final int ROW_STUDIO = 12;
-	private static final int ROW_MOVIE_SET = 14;
-	private static final int ROW_PLOT = 16;
-	private static final int ROW_GENRES = 18;
-	private static final int ROW_TAGS = 20;
-	private static final int ROW_ACTORS = 22;
+	private static final int ROW_FILE_PATH = 4;
+	private static final int ROW_TITLE = 6;
+	private static final int ROW_ORIGINAL_TITLE = 8;
+	private static final int ROW_YEAR = 10;
+	private static final int ROW_RELEASE_DATE = 12;
+	private static final int ROW_ID = 14;
+	private static final int ROW_STUDIO = 16;
+	private static final int ROW_MOVIE_SET = 18;
+	private static final int ROW_PLOT = 20;
+	private static final int ROW_GENRES = 22;
+	private static final int ROW_TAGS = 24;
+	private static final int ROW_ACTORS = 26;
+
+	private JButton previousMovieButton;
+
+	private JButton nextMovieButton;
+
+	private JTextField pathTextField;
+
+	private JLabel numberInListSelectedLabel;
 	
 
 	/**
@@ -107,84 +95,107 @@ public class FileDetailPanel extends JPanel {
 			},
 			new RowSpec[] {
 				FormSpecs.RELATED_GAP_ROWSPEC, //1 - empty space
-				FormSpecs.DEFAULT_ROWSPEC, //2 - Title and artwork panel
-				FormSpecs.RELATED_GAP_ROWSPEC,//3 - empty space
-				FormSpecs.DEFAULT_ROWSPEC,//4 - original title
-				FormSpecs.RELATED_GAP_ROWSPEC,//5 - empty space
-				FormSpecs.DEFAULT_ROWSPEC,//6 - Year
+				FormSpecs.DEFAULT_ROWSPEC, //2 - navigation buttons and artwork panel
+				FormSpecs.RELATED_GAP_ROWSPEC, //3  - empty space
+				FormSpecs.DEFAULT_ROWSPEC, //4 - File Path
+				FormSpecs.RELATED_GAP_ROWSPEC, //5 - empty space
+				FormSpecs.DEFAULT_ROWSPEC, //6 - Title
 				FormSpecs.RELATED_GAP_ROWSPEC,//7 - empty space
-				FormSpecs.DEFAULT_ROWSPEC,//8 - Release Date
+				FormSpecs.DEFAULT_ROWSPEC,//8 - original title
 				FormSpecs.RELATED_GAP_ROWSPEC,//9 - empty space
-				FormSpecs.DEFAULT_ROWSPEC,//10 - ID
+				FormSpecs.DEFAULT_ROWSPEC,//10 - Year
 				FormSpecs.RELATED_GAP_ROWSPEC,//11 - empty space
-				FormSpecs.DEFAULT_ROWSPEC,//12 - Studio
+				FormSpecs.DEFAULT_ROWSPEC,//12 - Release Date
 				FormSpecs.RELATED_GAP_ROWSPEC,//13 - empty space
-				FormSpecs.DEFAULT_ROWSPEC,//14 - Movie set
+				FormSpecs.DEFAULT_ROWSPEC,//14 - ID
 				FormSpecs.RELATED_GAP_ROWSPEC,//15 - empty space
-				FormSpecs.DEFAULT_ROWSPEC,//16 - Plot
+				FormSpecs.DEFAULT_ROWSPEC,//16 - Studio
 				FormSpecs.RELATED_GAP_ROWSPEC,//17 - empty space
-				FormSpecs.DEFAULT_ROWSPEC,//18 - genres
+				FormSpecs.DEFAULT_ROWSPEC,//18 - Movie set
 				FormSpecs.RELATED_GAP_ROWSPEC,//19 - empty space
-				FormSpecs.DEFAULT_ROWSPEC,//20 - tags
+				FormSpecs.DEFAULT_ROWSPEC,//20 - Plot
 				FormSpecs.RELATED_GAP_ROWSPEC,//21 - empty space
-				RowSpec.decode("fill:pref:grow"),//22 - actors
-				FormSpecs.RELATED_GAP_ROWSPEC//23 - empty space
+				FormSpecs.DEFAULT_ROWSPEC,//22 - genres
+				FormSpecs.RELATED_GAP_ROWSPEC,//23 - empty space
+				FormSpecs.DEFAULT_ROWSPEC,//24 - tags
+				FormSpecs.RELATED_GAP_ROWSPEC,//25 - empty space
+				RowSpec.decode("fill:pref:grow"),//26 - actors
+				FormSpecs.RELATED_GAP_ROWSPEC//27 - empty space
 				});
-		
-
-		
-		
-		//formLayout.setColumnGroups(new int[][]{{4, 6}});
 		
 		fileDetailsPanel.setLayout(formLayout);
 
+		//next and previous buttons
+		previousMovieButton = new JButton("<< Previous Movie");
+		previousMovieButton.addActionListener(e -> handlePreviousMovieSelected());
+		numberInListSelectedLabel = new JLabel("0 / 0");
+		nextMovieButton = new JButton("Next Movie >>");
+		nextMovieButton.addActionListener(e -> handleNextMovieSelected());
+		JPanel movieNavigationButtonsPanel = new JPanel();		
+		movieNavigationButtonsPanel.add(previousMovieButton);
+		movieNavigationButtonsPanel.add(numberInListSelectedLabel);
+		movieNavigationButtonsPanel.add(nextMovieButton);
+		changeEnabledStatusOfPreviousAndNextButtons();
+		fileDetailsPanel.add(movieNavigationButtonsPanel, getLayoutPositionString(COLUMN_FORM_FIELD, ROW_CHANGE_MOVIE_BUTTONS));
 
+		
+		//Path
+		JLabel lblPath = new JLabel("Path:");
+		pathTextField = new JTextField(NO_FILE_SELECTED, DEFAULT_TEXTFIELD_LENGTH);
+		pathTextField.setEditable(false);
+		updatePathTextField();
+		fileDetailsPanel.add(pathTextField, getLayoutPositionString(COLUMN_FORM_FIELD, ROW_FILE_PATH));
+		fileDetailsPanel.add(lblPath, getLayoutPositionString(COLUMN_LABEL, ROW_FILE_PATH));
+		
+		
+		
+		//Movie title
+		
 		JLabel lblTitle = new JLabel("Title:");
 		fileDetailsPanel.add(lblTitle, getLayoutPositionString(COLUMN_LABEL, ROW_TITLE));
 		
-		//using this workaround for JComboBox constructor for problem with generics in WindowBuilder as per this stackoverflow thread: https://stackoverflow.com/questions/8845139/jcombobox-warning-preventing-opening-the-design-page-in-eclipse
-		comboBoxMovieTitleText = new JComboBox<String>();
-		//Prevent the title of a really long moving from making the combo box way too long
-		//Instead it will only show the first part and the user will have to scroll in the editing box to see the rest
-		comboBoxMovieTitleText.setPrototypeDisplayValue("AAAAAAAAAAAAAAAAAAAAAAAAAAA");
-		comboBoxMovieTitleText.setModel( new TitleListModel() );
-		comboBoxMovieTitleText.addActionListener(new ActionListener(){
+		txtFieldMovieTitleText = new JTextField("", DEFAULT_TEXTFIELD_LENGTH);
+		txtFieldMovieTitleText.addActionListener(new ActionListener(){
 	        @Override
 	        public void actionPerformed(ActionEvent e) {
-	            
 	            if(currentMovie != null)
 	            {
-	            	String newValue = (String) comboBoxMovieTitleText.getSelectedItem();
-	            	if(newValue != null)
+	            	String newValue = (String) txtFieldMovieTitleText.getText();
+	            	if(newValue != null && newValue.length() > 0)
 	            	{
 	            		currentMovie.setTitle(new Title(newValue));
+	            		guiMain.enableFileWrite();
+	            	}
+	            	else {
+	            		guiMain.disableFileWrite();
 	            	}
 	            }
 	        }
 	    });
-		comboBoxMovieTitleText.getEditor().getEditorComponent().addKeyListener(new KeyListener() {
+		txtFieldMovieTitleText.addKeyListener(new KeyListener() {
 			
 			@Override
-			public void keyTyped(KeyEvent e) {
-			}
+			public void keyTyped(KeyEvent e) {}
 			
 			@Override
 			public void keyReleased(KeyEvent e) {
-				String newValue = (String) comboBoxMovieTitleText.getSelectedItem();
-            	if(newValue != null)
+				String newValue = (String) txtFieldMovieTitleText.getText();
+            	if(newValue != null && newValue.length() > 0)
             	{
             		currentMovie.setTitle(new Title(newValue));
+            		guiMain.enableFileWrite();
+            	}
+            	else {
+            		guiMain.disableFileWrite();
             	}
 				
 			}
 
 			@Override
-			public void keyPressed(KeyEvent e) {
-			}
+			public void keyPressed(KeyEvent e) {}
 			
 		});
-		//movieTitlePanel.add(comboBoxMovieTitleText);
-		fileDetailsPanel.add(comboBoxMovieTitleText, getLayoutPositionString(COLUMN_FORM_FIELD, ROW_TITLE));
+		fileDetailsPanel.add(txtFieldMovieTitleText, getLayoutPositionString(COLUMN_FORM_FIELD, ROW_TITLE));
 
 
 
@@ -476,8 +487,8 @@ public class FileDetailPanel extends JPanel {
 		JLabel lblActors = new JLabel("Actors:");
 		fileDetailsPanel.add(lblActors, getLayoutPositionString(COLUMN_LABEL, ROW_ACTORS));
 
-		actorList = new JList<Actor>(new ActorItemListModel());
-		List<File> currentlySelectedActorsFolderList = new ArrayList<File>();
+		actorList = new JList<>(new ActorItemListModel());
+		List<File> currentlySelectedActorsFolderList = new ArrayList<>();
 		if(gui != null)
 			currentlySelectedActorsFolderList = gui.getCurrentlySelectedActorsFolderList();
 		actorList.setCellRenderer(new ActressListRenderer(currentlySelectedActorsFolderList));
@@ -545,6 +556,69 @@ public class FileDetailPanel extends JPanel {
 
 		
 	}
+	
+	public void updatePathTextField() {
+		int positionOfCurrentMovie = findPositionOfCurrentlySelectedMovie();
+		if (positionOfCurrentMovie >= 0 && guiMain.getCurrentlySelectedMovieFileList().size() > positionOfCurrentMovie) {
+			File currentlyShowingFile = guiMain.getCurrentlySelectedMovieFileList().get(positionOfCurrentMovie);
+			if(currentlyShowingFile != null && currentlyShowingFile.exists()) {
+				pathTextField.setText(currentlyShowingFile.getAbsolutePath().toString());
+				pathTextField.setCaretPosition(0);
+			}
+		}
+		else {
+			pathTextField.setText("");
+		}
+		
+	}
+
+	/**
+	 * Updates the view by setting the previous selected movie as the movie which is showing
+	 */
+	private void handlePreviousMovieSelected() {
+		int positionOfCurrentMovie = findPositionOfCurrentlySelectedMovie();
+		if(positionOfCurrentMovie == -1)
+			positionOfCurrentMovie = currentListIndexOfDisplayedMovie;
+		int positionOfPreviousMovie = positionOfCurrentMovie - 1;
+		if(positionOfCurrentMovie >= 0 && positionOfPreviousMovie < guiMain.movieToWriteToDiskList.size() && positionOfPreviousMovie >= 0) {
+			Movie previousMovie = guiMain.movieToWriteToDiskList.get(positionOfPreviousMovie);
+			//if (previousMovie != null) {
+				currentListIndexOfDisplayedMovie = positionOfPreviousMovie;
+				setNewMovie(previousMovie, false, false);
+			//}
+		}
+	}
+
+	/**
+	 * Updates the view by setting the next selected movie as the movie which is showing
+	 */
+	private void handleNextMovieSelected() {
+
+		int positionOfCurrentMovie = findPositionOfCurrentlySelectedMovie();
+		if(positionOfCurrentMovie == -1)
+			positionOfCurrentMovie = currentListIndexOfDisplayedMovie;
+		int positionOfNextMovie = positionOfCurrentMovie + 1;
+		if(positionOfCurrentMovie >= 0 && positionOfNextMovie < guiMain.movieToWriteToDiskList.size()) {
+			Movie nextMovie = guiMain.movieToWriteToDiskList.get(positionOfNextMovie);
+			//if (nextMovie != null) {
+				currentListIndexOfDisplayedMovie = positionOfNextMovie;
+				setNewMovie(nextMovie, false, false);
+			//}
+		}
+	}
+	
+	//returns -1 if not found
+	private int findPositionOfCurrentlySelectedMovie() {
+		if(guiMain != null && guiMain.movieToWriteToDiskList != null && currentMovie != null) {
+			for(int i = 0; i < guiMain.movieToWriteToDiskList.size(); i++) {
+				if(guiMain.movieToWriteToDiskList.get(i) != null && 
+				guiMain.movieToWriteToDiskList.get(i).equals(currentMovie))
+					return i;
+			}
+		}
+		return -1;
+	}
+	
 	/**
 	 * Sets a new movie and updates a view
 	 * @param newMovie the movie this fileDetailPanel will show
@@ -562,11 +636,18 @@ public class FileDetailPanel extends JPanel {
 	 * @param modifyWriteToDiskList - whether to modify the gui object's disk list by adding the currently viewed item if the disk list is empty
 	 */
 	public void setNewMovie(Movie newMovie, boolean forcePosterUpdate, boolean modifyWriteToDiskList) {
-		System.out.println("Setting new movie: " + newMovie);
+		//System.out.println("Setting new movie: " + newMovie);
 		if(newMovie != null)
 		{
 			setCurrentMovie(newMovie);
 			updateView(forcePosterUpdate, modifyWriteToDiskList);
+		}
+		else {
+			clearView();
+			updatePathTextField();
+			changeEnabledStatusOfPreviousAndNextButtons();
+			updateNumberInListSelectedLabel();
+			updateView(true,false);
 		}
 	}
 	
@@ -585,6 +666,9 @@ public class FileDetailPanel extends JPanel {
 	public void updateView(boolean forcePosterUpdate, boolean newMovieWasSet) {
 		
 		List<Movie> movieToWriteToDiskList = guiMain.getMovieToWriteToDiskList();
+		//do i need this?
+		//currentListIndexOfDisplayedMovie = Math.max(findPositionOfCurrentlySelectedMovie(),0);
+		
 		if(newMovieWasSet && movieToWriteToDiskList.size() == 0)
 		{
 			movieToWriteToDiskList.add(currentMovie);
@@ -592,51 +676,24 @@ public class FileDetailPanel extends JPanel {
 		//begin
 		if ((movieToWriteToDiskList == null || movieToWriteToDiskList.size() == 0) && !newMovieWasSet) {
 			clearView();
-		} else if (movieToWriteToDiskList != null && movieToWriteToDiskList.get(0) != null) {
+		} else if (movieToWriteToDiskList != null && movieToWriteToDiskList.get(currentListIndexOfDisplayedMovie) != null) {
 			if(!newMovieWasSet)
 				clearView();
 			if(!newMovieWasSet)
-				this.setCurrentMovie(movieToWriteToDiskList.get(0));
+				this.setCurrentMovie(movieToWriteToDiskList.get(currentListIndexOfDisplayedMovie));
 
 			//All the titles from the various versions scraped of this movie from the different sites
-			if(movieToWriteToDiskList != null)
-			{
-				this.getCurrentMovie().getAllTitles().add(getCurrentMovie().getTitle());
-				String fileName = this.getCurrentMovie().getFileName();
-				if(fileName != null && fileName.trim().length() > 0)
-					this.getCurrentMovie().getAllTitles().add(new Title(fileName));
-			}
-			
-			if(guiMain.getCurrentlySelectedMovieR18() != null)
-				this.getCurrentMovie().getAllTitles().add( guiMain.getCurrentlySelectedMovieR18().getTitle() );
-			if(guiMain.getCurrentlySelectedMovieDMM() != null)
-				this.getCurrentMovie().getAllTitles().add( guiMain.getCurrentlySelectedMovieDMM().getTitle() );
-			if(guiMain.getCurrentlySelectedMovieJavLibrary() != null)
-			{
-				//we might have replaced JavLib's title during amalgamation, so let's get the original one
-				//before this happens in the drop down title list
-				if(guiMain.getOriginalJavLibraryMovieTitleBeforeAmalgamate() != null && 
-						guiMain.getOriginalJavLibraryMovieTitleBeforeAmalgamate().length() > 0)
-				{
-					this.getCurrentMovie().getAllTitles().add(new Title(guiMain.getOriginalJavLibraryMovieTitleBeforeAmalgamate()));
-				}
-				else
-				{
-					this.getCurrentMovie().getAllTitles().add( guiMain.getCurrentlySelectedMovieJavLibrary().getTitle() );
-				}
-			}
-			if(guiMain.getCurrentlySelectedMovieSquarePlus() != null)
-				this.getCurrentMovie().getAllTitles().add( guiMain.getCurrentlySelectedMovieSquarePlus().getTitle() );
-			if(guiMain.getCurrentlySelectedMovieActionJav() != null)
-				this.getCurrentMovie().getAllTitles().add( guiMain.getCurrentlySelectedMovieActionJav().getTitle() );
-			if(guiMain.getCurrentlySelectedMovieJavZoo() != null)
-				this.getCurrentMovie().getAllTitles().add( guiMain.getCurrentlySelectedMovieJavZoo().getTitle() );
+			this.getCurrentMovie().getAllTitles().add(getCurrentMovie().getTitle());
+			String fileName = this.getCurrentMovie().getFileName();
+			if(fileName != null && fileName.trim().length() > 0)
+				this.getCurrentMovie().getAllTitles().add(new Title(fileName));
+
 			if(this.getCurrentMovie().getAllTitles().size() > 0)
 				this.setTitleEditable(true);
 		//end
 		}
-		comboBoxMovieTitleText.setModel( new TitleListModel() );
-		comboBoxMovieTitleText.setEditable(true);
+		txtFieldMovieTitleText.setText(currentMovie.getTitle().getTitle());
+		txtFieldMovieTitleText.setCaretPosition(0);
 		txtFieldOriginalTitleText.setText( currentMovie.getOriginalTitle().getOriginalTitle() );
 		txtFieldOriginalTitleText.setCaretPosition(0);
 		txtFieldScrapedYearText.setText( currentMovie.getYear().getYear() );
@@ -653,24 +710,51 @@ public class FileDetailPanel extends JPanel {
 		tagList.setText(toTagListFormat(currentMovie.getTags()));
 		tagList.setCaretPosition(0);
 		
-		//select first Title 
-		//TODO: for some reason this has the side effect of clearing out the data item source of the title in the movieToWriteToDiskList so I may need to revisit this later
-		if ( comboBoxMovieTitleText.getItemCount() > 0 )
-		{
-			comboBoxMovieTitleText.setSelectedIndex(0);
-		}
 		
 		//Actors and Genres are automatically generated
-		actorList.updateUI();
-		
-		comboBoxMovieTitleText.updateUI();
-        ComboBoxEditor editor = comboBoxMovieTitleText.getEditor();
-        JTextField textField = (JTextField)editor.getEditorComponent();
-        textField.setCaretPosition(0);
-		
+		actorList.updateUI();		
 		artWorkPanel.updateView(forcePosterUpdate, guiMain);
+		
+		if(txtFieldMovieTitleText.getText().length() > 0) {
+			guiMain.enableFileWrite();
+		}
+		else {
+			guiMain.disableFileWrite();
+		}
+		updatePathTextField();
+		changeEnabledStatusOfPreviousAndNextButtons();
+		updateNumberInListSelectedLabel();
 	}
 
+
+	private void changeEnabledStatusOfPreviousAndNextButtons() {
+		List<Movie> movieList = guiMain.getMovieToWriteToDiskList();
+                
+                System.out.println("Movie Size: " + movieList.size());
+		//no movies to scroll through
+		if(movieList.size() == 0) {
+			nextMovieButton.setEnabled(false);
+			previousMovieButton.setEnabled(false);
+			return;
+		}
+		if((currentListIndexOfDisplayedMovie - 1) < 0) {
+			previousMovieButton.setEnabled(false);
+		}
+		else previousMovieButton.setEnabled(true);
+		
+		if((currentListIndexOfDisplayedMovie + 1) >= movieList.size()) {
+			nextMovieButton.setEnabled(false);
+		}
+		else nextMovieButton.setEnabled(true);
+		
+	}
+	
+	//Updates the label which shows what movie number we are on: e.g. 1/5
+	private void updateNumberInListSelectedLabel() {
+		int movieNumberIAmOn = currentListIndexOfDisplayedMovie + 1;
+		int numberOfMovies = guiMain.getMovieToWriteToDiskList().size();
+		numberInListSelectedLabel.setText(movieNumberIAmOn + " / " + numberOfMovies);
+	}
 
 	public Movie getCurrentMovie() {
 		return currentMovie;
@@ -681,7 +765,7 @@ public class FileDetailPanel extends JPanel {
 	}
 	
 	public void setTitleEditable(boolean value) {
-		comboBoxMovieTitleText.setEditable(value);
+		txtFieldMovieTitleText.setEditable(value);
 	}
 	
 	public ArtWorkPanel getArtWorkPanel() {
@@ -740,21 +824,6 @@ public class FileDetailPanel extends JPanel {
 		
 	}
 	
-	class TitleListModel extends DefaultComboBoxModel<String> {
-
-		private static final long serialVersionUID = -8954125792857066062L;
-
-		@Override
-		public int getSize() {
-			return currentMovie.getAllTitles().size();
-		}
-
-		@Override
-		public String getElementAt(int index) {
-			return currentMovie.getAllTitles().get(index).getTitle();
-		}
-		
-	}
 
 	public JList<Actor> getActorList() {
 		return actorList;
@@ -763,14 +832,6 @@ public class FileDetailPanel extends JPanel {
 	public void setActorList(JList<Actor> actorList) {
 		this.actorList = actorList;
 	}
-
-	/*public JList<Genre> getGenreList() {
-		return genreList;
-	}
-
-	public void setGenreList(JList<Genre> genreList) {
-		this.genreList = genreList;
-	}*/
 	
 	public JTextField getGenreList()
 	{

@@ -42,6 +42,7 @@ import moviescraper.doctord.model.dataitem.Title;
 import moviescraper.doctord.model.dataitem.Top250;
 import moviescraper.doctord.model.dataitem.Votes;
 import moviescraper.doctord.model.dataitem.Year;
+import moviescraper.doctord.model.preferences.MoviescraperPreferences;
 
 public class JavLibraryParsingProfile extends SiteParsingProfile implements SpecificProfile {
 	private Logger log = Logger.getLogger(JavLibraryParsingProfile.class.getName());
@@ -75,11 +76,15 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 
 	public JavLibraryParsingProfile(Document document) {
 		super(document);
-		siteLanguageToScrape = "en";
+		siteLanguageToScrape = determineLanguageToUse();
 	}
 
 	public JavLibraryParsingProfile() {
-		siteLanguageToScrape = "en";
+		siteLanguageToScrape = determineLanguageToUse();
+	}
+	
+	private String determineLanguageToUse() {
+		return MoviescraperPreferences.getInstance().getScrapeInJapanese() ? "ja" : "en";
 	}
 	
 	public JavLibraryParsingProfile(Document document, String siteLanguageToScrape)
@@ -282,7 +287,7 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 	public ArrayList<Genre> scrapeGenres() {
 		Elements genreElements = document
 				.select(".genre");
-		ArrayList<Genre> genreList = new ArrayList<Genre>(genreElements.size());
+		ArrayList<Genre> genreList = new ArrayList<>(genreElements.size());
 		for (Element genreElement : genreElements)
 		{
 			String currentGenreText = genreElement.text().trim();
@@ -302,6 +307,8 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 			return false;
 		case "With Gifts":
 			return false;
+		default:
+			break;
 		}
 			
 		return true;
@@ -311,7 +318,7 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 	public ArrayList<Actor> scrapeActors() {
 		Elements castElements = document
 				.select("span.cast");
-		ArrayList<Actor> actorList = new ArrayList<Actor>(castElements.size());
+		ArrayList<Actor> actorList = new ArrayList<>(castElements.size());
 		for (Element castElement : castElements) {
 			String actressName = castElement.select("span.star a").text().trim();
 			Elements aliasElements = castElement.select("span.alias");
@@ -357,7 +364,7 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 	public ArrayList<Director> scrapeDirectors() {
 		Elements directorElements = document
 				.select(".director a");
-		ArrayList<Director> directorList = new ArrayList<Director>(directorElements.size());
+		ArrayList<Director> directorList = new ArrayList<>(directorElements.size());
 		for (Element currentDirectorElement : directorElements)
 		{
 			String currentDirectorName = currentDirectorElement.text().trim();
@@ -403,7 +410,7 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 	@Override
 	public SearchResult[] getSearchResults(String searchString) throws IOException {
 		
-		ArrayList<SearchResult> linksList = new ArrayList<SearchResult>();
+		ArrayList<SearchResult> linksList = new ArrayList<>();
 		String websiteURLBegin = "http://www.javlibrary.com/" + siteLanguageToScrape;
 		try{
 		Document doc = Jsoup.connect(searchString).userAgent("Mozilla").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();

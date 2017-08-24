@@ -1,13 +1,25 @@
 package moviescraper.doctord.controller.siteparsingprofile;
 
-import moviescraper.doctord.controller.AbstractMovieScraper;
-import moviescraper.doctord.controller.GenericMovieScraper;
-import moviescraper.doctord.controller.languagetranslation.Language;
-import moviescraper.doctord.model.SearchResult;
-import moviescraper.doctord.model.dataitem.*;
-import moviescraper.doctord.model.dataitem.Set;
-import moviescraper.doctord.model.preferences.MoviescraperPreferences;
-import moviescraper.doctord.view.GUIMain;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+
 import org.apache.commons.io.FilenameUtils;
 import org.imgscalr.Scalr;
 import org.imgscalr.Scalr.Method;
@@ -16,23 +28,40 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.net.*;
-import java.util.*;
-import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import moviescraper.doctord.controller.AbstractMovieScraper;
+import moviescraper.doctord.controller.GenericMovieScraper;
+import moviescraper.doctord.controller.languagetranslation.Language;
+import moviescraper.doctord.model.SearchResult;
+import moviescraper.doctord.model.dataitem.Actor;
+import moviescraper.doctord.model.dataitem.DataItemSource;
+import moviescraper.doctord.model.dataitem.Director;
+import moviescraper.doctord.model.dataitem.Genre;
+import moviescraper.doctord.model.dataitem.ID;
+import moviescraper.doctord.model.dataitem.MPAARating;
+import moviescraper.doctord.model.dataitem.OriginalTitle;
+import moviescraper.doctord.model.dataitem.Outline;
+import moviescraper.doctord.model.dataitem.Plot;
+import moviescraper.doctord.model.dataitem.Rating;
+import moviescraper.doctord.model.dataitem.ReleaseDate;
+import moviescraper.doctord.model.dataitem.Set;
+import moviescraper.doctord.model.dataitem.SortTitle;
+import moviescraper.doctord.model.dataitem.Studio;
+import moviescraper.doctord.model.dataitem.Tag;
+import moviescraper.doctord.model.dataitem.Tagline;
+import moviescraper.doctord.model.dataitem.Thumb;
+import moviescraper.doctord.model.dataitem.Title;
+import moviescraper.doctord.model.dataitem.Top250;
+import moviescraper.doctord.model.dataitem.Trailer;
+import moviescraper.doctord.model.dataitem.Votes;
+import moviescraper.doctord.model.dataitem.Year;
+import moviescraper.doctord.model.preferences.MoviescraperPreferences;
+import moviescraper.doctord.view.GUIMain;
 
 public abstract class SiteParsingProfile implements DataItemSource{
-	private static Logger log = Logger.getLogger(SiteParsingProfile.class.getName());
-
+	
 	/* Any group of SiteParsingProfiles which return the same type of information for a given file and which
-         * will be compatible for amalgamation should return the same ScraperGroupName by implementing getScraperGroupName()
-         */
+	 * will be compatible for amalgamation should return the same ScraperGroupName by implementing getScraperGroupName()
+	 */
 	public enum ScraperGroupName{
 		JAV_CENSORED_SCRAPER_GROUP {@Override
 		public String toString() {return "JAV Censored Group";}}, 
@@ -55,7 +84,8 @@ public abstract class SiteParsingProfile implements DataItemSource{
 
 	public Document document; // the base page to start parsing from
 	
-	public String overrideURLDMM;
+	@Deprecated
+	public String overrideURLDMM; //TODO: no longer used variable - will be removed later
 	
 	private boolean extraFanartScrapingEnabled = false;
 	
@@ -147,12 +177,8 @@ public abstract class SiteParsingProfile implements DataItemSource{
 	{
 		return overridenSearchResult;
 	}
-
-
-	public static String findIDTagFromFile(File file) {
-		return findIDTagFromFile(file, false);
-	}
-
+	
+	
 	/**
 	 * Gets the ID number from the file and considers stripped out multipart file identifiers like CD1, CD2, etc
 	 * The ID number needs to be the last word in the filename or the next to the last word in the file name if the file name
@@ -255,14 +281,13 @@ public abstract class SiteParsingProfile implements DataItemSource{
 	
 	public SearchResult [] getLinksFromGoogle(String searchQuery, String site)
 	{
-		//log.info("calling get links from google with searchQuery = " + searchQuery);
-		Document doc;
-		ArrayList<SearchResult> linksToReturn = new ArrayList<SearchResult>();
+		//System.out.println("calling get links from google with searchQuery = " + searchQuery);
+		ArrayList<SearchResult> linksToReturn = new ArrayList<>();
 	    try{
 	    	String encodingScheme = "UTF-8";
 	    	String queryToEncode = "site:" + site + " " + searchQuery;
 	    	String encodedSearchQuery = URLEncoder.encode(queryToEncode, encodingScheme);
-	        doc = Jsoup.connect("https://www.google.com/search?q="+encodedSearchQuery).userAgent(getRandomUserAgent()).referrer("http://www.google.com").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
+	        Document doc = Jsoup.connect("https://www.google.com/search?q="+encodedSearchQuery).userAgent(getRandomUserAgent()).referrer("http://www.google.com").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
 	        Elements sorryLink = doc.select("form[action=CaptchaRedirect] input");
 	        Map<String, String> captchaData = new HashMap<>();
 	        for (Element element : sorryLink) {
@@ -272,11 +297,12 @@ public abstract class SiteParsingProfile implements DataItemSource{
 			}
 	        if ( captchaData.size() > 0 )
 	        {
-	        	log.info("Found Captchadata : " + captchaData);
-	        	return new SearchResult[0];
+	        	System.out.println("Found Captchadata : " + captchaData);
+	        	System.out.println("Google has temporarily blocked us. Trying on bing instead.");
+	        	return getLinksFromBing(searchQuery, site);
 	        }
 	        
-	        Elements links = doc.select("li[class=g]");
+	        Elements links = doc.select("div.g");
 	        for (Element link : links) {	            
 	            Elements hrefs = link.select("h3.r a");
 	            String href = hrefs.attr("href");
@@ -289,12 +315,40 @@ public abstract class SiteParsingProfile implements DataItemSource{
 	            	href = href.substring(0, startIndexToRemove);
 	            linksToReturn.add(new SearchResult(href,hrefs.text()));
 	        }
+	        if (linksToReturn.size() == 0)
+	        {
+	        	//maybe we will have better luck with bing since we found nothing on google
+	        	return getLinksFromBing(encodedSearchQuery, site);
+	        }
 	        return linksToReturn.toArray(new SearchResult[linksToReturn.size()]);
 	    }
 	    catch (IOException e) {
 	        e.printStackTrace();
 	        return linksToReturn.toArray(new SearchResult[linksToReturn.size()]);
 	    }
+	}
+	
+	/**
+	 * A backup search provider in case google search fails. This method is marked private and is called from getLinksFromGoogle. It should not be called in any other class.
+	 */
+	private SearchResult [] getLinksFromBing(String searchQuery, String site)
+	{
+		ArrayList<SearchResult> linksToReturn = new ArrayList<>();
+		String encodingScheme = "UTF-8";
+    	String queryToEncode = "site:" + site + " " + searchQuery;
+    	String encodedSearchQuery;
+		try {
+			encodedSearchQuery = URLEncoder.encode(queryToEncode, encodingScheme);
+			Document bingResultDocument = Jsoup.connect("https://www.bing.com/search?q="+encodedSearchQuery).userAgent(getRandomUserAgent()).referrer("http://www.bing.com").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
+			Elements links = bingResultDocument.select("a[href*=" + site);
+			for(Element link : links) {
+				linksToReturn.add(new SearchResult(link.attr("href")));
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			return linksToReturn.toArray(new SearchResult[linksToReturn.size()]);
+		}
+        return linksToReturn.toArray(new SearchResult[linksToReturn.size()]);
 	}
 
 	protected static boolean fileExistsAtURL(String URLName){
@@ -311,7 +365,7 @@ public abstract class SiteParsingProfile implements DataItemSource{
 	    }
 	    catch(SocketTimeoutException e) {
 	    	// Non-existing DMM trailers usually time out
-	    	log.severe("Connection timed out: " + URLName);
+	    	System.err.println("Connection timed out: " + URLName);
 	    	return false;
 	    }
 	    catch (Exception e) {
@@ -449,29 +503,24 @@ public abstract class SiteParsingProfile implements DataItemSource{
 		isDisabled = value;
 	}
 
-	public Document downloadDocumentFromURLString(String url) {
+
+
+	public static Document downloadDocumentFromURLString(String url) {
 		try {
-			String agent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.106 Safari/537.36";
-			log.info("Open URL: " + url);
-			return Jsoup.connect(url)
-					.userAgent(agent)
-					.ignoreHttpErrors(true)
-					.timeout(CONNECTION_TIMEOUT_VALUE)
-					.get();
+			return Jsoup.connect(url).userAgent("Mozilla").ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).get();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 		return null;
 	}
 
-	public Document downloadDocument(SearchResult searchResult){
+
+
+	public static Document downloadDocument(SearchResult searchResult){
 		try {
 			if(searchResult.isJSONSearchResult())
 				return SiteParsingProfileJSON.getDocument(searchResult.getUrlPath());
-			else {
-				return downloadDocumentFromURLString(searchResult.getUrlPath());
-			}
+			else return Jsoup.connect(searchResult.getUrlPath()).userAgent("Mozilla").ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).get();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -511,6 +560,8 @@ public abstract class SiteParsingProfile implements DataItemSource{
 		}
 	}
 
+
+
 	public boolean getDiscardResults() {
 		return discardResults;
 	}
@@ -519,5 +570,11 @@ public abstract class SiteParsingProfile implements DataItemSource{
 	{
 		discardResults = value;
 	}
+
+
+
+
+	
+
 	
 }

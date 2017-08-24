@@ -9,11 +9,12 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 import moviescraper.doctord.model.Movie;
 import moviescraper.doctord.model.dataitem.*;
 import moviescraper.doctord.model.dataitem.Runtime;
+import moviescraper.doctord.model.preferences.MoviescraperPreferences;
 
 /**
  * Class which handles serializing a Movie object to and from XML
  */
-public class XbmcXmlMovieBean {
+public class KodiXmlMovieBean {
 
 	private String title;
 	private String originaltitle;
@@ -31,32 +32,38 @@ public class XbmcXmlMovieBean {
 	private String releasedate;
 	private String studio;
 	private String[] thumb;
-	private XbmcXmlFanartBean fanart;
+	private KodiXmlFanartBean fanart;
 	private String mpaa;
 	private String id;
 	private String[] genre;
 	private String[] tag;
 	// private String[] credits; add in later
-	private ArrayList<XbmcXmlActorBean> actor;
+	private ArrayList<KodiXmlActorBean> actor;
 	private String[] director;
 
 
-	public static XbmcXmlMovieBean makeFromXML(String xml) {
-		XStream xstream = XbmcXmlMovieBean.getXMLSerializer();
+	public static KodiXmlMovieBean makeFromXML(String xml) {
+		XStream xstream = KodiXmlMovieBean.getXMLSerializer();
 		xstream.ignoreUnknownElements();
 		try{
-			XbmcXmlMovieBean beanToReturn = (XbmcXmlMovieBean) xstream.fromXML(xml);
+			KodiXmlMovieBean beanToReturn = (KodiXmlMovieBean) xstream.fromXML(xml);
 			return beanToReturn;
 		}
 		catch(Exception e)
 		{
-			System.err.println("File read from nfo is not in XBMC XML format. This movie will not be read in.");
+			System.err.println("File read from nfo is not in Kodi XML format. This movie will not be read in.");
 			return null;
 		}
 
 	}
 
-	public XbmcXmlMovieBean(Movie movie) {
+	/**
+	 * Constructor - handles conversion of a Movie object to a KodiXmlMovieBean object.
+	 * Program preferences are taken into account when performing the object conversion so that, for example,
+	 * certain fields will not be written to the XML
+	 * @param movie - Movie to create the KodiXmlMovieBean from
+	 */
+	public KodiXmlMovieBean(Movie movie) {
 		title = movie.getTitle().getTitle();
 		originaltitle = movie.getOriginalTitle().getOriginalTitle();
 		sorttitle = movie.getSortTitle().getSortTitle();
@@ -72,13 +79,34 @@ public class XbmcXmlMovieBean {
 		runtime = movie.getRuntime().getRuntime();
 		releasedate = movie.getReleaseDate().getReleaseDate();
 		studio = movie.getStudio().getStudio();
-		// thumb
-		thumb = new String[movie.getPosters().length];
-		for (int i = 0; i < movie.getPosters().length; i++) {
-			thumb[i] = movie.getPosters()[i].getThumbURL().toString();
+		
+		// thumb - aka Posters
+		// Preference value allows the user to not write out poster values to the file
+		if(MoviescraperPreferences.getInstance().getWriteThumbTagsForPosterAndFanartToNfo()) {
+			thumb = new String[movie.getPosters().length];
+			for (int i = 0; i < movie.getPosters().length; i++) {
+				if (movie.getPosters()[i].getThumbURL() != null)
+				{
+					thumb[i] = movie.getPosters()[i].getThumbURL().toString();
+				}
+				else
+				{
+					thumb[i] = "";
+				}
+			}
+		}
+		else {
+			thumb = new String[0];
 		}
 		
-		fanart = new XbmcXmlFanartBean(movie.getFanart());
+		//fanart
+		// Preference value allows the user to not write out fanart values to the file
+		if(MoviescraperPreferences.getInstance().getWriteThumbTagsForPosterAndFanartToNfo()) {
+			fanart = new KodiXmlFanartBean(movie.getFanart());
+		}
+		else {
+			fanart = new KodiXmlFanartBean(new Thumb[0]);
+		}
 		
 		mpaa = movie.getMpaa().getMPAARating();
 		id = movie.getId().getId();
@@ -100,17 +128,17 @@ public class XbmcXmlMovieBean {
 
 		
 		// actor
-		actor = new ArrayList<XbmcXmlActorBean>(movie.getActors().size());
+		actor = new ArrayList<>(movie.getActors().size());
 		for (Actor currentActor : movie.getActors()) {
 			if(currentActor.getThumb() != null && currentActor.getThumb().getThumbURL() != null)
 			{
-				actor.add(new XbmcXmlActorBean(currentActor.getName(), currentActor
+				actor.add(new KodiXmlActorBean(currentActor.getName(), currentActor
 						.getRole(), currentActor.getThumb().getThumbURL()
 						.toString()));
 			}
 			else
 			{
-				actor.add(new XbmcXmlActorBean(currentActor.getName(), currentActor
+				actor.add(new KodiXmlActorBean(currentActor.getName(), currentActor
 						.getRole(), ""));
 			}
 		}
@@ -118,11 +146,11 @@ public class XbmcXmlMovieBean {
 
 	public Movie toMovie() throws IOException {
 		
-		ArrayList<Actor> actors = new ArrayList<Actor>();
+		ArrayList<Actor> actors = new ArrayList<>();
 		if(actor != null)
 		{
-			actors = new ArrayList<Actor>(actor.size());
-			for (XbmcXmlActorBean currentActor : actor) {
+			actors = new ArrayList<>(actor.size());
+			for (KodiXmlActorBean currentActor : actor) {
 				actors.add(currentActor.toActor());
 			}
 		}
@@ -149,7 +177,7 @@ public class XbmcXmlMovieBean {
 			fanartThumbs = new Thumb[0];
 		}
 		
-		ArrayList<Genre> genres = new ArrayList<Genre>();
+		ArrayList<Genre> genres = new ArrayList<>();
 		if(genre != null)
 		{
 			for (int i = 0; i < genre.length; i++)
@@ -158,7 +186,7 @@ public class XbmcXmlMovieBean {
 			}
 		}
 		
-		ArrayList<Tag> tags = new ArrayList<Tag>();
+		ArrayList<Tag> tags = new ArrayList<>();
 		if(tag != null)
 		{
 			for (int i = 0; i < tag.length; i++)
@@ -167,10 +195,10 @@ public class XbmcXmlMovieBean {
 			}
 		}
 		
-		ArrayList<Director> directors = new ArrayList<Director>();
+		ArrayList<Director> directors = new ArrayList<>();
 		if(director !=null)
 		{
-			directors = new ArrayList<Director>(director.length);
+			directors = new ArrayList<>(director.length);
 			for(int i = 0; i <director.length; i++)
 			{
 				directors.add(new Director(director[i],null));
@@ -194,17 +222,17 @@ public class XbmcXmlMovieBean {
 	private static XStream getXMLSerializer() {
 		XStream xstream = new XStream(new DomDriver("UTF-8"));
 		xstream.omitField(Thumb.class, "thumbImage");
-		xstream.alias("movie", XbmcXmlMovieBean.class);
+		xstream.alias("movie", KodiXmlMovieBean.class);
 		xstream.alias("thumb", Thumb.class);
 		xstream.alias("actor", Actor.class);
-		xstream.alias("actor", XbmcXmlActorBean.class);
-		xstream.alias("fanart", XbmcXmlFanartBean.class);
-		xstream.addImplicitCollection(XbmcXmlMovieBean.class, "actor");
-		xstream.addImplicitArray(XbmcXmlMovieBean.class, "thumb", "thumb");
-		xstream.addImplicitArray(XbmcXmlMovieBean.class, "director", "director");
-		xstream.addImplicitArray(XbmcXmlFanartBean.class, "thumb","thumb");
-		xstream.addImplicitArray(XbmcXmlMovieBean.class, "genre","genre");
-		xstream.addImplicitArray(XbmcXmlMovieBean.class, "tag","tag");
+		xstream.alias("actor", KodiXmlActorBean.class);
+		xstream.alias("fanart", KodiXmlFanartBean.class);
+		xstream.addImplicitCollection(KodiXmlMovieBean.class, "actor");
+		xstream.addImplicitArray(KodiXmlMovieBean.class, "thumb", "thumb");
+		xstream.addImplicitArray(KodiXmlMovieBean.class, "director", "director");
+		xstream.addImplicitArray(KodiXmlFanartBean.class, "thumb","thumb");
+		xstream.addImplicitArray(KodiXmlMovieBean.class, "genre","genre");
+		xstream.addImplicitArray(KodiXmlMovieBean.class, "tag","tag");
 		return xstream;
 	}
 	

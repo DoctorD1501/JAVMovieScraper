@@ -100,7 +100,7 @@ public class Renamer {
 	}
 	
 	private String getRenamedFolderPath(String path) {
-		System.out.println("Old Path: " + path);
+		//System.out.println("Old Path: " + path);
 		String newPath = replace(folderNameRenameString);
 		//Make sure we don't have any double path separators caused by things like an empty field.
 		//However, if this is a network share, it's OK for the path to start with \\, so we will add it back in later
@@ -109,14 +109,14 @@ public class Renamer {
 		if(newPath.startsWith(doublePathSeperator))
 		{
 			cutPath = doublePathSeperator;
-			newPath = path.substring(2,path.length());
+			newPath = newPath.substring(2,newPath.length());
 		}
 		while(newPath.contains(doublePathSeperator))
 		{
 			newPath = newPath.replace(doublePathSeperator, File.separator);
 		}
 		newPath = cutPath + newPath;
-		System.out.println("New path: " + newPath);
+		//System.out.println("New path: " + newPath);
 		return newPath;
 	}
 
@@ -196,7 +196,7 @@ public class Renamer {
 		File posterFile = new File(Movie.getFileNameOfPoster(fileToRename, preferences.getNoMovieNameInImageFiles()));
 		File fanartFile = new File(Movie.getFileNameOfFanart(fileToRename, preferences.getNoMovieNameInImageFiles()));
 		File trailerFile = new File(Movie.getFileNameOfTrailer(fileToRename));
-		if(nfoFile != null && nfoFile.exists() && fileToRename.exists())
+		if(nfoFile.exists() && fileToRename.exists())
 		{
 			Movie movieReadFromNfo = Movie.createMovieFromNfo(nfoFile);
 			if(movieReadFromNfo != null && movieReadFromNfo.getTitle() != null)
@@ -305,7 +305,34 @@ public class Renamer {
 		hasAppendix = filename.matches(".*CD\\s?5.*");
 		if (hasAppendix)
 			appendix = " CD5";
-		return appendix;
+		hasAppendix = filename.matches(".*CD\\s?6.*");
+		if (hasAppendix)
+			appendix = " CD6";
+		hasAppendix = filename.matches(".*CD\\s?7.*");
+		if (hasAppendix)
+			appendix = " CD7";
+		hasAppendix = filename.matches(".*CD\\s?8.*");
+		if (hasAppendix)
+			appendix = " CD8";
+		hasAppendix = filename.matches(".*CD\\s?9.*");
+		if (hasAppendix)
+			appendix = " CD9";
+		hasAppendix = filename.matches(".*CD\\s?10.*");
+		if (hasAppendix)
+			appendix = " CD10";
+		hasAppendix = filename.matches(".*CD\\s?11.*");
+		if (hasAppendix)
+			appendix = " CD11";
+		hasAppendix = filename.matches(".*CD\\s?12.*");
+		if (hasAppendix)
+			appendix = " CD12";
+		hasAppendix = filename.matches(".*CD\\s?13.*");
+		if (hasAppendix)
+			appendix = " CD13";
+		hasAppendix = filename.matches(".*CD\\s?14.*");
+		if (hasAppendix)
+			appendix = " CD14";
+                return appendix;
 	}
 	
 	private String getPosterFanartTrailerEnder(){

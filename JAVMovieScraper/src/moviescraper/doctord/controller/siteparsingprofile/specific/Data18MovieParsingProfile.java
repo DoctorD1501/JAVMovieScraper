@@ -7,6 +7,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,6 +21,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import moviescraper.doctord.controller.siteparsingprofile.SecurityPassthrough;
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.model.Movie;
 import moviescraper.doctord.model.SearchResult;
@@ -44,7 +46,7 @@ import moviescraper.doctord.model.dataitem.Top250;
 import moviescraper.doctord.model.dataitem.Votes;
 import moviescraper.doctord.model.dataitem.Year;
 
-public class Data18MovieParsingProfile extends SiteParsingProfile implements SpecificProfile {
+public class Data18MovieParsingProfile extends SiteParsingProfile implements SpecificProfile, SecurityPassthrough {
 	
 	boolean useSiteSearch = true;
 	String yearFromFilename = "";
@@ -125,7 +127,7 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 				else return Year.BLANK_YEAR;
 			}
 		}
-		else if(releaseDateElement != null)
+		else
 		{
 			String releaseDateText = releaseDateElement.text().trim();
 			//just get the last 4 letters which is the year
@@ -256,8 +258,8 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 		}
 		//find split scene links from a full movie
 		Elements sceneContentLinks = document.select("div[onmouseout]:matches(Scene \\d\\d?)");
-		ArrayList<String> contentLinks = new ArrayList<String>();
-		ArrayList<Thumb> extraFanart = new ArrayList<Thumb>();
+		ArrayList<String> contentLinks = new ArrayList<>();
+		ArrayList<Thumb> extraFanart = new ArrayList<>();
 		if(sceneContentLinks != null)
 		{
 			//get just the id from url of the content
@@ -275,16 +277,56 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 				}
 			}
 		}
-		
+
+                // Checking for changed and/or different contentIDs from the main/root item and building a new array
+                ArrayList<String> galleryLinks = new ArrayList<>();
+		for(String myID : contentLinks)
+		{
+                    String currentGalleryURL = "http://www.data18.com/content/" + myID;
+                    try {
+
+                            Document galleryDocument = Jsoup.connect(currentGalleryURL).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:5.0) Gecko/20100101 Firefox/5.0").get();
+                            if(galleryDocument!= null)
+                            {                    
+                                Elements galleryElement = galleryDocument.select("div a[href*=/viewer/]");
+                                Element linkElement = galleryElement.select("a[href*=/viewer/").first();
+                                if(linkElement != null)
+                                    {
+                                    String linkElementURL = linkElement.attr("href");
+                                    if(linkElementURL.contains("/"))
+                                    {
+                                         String [] parts = linkElementURL.split("/");
+                                         galleryLinks.add(parts[4]);
+                                    }
+                                }
+                            }
+                    } catch (IOException e) {
+                            e.printStackTrace();
+                            //continue; 
+                    }
+                }                
+                
+                // Results would be duplicated due to "Scene 1: xxxxxxxx" as well as "scene 1" later.  
+                // Just removing those to get a clean list of galleries
+                ArrayList<String> resultList = new ArrayList<>();
+                HashSet<String> set = new HashSet<>();
+                for (String link : galleryLinks){
+                    if (!set.contains(link)){
+                        resultList.add(link);
+                        set.add(link);
+                    }
+                }
+                
+
 		//for each id, go to the viewer page for that ID
-		for(String contentID : contentLinks)
+		//for(String contentID : contentLinks)
+		for(String contentID : resultList)
 		{
 			//int viewerPageNumber = 1;
 			for(int viewerPageNumber = 1; viewerPageNumber <= 15; viewerPageNumber++)
 			{
 				String currentViewerPageURL = "http://www.data18.com/viewer/" + contentID + "/" + String.format("%02d", viewerPageNumber);
 				try {
-					
 					Document viewerDocument = Jsoup.connect(currentViewerPageURL).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:5.0) Gecko/20100101 Firefox/5.0").get();
 					if(viewerDocument!= null)
 					{
@@ -296,6 +338,8 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 							String previewURL = mainImageUrl.substring(0,mainImageUrl.length()-6) + "th8/" + mainImageUrl.substring(mainImageUrl.length()-6,mainImageUrl.length());
 							if(fileExistsAtURL(previewURL))
 								thumbToAdd.setPreviewURL(new URL(fixIPAddressOfData18(previewURL)));
+                                                        //System.out.println("Scraped Viewer: " + currentViewerPageURL);
+                                                        thumbToAdd.setViewerURL(new URL(currentViewerPageURL));
 							extraFanart.add(thumbToAdd);
 						}
 					}
@@ -307,7 +351,9 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 			
 			}
 		}
-		scrapedExtraFanart = extraFanart.toArray(new Thumb[extraFanart.size()]);
+     		scrapedExtraFanart = extraFanart.toArray(new Thumb[extraFanart.size()]);
+                System.out.println("Number of Thumbs: " + scrapedExtraFanart.length); 
+                    
 		return scrapedExtraFanart;
 	}
 
@@ -323,9 +369,9 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 
 	@Override
 	public ArrayList<Genre> scrapeGenres() {
-		ArrayList<Genre> genreList = new ArrayList<Genre>();
+		ArrayList<Genre> genreList = new ArrayList<>();
 		Elements genreElements = document.select("div.gen12:has(b:containsOwn(Categories:)) p a[href*=/movies/], div.p8:has(div:containsOwn(Categories:)) a[href*=/movies/]");
-		System.out.println("genreElements = " + genreElements);
+		//System.out.println("genreElements = " + genreElements);
 		if (genreElements != null)
 		{
 			for(Element currentGenreElement : genreElements)
@@ -342,7 +388,7 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 	@Override
 	public ArrayList<Actor> scrapeActors() {
 		Elements actorElements = document.select("p.line1 a img");
-		ArrayList<Actor> actorList = new ArrayList<Actor>();
+		ArrayList<Actor> actorList = new ArrayList<>();
 		if(actorElements != null)
 		{
 			for(Element currentActorElement : actorElements)
@@ -383,7 +429,7 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 
 	@Override
 	public ArrayList<Director> scrapeDirectors() {
-		ArrayList<Director> directorList = new ArrayList<Director>();
+		ArrayList<Director> directorList = new ArrayList<>();
 		Element directorElement = document.select("a[href*=director=]").first();
 		if(directorElement != null)
 		{
@@ -444,11 +490,11 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 	@Override
 	public SearchResult[] getSearchResults(String searchString)
 			throws IOException {
-		System.out.println("Trying to scrape with URL = " + searchString);
+		//System.out.println("Trying to scrape with URL = " + searchString);
 		if(useSiteSearch)
 		{
-			ArrayList<SearchResult> linksList = new ArrayList<SearchResult>();
-			Document doc = Jsoup.connect(searchString).userAgent("Mozilla").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
+			ArrayList<SearchResult> linksList = new ArrayList<>();
+			Document doc = Jsoup.connect(searchString).userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:5.0) Gecko/20100101 Firefox/5.0").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
 			Elements movieSearchResultElements = doc.select("div[style=float: left; padding: 6px; width: 130px;]");
 			if(movieSearchResultElements == null || movieSearchResultElements.size() == 0)
 			{
@@ -467,7 +513,7 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 					Thumb currentMovieThumb = new Thumb(currentMovie.select("img").attr("src"));
 					linksList.add(new SearchResult(currentMovieURL, currentMovieTitle, currentMovieThumb));
 					if(releaseDateMap == null)
-						releaseDateMap = new HashMap<String, String>();
+						releaseDateMap = new HashMap<>();
 					//I'm putting into a static variable that never gets freed, so this could be a potential memory leak
 					//TODO: find a better way to do this without a global variable
 					releaseDateMap.put(currentMovieURL, releaseDateText);
@@ -507,6 +553,17 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 				return new ReleaseDate(releaseDate);
 		}
 		return ReleaseDate.BLANK_RELEASEDATE;
+	}
+	
+	@Override
+	public boolean requiresSecurityPassthrough(Document document) {
+		return Data18SharedMethods.requiresSecurityPassthrough(document);
+	}
+
+
+	@Override
+	public Document runSecurityPassthrough(Document document, SearchResult originalSearchResult) {
+		return Data18SharedMethods.runSecurityPassthrough(document, originalSearchResult);
 	}
 
 }

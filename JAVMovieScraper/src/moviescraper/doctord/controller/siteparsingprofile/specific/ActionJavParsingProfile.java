@@ -167,9 +167,9 @@ public class ActionJavParsingProfile extends SiteParsingProfile implements Speci
 		// HashTable to take care of the duplicate format problems
 		Elements movieDownloadParts = document
 				.select("html body table tbody tr td table tbody tr td div table tbody tr td table tbody tr td table tbody tr td table tbody tr td p:has(font:containsOwn(min, ))");
-		ArrayList<String> movieFileName = new ArrayList<String>(
+		ArrayList<String> movieFileName = new ArrayList<>(
 				movieDownloadParts.size());
-		Hashtable<String, Integer> runtimesByPart = new Hashtable<String, Integer>(
+		Hashtable<String, Integer> runtimesByPart = new Hashtable<>(
 				movieDownloadParts.size());
 		// we got to do some processing to get the unique runtime per part,
 		// ignoring file extension
@@ -268,7 +268,7 @@ public class ActionJavParsingProfile extends SiteParsingProfile implements Speci
 	public ArrayList<Genre> scrapeGenres() {
 		Elements genreElements = document
 				.select("body table tbody tr td table tbody tr td div table tbody tr td table tbody tr td table tbody tr:contains(Fetishes) td ~ td p");
-		ArrayList<Genre> genreList = new ArrayList<Genre>(genreElements.size());
+		ArrayList<Genre> genreList = new ArrayList<>(genreElements.size());
 		for (Element genreElement : genreElements) {
 			String genre = genreElement.select("a").first().attr("href");
 			genre = genre.substring(genre.indexOf('=') + 1);
@@ -286,7 +286,7 @@ public class ActionJavParsingProfile extends SiteParsingProfile implements Speci
 				.select("body table tbody tr td table tbody tr td div table tbody tr td table tbody tr td table tbody tr:contains(Starring) td ~ td p");
 		if(actorElements != null)
 		{
-		ArrayList<Actor> actorList = new ArrayList<Actor>(actorElements.size());
+		ArrayList<Actor> actorList = new ArrayList<>(actorElements.size());
 		try {
 
 			for (Element actorElement : actorElements) {
@@ -307,13 +307,13 @@ public class ActionJavParsingProfile extends SiteParsingProfile implements Speci
 			e.printStackTrace();
 		}
 		}
-		return new ArrayList<Actor>();
+		return new ArrayList<>();
 	}
 
 	@Override
 	public ArrayList<Director> scrapeDirectors() {
 		//ActionJav doesn't have director information, so just return an empty list
-		return new ArrayList<Director>();
+		return new ArrayList<>();
 	}
 
 	@Override
@@ -339,7 +339,7 @@ public class ActionJavParsingProfile extends SiteParsingProfile implements Speci
 		if (searchString == null)
 			return new SearchResult[0];
 		
-		LinkedList<SearchResult> searchItems = new LinkedList<SearchResult>();
+		LinkedList<SearchResult> searchItems = new LinkedList<>();
 		String searchId = searchString.replaceAll(".*searchterm=(\\D+)(\\d+)", "$1-$2").toUpperCase();
 		Document doc = Jsoup.connect(searchString).timeout(CONNECTION_TIMEOUT_VALUE).get();
 		Elements rows = doc.select("table table table tr:has(a[href^=title.cfm?iid=])");
@@ -366,7 +366,7 @@ public class ActionJavParsingProfile extends SiteParsingProfile implements Speci
 
 	@Override
 	public Thumb[] scrapeExtraFanart() {
-		ArrayList<Thumb> imageList = new ArrayList<Thumb>();
+		ArrayList<Thumb> imageList = new ArrayList<>();
 		
 		Element script = document.select("head > script:nth-of-type(2)").first();
 		if (script != null) {

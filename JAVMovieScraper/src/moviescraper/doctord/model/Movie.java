@@ -1,24 +1,5 @@
 package moviescraper.doctord.model;
 
-import moviescraper.doctord.controller.FileDownloaderUtilities;
-import moviescraper.doctord.controller.ScrapeMovieAction;
-import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
-import moviescraper.doctord.controller.siteparsingprofile.specific.*;
-import moviescraper.doctord.controller.xmlserialization.XbmcXmlMovieBean;
-import moviescraper.doctord.model.dataitem.*;
-import moviescraper.doctord.model.dataitem.Runtime;
-import moviescraper.doctord.model.preferences.MoviescraperPreferences;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.jsoup.nodes.Document;
-
-import javax.imageio.IIOImage;
-import javax.imageio.ImageIO;
-import javax.imageio.ImageWriteParam;
-import javax.imageio.ImageWriter;
-import javax.imageio.stream.FileImageOutputStream;
 import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -32,6 +13,31 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+
+import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.FileImageOutputStream;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.jsoup.nodes.Document;
+
+import moviescraper.doctord.controller.FileDownloaderUtilities;
+import moviescraper.doctord.controller.siteparsingprofile.SecurityPassthrough;
+import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
+import moviescraper.doctord.controller.siteparsingprofile.specific.Data18MovieParsingProfile;
+import moviescraper.doctord.controller.siteparsingprofile.specific.Data18WebContentParsingProfile;
+import moviescraper.doctord.controller.siteparsingprofile.specific.DmmParsingProfile;
+import moviescraper.doctord.controller.siteparsingprofile.specific.IAFDParsingProfile;
+import moviescraper.doctord.controller.siteparsingprofile.specific.JavLibraryParsingProfile;
+import moviescraper.doctord.controller.xmlserialization.KodiXmlMovieBean;
+import moviescraper.doctord.model.dataitem.*;
+import moviescraper.doctord.model.dataitem.Runtime;
+import moviescraper.doctord.model.preferences.MoviescraperPreferences;
 
 public class Movie {
 
@@ -63,7 +69,7 @@ public class Movie {
 
 	private Title title;
 	
-	private List<Title> allTitles = new ArrayList<Title>();
+	private List<Title> allTitles = new ArrayList<>(); //this is currently not used for much; it used to allow the user to select from one of each title in a drop down box on the file detail panel, but now that amalgamation is here, that feature is not needed as much. It may make sense to put in a generic way to handle selecting between data item sources from amalgamation on a per item basis in the file detail panel, however
 
 	private Top250 top250;
 	
@@ -111,82 +117,36 @@ public class Movie {
 
 	public Movie(SiteParsingProfile siteToScrapeFrom) {
 		title = siteToScrapeFrom.scrapeTitle();
-		title.setDataItemSource(siteToScrapeFrom);
+		
 		
 		originalTitle = siteToScrapeFrom.scrapeOriginalTitle();
-		originalTitle.setDataItemSource(siteToScrapeFrom);
-		
 		sortTitle = siteToScrapeFrom.scrapeSortTitle();
-		sortTitle.setDataItemSource(siteToScrapeFrom);
-		
 		set = siteToScrapeFrom.scrapeSet();
-		set.setDataItemSource(siteToScrapeFrom);
-		
 		rating = siteToScrapeFrom.scrapeRating();
-		rating.setDataItemSource(siteToScrapeFrom);
-		
 		year = siteToScrapeFrom.scrapeYear();
-		year.setDataItemSource(siteToScrapeFrom);
-		
 		top250 = siteToScrapeFrom.scrapeTop250();
-		top250.setDataItemSource(siteToScrapeFrom);
-		
 		trailer = siteToScrapeFrom.scrapeTrailer();
-		trailer.setDataItemSource(siteToScrapeFrom);
-		
 		votes = siteToScrapeFrom.scrapeVotes();
-		votes.setDataItemSource(siteToScrapeFrom);
-		
 		outline = siteToScrapeFrom.scrapeOutline();
-		outline.setDataItemSource(siteToScrapeFrom);
-		
 		plot = siteToScrapeFrom.scrapePlot();
-		plot.setDataItemSource(siteToScrapeFrom);
-		
 		tagline = siteToScrapeFrom.scrapeTagline();
-		tagline.setDataItemSource(siteToScrapeFrom);
-		
 		studio = siteToScrapeFrom.scrapeStudio();
-		studio.setDataItemSource(siteToScrapeFrom);
-		
 		releaseDate = siteToScrapeFrom.scrapeReleaseDate();
-		releaseDate.setDataItemSource(siteToScrapeFrom);
-		
 		runtime = siteToScrapeFrom.scrapeRuntime();
-		runtime.setDataItemSource(siteToScrapeFrom);
-		
 		posters = siteToScrapeFrom.scrapePosters();
-		setDataItemSourceOnThumbs(posters, siteToScrapeFrom);
-		
 		fanart = siteToScrapeFrom.scrapeFanart();
-		setDataItemSourceOnThumbs(fanart, siteToScrapeFrom);
-		
 		extraFanart = siteToScrapeFrom.scrapeExtraFanart();
-		setDataItemSourceOnThumbs(extraFanart, siteToScrapeFrom);
-		
 		mpaa = siteToScrapeFrom.scrapeMPAA();
-		mpaa.setDataItemSource(siteToScrapeFrom);
-		
 		id = siteToScrapeFrom.scrapeID();
-		id.setDataItemSource(siteToScrapeFrom);
-		
 		actors = siteToScrapeFrom.scrapeActors();
-		for(Actor currentActor : actors)
-			currentActor.setDataItemSource(siteToScrapeFrom);
-		
 		genres = siteToScrapeFrom.scrapeGenres();
-		for(Genre currentGenre : genres)
-			currentGenre.setDataItemSource(siteToScrapeFrom);
-		
 		tags = siteToScrapeFrom.scrapeTags();
-		for(Tag currentTag : tags)
-		{
-			currentTag.setDataItemSource(siteToScrapeFrom);
-		}
-		
 		directors = siteToScrapeFrom.scrapeDirectors();
-		for(Director currentDirector : directors)
-			currentDirector.setDataItemSource(siteToScrapeFrom);
+		
+		setAllDataItemSources(siteToScrapeFrom);
+		
+
+
 		
 		String fileNameOfScrapedMovie = siteToScrapeFrom.getFileNameOfScrapedMovie();
 		if(fileNameOfScrapedMovie != null && fileNameOfScrapedMovie.trim().length() > 0)
@@ -208,6 +168,46 @@ public class Movie {
 			
 		
 	}
+
+	/**
+	 * @param siteToScrapeFrom
+	 */
+	private void setAllDataItemSources(SiteParsingProfile siteToScrapeFrom) {
+		originalTitle.setDataItemSource(siteToScrapeFrom);
+		title.setDataItemSource(siteToScrapeFrom);
+		sortTitle.setDataItemSource(siteToScrapeFrom);
+		set.setDataItemSource(siteToScrapeFrom);
+		rating.setDataItemSource(siteToScrapeFrom);
+		year.setDataItemSource(siteToScrapeFrom);
+		top250.setDataItemSource(siteToScrapeFrom);
+		trailer.setDataItemSource(siteToScrapeFrom);
+		votes.setDataItemSource(siteToScrapeFrom);
+		outline.setDataItemSource(siteToScrapeFrom);
+		plot.setDataItemSource(siteToScrapeFrom);
+		tagline.setDataItemSource(siteToScrapeFrom);
+		studio.setDataItemSource(siteToScrapeFrom);
+		releaseDate.setDataItemSource(siteToScrapeFrom);
+		runtime.setDataItemSource(siteToScrapeFrom);
+		setDataItemSourceOnThumbs(posters, siteToScrapeFrom);
+		setDataItemSourceOnThumbs(fanart, siteToScrapeFrom);
+		setDataItemSourceOnThumbs(extraFanart, siteToScrapeFrom);
+		mpaa.setDataItemSource(siteToScrapeFrom);
+		id.setDataItemSource(siteToScrapeFrom);
+		
+		for(Actor currentActor : actors)
+			currentActor.setDataItemSource(siteToScrapeFrom);
+		
+		for(Genre currentGenre : genres)
+			currentGenre.setDataItemSource(siteToScrapeFrom);
+		
+		for(Tag currentTag : tags)
+		{
+			currentTag.setDataItemSource(siteToScrapeFrom);
+		}
+		
+		for(Director currentDirector : directors)
+			currentDirector.setDataItemSource(siteToScrapeFrom);
+	}
 	
 	/**
 	 * If the appropriate preference is set, add the ID number to the end of the title field
@@ -215,8 +215,7 @@ public class Movie {
 	private void appendIDToStartOfTitle()
 	{
 		if(MoviescraperPreferences.getInstance().getAppendIDToStartOfTitle() && id != null && 
-				id.getId() != null && id.getId().trim().length() > 0 && title != null &&
-				title.getTitle() != null && title.getTitle().length() > 0)
+				id.getId() != null && id.getId().trim().length() > 0 && hasValidTitle())
 		{
 			title.setTitle(id.getId() + " - " + title.getTitle());
 		}
@@ -238,9 +237,8 @@ public class Movie {
 	public static Movie createMovieFromNfo(File nfoFile) throws IOException
 	{
 		Movie movieFromNfo = null;
-		FileInputStream fisTargetFile = null;
-		try {
-			fisTargetFile = new FileInputStream(nfoFile);
+		try (FileInputStream fisTargetFile = new FileInputStream(nfoFile);)  {
+			
 			String targetFileStr = IOUtils.toString(fisTargetFile, "UTF-8");
 			//Sometimes there's some junk before the prolog tag. Do a workaround to remove that junk.
 			//This really isn't the cleanest way to do this, but it'll work for now
@@ -256,18 +254,13 @@ public class Movie {
 					else break;
 				}
 			}
-			XbmcXmlMovieBean xmlMovieBean = XbmcXmlMovieBean.makeFromXML(targetFileStr);
-			fisTargetFile.close();
+			KodiXmlMovieBean xmlMovieBean = KodiXmlMovieBean.makeFromXML(targetFileStr);
 			if(xmlMovieBean != null)
 			{
 				
 				movieFromNfo = xmlMovieBean.toMovie();
 			}
 			return movieFromNfo;
-		}
-		finally
-		{
-			fisTargetFile.close();
 		}
 	}
 
@@ -481,7 +474,7 @@ public class Movie {
 	}
 	public void writeToFile(File nfoFile, File posterFile, File fanartFile, File currentlySelectedFolderJpgFile, File targetFolderForExtraFanartFolderAndActorFolder, File trailerFile, MoviescraperPreferences preferences) throws IOException {
 		// Output the movie to XML using XStream and a proxy class to
-		// translate things to a format that xbmc expects
+		// translate things to a format that Kodi expects
 		
 		//ID only appended if preference set and not already at the start of the title
 		if(!title.getTitle().startsWith(id.getId()))
@@ -490,13 +483,13 @@ public class Movie {
 		}
 		
 		
-		String xml = new XbmcXmlMovieBean(this).toXML();
+		String xml = new KodiXmlMovieBean(this).toXML();
 		// add the xml header since xstream doesn't do this
 		xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>"
 				+ "\n" + xml;
-		System.out.println("Xml I am writing to file: \n" + xml);
+		//System.out.println("Xml I am writing to file: \n" + xml);
 		
-		if(nfoFile != null && xml != null && xml.length() > 0)
+		if(nfoFile != null && xml.length() > 0)
 			nfoFile.delete();
 		FileUtils.writeStringToFile(nfoFile, xml,
 				org.apache.commons.lang3.CharEncoding.UTF_8);
@@ -520,7 +513,7 @@ public class Movie {
 				(writePoster || createFolderJpgEnabledPreference) && 
 				((posterFile.exists() == writePosterIfAlreadyExists) || (!posterFile.exists() || (createFolderJpgEnabledPreference))))
 		{
-			if(posterToSaveToDisk.isModified() || createFolderJpgEnabledPreference || !posterFile.exists() || writePosterIfAlreadyExists)
+			if(posterToSaveToDisk != null && (posterToSaveToDisk.isModified() || createFolderJpgEnabledPreference || !posterFile.exists() || writePosterIfAlreadyExists))
 			{
 				//reencode the jpg since we probably did a resize
 				Iterator<ImageWriter> iter = ImageIO.getImageWritersByFormatName("jpeg");
@@ -532,36 +525,36 @@ public class Movie {
 				// 1 specifies minimum compression and maximum quality
 				IIOImage image = new IIOImage((RenderedImage) posterToSaveToDisk.getThumbImage(), null, null);
 				
-				if(writePoster && posterFile != null && posterToSaveToDisk.isModified())
+				if(writePoster && posterToSaveToDisk.isModified())
 				{
 					System.out.println("Writing poster to " + posterFile);
-					FileImageOutputStream posterFileOutput = new FileImageOutputStream(posterFile);
-					writer.setOutput(posterFileOutput);
-					writer.write(null, image, iwp);
-					posterFileOutput.close();
+					try (FileImageOutputStream posterFileOutput = new FileImageOutputStream(posterFile);) {
+						writer.setOutput(posterFileOutput);
+						writer.write(null, image, iwp);
+					}
 				}
 				//write out the poster file without reencoding it and resizing it
-				else if((!posterFile.exists() ||  writePosterIfAlreadyExists) && posterToSaveToDisk != null && posterToSaveToDisk.getThumbURL() != null)
+				else if((!posterFile.exists() ||  writePosterIfAlreadyExists) &&  posterToSaveToDisk.getThumbURL() != null)
 				{
 					System.out.println("Writing poster file from nfo: " + posterFile);
-					FileDownloaderUtilities.writeURLToFile(posterToSaveToDisk.getThumbURL(), posterFile);
+					FileDownloaderUtilities.writeURLToFile(posterToSaveToDisk.getThumbURL(), posterFile, posterToSaveToDisk.getReferrerURL());
 				}
 				if(createFolderJpgEnabledPreference && currentlySelectedFolderJpgFile != null)
 				{
 					if(!posterToSaveToDisk.isModified() && (!currentlySelectedFolderJpgFile.exists() || (currentlySelectedFolderJpgFile.exists() && writePosterIfAlreadyExists)))
 					{
 						System.out.println("Writing folder.jpg (no changes) to " + currentlySelectedFolderJpgFile);
-						FileDownloaderUtilities.writeURLToFile(posterToSaveToDisk.getThumbURL(), currentlySelectedFolderJpgFile);
+						FileDownloaderUtilities.writeURLToFile(posterToSaveToDisk.getThumbURL(), currentlySelectedFolderJpgFile, posterToSaveToDisk.getReferrerURL());
 					}
 					else
 					{
 						if(!currentlySelectedFolderJpgFile.exists() || (currentlySelectedFolderJpgFile.exists() && writePosterIfAlreadyExists))
 						{
 							System.out.println("Writing folder to " + currentlySelectedFolderJpgFile);
-							FileImageOutputStream folderFileOutput = new FileImageOutputStream(currentlySelectedFolderJpgFile);
-							writer.setOutput(folderFileOutput);
-							writer.write(null, image, iwp);
-							folderFileOutput.close();
+							try (FileImageOutputStream folderFileOutput = new FileImageOutputStream(currentlySelectedFolderJpgFile);) {
+								writer.setOutput(folderFileOutput);
+								writer.write(null, image, iwp);
+							}
 						}
 						else
 						{
@@ -589,10 +582,16 @@ public class Movie {
 			//can save ourself redownloading the image if it's already in memory, but we dont want to reencode the image, so only do this if it's modified
 			if(fanartToSaveToDisk.getImageIconThumbImage() != null && fanartToSaveToDisk.isModified())
 			{
-				ImageIO.write(fanartToSaveToDisk.toBufferedImage(), "jpg", fanartFile);
+				try {
+					ImageIO.write(fanartToSaveToDisk.toBufferedImage(), "jpg", fanartFile);
+				}
+				catch (IOException e) {
+					System.err.println("Failed to write fanart due to io error");
+					e.printStackTrace();
+				}
 			}
 			//download the url and save it out to disk
-			else FileDownloaderUtilities.writeURLToFile(fanartToSaveToDisk.getThumbURL(), fanartFile);
+			else FileDownloaderUtilities.writeURLToFile(fanartToSaveToDisk.getThumbURL(), fanartFile, posterToSaveToDisk.getReferrerURL());
 			}
 		}
 		
@@ -630,7 +629,7 @@ public class Movie {
 			actorFolder = new File(targetFolder.getParent() + File.separator + ".actors");
 		}
 		//Don't create an empty .actors folder with no actors underneath it
-		if(this.hasAtLeastOneActorThumbnail() && targetFolder != null && actorFolder != null)
+		if(this.hasAtLeastOneActorThumbnail() && actorFolder != null)
 		{
 			FileUtils.forceMkdir(actorFolder);
 			//on windows this new folder should have the hidden attribute; on unix it is already "hidden" by having a . in front of the name
@@ -656,7 +655,7 @@ public class Movie {
 				currentActor.writeImageToFile(fileNameToWrite);
 				//reload from disk instead of cache since the cache is now pointing to the wrong image and the disk has the correct newly edited one
 				if(currentActor.isThumbEdited())
-					ImageCache.removeImageFromCachce(fileNameToWrite.toURI().toURL());
+					ImageCache.removeImageFromCache(fileNameToWrite.toURI().toURL(), false);
 			}
 
 		}
@@ -690,7 +689,7 @@ public class Movie {
 		return fileName;
 	}
 	
-	public static String getFileNameOfNfo(File file, boolean nfoNamedMovieDotNfo)
+	public static String getFileNameOfNfo(File file, Boolean nfoNamedMovieDotNfo)
 	{
 		if(nfoNamedMovieDotNfo)
 		{
@@ -852,8 +851,7 @@ public class Movie {
 	}*/
 	
 	//Version that allows us to update the GUI while scraping
-	public static Movie scrapeMovie(File movieFile, SiteParsingProfile siteToParseFrom, String urlToScrapeFromDMM, boolean useURLtoScrapeFrom, ScrapeMovieAction scrapeMovieAction) throws IOException{
-		//System.out.println("movieFile = " + movieFile);
+	public static Movie scrapeMovie(File movieFile, SiteParsingProfile siteToParseFrom, String urlToScrapeFromDMM, boolean useURLtoScrapeFrom) throws IOException{
 		
 		//If the user manually canceled the results on this scraper in a dialog box, just return a null movie
 		if(siteToParseFrom.getDiscardResults())
@@ -861,19 +859,10 @@ public class Movie {
 		String searchString = siteToParseFrom.createSearchString(movieFile);
 		SearchResult [] searchResults = null;
 		int searchResultNumberToUse = 0;
-		int amountOfProgressToMakeEachTick = 0;
-		int numberOfTicksToMake = 3;
-		if(scrapeMovieAction != null)
-			amountOfProgressToMakeEachTick = scrapeMovieAction.getAmountOfProgressPerSubtask() / numberOfTicksToMake;
 		//no URL was passed in so we gotta figure it ourselves
 		if(!useURLtoScrapeFrom)
 		{
 		searchResults = siteToParseFrom.getSearchResults(searchString);
-		//make a progress tick - we parsed the site
-		if(scrapeMovieAction != null)
-		{
-			scrapeMovieAction.makeProgress(amountOfProgressToMakeEachTick, siteToParseFrom.toString() + " got search results.");
-		}
 		int levDistanceOfCurrentMatch = 999999; // just some super high number
 		String idFromMovieFile = SiteParsingProfile.findIDTagFromFile(movieFile, siteToParseFrom.isFirstWordOfFileIsID());
 		
@@ -917,45 +906,32 @@ public class Movie {
 				searchResultNumberToUse = 0;
 			}
 				
-			if(scrapeMovieAction != null)
-			{
-				scrapeMovieAction.makeProgress(amountOfProgressToMakeEachTick, siteToParseFrom.toString() + " found search result");
-			}
 		}
 		if (searchResults != null && searchResults.length > 0 && searchResults[searchResultNumberToUse].getUrlPath().length() > 0)
 		{
 			System.out.println("Scraping this webpage for movie: " + searchResults[searchResultNumberToUse].getUrlPath());
 			//for now just set the movie to the first thing found unless we found a link which had something close to the ID
 			SearchResult searchResultToUse = searchResults[searchResultNumberToUse];
-			Document searchMatch = siteToParseFrom.downloadDocument(searchResultToUse);
-			siteToParseFrom.downloadDocument(searchResultToUse);
+			Document searchMatch = SiteParsingProfile.downloadDocument(searchResultToUse);
+			//Handle any captchas etc that prevent us from getting our result
+			if (searchMatch != null && SecurityPassthrough.class.isAssignableFrom(siteToParseFrom.getClass()))
+			{
+				SecurityPassthrough siteParsingProfileSecurityPassthrough = (SecurityPassthrough) siteToParseFrom;
+				if(siteParsingProfileSecurityPassthrough.requiresSecurityPassthrough(searchMatch))
+				{
+					searchMatch = siteParsingProfileSecurityPassthrough.runSecurityPassthrough(searchMatch, searchResultToUse);
+				}
+			}
 			siteToParseFrom.setDocument(searchMatch);
 			siteToParseFrom.setOverrideURLDMM(urlToScrapeFromDMM);
-			if(scrapeMovieAction != null)
-			{
-				scrapeMovieAction.makeProgress(amountOfProgressToMakeEachTick, siteToParseFrom.toString() + " found search result");
-			}
 			
 			Movie scrapedMovie = new Movie(siteToParseFrom);
-			if(scrapeMovieAction != null)
-			{
-				scrapeMovieAction.makeProgress(amountOfProgressToMakeEachTick, siteToParseFrom.toString() + " page scraped.");
-			}
 			return scrapedMovie;
 		}
 		else //no movie match found
 		{
-			if(scrapeMovieAction != null)
-			{
-				scrapeMovieAction.makeProgress(amountOfProgressToMakeEachTick, siteToParseFrom.toString() + " scraped movie from page - nothing found");
-			}
 			return null;
 		}
-	}
-
-	//Version that does not allow us to update GUI while scraping
-	public static Movie scrapeMovie(File movieFile, SiteParsingProfile siteToParseFrom, String urlToScrapeFromDMM, boolean useURLtoScrapeFrom) throws IOException{
-		return scrapeMovie(movieFile, siteToParseFrom, urlToScrapeFromDMM, useURLtoScrapeFrom, null);
 	}
 
 	public boolean hasAtLeastOneActorThumbnail() {
@@ -1001,10 +977,10 @@ public class Movie {
 	}
 
 	public static Movie getEmptyMovie() {
-		ArrayList<Actor> actors = new ArrayList<Actor>();
+		ArrayList<Actor> actors = new ArrayList<>();
 		ArrayList<Director> directors = new ArrayList<>();
-		ArrayList<Genre> genres = new ArrayList<Genre>();
-		ArrayList<Tag> tags = new ArrayList<Tag>();
+		ArrayList<Genre> genres = new ArrayList<>();
+		ArrayList<Tag> tags = new ArrayList<>();
 		
 		Thumb[] fanart = new Thumb[0]; 
 		Thumb[] extraFanart = new Thumb[0]; 
@@ -1056,7 +1032,7 @@ public class Movie {
 	{
 		if (posterToGoToFront != null) {
 
-			ArrayList<Thumb> existingPosters = new ArrayList<Thumb>(
+			ArrayList<Thumb> existingPosters = new ArrayList<>(
 					Arrays.asList(getPosters()));
 			boolean didListContainPoster = existingPosters.remove(posterToGoToFront);
 			if(didListContainPoster)
@@ -1079,7 +1055,7 @@ public class Movie {
 	{
 		if (fanartToGoToFront != null) {
 
-			ArrayList<Thumb> existingFanarts = new ArrayList<Thumb>(
+			ArrayList<Thumb> existingFanarts = new ArrayList<>(
 					Arrays.asList(getFanart()));
 			boolean didListContainPoster = existingFanarts.remove(fanartToGoToFront);
 			if(didListContainPoster)
@@ -1091,6 +1067,13 @@ public class Movie {
 						.toArray(fanartArray));
 			}
 		}
+	}
+	
+	/**
+	 * @return true if the movie has a non-null, non-zero length title, false otherwise
+	 */
+	public boolean hasValidTitle() {
+		return (title != null && title.getTitle() != null && title.getTitle().length() > 0);
 	}
 
 

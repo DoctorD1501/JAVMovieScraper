@@ -142,7 +142,7 @@ public class ScrapeAmalgamatedMovieWorker extends SwingWorker<Void, Map<SitePars
 		
 		int progressAmountPerWorker = 100 / numberOfScrapes;
 		
-		for(DataItemSource currentScraper : scraperList)
+               for(DataItemSource currentScraper : scraperList)
 		{
 			//We don't want to read any leftover properties from our JSON - we want to start fresh so things like scraping language do not get set in our scraper
 			currentScraper = currentScraper.createInstanceOfSameType();
@@ -174,6 +174,8 @@ public class ScrapeAmalgamatedMovieWorker extends SwingWorker<Void, Map<SitePars
 			final ScrapeAmalgamatedMovieWorker self = this;
 			final int amtOfProgressFinal = amountOfProgress;
 			final File fileToScrapeFinal = fileToScrape;
+                        
+                        System.out.println(fileToScrapeFinal);
 			
 			SwingWorker<Void, Void> scraperWorker = new SwingWorker<Void, Void>() {
 				Movie returnMovie;
@@ -202,8 +204,8 @@ public class ScrapeAmalgamatedMovieWorker extends SwingWorker<Void, Map<SitePars
 				{
 					
 					self.numberOfScrapesFinished++;
-					System.out.println("Movie scraped = " + returnMovie);
-					Map<SiteParsingProfile, Movie> resultToPublish = new HashMap<SiteParsingProfile, Movie>();
+					//System.out.println("Movie scraped = " + returnMovie);
+					Map<SiteParsingProfile, Movie> resultToPublish = new HashMap<>();
 					resultToPublish.put(siteScraper, returnMovie);
 					self.publish(resultToPublish);
 					self.progress = amtOfProgressFinal + self.progress;

@@ -37,6 +37,14 @@ public class ID extends MovieDataItem {
 
 
 	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		return result;
+	}
+
+	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -61,7 +69,7 @@ public class ID extends MovieDataItem {
 	 */
 	public boolean equalsJavID(ID otherID)
 	{
-		if(this == null || this.id == null || otherID == null || otherID.getId() == null || id.length() == 0 || otherID.getId().length() == 0)
+		if(this.id == null || otherID == null || otherID.getId() == null || id.length() == 0 || otherID.getId().length() == 0)
 			return false;
 		else
 		{

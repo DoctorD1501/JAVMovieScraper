@@ -2,9 +2,7 @@ package moviescraper.doctord.controller.siteparsingprofile.specific;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,6 +39,7 @@ import moviescraper.doctord.model.dataitem.Year;
 import moviescraper.doctord.model.preferences.MoviescraperPreferences;
 
 import org.apache.commons.codec.net.URLCodec;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
 import org.jsoup.Jsoup;
@@ -251,9 +250,10 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 				// an iframe that hosts the flash video player. Then scrape that iframe contents obtaining trailer information.
 				
 				String playerPath = buttonElement.attr("onclick").replaceFirst("^.*sampleplay\\('([^']+).*$", "$1");
+				playerPath = StringEscapeUtils.unescapeJava(playerPath);
 				URL playerURL = new URI(document.location()).resolve(playerPath).toURL();	
 				Document playerDocument = Jsoup.parse(playerURL, CONNECTION_TIMEOUT_VALUE);
-				URL iframeURL = new URL(playerDocument.select("iframe").first().attr("src"));
+				URL iframeURL = new URL(playerDocument.select("iframe").first().attr("abs:src"));
 				Document iframeDocument = Jsoup.parse(iframeURL, CONNECTION_TIMEOUT_VALUE);
 				String flashPlayerScript = iframeDocument.select("script").last().data();
 				Pattern pattern = Pattern.compile(".*flashvars.fid\\s*=\\s*\"([^\"]+).*flashvars.bid\\s*=\\s*\"(\\d)(w|s)\".*", Pattern.DOTALL);
@@ -278,9 +278,8 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 			
 				System.err.println("I expected to find a trailer and did not at " + document.location());
 			}		
-		} catch (MalformedURLException | URISyntaxException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (Exception e)
+		{
 			e.printStackTrace();
 		}
 		
@@ -318,11 +317,11 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 		// full URL, however
 		Elements extraArtElementsSmallSize = document.select("div#sample-image-block img.mg-b6");
 
-		ArrayList<Thumb> posters = new ArrayList<Thumb>(
+		ArrayList<Thumb> posters = new ArrayList<>(
 				1 + extraArtElementsSmallSize.size());
-		String posterLink = postersElement.attr("href");
+		String posterLink = postersElement.attr("abs:href");
 		if(posterLink == null || posterLink.length() < 1)
-			posterLink = postersElement.attr("src");
+			posterLink = postersElement.attr("abs:src");
 		try {
 			// for the poster, do a crop of the the right side of the dvd case image 
 			//(which includes both cover art and back art)
@@ -345,7 +344,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 
 				// We need to do some string manipulation and put a "jp" before the
 				// last dash in the URL to get the full size picture
-				String extraArtLinkSmall = item.attr("src");
+				String extraArtLinkSmall = item.attr("abs:src");
 				int indexOfLastDash = extraArtLinkSmall.lastIndexOf('-');
 				String URLpath = extraArtLinkSmall.substring(0, indexOfLastDash)
 						+ "jp" + extraArtLinkSmall.substring(indexOfLastDash);
@@ -423,13 +422,13 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 	public ArrayList<Genre> scrapeGenres() {
 		Elements genreElements = document
 				.select("table.mg-b12 tr td a[href*=article=keyword/id=]");
-		ArrayList<Genre> genres = new ArrayList<Genre>(genreElements.size());
+		ArrayList<Genre> genres = new ArrayList<>(genreElements.size());
 		for (Element genreElement : genreElements) {
 			// get the link so we can examine the id and do some sanity cleanup
 			// and perhaps some better translation that what google has, if we
 			// happen to know better
-			String href = genreElement.attr("href");
-			String genreID = genreElement.attr("href").substring(
+			String href = genreElement.attr("abs:href");
+			String genreID = genreElement.attr("abs:href").substring(
 					href.indexOf("id=") + 3, href.length() - 1);
 			if (acceptGenreID(genreID)) {
 				if(doGoogleTranslation == false)
@@ -471,6 +470,8 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 			break;
 		case "1013":
 			betterGenreTranslatedString = "Nurse";
+			break;
+		default:
 			break;
 		}
 
@@ -515,7 +516,9 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 		case "24489":  
 			betterActressTranslatedString = "Chichi Asada"; break;
 		case "20631":  
-			betterActressTranslatedString = "Mitsuki An"; break;	
+			betterActressTranslatedString = "Mitsuki An"; break;
+		default:
+			break;	
 
 		}
 
@@ -534,6 +537,8 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 			return false;
 		case "6102": // "Sample Video" This is not a genre!
 			return false;
+		default:
+			break;
 		}
 		return true;
 	}
@@ -543,10 +548,10 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 		// scrape all the actress IDs
 		Elements actressIDElements = document
 				.select("span#performer a[href*=article=actress/id=]");
-		ArrayList<Actor> actorList = new ArrayList<Actor>(
+		ArrayList<Actor> actorList = new ArrayList<>(
 				actressIDElements.size());
 		for (Element actressIDLink : actressIDElements) {
-			String actressIDHref = actressIDLink.attr("href");
+			String actressIDHref = actressIDLink.attr("abs:href");
 			String actressNameKanji = actressIDLink.text();
 			String actressID = actressIDHref.substring(
 					actressIDHref.indexOf("id=") + 3,
@@ -560,7 +565,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 						.first();
 				Element actressThumbnailElement = actressPage.select(
 						"tr.area-av30.top td img").first();
-				String actressThumbnailPath = actressThumbnailElement.attr("src");
+				String actressThumbnailPath = actressThumbnailElement.attr("abs:src");
 				//Sometimes the translation service from google gives us weird engrish instead of a name, so let's compare it to the thumbnail file name for the image as a sanity check
 				//if the names aren't close enough, we'll use the thumbnail name
 				//many times the thumbnail name is off by a letter or two or has a number in it, which is why we just don't use this all the time...
@@ -657,7 +662,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 
 	@Override
 	public ArrayList<Director> scrapeDirectors() {
-		ArrayList<Director> directors = new ArrayList<Director>();
+		ArrayList<Director> directors = new ArrayList<>();
 		Element directorElement = document.select(
 				"table.mg-b20 tr td a[href*=article=director/id=]").first();
 		if (directorElement != null && directorElement.hasText()) {
@@ -714,15 +719,15 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 		boolean firstPageScraping = true;
 		Document searchResultsPage = Jsoup.connect(searchString).timeout(CONNECTION_TIMEOUT_VALUE).get();
 		Element nextPageLink = searchResultsPage.select("div.list-capt div.list-boxcaptside.list-boxpagenation ul li:not(.terminal) a").last();
-		ArrayList<SearchResult> searchResults = new ArrayList<SearchResult>();
-		ArrayList<String> pagesVisited = new ArrayList<String>();
+		ArrayList<SearchResult> searchResults = new ArrayList<>();
+		ArrayList<String> pagesVisited = new ArrayList<>();
 		while(firstPageScraping || nextPageLink != null)
 		{
 		nextPageLink = searchResultsPage.select("div.list-capt div.list-boxcaptside.list-boxpagenation ul li:not(.terminal) a").last();
 		String currentPageURL = searchResultsPage.baseUri();
 		String nextPageURL = "";
 		if(nextPageLink != null)
-			nextPageURL = nextPageLink.attr("href");
+			nextPageURL = nextPageLink.attr("abs:href");
 		pagesVisited.add(currentPageURL);
 		//I can probably combine this into one selector, but it wasn't working when I tried it,
 		//so for now I'm making each its own variable and looping through and adding in all the elements seperately
@@ -735,11 +740,11 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 		
 		//get /mono/dvd links
 		for (int i = 0; i < dvdLinks.size(); i++) {
-			String currentLink = dvdLinks.get(i).attr("href");
+			String currentLink = dvdLinks.get(i).attr("abs:href");
 			Element imageLinkElement = dvdLinks.get(i).select("img").first();
 			if(imageLinkElement != null)
 			{
-				Thumb currentPosterThumbnail = new Thumb(imageLinkElement.attr("src"));
+				Thumb currentPosterThumbnail = new Thumb(imageLinkElement.attr("abs:src"));
 				searchResults.add(new SearchResult(currentLink, "", currentPosterThumbnail));
 			}
 			else
@@ -749,11 +754,11 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 		}
 		//get /rental/ppr links
 		for (int i = 0; i < rentalElements.size(); i++) {
-			String currentLink = rentalElements.get(i).attr("href");
+			String currentLink = rentalElements.get(i).attr("abs:href");
 			Element imageLinkElement = rentalElements.get(i).select("img").first();
 			if(imageLinkElement != null)
 			{
-				Thumb currentPosterThumbnail = new Thumb(imageLinkElement.attr("src"));
+				Thumb currentPosterThumbnail = new Thumb(imageLinkElement.attr("abs:src"));
 				searchResults.add(new SearchResult(currentLink, "", currentPosterThumbnail));
 			}
 			else
@@ -763,12 +768,12 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 		}
 		//get /digital/videoa links
 		for (int i = 0; i < digitalElements.size(); i++) {
-			String currentLink = digitalElements.get(i).attr("href");
+			String currentLink = digitalElements.get(i).attr("abs:href");
 			System.out.println("currentLink = " + currentLink);
 			Element imageLinkElement = digitalElements.get(i).select("img").first();
 			if(imageLinkElement != null)
 			{
-				Thumb currentPosterThumbnail = new Thumb(imageLinkElement.attr("src"));
+				Thumb currentPosterThumbnail = new Thumb(imageLinkElement.attr("abs:src"));
 				searchResults.add(new SearchResult(currentLink, "", currentPosterThumbnail));
 			}
 			else
@@ -792,7 +797,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 	
 	public SearchResult[] getSearchResultsWithoutDVDLinks(String dmmSearchString) throws IOException {
 		SearchResult[] allSearchResult = getSearchResults(dmmSearchString);
-		List<SearchResult> filteredSearchResults = new LinkedList<SearchResult>();
+		List<SearchResult> filteredSearchResults = new LinkedList<>();
 		for(SearchResult currentSR : allSearchResult)
 		{
 			System.out.println("current SR = " + currentSR.getUrlPath());

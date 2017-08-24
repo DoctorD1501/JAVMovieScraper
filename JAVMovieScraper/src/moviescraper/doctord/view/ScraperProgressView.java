@@ -130,7 +130,7 @@ public class ScraperProgressView extends JPanel {
 	public void updateProgressViewWithScrapeFinished(Movie movieThatScraped) {
 		progressButton.setText("Done");
 		progressButton.setEnabled(false);
-		if(movieThatScraped != null && movieThatScraped.getTitle() != null && movieThatScraped.getTitle().getTitle().length() > 0)
+		if(movieThatScraped != null && movieThatScraped.hasValidTitle())
 		{
 			//Commented this out because it is causing text not to fit
 			//I will revist this in a later release because while nice to have it is not mandatory to see the movie name that has been scraped

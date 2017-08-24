@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Tag extends MovieDataItem {
 	
-	public static final ArrayList<Tag> BLANK_TAGS = new ArrayList<Tag>();
+	public static final ArrayList<Tag> BLANK_TAGS = new ArrayList<>();
 	String tag;
 
 	public Tag(String tag) {
@@ -30,6 +30,14 @@ public class Tag extends MovieDataItem {
 		this.tag = sanitizeString(tag);
 	}
 
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((tag == null) ? 0 : tag.hashCode());
+		return result;
+	}
 
 	@Override
 	public boolean equals(Object obj) {

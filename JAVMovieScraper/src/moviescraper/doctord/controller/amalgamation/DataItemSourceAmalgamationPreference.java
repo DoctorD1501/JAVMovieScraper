@@ -21,7 +21,7 @@ public class DataItemSourceAmalgamationPreference {
 	 */
 	public DataItemSourceAmalgamationPreference(DataItemSource ...dataItemSources)
 	{
-		amalgamationPreferenceOrder = new LinkedList<DataItemSource>();
+		amalgamationPreferenceOrder = new LinkedList<>();
 		for (DataItemSource dis : dataItemSources)
 		{
 			amalgamationPreferenceOrder.add(dis);
@@ -52,7 +52,7 @@ public class DataItemSourceAmalgamationPreference {
 	{
 		if(parsingProfileItems != null)
 		{
-			amalgamationPreferenceOrder = new LinkedList<DataItemSource>();
+			amalgamationPreferenceOrder = new LinkedList<>();
 			for(SiteParsingProfileItem currentParsingProfileItem : parsingProfileItems)
 			{
 				if(!currentParsingProfileItem.isDisabled())
@@ -63,7 +63,7 @@ public class DataItemSourceAmalgamationPreference {
 		}
 		else
 		{
-			amalgamationPreferenceOrder = new LinkedList<DataItemSource>();
+			amalgamationPreferenceOrder = new LinkedList<>();
 			amalgamationPreferenceOrder.add(DefaultDataItemSource.DEFAULT_DATA_ITEM_SOURCE);
 		}
 	}

@@ -26,6 +26,8 @@ public class MessageConsole
 	private Document document;
 	private boolean isAppend;
 	private DocumentListener limitLinesListener;
+	PrintStream out;
+	PrintStream err;
 
 	public MessageConsole(JTextComponent textComponent)
 	{
@@ -65,7 +67,10 @@ public class MessageConsole
 	public void redirectOut(Color textColor, PrintStream printStream)
 	{
 		ConsoleOutputStream cos = new ConsoleOutputStream(textColor, printStream);
-		System.setOut( new PrintStream(cos, true) );
+		if(out == null) {
+			out = new PrintStream(cos, true);
+		}
+		System.setOut( out );
 	}
 
 	/*
@@ -86,7 +91,10 @@ public class MessageConsole
 	public void redirectErr(Color textColor, PrintStream printStream)
 	{
 		ConsoleOutputStream cos = new ConsoleOutputStream(textColor, printStream);
-		System.setErr( new PrintStream(cos, true) );
+		if(err == null) {
+			err = new PrintStream(cos, true);
+		}
+		System.setErr( err );
 	}
 
 	/*
@@ -104,6 +112,17 @@ public class MessageConsole
 		limitLinesListener = new LimitLinesDocumentListener(lines, isAppend);
 		document.addDocumentListener( limitLinesListener );
 	}
+	
+	@Override
+	protected void finalize() throws Throwable {
+	     try {
+	    	 //make sure the PrintStream objects get closed before this object goes bye-bye
+	    	 out.close();
+	         err.close();
+	     } finally {
+	         super.finalize();
+	     }
+	 }
 
 	/*
 	 *	Class to intercept output from a PrintStream and add it to a Document.

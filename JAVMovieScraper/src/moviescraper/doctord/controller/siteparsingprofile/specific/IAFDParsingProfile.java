@@ -211,7 +211,7 @@ public class IAFDParsingProfile extends SiteParsingProfile implements SpecificPr
 
 	@Override
 	public Thumb[] scrapeExtraFanart() {
-		ArrayList<Thumb> extraFanart = new ArrayList<Thumb>();
+		ArrayList<Thumb> extraFanart = new ArrayList<>();
 		return extraFanart.toArray(new Thumb[extraFanart.size()]);
 	}
 
@@ -228,7 +228,7 @@ public class IAFDParsingProfile extends SiteParsingProfile implements SpecificPr
 
 	@Override
 	public ArrayList<Genre> scrapeGenres() {
-		ArrayList<Genre> genreList = new ArrayList<Genre>();
+		ArrayList<Genre> genreList = new ArrayList<>();
 		//No Genres in IAFD
 		return genreList;
 	}
@@ -236,7 +236,7 @@ public class IAFDParsingProfile extends SiteParsingProfile implements SpecificPr
 	@Override
 	public ArrayList<Actor> scrapeActors() {
 		Elements actorElements = document.select("div.castbox:not(.nonsex) a");  //performers who are not just extras, etc
-		ArrayList<Actor> actorList = new ArrayList<Actor>();
+		ArrayList<Actor> actorList = new ArrayList<>();
 		if(actorElements != null)
 		{
 			for(Element currentActorElement : actorElements)
@@ -274,7 +274,7 @@ public class IAFDParsingProfile extends SiteParsingProfile implements SpecificPr
 
 	@Override
 	public ArrayList<Director> scrapeDirectors() {
-		ArrayList<Director> directorList = new ArrayList<Director>();
+		ArrayList<Director> directorList = new ArrayList<>();
 		Element directorElement = findSidebarElement("Director");
 		if(directorElement != null)
 		{
@@ -338,7 +338,7 @@ public class IAFDParsingProfile extends SiteParsingProfile implements SpecificPr
 			throws IOException {
 		if(useSiteSearch)
 		{
-			ArrayList<SearchResult> linksList = new ArrayList<SearchResult>();
+			ArrayList<SearchResult> linksList = new ArrayList<>();
 			Document doc = Jsoup.connect(searchString).userAgent(getRandomUserAgent()).referrer("http://www.iafd.com").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
 			//check to see if we directly found the title
 			if(doc != null && doc.location().contains("title.asp?title="))
@@ -346,13 +346,16 @@ public class IAFDParsingProfile extends SiteParsingProfile implements SpecificPr
 				String title =  doc.select(getTitleElementSelector()).first().text();
 				linksList.add(new SearchResult(doc.location(), title));
 			}
-			Elements movieSearchResultElements = doc.select("table#titleresult tr td a[href*=title.rme");
+			Elements movieSearchResultElements = null;
+			if(doc != null) {
+				movieSearchResultElements = doc.select("table#titleresult tr td a[href*=title.rme");
+			}
 			if(linksList.size() == 0 && (movieSearchResultElements == null || movieSearchResultElements.size() == 0))
 			{
 				this.useSiteSearch = false;
 				return getLinksFromGoogle(fileName, "www.iafd.com/title.rme");
 			}
-			else
+			else if(movieSearchResultElements != null)
 			{
 				for(Element currentMovie : movieSearchResultElements)
 				{
@@ -368,6 +371,7 @@ public class IAFDParsingProfile extends SiteParsingProfile implements SpecificPr
 				}
 				return linksList.toArray(new SearchResult[linksList.size()]);
 			}
+			return linksList.toArray(new SearchResult[linksList.size()]);
 		}
 		else
 		{

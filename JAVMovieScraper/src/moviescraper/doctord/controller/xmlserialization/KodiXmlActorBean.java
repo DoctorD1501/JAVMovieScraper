@@ -8,12 +8,12 @@ import moviescraper.doctord.model.dataitem.Thumb;
 /**
  * Helper class for serializing a actor object to and from XML
  */
-public class XbmcXmlActorBean {
+public class KodiXmlActorBean {
 	
 	public String name;
 	public String role;
 	public String thumb;
-	public XbmcXmlActorBean(String name, String role, String thumb) {
+	public KodiXmlActorBean(String name, String role, String thumb) {
 		super();
 		this.name = name;
 		this.role = role;

@@ -8,10 +8,9 @@ import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
-
+import java.net.URLConnection;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 import javax.swing.border.Border;
@@ -19,6 +18,7 @@ import javax.swing.border.Border;
 import org.imgscalr.Scalr;
 import org.imgscalr.Scalr.Method;
 
+import moviescraper.doctord.controller.siteparsingprofile.specific.Data18SharedMethods;
 import moviescraper.doctord.model.ImageCache;
 import moviescraper.doctord.model.dataitem.Thumb;
 
@@ -28,6 +28,7 @@ public class AsyncImageComponent extends JPanel implements ImageConsumer, MouseL
 	private BufferedImage img;
 	private BufferedImage resizedImage;
     URL url;
+    URL referrerURL;
     Thumb thumb;
     private int preferredX = 135;
     private int preferredY = 135;
@@ -64,7 +65,10 @@ public class AsyncImageComponent extends JPanel implements ImageConsumer, MouseL
     	super.addMouseListener(this);
     	
     	setURLFromThumb();
-        new ImageLoader(this, url).execute();
+        getReferrerURLFromThumb();
+        //System.out.println("ViewerURL: " + viewerUrl);
+        //System.out.println("ThumbURL: " + url);
+        new ImageLoader(this, url, referrerURL, thumb == null ? false : thumb.isModified()).execute();
     }
     
     public void setIcon(Thumb thumb, Dimension newSize)
@@ -73,7 +77,7 @@ public class AsyncImageComponent extends JPanel implements ImageConsumer, MouseL
     	this.thumb = thumb;
     	this.setPreferredSize(newSize);
     	setURLFromThumb();
-    	new ImageLoader(this, url).execute();
+    	new ImageLoader(this, url, referrerURL, thumb.isModified()).execute();
     }
     
     public void setIcon(Thumb thumb)
@@ -81,10 +85,11 @@ public class AsyncImageComponent extends JPanel implements ImageConsumer, MouseL
     	//this.resizedImage = null;
     	this.thumb = thumb;
     	setURLFromThumb();
-    	new ImageLoader(this, url).execute();
+    	new ImageLoader(this, url, referrerURL, thumb.isModified()).execute();
     }
     
     
+   /* 
     public void setIcon(BufferedImage image)
     {
     	//this.resizedImage = null;
@@ -104,7 +109,7 @@ public class AsyncImageComponent extends JPanel implements ImageConsumer, MouseL
     	setURLFromThumb();
     	repaint();
     }
-    
+    */
     
     private void setURLFromThumb()
     {
@@ -120,8 +125,26 @@ public class AsyncImageComponent extends JPanel implements ImageConsumer, MouseL
     	}
     }
 
+    private void getReferrerURLFromThumb()
+    {
+    	if(thumb != null)
+    	{
+    		if(thumb.getReferrerURL() != null)
+    			this.referrerURL = thumb.getReferrerURL();
+    	}
+    	else
+    	{
+    		this.referrerURL = null;
+    	}
+    }
+
+    
     @Override
 	public void imageLoaded(BufferedImage img) {
+    	//clean up old references, just to be safe
+    	this.resizedImage = null;
+    	this.img = null;
+    	
     	this.img = img;
     	if(img != null)
     	{
@@ -213,24 +236,51 @@ public class AsyncImageComponent extends JPanel implements ImageConsumer, MouseL
 
         private ImageConsumer consumer;
         URL url;
+        URL referrerURL;
         BufferedImage pictureLoaded;
+        boolean isImageModified; //whether to use javCoverCropRoutine to crop the image
 
-        public ImageLoader(ImageConsumer consumer, URL url) {
-        	this.url = url;
+        public ImageLoader(ImageConsumer consumer, URL url, URL referrerURL, boolean isImageModified) {
+            this.url = url;
             this.consumer = consumer;
+            this.isImageModified = isImageModified;
+            this.referrerURL = referrerURL;
+            
+            //So far only data18 has been a problem, so we make it the referrer every time
+            if (this.referrerURL == null)
+            {
+            	this.referrerURL = Data18SharedMethods.getReferrerURLFromImageURL(url);
+            }
         }
 
         @Override
         protected BufferedImage doInBackground() throws IOException {
 
-        	if(ImageCache.isImageCached(url))
+        	if(ImageCache.isImageCached(url, isImageModified))
         	{
-        		pictureLoaded = Thumb.convertToBufferedImage(ImageCache.getImageFromCache(url));
+                    pictureLoaded = Thumb.convertToBufferedImage(ImageCache.getImageFromCache(url, isImageModified, referrerURL));   
         	}
         	else
-        	{
-        		pictureLoaded = ImageIO.read(url);
-        		ImageCache.putImageInCache(url, pictureLoaded);
+        	{             
+
+                try {
+                    URLConnection imageConnection = url.openConnection();
+                    imageConnection.setRequestProperty("User-Agent","Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_5) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.65 Safari/537.31");
+                    if (referrerURL != null){
+                        imageConnection.setRequestProperty("Referer",referrerURL.toString());   
+                    }
+                    pictureLoaded = ImageIO.read(imageConnection.getInputStream());
+                 
+                } catch(Throwable t) {
+                    System.out.println("Error: " + t.getMessage());
+                }
+
+               // System.out.println("Image URL:" + url + "        Viewer: " + viewerUrl);
+                
+                if(isImageModified) {
+                        pictureLoaded = Thumb.convertToBufferedImage(pictureLoaded);
+                }
+                ImageCache.putImageInCache(url, pictureLoaded, isImageModified);
         	}
             return pictureLoaded;
 
@@ -244,10 +294,14 @@ public class AsyncImageComponent extends JPanel implements ImageConsumer, MouseL
             } catch (Exception exp) {
                 exp.printStackTrace();
             }
+            finally {
+            	//clean up after ourselves so we don't keep any references around
+            	pictureLoaded = null;
+            	url = null;
+            	consumer = null;
+            }
         }           
     }
-
-
 
 	private void toggleSelected() {
 		if(selected)

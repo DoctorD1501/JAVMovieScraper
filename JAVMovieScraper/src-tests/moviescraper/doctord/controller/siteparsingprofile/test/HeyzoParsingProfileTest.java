@@ -1,17 +1,26 @@
 package moviescraper.doctord.controller.siteparsingprofile.test;
 
-import moviescraper.doctord.controller.siteparsingprofile.specific.HeyzoParsingProfile;
-import moviescraper.doctord.model.dataitem.*;
-import moviescraper.doctord.model.dataitem.Runtime;
-import org.jsoup.nodes.Document;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 
-import static org.junit.Assert.assertEquals;
+import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
+import moviescraper.doctord.controller.siteparsingprofile.specific.HeyzoParsingProfile;
+import moviescraper.doctord.model.dataitem.Actor;
+import moviescraper.doctord.model.dataitem.Genre;
+import moviescraper.doctord.model.dataitem.OriginalTitle;
+import moviescraper.doctord.model.dataitem.ReleaseDate;
+import moviescraper.doctord.model.dataitem.Runtime;
+import moviescraper.doctord.model.dataitem.Thumb;
+import moviescraper.doctord.model.dataitem.Title;
+import moviescraper.doctord.model.dataitem.Trailer;
+import moviescraper.doctord.model.dataitem.Year;
+
+import org.jsoup.nodes.Document;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 public class HeyzoParsingProfileTest {
 	
@@ -22,7 +31,7 @@ public class HeyzoParsingProfileTest {
 	public static void initialize() {
 		profile = new HeyzoParsingProfile( );
 		String url = profile.createSearchString(file);
-		Document document = profile.downloadDocumentFromURLString(url);
+		Document document = SiteParsingProfile.downloadDocumentFromURLString(url);
 		profile.setDocument(document);
 	}
 	
@@ -58,10 +67,12 @@ public class HeyzoParsingProfileTest {
 	@Test public void testOriginalTitle(){
 		OriginalTitle originalTitle = profile.scrapeOriginalTitle();
 		System.out.println("originalTitle = " + originalTitle);
-		//assertEquals("Wrong original title", "ロリカワ�?人気絶頂コスドルを撮影会�?�ヤッ�?�ゃ�?��?��?��?� - �?��??り�?��??", originalTitle.getOriginalTitle());
+		assertEquals("Wrong original title", "ロリカワ！人気絶頂コスドルを撮影会でヤッちゃいました - おぐりみく", originalTitle.getOriginalTitle());
 	}
 	
-	@Test public void testRating(){
+	//Not testing rating for now due to this site no longer supporting rating scraping. This used to be doable without using js
+	//but now the rating requires js to on the parser to get the rating
+	/*@Test public void testRating(){
 		Rating rating = profile.scrapeRating();
 		System.out.println("rating = " + rating);
 		assertEquals(
@@ -69,7 +80,7 @@ public class HeyzoParsingProfileTest {
 				(new Double(rating.getRatingOutOfTen()).doubleValue() > 0.1)
 						&& (new Double(rating.getRatingOutOfTen())
 								.doubleValue() < 10.0), true);
-	}
+	}*/
 	
 	@Test public void testYear(){
 		Year year = profile.scrapeYear();

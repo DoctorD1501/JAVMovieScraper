@@ -7,15 +7,15 @@ import moviescraper.doctord.model.dataitem.Thumb;
 /**
  * Helper class for serializing a fanart object to and from XML
  */
-public class XbmcXmlFanartBean {
+public class KodiXmlFanartBean {
 	private String [] thumb;
 
-	public XbmcXmlFanartBean(String [] thumb) {
+	public KodiXmlFanartBean(String [] thumb) {
 		super();
 		this.thumb = thumb;
 	}
 	
-	public XbmcXmlFanartBean(Thumb [] thumb){
+	public KodiXmlFanartBean(Thumb [] thumb){
 		if (thumb.length == 0)
 		{
 			this.thumb = new String[0];

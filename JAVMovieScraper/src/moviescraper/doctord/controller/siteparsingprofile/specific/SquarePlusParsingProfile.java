@@ -210,7 +210,7 @@ public class SquarePlusParsingProfile extends SiteParsingProfile implements Spec
 
 	@Override
 	public ArrayList<Genre> scrapeGenres() {
-		ArrayList<Genre> genreList = new ArrayList<Genre>();
+		ArrayList<Genre> genreList = new ArrayList<>();
 		Element genreElement = document.select("th.label:containsOwn(Genre) ~ td").first();
 		if(genreElement != null)
 		{
@@ -223,7 +223,7 @@ public class SquarePlusParsingProfile extends SiteParsingProfile implements Spec
 
 	@Override
 	public ArrayList<Actor> scrapeActors() {
-		ArrayList<Actor> actorList = new ArrayList<Actor>();
+		ArrayList<Actor> actorList = new ArrayList<>();
 		
 		Element featuringElement = document.select("th.label:containsOwn(Featuring) ~ td:not(:containsOwn(Various))").first();
 		if(featuringElement != null)
@@ -246,7 +246,7 @@ public class SquarePlusParsingProfile extends SiteParsingProfile implements Spec
 	@Override
 	public ArrayList<Director> scrapeDirectors() {
 		//SquarePlus doesn't have director information, so just return an empty list
-		return new ArrayList<Director>();
+		return new ArrayList<>();
 	}
 
 	@Override
@@ -273,7 +273,7 @@ public class SquarePlusParsingProfile extends SiteParsingProfile implements Spec
 		Document doc = Jsoup.connect(searchString).timeout(CONNECTION_TIMEOUT_VALUE).get();
 		Elements foundMovies = doc.select("ul.products-grid>li");
 		String searchId = searchString.replaceAll(".*\\?q=(.*)$", "$1").replace("-", "").toLowerCase();
-		LinkedList<SearchResult> searchList = new LinkedList<SearchResult>();
+		LinkedList<SearchResult> searchList = new LinkedList<>();
 		
 		for(Element movie: foundMovies){
 			String urlPath = movie.select("a").first().attr("href");
@@ -301,7 +301,7 @@ public class SquarePlusParsingProfile extends SiteParsingProfile implements Spec
 		Elements extraFanartElements = document.select("div.more-views ul li a");
 		if(extraFanartElements != null)
 		{
-			ArrayList<Thumb> extrafanartThumbList = new ArrayList<Thumb>(extraFanartElements.size());
+			ArrayList<Thumb> extrafanartThumbList = new ArrayList<>(extraFanartElements.size());
 			for(Element extraFanartElement : extraFanartElements)
 			{
 				Thumb thumbToAdd;

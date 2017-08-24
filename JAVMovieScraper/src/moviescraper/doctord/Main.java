@@ -13,8 +13,32 @@ import java.io.File;
 import java.io.IOException;
 
 public class Main {
-
-	public static void main(String[] args) {
+	private final static int MIN_HEAP = 768; 
+	public static void main(String[] args) throws Exception {
+		
+		//This program works better if we are running with a bigger heap size, so the code below will attempt
+		//to restart the jar with a bigger heap if we are not already running with a good heap size
+		//this lets the user double click the jar and still get a bigger heap without having to pass
+		//command line arguments to the java program to start the jar with a bigger heap
+		float heapSizeMegs = (Runtime.getRuntime().maxMemory()/1024)/1024;
+		System.out.println("Heap size is " + heapSizeMegs + "M");
+	    if (heapSizeMegs > MIN_HEAP) {
+	    	//we will continue program execute below - we are running with a decent size max heap :)
+	    	System.out.println("Heap size good, continue to launch program");
+	    } else {
+	    	//restart the jar file (if there is one) with a vm argument to give us more max heap size
+	      String pathToJar = Main.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+	      //if running from IDE, we will not be able to find the jar below. instead to get more max memory,
+	      //set an vm arguments in the runtime config with this param: -Xmx1024m
+	      if(pathToJar.endsWith(".jar")) {
+	    	  System.out.println("Trying to launch process with heap size of 1024");
+	    	  ProcessBuilder pb = new ProcessBuilder("java","-Xmx1024m", "-classpath", pathToJar, "moviescraper.doctord.Main");
+	    	  pb.start();
+	      return;
+	      }
+	    }
+		
+		
 		if(args == null || args.length == 0)
 		{
 			//Start the GUI version of the program
@@ -278,6 +302,7 @@ public class Main {
 				break;
 			case "excaliburfilms":
 				parsingProfile = new ExcaliburFilmsParsingProfile();
+				break;
 			case "1000giri":
 				parsingProfile = new OneThousandGiriParsingProfile();
 				break;
@@ -287,6 +312,8 @@ public class Main {
 			case "dmm":
 				parsingProfile = new DmmParsingProfile();
 				break;
+		default:
+			break;
 		}
 		return parsingProfile;
 		

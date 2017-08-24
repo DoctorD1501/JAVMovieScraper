@@ -32,7 +32,7 @@ public class SpecificProfileFactory {
 	private static Vector<SiteParsingProfileItem> getSiteParsingProfileItems() 
 			throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException, URISyntaxException {
 
-		Vector<SiteParsingProfileItem> items = new Vector<SiteParsingProfileItem>();
+		Vector<SiteParsingProfileItem> items = new Vector<>();
 		
 		String packageName = SpecificProfile.class.getPackage().getName();
 		List<Class> classes = getClasses(packageName);
@@ -78,12 +78,12 @@ public class SpecificProfileFactory {
 		assert classLoader != null;
 		String path = packageName.replace('.', '/');
 		Enumeration<URL> resources = classLoader.getResources(path);
-		List<File> dirs = new ArrayList<File>();
+		List<File> dirs = new ArrayList<>();
 		while (resources.hasMoreElements()) {
 			URL resource = resources.nextElement();
 			dirs.add(new File(resource.getFile()));
 		}
-		List<Class> classes = new ArrayList<Class>();
+		List<Class> classes = new ArrayList<>();
 		for (File directory : dirs) {
 			classes.addAll(findClasses(directory, packageName));
 		}
@@ -103,15 +103,15 @@ public class SpecificProfileFactory {
 	@SuppressWarnings("rawtypes")
 	private static List<Class> findClasses(File directory, String packageName) 
 			throws ClassNotFoundException, IOException, URISyntaxException {
-	    List<Class> classes = new ArrayList<Class>();
+	    List<Class> classes = new ArrayList<>();
 	    if (!directory.exists()) {
 	    	//maybe we are running from a jar file, so try that
 	    		    	
 	    	File thisJarFile = new File(SpecificProfileFactory.class.getProtectionDomain().getCodeSource().getLocation().toURI());
 	    	
-	    	if(thisJarFile != null && thisJarFile.exists())
+	    	if(thisJarFile.exists())
 	    	{
-	    		List<Class> classNames=new ArrayList<Class>();
+	    		List<Class> classNames=new ArrayList<>();
 	    		ZipInputStream zip = new ZipInputStream(new FileInputStream(thisJarFile.getPath()));
 	    		for(ZipEntry entry=zip.getNextEntry();entry!=null;entry=zip.getNextEntry())
 	    		    if(entry.getName().endsWith(".class") && !entry.isDirectory()) {

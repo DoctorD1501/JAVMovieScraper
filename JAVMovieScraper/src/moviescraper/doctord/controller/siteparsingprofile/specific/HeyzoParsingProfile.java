@@ -1,16 +1,5 @@
 package moviescraper.doctord.controller.siteparsingprofile.specific;
 
-import moviescraper.doctord.controller.languagetranslation.Language;
-import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
-import moviescraper.doctord.model.SearchResult;
-import moviescraper.doctord.model.dataitem.*;
-import moviescraper.doctord.model.dataitem.Runtime;
-import org.apache.commons.io.FilenameUtils;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -18,6 +7,37 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.commons.io.FilenameUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import moviescraper.doctord.controller.languagetranslation.Language;
+import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
+import moviescraper.doctord.model.SearchResult;
+import moviescraper.doctord.model.dataitem.Actor;
+import moviescraper.doctord.model.dataitem.Director;
+import moviescraper.doctord.model.dataitem.Genre;
+import moviescraper.doctord.model.dataitem.ID;
+import moviescraper.doctord.model.dataitem.MPAARating;
+import moviescraper.doctord.model.dataitem.OriginalTitle;
+import moviescraper.doctord.model.dataitem.Outline;
+import moviescraper.doctord.model.dataitem.Plot;
+import moviescraper.doctord.model.dataitem.Rating;
+import moviescraper.doctord.model.dataitem.ReleaseDate;
+import moviescraper.doctord.model.dataitem.Runtime;
+import moviescraper.doctord.model.dataitem.Set;
+import moviescraper.doctord.model.dataitem.SortTitle;
+import moviescraper.doctord.model.dataitem.Studio;
+import moviescraper.doctord.model.dataitem.Tagline;
+import moviescraper.doctord.model.dataitem.Thumb;
+import moviescraper.doctord.model.dataitem.Title;
+import moviescraper.doctord.model.dataitem.Top250;
+import moviescraper.doctord.model.dataitem.Trailer;
+import moviescraper.doctord.model.dataitem.Votes;
+import moviescraper.doctord.model.dataitem.Year;
 
 public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
@@ -74,12 +94,18 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 
 	@Override
 	public Rating scrapeRating() {
-		Element ratingValueElement = japaneseDocument.select("span.dataInfo .revieValue span").first();
+		//This used to be scrapable, but this now requires javascript to parse the page to get the rating
+		//TODO: If I ever replace jsoup with a javascript enabled parser, rewrite this function
+		return Rating.BLANK_RATING;
+		/*this was the code that should work if I had javascript enabled parser*/
+		/*
+		Element ratingValueElement = japaneseDocument.select("#review-value").first();
 		if(ratingValueElement != null)
 		{
 			return new Rating(5.0, ratingValueElement.text().trim());
 		}
-		else return new Rating(0,"");
+		else return Rating.BLANK_RATING;
+		*/
 	}
 
 	@Override
@@ -149,7 +175,7 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 
 	@Override
 	public Thumb[] scrapePosters() {
-		ArrayList<Thumb> thumbList = new ArrayList<Thumb>();
+		ArrayList<Thumb> thumbList = new ArrayList<>();
 		String scrapedId = scrapeID().getId();
 		try {
 			//gallery links
@@ -215,7 +241,7 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 
 	@Override
 	public ArrayList<Genre> scrapeGenres() {
-		ArrayList<Genre> genreList = new ArrayList<Genre>();
+		ArrayList<Genre> genreList = new ArrayList<>();
 		Elements genreElements = document.select("div.movieInfo a[href*=/listpages/category");
 		if(genreElements != null)
 		{
@@ -231,7 +257,7 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 	@Override
 	public ArrayList<Actor> scrapeActors() {
 		Elements actorElements = document.select("div.movieInfo span.dataInfo a[href*=/listpages/actor");
-		ArrayList<Actor> actorList = new ArrayList<Actor>();
+		ArrayList<Actor> actorList = new ArrayList<>();
 		for(Element currentActor : actorElements)
 		{
 			String actorName = currentActor.text().trim();
@@ -268,7 +294,7 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 
 	@Override
 	public ArrayList<Director> scrapeDirectors() {
-		return new ArrayList<Director>();
+		return new ArrayList<>();
 	}
 
 	@Override

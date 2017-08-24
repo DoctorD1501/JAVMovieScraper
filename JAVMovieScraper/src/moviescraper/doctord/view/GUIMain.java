@@ -4,14 +4,13 @@ import java.awt.EventQueue;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
-import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.SwingUtilities;
 
 import java.awt.BorderLayout;
 
@@ -48,6 +47,8 @@ import java.awt.event.MouseListener;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
+import javafx.embed.swing.JFXPanel;
+import javafx.stage.DirectoryChooser;
 import javax.swing.BoxLayout;
 import javax.swing.event.ListSelectionListener;
 
@@ -68,14 +69,6 @@ public class GUIMain {
 	private AllAmalgamationOrderingPreferences allAmalgamationOrderingPreferences;
 
 	//scraped movies
-	@Deprecated private Movie currentlySelectedMovieDMM;
-	@Deprecated private Movie currentlySelectedMovieActionJav;
-	@Deprecated private Movie currentlySelectedMovieSquarePlus;
-	@Deprecated private Movie currentlySelectedMovieJavLibrary;
-	@Deprecated private Movie currentlySelectedMovieJavZoo;
-	@Deprecated private Movie currentlySelectedMovieCaribbeancomPremium;
-	@Deprecated private Movie currentlySelectedMovieData18Movie;
-	@Deprecated private Movie currentlySelectedMovieR18;
 	public List <Movie> movieToWriteToDiskList;
 
 	//Gui Elements
@@ -89,7 +82,7 @@ public class GUIMain {
 	private JScrollPane fileListScrollPane;
 	private JSplitPane fileListFileDetailSplitPane;
 	private JList<File> fileList;
-	private JFileChooser chooser;
+	private DirectoryChooser chooser;
 	
 	private MessageConsolePanel messageConsolePanel;
 	
@@ -101,17 +94,23 @@ public class GUIMain {
 	private long m_time;
 
 	//Menus
-	JMenuBar menuBar;
+	GUIMainMenuBar menuBar;
 	JMenu preferenceMenu;
 	private String originalJavLibraryMovieTitleBeforeAmalgamate;
 
 	//Dimensions of various elements
-	private static final int defaultMainFrameX = 1024;
-	private static final int defaultMainFrameY = 768;
+	private static final int defaultMainFrameX = 1045;
+	private static final int defaultMainFrameY = 850;
 
 	private final static boolean debugMessages = false;
 	private GUIMainButtonPanel buttonPanel;
 
+	//JavaFX stuff
+	//Ignore warnings about this not being used. It is used for the file browser. 
+	//You can comment this variable out and you will see the file browsing no longer works :)
+	@SuppressWarnings("unused")
+	private final JFXPanel fxPanel = new JFXPanel(); //ensures the JavaFX library is loaded - allows us to use DirectoryChooser later on
+	
 	/**
 	 * Launch the application.
 	 */
@@ -178,8 +177,8 @@ public class GUIMain {
 		setCurrentlySelectedFolderJpgFileList(new ArrayList<File>());
 		setCurrentlySelectedFanartFileList(new ArrayList<File>());
 		setCurrentlySelectedTrailerFileList(new ArrayList<File>());
-		currentlySelectedActorsFolderList = new ArrayList<File>();
-		movieToWriteToDiskList = new ArrayList<Movie>();
+		currentlySelectedActorsFolderList = new ArrayList<>();
+		movieToWriteToDiskList = new ArrayList<>();
 		frmMoviescraper = new JFrame();
 		frmMovieScraperBlocker = new WindowBlocker();
 		//set up the window that sits above the frame and can block input to this frame if needed while a dialog is open
@@ -209,7 +208,8 @@ public class GUIMain {
 		frmMoviescraper.getContentPane().add(buttonPanel, BorderLayout.NORTH);
 		
 		//add in the menu bar
-		frmMoviescraper.setJMenuBar(new GUIMainMenuBar(this));
+		menuBar = new GUIMainMenuBar(this);
+		frmMoviescraper.setJMenuBar(menuBar);
 
 		int gap = 7;
 		fileListFileDetailSplitPane.setBorder(BorderFactory.createEmptyBorder());
@@ -233,8 +233,8 @@ public class GUIMain {
 		defaultHomeDirectory = getGuiSettings().getLastUsedDirectory();
 		setCurrentlySelectedDirectoryList(defaultHomeDirectory);
 		
-		listModelFiles = new DefaultListModel<File>();
-		setFileList(new JList<File>(listModelFiles));
+		listModelFiles = new DefaultListModel<>();
+		setFileList(new JList<>(listModelFiles));
 
 		//add in a keyListener so that you can start typing letters in the list and it will take you to that item in the list
 		//if you type the second letter within CHAR_DELTA amount of time that will count as the Nth letter of the search
@@ -370,15 +370,7 @@ public class GUIMain {
 	}
 
 	public void removeOldScrapedMovieReferences() {
-		setCurrentlySelectedMovieDMM(null);
-		setCurrentlySelectedMovieActionJav(null);
-		setCurrentlySelectedMovieSquarePlus(null);
-		setCurrentlySelectedMovieJavLibrary(null);
 		setOriginalJavLibraryMovieTitleBeforeAmalgamate(null);
-		setCurrentlySelectedMovieJavZoo(null);
-		setCurrentlySelectedMovieCaribbeancomPremium(null);
-		setCurrentlySelectedMovieData18Movie(null);
-		setCurrentlySelectedMovieR18(null);
 		if(movieToWriteToDiskList != null)
 			movieToWriteToDiskList.clear();
 	}
@@ -395,43 +387,47 @@ public class GUIMain {
 	}
 
 	public void updateFileListModel(File currentlySelectedDirectory, boolean keepSelectionsAndReferences) {
-		try{
-			getFrmMoviescraper().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-			File [] filesToList = showFileListSorted(currentlySelectedDirectory);
-			List<File> selectValuesListBeforeUpdate = getFileList().getSelectedValuesList();
+		//make sure this happens on the event dispatch thread, since it can be called from, for example, a background thread that is writing 		the files 
+		 SwingUtilities.invokeLater(() -> {
+			 try{
+					getFrmMoviescraper().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+					File [] filesToList = showFileListSorted(currentlySelectedDirectory);
+					List<File> selectValuesListBeforeUpdate = getFileList().getSelectedValuesList();
 
-			//We don't want to fire the listeners events when reselecting the items because this 
-			//will cause us additional IO that is not needed as the program rereads the nfo.
-			//To avoid this, we can save out the old listener, remove it, select the items and then add it back
-			ListSelectionListener[] fileListSelectionListener = null;
-			if(keepSelectionsAndReferences)
-			{
-				fileListSelectionListener = getFileList().getListSelectionListeners();
-				getFileList().removeListSelectionListener(getFileList().getListSelectionListeners()[0]);
-			}
-			listModelFiles.removeAllElements();
-			for (File file : filesToList) {
-				listModelFiles.addElement(file);
-			}
-			if(!keepSelectionsAndReferences)
-			{
-				removeOldScrapedMovieReferences();
-				removeOldSelectedFileReferences();
-			}
-			//select the old values we had before we updated the list
-			for(File currentValueToSelect : selectValuesListBeforeUpdate)
-			{
-				getFileList().setSelectedValue(currentValueToSelect, false);
-			}
-			if(keepSelectionsAndReferences && fileListSelectionListener != null)
-			{
-				getFileList().addListSelectionListener(fileListSelectionListener[0]);
-			}
-		}
-		finally
-		{
-			getFrmMoviescraper().setCursor(Cursor.getDefaultCursor());
-		}
+					//We don't want to fire the listeners events when reselecting the items because this 
+					//will cause us additional IO that is not needed as the program rereads the nfo.
+					//To avoid this, we can save out the old listener, remove it, select the items and then add it back
+					ListSelectionListener[] fileListSelectionListener = null;
+					if(keepSelectionsAndReferences)
+					{
+						fileListSelectionListener = getFileList().getListSelectionListeners();
+						getFileList().removeListSelectionListener(getFileList().getListSelectionListeners()[0]);
+					}
+					listModelFiles.removeAllElements();
+					for (File file : filesToList) {
+						listModelFiles.addElement(file);
+					}
+					if(!keepSelectionsAndReferences)
+					{
+						removeOldScrapedMovieReferences();
+						removeOldSelectedFileReferences();
+					}
+					//select the old values we had before we updated the list
+					for(File currentValueToSelect : selectValuesListBeforeUpdate)
+					{
+						getFileList().setSelectedValue(currentValueToSelect, false);
+					}
+					if(keepSelectionsAndReferences && fileListSelectionListener != null)
+					{
+						getFileList().addListSelectionListener(fileListSelectionListener[0]);
+					}
+				}
+				finally
+				{
+					getFrmMoviescraper().setCursor(Cursor.getDefaultCursor());
+				}
+		 });
+		
 	}
 
 	private File[] showFileListSorted(File currentlySelectedDirectory) {
@@ -474,6 +470,7 @@ public class GUIMain {
 
 	//Update the File Detail Panel GUI so the user can see what is scraped in
 	public void updateAllFieldsOfFileDetailPanel(boolean forceUpdatePoster, boolean newMovieWasSet) {
+			fileDetailPanel.currentListIndexOfDisplayedMovie = 0;
 			fileDetailPanel.updateView(forceUpdatePoster, newMovieWasSet);
 	}
 
@@ -543,10 +540,10 @@ public class GUIMain {
 
 
 	public File[] actorFolderFiles(int movieNumberInList) {
-		ArrayList<File> actorFiles = new ArrayList<File>();
-		System.out.println("actorfolderfiles " +  movieToWriteToDiskList);
+		ArrayList<File> actorFiles = new ArrayList<>();
 		if(movieToWriteToDiskList != null 
-				&& movieToWriteToDiskList.size() > 0 
+				&& movieToWriteToDiskList.size() > 0
+				&& movieToWriteToDiskList.size() > movieNumberInList
 				&& movieToWriteToDiskList.get(movieNumberInList) != null
 				&& movieToWriteToDiskList.get(movieNumberInList).getActors() != null)
 		{
@@ -630,61 +627,11 @@ public class GUIMain {
 		this.currentlySelectedFanartFileList = currentlySelectedFanartFileList;
 	}
 
-	public Movie getCurrentlySelectedMovieDMM() {
-		return currentlySelectedMovieDMM;
-	}
-
-	public void setCurrentlySelectedMovieDMM(Movie currentlySelectedMovieDMM) {
-		this.currentlySelectedMovieDMM = currentlySelectedMovieDMM;
-	}
-
-	public Movie getCurrentlySelectedMovieJavLibrary() {
-		return currentlySelectedMovieJavLibrary;
-	}
-
-	public void setCurrentlySelectedMovieJavLibrary(
-			Movie currentlySelectedMovieJavLibrary) {
-		this.currentlySelectedMovieJavLibrary = currentlySelectedMovieJavLibrary;
-		if(this.currentlySelectedMovieJavLibrary != null && this.currentlySelectedMovieJavLibrary.getTitle() != null)
-			setOriginalJavLibraryMovieTitleBeforeAmalgamate(currentlySelectedMovieJavLibrary.getTitle().getTitle());
-		else
-		{
-			setOriginalJavLibraryMovieTitleBeforeAmalgamate(null);
-		}
-	}
-
-	public Movie getCurrentlySelectedMovieSquarePlus() {
-		return currentlySelectedMovieSquarePlus;
-	}
-
-	public void setCurrentlySelectedMovieSquarePlus(
-			Movie currentlySelectedMovieSquarePlus) {
-		this.currentlySelectedMovieSquarePlus = currentlySelectedMovieSquarePlus;
-	}
-
-	public Movie getCurrentlySelectedMovieActionJav() {
-		return currentlySelectedMovieActionJav;
-	}
-
-	public void setCurrentlySelectedMovieActionJav(
-			Movie currentlySelectedMovieActionJav) {
-		this.currentlySelectedMovieActionJav = currentlySelectedMovieActionJav;
-	}
-
-	public Movie getCurrentlySelectedMovieJavZoo() {
-		return currentlySelectedMovieJavZoo;
-	}
-
-	public void setCurrentlySelectedMovieJavZoo(
-			Movie currentlySelectedMovieJavZoo) {
-		this.currentlySelectedMovieJavZoo = currentlySelectedMovieJavZoo;
-	}
-
-	public JFileChooser getChooser() {
+	public DirectoryChooser getChooser() {
 		return chooser;
 	}
 
-	public void setChooser(JFileChooser chooser) {
+	public void setChooser(DirectoryChooser chooser) {
 		this.chooser = chooser;
 	}
 
@@ -750,24 +697,6 @@ public class GUIMain {
 	public void setProgressMonitor(ProgressMonitor progressMonitor) {
 		this.progressMonitor = progressMonitor;
 	}
-
-	public Movie getCurrentlySelectedMovieCaribbeancomPremium() {
-		return currentlySelectedMovieCaribbeancomPremium;
-	}
-
-	public void setCurrentlySelectedMovieCaribbeancomPremium(
-			Movie currentlySelectedMovieCaribbeancomPremium) {
-		this.currentlySelectedMovieCaribbeancomPremium = currentlySelectedMovieCaribbeancomPremium;
-	}
-
-	public Movie getCurrentlySelectedMovieData18Movie() {
-		return currentlySelectedMovieData18Movie;
-	}
-
-	public void setCurrentlySelectedMovieData18Movie(
-			Movie currentlySelectedMovieData18Movie) {
-		this.currentlySelectedMovieData18Movie = currentlySelectedMovieData18Movie;
-	}
 	
 	public void showMessageConsolePanel(){
 		messageConsolePanel.setVisible(true);
@@ -787,14 +716,6 @@ public class GUIMain {
 	public void hideButtonPanel(){
 		buttonPanel.setVisible(false);
 		guiSettings.setShowToolbar(false);
-	}
-	
-	public Movie getCurrentlySelectedMovieR18() {
-		return currentlySelectedMovieR18;
-	}
-
-	public void setCurrentlySelectedMovieR18(Movie currentlySelectedMovieR18) {
-		this.currentlySelectedMovieR18 = currentlySelectedMovieR18;
 	}
 
 	public String getOriginalJavLibraryMovieTitleBeforeAmalgamate() {
@@ -822,6 +743,16 @@ public class GUIMain {
 	public void setAllAmalgamationOrderingPreferences(
 			AllAmalgamationOrderingPreferences allAmalgamationOrderingPreferences) {
 		this.allAmalgamationOrderingPreferences = allAmalgamationOrderingPreferences;
+	}
+	
+	public void enableFileWrite() {
+		menuBar.enableWriteFile();
+		buttonPanel.enableWriteFile();
+	}
+	
+	public void disableFileWrite() {
+		menuBar.disableWriteFile();
+		buttonPanel.disableWriteFile();
 	}
 	
 }

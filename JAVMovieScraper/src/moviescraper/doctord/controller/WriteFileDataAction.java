@@ -50,13 +50,14 @@ public class WriteFileDataAction implements ActionListener {
 						//I don't think this should happen anymore, just display an error message instead of executing the above code
 						System.err.println("Code I thought was not supposed to execute did, WriteFileDataAction, line 59");
 					}
-					if(guiMain.movieToWriteToDiskList.get(movieNumberInList) == null)
+					if(guiMain.movieToWriteToDiskList.get(movieNumberInList) == null || 
+							!guiMain.movieToWriteToDiskList.get(movieNumberInList).hasValidTitle())
 					{
-						System.out.println("No match for this movie in the array, skipping writing");
+						System.out.println("No match for this movie in the array or there was no title filled in; skipping writing");
 						continue;
 					}
 					System.out.println("Writing this movie to file: "
-							+ guiMain.movieToWriteToDiskList);
+							+ guiMain.movieToWriteToDiskList.get(movieNumberInList).getTitle());
 					if(guiMain.movieToWriteToDiskList != null)
 					{
 						if ( guiMain.getPreferences().getRenameMovieFile() ) {
@@ -84,7 +85,23 @@ public class WriteFileDataAction implements ActionListener {
 								}
 								else if(oldMovieFile.isFile())
 								{
-									FileUtils.moveFile(oldMovieFile, newMovieFile);
+									/* Faster on network shares to move to directory then rename */
+									File oldMovieDirectoryFile = oldMovieFile.getParentFile().getCanonicalFile();
+									File newMovieDirectoryFile = newMovieFile.getParentFile().getCanonicalFile();
+									File oldMovieNameFile = new File(oldMovieFile.getName());
+									File newMovieNameFile = new File(newMovieFile.getName());
+									
+									if(!newMovieDirectoryFile.equals(oldMovieDirectoryFile))
+									{
+										// Move to new directory
+										FileUtils.moveFileToDirectory(oldMovieFile, newMovieDirectoryFile, true);
+									}
+									
+									// Create paths based on new directory and rename file
+									File newDirOldNameFile = new File(newMovieDirectoryFile, oldMovieNameFile.toString());
+									File newDirNewNameFile = new File(newMovieDirectoryFile, newMovieNameFile.toString());
+									
+									FileUtils.moveFile(newDirOldNameFile, newDirNewNameFile);
 								}
 							}
 							catch(FileExistsException e)
