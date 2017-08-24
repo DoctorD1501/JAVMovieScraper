@@ -1,6 +1,20 @@
 package moviescraper.doctord.controller.siteparsingprofile.specific;
 
 
+import moviescraper.doctord.controller.languagetranslation.Language;
+import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
+import moviescraper.doctord.model.SearchResult;
+import moviescraper.doctord.model.dataitem.*;
+import moviescraper.doctord.model.dataitem.Runtime;
+import moviescraper.doctord.model.preferences.MoviescraperPreferences;
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.net.URLCodec;
+import org.apache.commons.lang3.StringUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -10,39 +24,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
-
-import org.apache.commons.codec.DecoderException;
-import org.apache.commons.codec.net.URLCodec;
-import org.apache.commons.lang3.StringUtils;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
-import moviescraper.doctord.controller.languagetranslation.Language;
-import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
-import moviescraper.doctord.model.SearchResult;
-import moviescraper.doctord.model.dataitem.Actor;
-import moviescraper.doctord.model.dataitem.Director;
-import moviescraper.doctord.model.dataitem.Genre;
-import moviescraper.doctord.model.dataitem.ID;
-import moviescraper.doctord.model.dataitem.MPAARating;
-import moviescraper.doctord.model.dataitem.OriginalTitle;
-import moviescraper.doctord.model.dataitem.Outline;
-import moviescraper.doctord.model.dataitem.Plot;
-import moviescraper.doctord.model.dataitem.Rating;
-import moviescraper.doctord.model.dataitem.ReleaseDate;
-import moviescraper.doctord.model.dataitem.Runtime;
-import moviescraper.doctord.model.dataitem.Set;
-import moviescraper.doctord.model.dataitem.SortTitle;
-import moviescraper.doctord.model.dataitem.Studio;
-import moviescraper.doctord.model.dataitem.Tagline;
-import moviescraper.doctord.model.dataitem.Thumb;
-import moviescraper.doctord.model.dataitem.Title;
-import moviescraper.doctord.model.dataitem.Top250;
-import moviescraper.doctord.model.dataitem.Votes;
-import moviescraper.doctord.model.dataitem.Year;
-import moviescraper.doctord.model.preferences.MoviescraperPreferences;
 
 public class JavLibraryParsingProfile extends SiteParsingProfile implements SpecificProfile {
 	private Logger log = Logger.getLogger(JavLibraryParsingProfile.class.getName());
@@ -247,7 +228,7 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 		Thumb[] posterThumbs = new Thumb[1];
 		if(posterElement != null)
 		{
-			String posterLink = posterElement.attr("src").trim();
+			String posterLink = "http:" + posterElement.attr("src").trim();
 			try{
 				if (doCrop)
 					//posterThumbs[0] = new Thumb(posterLink, 52.7, 0, 0, 0);
@@ -425,7 +406,7 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 			if(posterElement != null)
 			{
 				String posterURLSmall = posterElement.attr("src");
-				posterURLSmall = posterURLSmall.substring(0, posterURLSmall.lastIndexOf('l')) + "t.jpg";
+				posterURLSmall = "http:" + posterURLSmall.substring(0, posterURLSmall.lastIndexOf('l')) + "t.jpg";
 				linksList.add(new SearchResult(doc.baseUri(), linkTitle, new Thumb(posterURLSmall)));
 			}
 			else 

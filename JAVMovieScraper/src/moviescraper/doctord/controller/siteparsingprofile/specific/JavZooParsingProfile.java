@@ -1,5 +1,18 @@
 package moviescraper.doctord.controller.siteparsingprofile.specific;
 
+import moviescraper.doctord.controller.languagetranslation.JapaneseCharacter;
+import moviescraper.doctord.controller.languagetranslation.TranslateString;
+import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
+import moviescraper.doctord.model.SearchResult;
+import moviescraper.doctord.model.dataitem.*;
+import moviescraper.doctord.model.dataitem.Runtime;
+import org.apache.commons.codec.net.URLCodec;
+import org.apache.commons.lang3.StringUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -8,38 +21,6 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
-
-import org.apache.commons.codec.net.URLCodec;
-import org.apache.commons.lang3.StringUtils;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
-import moviescraper.doctord.controller.languagetranslation.JapaneseCharacter;
-import moviescraper.doctord.controller.languagetranslation.TranslateString;
-import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
-import moviescraper.doctord.model.SearchResult;
-import moviescraper.doctord.model.dataitem.Actor;
-import moviescraper.doctord.model.dataitem.Director;
-import moviescraper.doctord.model.dataitem.Genre;
-import moviescraper.doctord.model.dataitem.ID;
-import moviescraper.doctord.model.dataitem.MPAARating;
-import moviescraper.doctord.model.dataitem.OriginalTitle;
-import moviescraper.doctord.model.dataitem.Outline;
-import moviescraper.doctord.model.dataitem.Plot;
-import moviescraper.doctord.model.dataitem.Rating;
-import moviescraper.doctord.model.dataitem.ReleaseDate;
-import moviescraper.doctord.model.dataitem.Runtime;
-import moviescraper.doctord.model.dataitem.Set;
-import moviescraper.doctord.model.dataitem.SortTitle;
-import moviescraper.doctord.model.dataitem.Studio;
-import moviescraper.doctord.model.dataitem.Tagline;
-import moviescraper.doctord.model.dataitem.Thumb;
-import moviescraper.doctord.model.dataitem.Title;
-import moviescraper.doctord.model.dataitem.Top250;
-import moviescraper.doctord.model.dataitem.Votes;
-import moviescraper.doctord.model.dataitem.Year;
 
 public class JavZooParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
@@ -345,7 +326,7 @@ public class JavZooParsingProfile extends SiteParsingProfile implements Specific
 		URLCodec codec = new URLCodec();
 		try {
 			String fileNameURLEncoded = codec.encode(fileNameNoExtension);
-			String searchTerm = "http://www.javdog.com/" + siteLanguageToScrape  + "/search/" + fileNameURLEncoded;
+			String searchTerm = "https://avio.pw/" + siteLanguageToScrape  + "/search/" + fileNameURLEncoded;
 			
 			return searchTerm;
 					
