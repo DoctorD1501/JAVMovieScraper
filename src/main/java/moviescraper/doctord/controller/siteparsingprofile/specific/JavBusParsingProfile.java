@@ -257,7 +257,7 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 
 	@Override
 	public ID scrapeID() {
-		Element idElement = document.select("span.movie-code, span.header:containsOwn(ID:) + span").first();
+		Element idElement = document.select(".movie .info span + span").first();
 		if(idElement != null)
 			return new ID(idElement.text());
 		else return ID.BLANK_ID;
