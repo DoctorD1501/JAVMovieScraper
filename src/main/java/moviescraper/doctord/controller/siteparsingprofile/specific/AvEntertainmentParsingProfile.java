@@ -129,12 +129,7 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 		Elements elements = document.select("div[id=titlebox] ul li");
 		for (Element element : elements) {
 			if (element.childNodeSize() == 3) {
-				Node childNode = element.childNode(2);
-				if (childNode instanceof TextNode
-						&& (element.childNode(1).childNode(0).toString()
-								.startsWith("Playing time") || element
-								.childNode(1).childNode(0).toString()
-								.startsWith("収録時間"))) {
+                                if(element.text().startsWith("Play time") || element.text().startsWith("収録時間")) {
 					String data = element.childNode(2).toString();
 					Pattern pattern = Pattern.compile("\\d+");
 					Matcher matcher = pattern.matcher(data);
