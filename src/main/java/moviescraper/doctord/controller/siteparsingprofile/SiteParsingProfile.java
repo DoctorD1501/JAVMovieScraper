@@ -470,7 +470,7 @@ public abstract class SiteParsingProfile implements DataItemSource{
 	 * so this method is designed to pick a random one from a list of valid user agent strings
 	 * @return a random user agent string that can be passed to .userAgent() when calling Jsoup.connect
 	 */
-	public String getRandomUserAgent()
+	public static String getRandomUserAgent()
 	{
 		String[] userAgent = {"Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6",
 				"Mozilla/5.0 (Windows NT 6.3; rv:36.0) Gecko/20100101 Firefox/36.0",
