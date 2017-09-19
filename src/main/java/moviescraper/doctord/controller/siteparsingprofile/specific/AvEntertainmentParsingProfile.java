@@ -296,23 +296,20 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 			throws IOException {
 		Document doc = Jsoup.connect(searchString).userAgent("Mozilla").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
 		List<SearchResult> list = new ArrayList<>();
-		Elements elements = doc.select("td[valign=top] table tbody tr td");
+		Elements elements = doc.select(".PPV-TOP");
 
 		for (Element e : elements) {
-			Elements selectLink = e.select("h4 a[href^=http://www.aventertainments.com]");
-			if (selectLink.size() > 0) {
-				String href = selectLink.get(0).attr("href");
-				String label = selectLink.get(0).childNode(0).toString();
-				Elements selectThumb = e.select("a img");
-				Thumb thumb = null;
-				for (Element thumbElement : selectThumb) {
-					String attr = thumbElement.attr("src");
-					if (attr.startsWith("http://imgs.aventertainments.com/product_images")) {
-						thumb = new Thumb(attr);
-					}
-				}
-				list.add( new SearchResult(href, label, thumb) );
-			}
+                        String href = e.attr("href");
+                        String label = e.siblingElements().get(e.siblingIndex()).text();
+                        Elements selectThumb = e.select("img");
+                        Thumb thumb = null;
+                        for (Element thumbElement : selectThumb) {
+                                String attr = thumbElement.attr("src");
+                                if (attr.startsWith("http://imgs.aventertainments.com/product_images")) {
+                                        thumb = new Thumb(attr);
+                                }
+                        }
+                        list.add( new SearchResult(href, label, thumb) );
 		}
 		return list.toArray(new SearchResult[list.size()]);
 	}
