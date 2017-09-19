@@ -41,7 +41,7 @@ public class AboutDialog extends JDialog {
 		Font baseFont = nameLabel.getFont().deriveFont(Font.PLAIN);
 		nameLabel.setFont(baseFont.deriveFont(Font.BOLD, baseFont.getSize() + 4.0f));
 		
-		JLabel versionLabel = new JLabel(versionString);
+		JLabel versionLabel = new JLabel(getClass().getPackage().getImplementationVersion());
 		versionLabel.setFont(baseFont.deriveFont(baseFont.getSize() + 2.0f));
 		
 		JTextArea aboutText = new JTextArea(aboutString);
