@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import moviescraper.doctord.controller.languagetranslation.Language;
 
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.HeyzoParsingProfile;
@@ -30,6 +31,7 @@ public class HeyzoParsingProfileTest {
 	@BeforeClass
 	public static void initialize() {
 		profile = new HeyzoParsingProfile( );
+                profile.setScrapingLanguage(Language.ENGLISH);
 		String url = profile.createSearchString(file);
 		Document document = SiteParsingProfile.downloadDocumentFromURLString(url);
 		profile.setDocument(document);

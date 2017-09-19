@@ -33,6 +33,7 @@ public class CaribbeancomPremiumParsingProfileTest {
 	@BeforeClass
 	public static void initialize() {
 		parser = new CaribbeancomPremiumParsingProfile();
+		parser.setScrapingLanguage(Language.ENGLISH);
 		String searchString = parser.createSearchString(file);
 		try {
 			SearchResult[] searchResults = parser.getSearchResults(searchString);

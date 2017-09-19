@@ -1,10 +1,11 @@
 package moviescraper.doctord.controller.siteparsingprofile.test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import moviescraper.doctord.controller.languagetranslation.Language;
 
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.MyTokyoHotParsingProfile;
@@ -32,6 +33,7 @@ public class MyTokyoHotParsingProfileTest {
 	@BeforeClass
 	public static void initialize() {
 		parser = new MyTokyoHotParsingProfile();
+                parser.setScrapingLanguage(Language.ENGLISH);
 		String searchString = parser.createSearchString(file);
 		try {
 			SearchResult[] searchResults = parser.getSearchResults(searchString);
@@ -96,8 +98,11 @@ public class MyTokyoHotParsingProfileTest {
 	
 	@Test public void testScrapeActor(){
 		ArrayList<Actor> actors = parser.scrapeActors();
-		assertEquals("Actor name not correct", "Iori Tsukimoto", actors.get(0).getName());
-		assertEquals("Actor thumb path not correct", "http://my.cdn.tokyo-hot.com/media/cast/5859/thumbnail.jpg", actors.get(0).getThumb().getThumbURL().toString());
+                assertTrue("There should be more than one actor", actors.size() > 0);
+                Actor actor  = actors.get(0);
+		assertEquals("Actor name not correct", "Iori Tsukimoto", actor.getName());
+                assertNotNull("Thumb should exists", actor.getThumb());
+		assertEquals("Actor thumb path not correct", "http://my.cdn.tokyo-hot.com/media/cast/5859/thumbnail.jpg", actor.getThumb().getThumbURL().toString());
 	}
 	
 	@Test public void testScrapeGenre(){
