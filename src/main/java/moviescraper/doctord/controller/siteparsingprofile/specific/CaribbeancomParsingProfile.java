@@ -203,7 +203,7 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements
 		if(id != null && id.getId().length() > 0)
 		{
 			String trailerPoster = "http://www.caribbeancom.com/moviepages/" + id.getId() + "/images/" + "l_l.jpg";
-			if(SiteParsingProfile.fileExistsAtURL(trailerPoster))
+			if(SiteParsingProfile.fileExistsAtURL(trailerPoster, true))
 			{
 				try {
 					posters.add(new Thumb(trailerPoster));
