@@ -43,7 +43,7 @@ public class AvEntertainmentParsingProfileTest {
 //		for (SearchResult sr : results) {
 //			TestTokyoHotParsingProfile.showImage(sr.getLabel(), sr.getPreviewImage().getThumbImage());
 //		}
-		assertTrue("There should be 20 results.", results.length == 20);
+		assertTrue("There should be 40 results.", results.length == 40);
 	}
 
 	@Test
