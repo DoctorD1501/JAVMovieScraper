@@ -352,16 +352,26 @@ public abstract class SiteParsingProfile implements DataItemSource{
 	}
 
 	protected static boolean fileExistsAtURL(String URLName){
+		return fileExistsAtURL(URLName, false);
+	}
+
+	protected static boolean fileExistsAtURL(String URLName, Boolean allow_redirects){
 	    try {
-	      HttpURLConnection.setFollowRedirects(false);
+	      HttpURLConnection.setFollowRedirects(allow_redirects);
 	      // note : you may also need
 	      //        HttpURLConnection.setInstanceFollowRedirects(false)
 	      HttpURLConnection con =
 	         (HttpURLConnection) new URL(URLName).openConnection();
+              con.setInstanceFollowRedirects(allow_redirects);
 	      con.setRequestMethod("HEAD");
 	      con.setConnectTimeout(CONNECTION_TIMEOUT_VALUE);
 	      con.setReadTimeout(CONNECTION_TIMEOUT_VALUE);
-	      return (con.getResponseCode() == HttpURLConnection.HTTP_OK);
+              con.setRequestProperty("User-Agent", getRandomUserAgent());
+              if(!allow_redirects) {
+                    return (con.getResponseCode() == HttpURLConnection.HTTP_OK);
+              } else {
+                    return (con.getResponseCode() == HttpURLConnection.HTTP_OK || con.getResponseCode() == HttpURLConnection.HTTP_MOVED_TEMP);
+              }
 	    }
 	    catch(SocketTimeoutException e) {
 	    	// Non-existing DMM trailers usually time out
