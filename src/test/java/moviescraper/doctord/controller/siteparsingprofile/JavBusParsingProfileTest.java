@@ -38,6 +38,7 @@ public class JavBusParsingProfileTest {
 	@BeforeClass
 	public static void initialize() {
 		profile = new JavBusParsingProfile();
+                profile.setScrapingLanguage(Language.JAPANESE);
 		String searchString = profile.createSearchString(file);
 		System.out.println("searchString = " + searchString);
 		try {
