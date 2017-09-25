@@ -75,7 +75,7 @@ public class MyTokyoHotParsingProfileTest {
 	@Test
 	public void testScrapePlot(){
 		Plot plot = parser.scrapePlot();
-		assertEquals("Plot not correct", "It is the plump body", plot.getPlot().substring(0,20));
+		assertEquals("Plot not correct", "The Erotic Toilet It is the plump body which too indecent bikinis match well!", plot.getPlot().substring(0,77));
 	}
 	
 	@Test
