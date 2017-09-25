@@ -1,11 +1,11 @@
 JAVMovieScraper
 ===============
+[![Build Status](https://travis-ci.org/Wizell/JAVMovieScraper.svg?branch=master)](https://travis-ci.org/Wizell/JAVMovieScraper)
 
 JAVMovieScraper is a Java Swing program to scrape English [Kodi](http://kodi.tv/) metadata for Japanese Adult Videos (JAV) found on JavLibrary.com, R18.com, DMM.co.jp, 1000Giri, Caribbeancompr.com (Carribeancom Premium), AV Entertainment, Kin8Tengoku, Tokyo Hot, 1pondo, HEYZO, American adult DVDs and web content found on Data18.com and and adult dvds on The Movie Database (TMDb) and Excalibur Films.
 
 As no one site has a complete set of English metadata, the program amalgamates metadeta info from a variety of sources, including dmm.co.jp, javlibrary.com, javbus.com, squareplus.co.jp, and actionjav.com.
 The data is then fed through a machine translation (if original data is in Japanese) and then quality checked to sanitize it and poster elements are cropped so only the cover is shown.
-
 
 
 This program is in alpha. Please submit bugs and feature requests here on github on the [issues page](https://github.com/DoctorD1501/JAVMovieScraper/issues).
