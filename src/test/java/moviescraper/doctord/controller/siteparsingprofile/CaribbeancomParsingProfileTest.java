@@ -35,6 +35,7 @@ public class CaribbeancomParsingProfileTest {
 	@BeforeClass
 	public static void initialize() {
 		parser = new CaribbeancomParsingProfile();
+                parser.setScrapingLanguage(Language.ENGLISH);
 		String searchString = parser.createSearchString(file);
 		try {
 			SearchResult[] searchResults = parser.getSearchResults(searchString);
@@ -62,7 +63,7 @@ public class CaribbeancomParsingProfileTest {
                 if(parser.getScrapingLanguage() == Language.JAPANESE) {
                         assertEquals("Wrong title", "CA乱交パーティ 〜快適な性交空間〜", title.getTitle());
                 } else {
-                        assertEquals("Wrong title", "CA Orgy Party ~ Comfortable Intercourse Space ~", title.getTitle());        
+                        assertEquals("Wrong title", "CA Orgy Party ~ Comfortable Sexual Intercourse ~", title.getTitle());        
                 }
 	}
 	
@@ -117,7 +118,7 @@ public class CaribbeancomParsingProfileTest {
                 if(parser.getScrapingLanguage() == Language.JAPANESE) {
                         assertEquals("Wrong actor name", "一ノ瀬ルカ", actorList.get(0).getName());
                 } else {
-        		assertEquals("Wrong actor name", "Ichinose", actorList.get(0).getName());
+        		assertEquals("Wrong actor name", "Ichinose Ruka", actorList.get(0).getName());
                 }
 	}
 	
@@ -127,7 +128,7 @@ public class CaribbeancomParsingProfileTest {
                 if(parser.getScrapingLanguage() == Language.JAPANESE) {
                         assertEquals("Wrong genre", "オリジナル動画", genreList.get(0).getGenre());
                 } else {
-        		assertEquals("Wrong genre", "Original Video", genreList.get(0).getGenre());
+        		assertEquals("Wrong genre", "Original video", genreList.get(0).getGenre());
                 }
 	}
 	

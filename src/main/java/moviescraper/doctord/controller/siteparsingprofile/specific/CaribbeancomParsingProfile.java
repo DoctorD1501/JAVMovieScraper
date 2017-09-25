@@ -179,7 +179,7 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements
 	@Override
 	public Runtime scrapeRuntime() {
 		initializeJapaneseDocument();
-		Element durationElement = japaneseDocument.select("div.movie-info dl dt:contains(�?生時間:) ~ dd ").first();
+		Element durationElement = japaneseDocument.select("div.movie-info dl dt:contains(生時間:) ~ dd ").first();
 		if(durationElement != null && durationElement.text().trim().length() > 0)
 		{
 			String [] durationSplitByTimeUnit = durationElement.text().split(":");
