@@ -28,7 +28,6 @@ import moviescraper.doctord.controller.siteparsingprofile.specific.JavBusParsing
 import moviescraper.doctord.controller.siteparsingprofile.specific.Kin8tengokuParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.MyTokyoHotParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.OnePondoParsingProfile;
-import moviescraper.doctord.controller.siteparsingprofile.specific.OneThousandGiriParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.TheMovieDatabaseParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.TokyoHotParsingProfile;
 import moviescraper.doctord.model.Movie;
@@ -328,9 +327,6 @@ public class Main {
 				break;
 			case "excaliburfilms":
 				parsingProfile = new ExcaliburFilmsParsingProfile();
-				break;
-			case "1000giri":
-				parsingProfile = new OneThousandGiriParsingProfile();
 				break;
 			case "javbus":
 				parsingProfile = new JavBusParsingProfile();
