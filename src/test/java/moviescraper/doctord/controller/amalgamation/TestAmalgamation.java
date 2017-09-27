@@ -46,9 +46,9 @@ public class TestAmalgamation {
 		
 		try {
 			
-			URI movieOneURI = new Object().getClass().getResource("/res/testdata/Movie1.nfo").toURI();
-			URI movieTwoURI = new Object().getClass().getResource("/res/testdata/Movie2.nfo").toURI();
-			URI movieThreeURI = new Object().getClass().getResource("/res/testdata/Movie3.nfo").toURI();
+			URI movieOneURI = new Object().getClass().getResource("/testdata/Movie1.nfo").toURI();
+			URI movieTwoURI = new Object().getClass().getResource("/testdata/Movie2.nfo").toURI();
+			URI movieThreeURI = new Object().getClass().getResource("/testdata/Movie3.nfo").toURI();
 			
 			//3rd, except actors and posters will be first
 
