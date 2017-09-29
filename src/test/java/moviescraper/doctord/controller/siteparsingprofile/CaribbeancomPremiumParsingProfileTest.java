@@ -19,6 +19,7 @@ import moviescraper.doctord.model.dataitem.Thumb;
 import moviescraper.doctord.model.dataitem.Title;
 import moviescraper.doctord.model.dataitem.Trailer;
 import moviescraper.doctord.model.dataitem.Year;
+import moviescraper.doctord.controller.languagetranslation.Language;
 
 import org.jsoup.nodes.Document;
 import org.junit.BeforeClass;
