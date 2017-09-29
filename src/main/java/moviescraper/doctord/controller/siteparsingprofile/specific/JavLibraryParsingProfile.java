@@ -446,7 +446,7 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 			{
 				String currentLink = videoLink.select("a").attr("href");
 				String currentLinkLabel = videoLink.select("a").attr("title").trim();
-				String currentLinkImage = "https://" + videoLink.select("img").attr("src");
+				String currentLinkImage = "https:" + videoLink.select("img").attr("src");
 				if(currentLink.length() > 1)
 				{
 					String fullLink = websiteURLBegin + currentLink.substring(1);
