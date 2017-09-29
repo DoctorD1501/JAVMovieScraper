@@ -371,12 +371,13 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 		try{
 			Document doc = Jsoup.connect(searchString).userAgent("Mozilla").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
 			Elements videoLinksElements = doc.select("div.item");
+                        String secondPage = searchString;
 			if(videoLinksElements == null || videoLinksElements.size() == 0)
 			{
-				searchString = searchString.replace("/search/", "/uncensored/search/");
+				secondPage = searchString.replace("/search/", "/uncensored/search/");
 				isCensoredSearch = false;
 			}
-			doc = Jsoup.connect(searchString).userAgent("Mozilla").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
+			doc = Jsoup.connect(secondPage).userAgent("Mozilla").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
 			videoLinksElements = doc.select("div.item");
 			if(videoLinksElements != null)
 			{

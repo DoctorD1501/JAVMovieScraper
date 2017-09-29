@@ -352,8 +352,8 @@ public class Renamer {
 	
 	private String getSanitizedString(String fileName) {
 		final Pattern ILLEGAL_CHARACTERS = Pattern.compile(sanitizer);
-		fileName = ILLEGAL_CHARACTERS.matcher(fileName).replaceAll("").replaceAll("\\s+", " ").trim();
-		return fileName;
+		String sanitizedFileName = ILLEGAL_CHARACTERS.matcher(fileName).replaceAll("").replaceAll("\\s+", " ").trim();
+		return sanitizedFileName;
 	}
 	
 	public static String getAvailableFileTags()
