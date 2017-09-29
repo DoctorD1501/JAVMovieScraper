@@ -17,23 +17,23 @@ import moviescraper.doctord.view.ScrapeAmalgamatedProgressDialog;
 
 public class ScrapeAmalgamatedMovieWorker extends SwingWorker<Void, Map<SiteParsingProfile, Movie>> {
 
-	List<Thread> scrapeThreads;
+	private List<Thread> scrapeThreads;
 	
-	boolean promptUserForURLWhenScraping = true; //do we stop to ask the user to pick a URL when scraping
+	private boolean promptUserForURLWhenScraping = true; //do we stop to ask the user to pick a URL when scraping
 	
-	int progress;
-	int amountOfProgressPerSubtask;
-	SwingWorker<Void, String> worker;
-	boolean scrapeCanceled;
-	List<Map<SiteParsingProfile,Movie>> currentPublishedMovies;
-	int numberOfScrapesToRun = 0;
-	int numberOfScrapesFinished = 0;
-	Map<String, SwingWorker<Void, Void>> runningWorkers;
-	File fileToScrape;
+	private int progress;
+	private int amountOfProgressPerSubtask;
+	private SwingWorker<Void, String> worker;
+	private boolean scrapeCanceled;
+	private List<Map<SiteParsingProfile,Movie>> currentPublishedMovies;
+	private int numberOfScrapesToRun = 0;
+	private int numberOfScrapesFinished = 0;
+	private Map<String, SwingWorker<Void, Void>> runningWorkers;
+	private File fileToScrape;
 	
-	AllAmalgamationOrderingPreferences allAmalgamationOrderingPreferences;
-	ScraperGroupAmalgamationPreference scraperGroupAmalgamationPreference;
-	ScrapeAmalgamatedProgressDialog parent;
+	private AllAmalgamationOrderingPreferences allAmalgamationOrderingPreferences;
+	private ScraperGroupAmalgamationPreference scraperGroupAmalgamationPreference;
+	private ScrapeAmalgamatedProgressDialog parent;
 	
 	/**
 	 * 
@@ -54,7 +54,7 @@ public class ScrapeAmalgamatedMovieWorker extends SwingWorker<Void, Map<SitePars
 		this.allAmalgamationOrderingPreferences = allAmalgamationOrderingPreferences;
 	}
 	
-	SwingWorker<Void, Void> getWorkerByScraperName(SiteParsingProfile scraper)
+	private SwingWorker<Void, Void> getWorkerByScraperName(SiteParsingProfile scraper)
 	{
 		SwingWorker<Void, Void> worker = runningWorkers.get(scraper.getDataItemSourceName());
 		return worker;
@@ -151,15 +151,10 @@ public class ScrapeAmalgamatedMovieWorker extends SwingWorker<Void, Map<SitePars
 		{
 			//We don't want to read any leftover properties from our JSON - we want to start fresh so things like scraping language do not get set in our scraper
 			currentScraper = currentScraper.createInstanceOfSameType();
-			if(currentScraper instanceof SiteParsingProfile)
-			{
+			if(currentScraper instanceof SiteParsingProfile && shouldScrapeThread(currentScraper)) {
+                                scrapeMovieInBackground(fileToScrape, currentScraper, progressAmountPerWorker);
+                                numberOfScrapesToRun++;
 				
-				
-				if(shouldScrapeThread(currentScraper))
-				{
-					scrapeMovieInBackground(fileToScrape, currentScraper, progressAmountPerWorker);
-					numberOfScrapesToRun++;
-				}
 			}
 		}
 		
