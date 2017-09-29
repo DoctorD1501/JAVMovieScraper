@@ -37,7 +37,6 @@ public abstract class MovieDataItem {
 	public boolean isStringValueEmpty()
 	{
 		String toStringValue = this.toString();
-		toStringValue.replace("source=\"", "");
 		if(toStringValue.contains("=\"\""))
 			return false;
 		else return true;

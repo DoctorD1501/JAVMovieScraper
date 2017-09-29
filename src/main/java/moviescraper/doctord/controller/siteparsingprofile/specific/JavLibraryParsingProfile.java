@@ -223,9 +223,9 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 		String lengthText = lengthElement.text();
 		if(lengthText.length() > 0)
 		{
-			return new moviescraper.doctord.model.dataitem.Runtime(lengthText);
+			return new Runtime(lengthText);
 		}
-		else return new moviescraper.doctord.model.dataitem.Runtime("");
+		else return new Runtime("");
 	}
 
 	@Override
