@@ -179,7 +179,7 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements
 	@Override
 	public Runtime scrapeRuntime() {
 		initializeJapaneseDocument();
-		Element durationElement = japaneseDocument.select("div.movie-info dl dt:contains(�?生時間:) ~ dd ").first();
+		Element durationElement = japaneseDocument.select("div.movie-info dl dt:contains(生時間:) ~ dd ").first();
 		if(durationElement != null && durationElement.text().trim().length() > 0)
 		{
 			String [] durationSplitByTimeUnit = durationElement.text().split(":");
@@ -203,7 +203,7 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements
 		if(id != null && id.getId().length() > 0)
 		{
 			String trailerPoster = "http://www.caribbeancom.com/moviepages/" + id.getId() + "/images/" + "l_l.jpg";
-			if(SiteParsingProfile.fileExistsAtURL(trailerPoster))
+			if(SiteParsingProfile.fileExistsAtURL(trailerPoster, true))
 			{
 				try {
 					posters.add(new Thumb(trailerPoster));

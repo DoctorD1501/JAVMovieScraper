@@ -82,7 +82,7 @@ public class FileDownloaderUtilities {
                     ImageIO.write(pictureLoaded, "jpg", file);
                  
                 } catch(Throwable t) {
-                    System.out.println("Error: " + t.getMessage());
+                    System.out.println("Cannot write file: " + t.getMessage());
                 }            
 
 	}

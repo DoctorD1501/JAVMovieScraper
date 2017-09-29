@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import moviescraper.doctord.controller.languagetranslation.Language;
 
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.CaribbeancomParsingProfile;
@@ -34,6 +35,7 @@ public class CaribbeancomParsingProfileTest {
 	@BeforeClass
 	public static void initialize() {
 		parser = new CaribbeancomParsingProfile();
+                parser.setScrapingLanguage(Language.ENGLISH);
 		String searchString = parser.createSearchString(file);
 		try {
 			SearchResult[] searchResults = parser.getSearchResults(searchString);
@@ -58,7 +60,11 @@ public class CaribbeancomParsingProfileTest {
 		//this assumes translation is done. if this test fails, it could be because translation is not done or the web
 		//based translation service has changed how they do translation, so try to just see if the title is close to
 		//this one and adjust as needed to fix the test case
-		assertEquals("Wrong title", "CA Orgy Party ~ Comfortable Intercourse Space ~", title.getTitle());
+                if(parser.getScrapingLanguage() == Language.JAPANESE) {
+                        assertEquals("Wrong title", "CA乱交パーティ 〜快適な性交空間〜", title.getTitle());
+                } else {
+                        assertEquals("Wrong title", "CA Orgy Party ~ Comfortable Sexual Intercourse ~", title.getTitle());        
+                }
 	}
 	
 	@Test
@@ -109,13 +115,21 @@ public class CaribbeancomParsingProfileTest {
 	@Test
 	public void testScrapeActors(){
 		ArrayList<Actor> actorList = parser.scrapeActors();
-		assertTrue("Wrong actor name", actorList.get(0).getName().contains("Ichinose"));
+                if(parser.getScrapingLanguage() == Language.JAPANESE) {
+                        assertEquals("Wrong actor name", "一ノ瀬ルカ", actorList.get(0).getName());
+                } else {
+        		assertEquals("Wrong actor name", "Ichinose Ruka", actorList.get(0).getName());
+                }
 	}
 	
 	@Test
 	public void testScrapeGenre(){
 		ArrayList<Genre> genreList = parser.scrapeGenres();
-		assertEquals("Wrong genre", "Original Video", genreList.get(0).getGenre());
+                if(parser.getScrapingLanguage() == Language.JAPANESE) {
+                        assertEquals("Wrong genre", "オリジナル動画", genreList.get(0).getGenre());
+                } else {
+        		assertEquals("Wrong genre", "Original video", genreList.get(0).getGenre());
+                }
 	}
 	
 	@Test

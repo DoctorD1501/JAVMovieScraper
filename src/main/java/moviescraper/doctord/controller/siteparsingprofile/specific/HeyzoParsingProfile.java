@@ -242,7 +242,7 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 	@Override
 	public ArrayList<Genre> scrapeGenres() {
 		ArrayList<Genre> genreList = new ArrayList<>();
-		Elements genreElements = document.select("div.movieInfo a[href*=/listpages/category");
+		Elements genreElements = document.select(".movieInfo a[href*=/listpages/category");
 		if(genreElements != null)
 		{
 			for(Element currentGenre : genreElements)
@@ -256,7 +256,7 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 
 	@Override
 	public ArrayList<Actor> scrapeActors() {
-		Elements actorElements = document.select("div.movieInfo span.dataInfo a[href*=/listpages/actor");
+		Elements actorElements = document.select(".movieInfo a[href*=/listpages/actor");
 		ArrayList<Actor> actorList = new ArrayList<>();
 		for(Element currentActor : actorElements)
 		{

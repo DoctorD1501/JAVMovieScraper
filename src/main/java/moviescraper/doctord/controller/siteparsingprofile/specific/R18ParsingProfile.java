@@ -308,7 +308,7 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 	@Override
 	public ArrayList<Genre> scrapeGenres() {
 		ArrayList<Genre> genreList = new ArrayList<>();
-		Elements genreElements = document.select("div.product-details dl dt:contains(Categories:) ~ dd a");
+		Elements genreElements = document.select("div.product-categories-list .pop-list a");
 		if(genreElements != null)
 		{
 			for(Element currentGenre : genreElements)

@@ -188,7 +188,7 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 
 	@Override
 	public Runtime scrapeRuntime() {
-		String lengthWord = (scrapingLanguage == Language.ENGLISH) ? "Length:" : "�?�録時間:";
+		String lengthWord = (scrapingLanguage == Language.ENGLISH) ? "Length:" : "収録時間:";
 		Element lengthElement = document.select("p:contains(" + lengthWord + ")").first();
 		if(lengthElement != null && lengthElement.ownText().trim().length() >= 0)
 		{
@@ -257,7 +257,7 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 
 	@Override
 	public ID scrapeID() {
-		Element idElement = document.select("span.movie-code, span.header:containsOwn(ID:) + span").first();
+		Element idElement = document.select(".movie .info span + span").first();
 		if(idElement != null)
 			return new ID(idElement.text());
 		else return ID.BLANK_ID;
@@ -320,7 +320,7 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 	@Override
 	public ArrayList<Director> scrapeDirectors() {
 		ArrayList<Director> directorList = new ArrayList<>();
-		String directorWord = (scrapingLanguage == Language.ENGLISH) ? "Director:" : "監�?�:";
+		String directorWord = (scrapingLanguage == Language.ENGLISH) ? "Director:" : "監督:";
 		Element directorElement = document.select("span.header:containsOwn(" + directorWord + ") ~ a").first();
 		if(directorElement != null && directorElement.text().length() > 0)
 		{

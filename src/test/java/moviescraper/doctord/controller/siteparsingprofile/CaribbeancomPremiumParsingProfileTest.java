@@ -19,6 +19,7 @@ import moviescraper.doctord.model.dataitem.Thumb;
 import moviescraper.doctord.model.dataitem.Title;
 import moviescraper.doctord.model.dataitem.Trailer;
 import moviescraper.doctord.model.dataitem.Year;
+import moviescraper.doctord.controller.languagetranslation.Language;
 
 import org.jsoup.nodes.Document;
 import org.junit.BeforeClass;
@@ -33,6 +34,7 @@ public class CaribbeancomPremiumParsingProfileTest {
 	@BeforeClass
 	public static void initialize() {
 		parser = new CaribbeancomPremiumParsingProfile();
+		parser.setScrapingLanguage(Language.ENGLISH);
 		String searchString = parser.createSearchString(file);
 		try {
 			SearchResult[] searchResults = parser.getSearchResults(searchString);
@@ -64,13 +66,13 @@ public class CaribbeancomPremiumParsingProfileTest {
 		//this assumes translation is done. if this test fails, it could be because translation is not done or the web
 		//based translation service has changed how they do translation, so try to just see if the title is close to
 		//this one and adjust as needed to fix the test case
-		assertEquals("Glamorous Venus M - The Ultimate Masochist BODY Fucking -", title.getTitle());
+		assertEquals("Mercy Bo Koo DV 18 Glamorous Venus M - Ultimate Masochism BODY Rape -", title.getTitle());
 	}
 	
 	@Test
 	public void testScrapeOriginalTitle(){
 		OriginalTitle originalTitle = parser.scrapeOriginalTitle();
-		assertEquals("Wrong original title", "グラマラス・ビーナスM −究極マゾBODY姦−", originalTitle.getOriginalTitle());
+		assertEquals("Wrong original title", "メルシーボークー DV 18 Glamorous Venus M -究極マゾBODY姦-", originalTitle.getOriginalTitle());
 	}
 	
 	@Test
@@ -121,7 +123,7 @@ public class CaribbeancomPremiumParsingProfileTest {
 	@Test
 	public void testTrailer(){
 		Trailer trailer = parser.scrapeTrailer();
-		assertEquals("Wrong trailer", "http://sample.caribbeancompr.com/moviepages/062014_878/sample/sample.mp4", trailer.getTrailer());
+		assertEquals("Wrong trailer", "http://sample.caribbeancompr.com/sample/movies/062014_878/480p.mp4", trailer.getTrailer());
 	}
 	
 	@Test

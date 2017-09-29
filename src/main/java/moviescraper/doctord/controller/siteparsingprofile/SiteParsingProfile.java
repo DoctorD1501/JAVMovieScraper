@@ -352,16 +352,26 @@ public abstract class SiteParsingProfile implements DataItemSource{
 	}
 
 	protected static boolean fileExistsAtURL(String URLName){
+		return fileExistsAtURL(URLName, false);
+	}
+
+	protected static boolean fileExistsAtURL(String URLName, Boolean allow_redirects){
 	    try {
-	      HttpURLConnection.setFollowRedirects(false);
+	      HttpURLConnection.setFollowRedirects(allow_redirects);
 	      // note : you may also need
 	      //        HttpURLConnection.setInstanceFollowRedirects(false)
 	      HttpURLConnection con =
 	         (HttpURLConnection) new URL(URLName).openConnection();
+              con.setInstanceFollowRedirects(allow_redirects);
 	      con.setRequestMethod("HEAD");
 	      con.setConnectTimeout(CONNECTION_TIMEOUT_VALUE);
 	      con.setReadTimeout(CONNECTION_TIMEOUT_VALUE);
-	      return (con.getResponseCode() == HttpURLConnection.HTTP_OK);
+              con.setRequestProperty("User-Agent", getRandomUserAgent());
+              if(!allow_redirects) {
+                    return (con.getResponseCode() == HttpURLConnection.HTTP_OK);
+              } else {
+                    return (con.getResponseCode() == HttpURLConnection.HTTP_OK || con.getResponseCode() == HttpURLConnection.HTTP_MOVED_TEMP);
+              }
 	    }
 	    catch(SocketTimeoutException e) {
 	    	// Non-existing DMM trailers usually time out
@@ -460,7 +470,7 @@ public abstract class SiteParsingProfile implements DataItemSource{
 	 * so this method is designed to pick a random one from a list of valid user agent strings
 	 * @return a random user agent string that can be passed to .userAgent() when calling Jsoup.connect
 	 */
-	public String getRandomUserAgent()
+	public static String getRandomUserAgent()
 	{
 		String[] userAgent = {"Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6",
 				"Mozilla/5.0 (Windows NT 6.3; rv:36.0) Gecko/20100101 Firefox/36.0",

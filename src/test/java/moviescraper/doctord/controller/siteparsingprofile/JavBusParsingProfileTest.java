@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import moviescraper.doctord.controller.languagetranslation.Language;
 
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.JavBusParsingProfile;
@@ -37,6 +38,7 @@ public class JavBusParsingProfileTest {
 	@BeforeClass
 	public static void initialize() {
 		profile = new JavBusParsingProfile();
+                profile.setScrapingLanguage(Language.JAPANESE);
 		String searchString = profile.createSearchString(file);
 		System.out.println("searchString = " + searchString);
 		try {
@@ -62,7 +64,7 @@ public class JavBusParsingProfileTest {
 	@Test
 	public void testTitle(){
 		Title testTitle = profile.scrapeTitle();
-		assertEquals("Wrong title", "Body Azumi Kinoshita who is connected with intense KISS", testTitle.getTitle());
+		assertEquals("Wrong title", "猛烈なKISSと絡み合う肉体 木下あずみ", testTitle.getTitle());
 	}
 	
 	@Test
@@ -74,19 +76,25 @@ public class JavBusParsingProfileTest {
 	@Test
 	public void testSet(){
 		Set testSet = profile.scrapeSet();
-		assertEquals("Wrong set", "ViolentKISSandBodyRubbing", testSet.getSet());
+		assertEquals("Wrong set", "猛烈なKISSと絡み合う肉体", testSet.getSet());
 	}
 	
 	@Test
 	public void testStudio(){
 		Studio testStudio = profile.scrapeStudio();
-		assertEquals("Wrong studio", "Moodyz", testStudio.getStudio());
+		assertEquals("Wrong studio", "ムーディーズ", testStudio.getStudio());
 	}
 	
 	@Test
 	public void testDirector(){
-		Director testDirector = profile.scrapeDirectors().get(0);
-		assertEquals("Wrong director", "Crest℃", testDirector.getName());
+		ArrayList<Director> testDirectors = profile.scrapeDirectors();
+                assertEquals("Missing director", 1, testDirectors.size());
+                Director testDirector = testDirectors.get(0);
+                if(profile.getScrapingLanguage() == Language.JAPANESE) {
+                        assertEquals("Wrong director", "紋℃", testDirector.getName());
+                } else {
+               		assertEquals("Wrong director", "Crest℃", testDirector.getName());
+                }
 	}
 	
 	@Test
@@ -126,7 +134,11 @@ public class JavBusParsingProfileTest {
 		ArrayList<Genre> testGenre = profile.scrapeGenres();
 		System.out.println(testGenre);
 		assertTrue("There should be genres", testGenre.size() > 1);
-		assertTrue(testGenre.contains(new Genre("Lingerie")));
+                if(profile.getScrapingLanguage() == Language.JAPANESE) {
+                        assertTrue(testGenre.contains(new Genre("ハイビジョン")));
+                } else {
+                        assertTrue(testGenre.contains(new Genre("Lingerie")));
+                }
 	}
 	
 	@Test
@@ -134,7 +146,7 @@ public class JavBusParsingProfileTest {
 	{
 		ArrayList<Actor> testActor = profile.scrapeActors();
 		System.out.println("actor = " + testActor.get(0));
-		assertEquals("Found wrong actor", "Azumi Kinoshita", testActor.get(0).getName());
+		assertEquals("Found wrong actor", "木下あずみ", testActor.get(0).getName());
 	}
 	
 	/*@Test
@@ -149,7 +161,7 @@ public class JavBusParsingProfileTest {
 		Thumb[] poster = profile.scrapePosters();
 		assertTrue("There should be 1 Fanart.", poster.length == 1);
 		
-		TestingHelper.showImage("Poster", poster[0].getThumbImage());
+		//TestingHelper.showImage("Poster", poster[0].getThumbImage());
 	}
 	
 

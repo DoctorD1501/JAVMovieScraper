@@ -245,7 +245,7 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 		Thumb[] posterThumbs = new Thumb[1];
 		if(posterElement != null)
 		{
-			String posterLink = posterElement.attr("src").trim();
+			String posterLink = "https:" + posterElement.attr("src").trim();
 			try{
 				if (doCrop)
 					//posterThumbs[0] = new Thumb(posterLink, 52.7, 0, 0, 0);
@@ -422,7 +422,7 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 			//the page does not have the small version on it, but by replacing the last character of the string with an t, we will get the tiny preview
 			if(posterElement != null)
 			{
-				String posterURLSmall = posterElement.attr("src");
+				String posterURLSmall = "https:" + posterElement.attr("src");
 				posterURLSmall = posterURLSmall.substring(0, posterURLSmall.lastIndexOf('l')) + "t.jpg";
 				linksList.add(new SearchResult(doc.baseUri(), linkTitle, new Thumb(posterURLSmall)));
 			}
@@ -446,7 +446,7 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 			{
 				String currentLink = videoLink.select("a").attr("href");
 				String currentLinkLabel = videoLink.select("a").attr("title").trim();
-				String currentLinkImage = videoLink.select("img").attr("src");
+				String currentLinkImage = "https://" + videoLink.select("img").attr("src");
 				if(currentLink.length() > 1)
 				{
 					String fullLink = websiteURLBegin + currentLink.substring(1);

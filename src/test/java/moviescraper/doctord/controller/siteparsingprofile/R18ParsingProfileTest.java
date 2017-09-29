@@ -120,7 +120,7 @@ public class R18ParsingProfileTest {
 	public void testExtraFanart() throws IOException
 	{
 		Thumb  [] extraFanart = profile.scrapeExtraFanart();
-		TestingHelper.showImage("Extrafanart", extraFanart[0].getThumbImage());
+		//TestingHelper.showImage("Extrafanart", extraFanart[0].getThumbImage());
 	}
 	
 	@Test
@@ -128,7 +128,7 @@ public class R18ParsingProfileTest {
 		Thumb[] poster = profile.scrapePosters();
 		assertTrue("There should be 1 Fanart.", poster.length == 1);
 		
-		TestingHelper.showImage("Poster", poster[0].getThumbImage());
+		//TestingHelper.showImage("Poster", poster[0].getThumbImage());
 	}
 	
 
