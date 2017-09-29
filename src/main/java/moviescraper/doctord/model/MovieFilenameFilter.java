@@ -24,7 +24,7 @@ public class MovieFilenameFilter implements FilenameFilter {
 	{
 		for(String currentSuffix : acceptedMovieExtensions)
 		{
-			if(suffix.toLowerCase().equals(currentSuffix))
+			if(suffix.equalsIgnoreCase(currentSuffix))
 				return true;
 		}
 		return false;

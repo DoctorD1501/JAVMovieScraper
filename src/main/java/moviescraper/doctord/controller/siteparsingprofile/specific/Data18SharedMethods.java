@@ -26,7 +26,7 @@ public class Data18SharedMethods {
 				{
 					imageNumber = imageNumber.substring(1,imageNumber.length()-4);
 				}
-				int indexOfSecondToLastSlash = tempUrlString.toString().lastIndexOf('/');
+				int indexOfSecondToLastSlash = tempUrlString.lastIndexOf('/');
 				if (indexOfSecondToLastSlash > 0 && tempUrlString.length() > 1)
 				{
 					String contentID = tempUrlString.substring(indexOfSecondToLastSlash+1);

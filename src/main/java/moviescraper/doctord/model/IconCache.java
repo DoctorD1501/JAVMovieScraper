@@ -63,7 +63,7 @@ public class IconCache {
 			String name = FilenameUtils.getName(iconType.getName());
 			String ext  = FilenameUtils.getExtension(iconType.getName());
 
-			if (ext != "" && !name.startsWith("."))
+			if ("".equals(ext) && !name.startsWith("."))
 			{
 				// determine content type
 

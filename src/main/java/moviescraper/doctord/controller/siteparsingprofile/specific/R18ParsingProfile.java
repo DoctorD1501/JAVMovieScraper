@@ -412,7 +412,7 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 
 		// some h.m.p. titles need extra padding
 		
-		if (groupOne.toUpperCase().equals("HODV")) {
+		if (groupOne.equalsIgnoreCase("HODV")) {
 			return String.format("%s+%05d", groupOne, number);
 		}
 				

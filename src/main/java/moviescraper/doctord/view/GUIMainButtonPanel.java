@@ -92,7 +92,7 @@ public class GUIMainButtonPanel extends JPanel {
 	private void tweakLookAndFeel(JToolBar toolbar) {
 		
 		// tweak the Metal look and feel
-		if (UIManager.getLookAndFeel().getID() == "Metal") {
+		if ("Metal".equals(UIManager.getLookAndFeel().getID())) {
 
 			// paint button borders on mouseover only
 
@@ -129,7 +129,7 @@ public class GUIMainButtonPanel extends JPanel {
 			toolbar.setBorderPainted(false);
 		}
 		// tweak the GTK look and feel
-		else if (UIManager.getLookAndFeel().getID() == "GTK"){
+		else if ("GTK".equals(UIManager.getLookAndFeel().getID())){
 			// keep from drawing a bottom toolbar border even with null or empty borders
 			toolbar.setBorder(BorderFactory.createLineBorder(getBackground()));
 		}
