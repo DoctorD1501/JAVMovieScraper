@@ -95,14 +95,14 @@ public class TokyoHotParsingProfileTest {
 	public void testFanart() throws IOException {
 		Thumb[] scrapeFanart = profile.scrapeFanart();
 		assertTrue("There should only be 1 fanart", scrapeFanart.length == 1);
-		TestingHelper.showImage("Test Fanart", scrapeFanart[0].getThumbImage());
+		//TestingHelper.showImage("Test Fanart", scrapeFanart[0].getThumbImage());
 	}
 	
 	@Test
 	public void testPoster() throws IOException {
 		Thumb[] scrapePosters = profile.scrapePosters();
 		assertTrue("There should only be 1 fanart", scrapePosters.length == 1);
-		TestingHelper.showImage("Test Fanart", scrapePosters[0].getThumbImage());
+		//TestingHelper.showImage("Test Fanart", scrapePosters[0].getThumbImage());
 	}
 	
 
