@@ -116,7 +116,8 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 	@Override
 	public ReleaseDate scrapeReleaseDate()
 	{
-		Element releaseDateElement = japaneseDocument.select("div.movieInfo span.release-day + span.dataInfo").first();
+		Elements elements = japaneseDocument.select("table.movieInfo tr.table-release-day");
+		Element releaseDateElement = elements.first().children().last();
 		if(releaseDateElement != null)
 		{
 			//System.out.println("year = " + yearElement.text());
