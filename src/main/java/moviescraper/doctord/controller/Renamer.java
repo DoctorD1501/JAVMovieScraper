@@ -85,7 +85,7 @@ public class Renamer {
 		}
 		
 		//shorten the string if it still doesn't fit
-		while((newName.length() + extraFlexForFileNameLength) > maxFileNameLength)
+		if((newName.length() + extraFlexForFileNameLength) > maxFileNameLength)
 		{
 			//Cut the title down by one character and try again
 			System.out.println("Potential filename was too long. Cutting letters off title");
