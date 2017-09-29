@@ -311,15 +311,16 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
                         }
                         list.add( new SearchResult(href, label, thumb) );
 		}
-                elements = doc.select(".list-cover a");
+                elements = doc.select(".list-cover");
                 for (Element e : elements) {
-                        String href = e.attr("href");
-                        String label = "";
+                        Element root = e.parent().parent().parent();
+                        String href = root.select(":nth-child(1) a").get(1).attr("href");
+                        String label = root.select(":nth-child(1) a").get(1).text();
                         Elements selectThumb = e.select("img");
                         Thumb thumb = null;
                         for (Element thumbElement : selectThumb) {
                                 String attr = thumbElement.attr("src");
-                                if (attr.startsWith("http://imgs.aventertainments.com/product_images") || attr.startsWith("http://imgs.aventertainments.com/new/jacket_images/")) {
+                                if (attr.startsWith("http://imgs.aventertainments.com/product_images") || attr.startsWith("http://imgs.aventertainments.com/new/jacket_images/") || attr.startsWith("http://imgs.aventertainments.com/archive/jacket_images/")) {
                                         thumb = new Thumb(attr);
                                 }
                         }
