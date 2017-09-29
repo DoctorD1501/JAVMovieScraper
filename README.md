@@ -36,10 +36,10 @@ Renamer Window
 This program now supports command line options. Starting the program without any command line option will load the graphical user interface version of the program. I'm still actively working on the command line options to make sure all scrapers are accounted for and any settings.xml values are taken into account.
 <p>
 Usage:
-<br>                                                                                                                                                                                                       
-<b> -filenamecleanup &#60;FilePath&#62; </b>   Use given file argument(s) for file name cleanup process which will rename the file by expanding abbreviations and removing words which cause google scrapes to fail 
 <br>
-<b> -help</b>                               display list of command line options                                                                                                                                  
+<b> -filenamecleanup &#60;FilePath&#62; </b>   Use given file argument(s) for file name cleanup process which will rename the file by expanding abbreviations and removing words which cause google scrapes to fail
+<br>
+<b> -help</b>                               display list of command line options
 <br>
 <b> -rename &#60;FilePath&#62; </b> renames the file argument(s) and any associated metadata files if the file argument has a valid movie nfo using the file name format from settings.xml
 <br>
@@ -70,11 +70,11 @@ If you're having trouble getting matches with -scrape data18webcontent, try to f
 </p>
 
 ## Site Specific File Name Conventions
-When using the site specific scraper feature, your file name must contain an ID number which conforms to the release ID conventions set by that site. 
+When using the site specific scraper feature, your file name must contain an ID number which conforms to the release ID conventions set by that site.
 * 1000Giri: ID follows a YYMMDDactorname structure. You can also see the ID from the URL (right after /moviepages/ and before /index.html). Example: 150206name
 * Aventertainments: This follows the usual JAV id naming structure like ABC-123. It does a search on the site using this ID.<br>
 * Kin8tengoku: The ID is in the URL. It is the numeric part before /pht/ and is usually 4 numeric digits. Example: 1147.<br>
-* Tokyohot: The ID follows the format of n123 or n1234 k123/k1234. In other words, a lowercase n or k followed by a 3 or 4 digit number.<br> 
+* Tokyohot: The ID follows the format of n123 or n1234 k123/k1234. In other words, a lowercase n or k followed by a 3 or 4 digit number.<br>
 * 1pondo: The ID is in the URL of the movie, right before /index.html. The first part of the ID is a 6 digit number corresponding to the release date, followed by an underscore, followed by a 3 digit number. Example: 061314_826<br>
 * Caribbeancom Premium: The ID is in the URL of the movie, right before /index.html. The first part of the ID is a 6 digit number corresponding to the release date, followed by an underscore, followed by a 3 digit number. Example: 061314_826<br>
 * Heyzo: The ID is a 4 digit number in the url right after /moviepages/. Example: 0123<br>
