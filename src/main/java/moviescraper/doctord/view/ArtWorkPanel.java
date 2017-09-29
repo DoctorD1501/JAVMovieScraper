@@ -17,7 +17,7 @@ import javax.swing.JPanel;
 
 import moviescraper.doctord.model.Movie;
 import moviescraper.doctord.model.dataitem.Thumb;
-import moviescraper.doctord.view.CustomComponents.AsyncImageComponent;
+import moviescraper.doctord.view.customcomponents.AsyncImageComponent;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.imgscalr.Scalr;

@@ -1,4 +1,4 @@
-package moviescraper.doctord.view.CustomComponents;
+package moviescraper.doctord.view.customcomponents;
 
 import java.awt.image.BufferedImage;
 

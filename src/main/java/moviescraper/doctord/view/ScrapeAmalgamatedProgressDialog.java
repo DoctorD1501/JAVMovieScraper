@@ -47,7 +47,7 @@ import moviescraper.doctord.model.SearchResult;
 import moviescraper.doctord.model.dataitem.DataItemSource;
 import moviescraper.doctord.model.dataitem.Thumb;
 import moviescraper.doctord.model.preferences.MoviescraperPreferences;
-import moviescraper.doctord.view.CustomComponents.AsyncImageComponent;
+import moviescraper.doctord.view.customcomponents.AsyncImageComponent;
 
 public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable{
 	
