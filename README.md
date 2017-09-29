@@ -2,7 +2,22 @@ JAVMovieScraper
 ===============
 [![Build Status](https://travis-ci.org/Wizell/JAVMovieScraper.svg?branch=master)](https://travis-ci.org/Wizell/JAVMovieScraper)
 
-JAVMovieScraper is a Java Swing program to scrape English [Kodi](http://kodi.tv/) metadata for Japanese Adult Videos (JAV) found on JavLibrary.com, R18.com, DMM.co.jp, 1000Giri, Caribbeancompr.com (Carribeancom Premium), AV Entertainment, Kin8Tengoku, Tokyo Hot, 1pondo, HEYZO, American adult DVDs and web content found on Data18.com and and adult dvds on The Movie Database (TMDb) and Excalibur Films.
+JAVMovieScraper is a Java Swing program to scrape English [Kodi](http://kodi.tv/) metadata for Japanese Adult Videos (JAV) are searched on:
+* JavLibrary.com
+* R18.com
+* DMM.co.jp
+* Caribbeancompr.com (Carribeancom Premium)
+* AV Entertainment
+* Kin8Tengoku
+* Tokyo Hot
+* 1pondo
+* HEYZO
+* American adult DVDs
+* Data18.com
+
+Adult dvds informations are searched on:
+* The Movie Database (TMDb)
+* Excalibur Films
 
 As no one site has a complete set of English metadata, the program amalgamates metadeta info from a variety of sources, including dmm.co.jp, javlibrary.com, javbus.com, squareplus.co.jp, and actionjav.com.
 The data is then fed through a machine translation (if original data is in Japanese) and then quality checked to sanitize it and poster elements are cropped so only the cover is shown.
@@ -71,7 +86,6 @@ If you're having trouble getting matches with -scrape data18webcontent, try to f
 
 ## Site Specific File Name Conventions
 When using the site specific scraper feature, your file name must contain an ID number which conforms to the release ID conventions set by that site.
-* 1000Giri: ID follows a YYMMDDactorname structure. You can also see the ID from the URL (right after /moviepages/ and before /index.html). Example: 150206name
 * Aventertainments: This follows the usual JAV id naming structure like ABC-123. It does a search on the site using this ID.<br>
 * Kin8tengoku: The ID is in the URL. It is the numeric part before /pht/ and is usually 4 numeric digits. Example: 1147.<br>
 * Tokyohot: The ID follows the format of n123 or n1234 k123/k1234. In other words, a lowercase n or k followed by a 3 or 4 digit number.<br>
