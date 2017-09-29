@@ -1,14 +1,12 @@
-package moviescraper.doctord.controller.siteparsingprofile.test;
+package moviescraper.doctord.controller.siteparsingprofile;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import moviescraper.doctord.controller.languagetranslation.Language;
 
-import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.CaribbeancomParsingProfile;
 import moviescraper.doctord.model.SearchResult;
 import moviescraper.doctord.model.dataitem.Actor;

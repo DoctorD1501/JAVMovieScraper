@@ -1,4 +1,4 @@
-package moviescraper.doctord.controller.siteparsingprofile.test;
+package moviescraper.doctord.controller.siteparsingprofile;
 
 import java.io.File;
 import java.io.IOException;

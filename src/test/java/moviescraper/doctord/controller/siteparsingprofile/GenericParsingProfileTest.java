@@ -1,4 +1,4 @@
-package moviescraper.doctord.controller.siteparsingprofile.test;
+package moviescraper.doctord.controller.siteparsingprofile;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -12,7 +12,6 @@ import java.util.Comparator;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
-import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.model.Movie;
 import moviescraper.doctord.model.dataitem.Actor;
 import moviescraper.doctord.model.dataitem.Director;

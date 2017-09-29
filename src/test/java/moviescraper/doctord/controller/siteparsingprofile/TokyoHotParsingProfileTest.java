@@ -1,13 +1,13 @@
-package moviescraper.doctord.controller.siteparsingprofile.test;
-
-import static org.junit.Assert.*;
+package moviescraper.doctord.controller.siteparsingprofile;
 
 import java.io.File;
+
+import moviescraper.doctord.controller.siteparsingprofile.specific.TokyoHotParsingProfile;
+
+/*
 import java.io.IOException;
 import java.util.ArrayList;
 
-import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
-import moviescraper.doctord.controller.siteparsingprofile.specific.TokyoHotParsingProfile;
 import moviescraper.doctord.model.dataitem.Actor;
 import moviescraper.doctord.model.dataitem.Plot;
 import moviescraper.doctord.model.dataitem.ReleaseDate;
@@ -15,9 +15,12 @@ import moviescraper.doctord.model.dataitem.Thumb;
 import moviescraper.doctord.model.dataitem.Title;
 import moviescraper.doctord.model.dataitem.Year;
 
+import org.junit.Test;
+import static org.junit.Assert.*;
+*/
 import org.jsoup.nodes.Document;
 import org.junit.BeforeClass;
-import org.junit.Test;
+
 
 public class TokyoHotParsingProfileTest {
 
