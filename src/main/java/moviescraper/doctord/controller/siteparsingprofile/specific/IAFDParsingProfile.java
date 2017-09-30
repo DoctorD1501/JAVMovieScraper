@@ -42,9 +42,9 @@ import moviescraper.doctord.model.dataitem.Year;
 
 public class IAFDParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
-	boolean useSiteSearch = true;
-	String yearFromFilename = "";
-	String fileName;
+	private boolean useSiteSearch = true;
+	private String yearFromFilename = "";
+	private String fileName;
 
 	@Override
 	public List<ScraperGroupName> getScraperGroupNames() {

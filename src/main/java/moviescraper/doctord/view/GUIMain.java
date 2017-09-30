@@ -72,7 +72,7 @@ public class GUIMain {
 	public List<Movie> movieToWriteToDiskList;
 
 	//Gui Elements
-	JFrame frmMoviescraper;
+	private JFrame frmMoviescraper;
 	protected WindowBlocker frmMovieScraperBlocker;
 	private DefaultListModel<File> listModelFiles;
 
@@ -94,8 +94,8 @@ public class GUIMain {
 	private long m_time;
 
 	//Menus
-	GUIMainMenuBar menuBar;
-	JMenu preferenceMenu;
+	private GUIMainMenuBar menuBar;
+	private JMenu preferenceMenu;
 	private String originalJavLibraryMovieTitleBeforeAmalgamate;
 
 	//Dimensions of various elements

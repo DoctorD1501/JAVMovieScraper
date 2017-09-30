@@ -271,10 +271,10 @@ public class MovieScrapeResultGroup {
 			}
 		}
 
-		else if (fieldIsArray) {
+		/*else if (fieldIsArray) {
 			//do nothing for now - this is handled in another method
 			//System.out.println("need to return that array...");
-		}
+		}*/
 
 		//nothing found otherwise
 		return new Object[0];

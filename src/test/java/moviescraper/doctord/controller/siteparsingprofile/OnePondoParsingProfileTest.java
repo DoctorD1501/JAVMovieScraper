@@ -16,7 +16,7 @@ import org.junit.Test;
 public class OnePondoParsingProfileTest {
 	static boolean scrapeInEnglish = true;
 	static File file = new File("C:/Temp/1pondo 061314_826 abc.avi");
-	OnePondoParsingProfile parser = new OnePondoParsingProfile();
+	private final OnePondoParsingProfile parser = new OnePondoParsingProfile();
 
 	private static OnePondoParsingProfile profile;
 

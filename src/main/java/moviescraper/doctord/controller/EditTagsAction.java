@@ -10,7 +10,7 @@ import moviescraper.doctord.view.TagEditorPanel;
 public class EditTagsAction extends AbstractAction {
 
 	private static final long serialVersionUID = 1L;
-	FileDetailPanel fileDetailPanel;
+	private FileDetailPanel fileDetailPanel;
 
 	@Override
 	public void actionPerformed(ActionEvent e) {

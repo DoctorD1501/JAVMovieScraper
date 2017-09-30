@@ -30,7 +30,7 @@ import org.junit.Test;
 public class JavBusParsingProfileTest {
 	static boolean scrapeInEnglish = true;
 	static File file = new File("C:/Temp/MIDE-058.avi");
-	JavBusParsingProfile parser = new JavBusParsingProfile();
+	private final JavBusParsingProfile parser = new JavBusParsingProfile();
 
 	private static JavBusParsingProfile profile;
 

@@ -116,6 +116,7 @@ public class R18ParsingProfileTest {
 	@Test
 	public void testExtraFanart() throws IOException {
 		Thumb[] extraFanart = profile.scrapeExtraFanart();
+		assertTrue("There should be 10 Fanart.", extraFanart.length == 10);
 		//TestingHelper.showImage("Extrafanart", extraFanart[0].getThumbImage());
 	}
 

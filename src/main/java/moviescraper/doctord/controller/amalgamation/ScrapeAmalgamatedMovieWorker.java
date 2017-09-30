@@ -17,23 +17,23 @@ import moviescraper.doctord.view.ScrapeAmalgamatedProgressDialog;
 
 public class ScrapeAmalgamatedMovieWorker extends SwingWorker<Void, Map<SiteParsingProfile, Movie>> {
 
-	List<Thread> scrapeThreads;
+	private List<Thread> scrapeThreads;
 
 	boolean promptUserForURLWhenScraping = true; //do we stop to ask the user to pick a URL when scraping
 
 	int progress;
 	int amountOfProgressPerSubtask;
-	SwingWorker<Void, String> worker;
+	protected SwingWorker<Void, String> worker;
 	boolean scrapeCanceled;
-	List<Map<SiteParsingProfile, Movie>> currentPublishedMovies;
+	private List<Map<SiteParsingProfile, Movie>> currentPublishedMovies;
 	int numberOfScrapesToRun = 0;
 	int numberOfScrapesFinished = 0;
-	Map<String, SwingWorker<Void, Void>> runningWorkers;
-	File fileToScrape;
+	private Map<String, SwingWorker<Void, Void>> runningWorkers;
+	private File fileToScrape;
 
-	AllAmalgamationOrderingPreferences allAmalgamationOrderingPreferences;
-	ScraperGroupAmalgamationPreference scraperGroupAmalgamationPreference;
-	ScrapeAmalgamatedProgressDialog parent;
+	private AllAmalgamationOrderingPreferences allAmalgamationOrderingPreferences;
+	private ScraperGroupAmalgamationPreference scraperGroupAmalgamationPreference;
+	private ScrapeAmalgamatedProgressDialog parent;
 
 	/**
 	 *
