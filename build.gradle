@@ -7,6 +7,7 @@ apply plugin: 'java'
 apply from: "gradle/git.gradle"
 apply plugin: 'checkstyle'
 apply plugin: "com.diffplug.gradle.spotless"
+apply plugin: 'jacoco'
 
 ext.mainClass = 'moviescraper.doctord.Main'
 version = getVersionCode()
@@ -72,3 +73,13 @@ spotless {
 		eclipseFormatFile 'config/format/eclipseformat.xml'
 	}
 }
+
+jacocoTestReport {
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
+}
+check.dependsOn jacocoTestReport
+
+apply from: "gradle/codacy_coverage.gradle"
