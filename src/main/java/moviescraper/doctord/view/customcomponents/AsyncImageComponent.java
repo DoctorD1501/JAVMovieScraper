@@ -230,6 +230,9 @@ public class AsyncImageComponent extends JPanel implements ImageConsumer, MouseL
 		@Override
 		protected BufferedImage doInBackground() throws IOException {
 
+			if (url == null) {
+				return null;
+			}
 			if (ImageCache.isImageCached(url, isImageModified)) {
 				pictureLoaded = Thumb.convertToBufferedImage(ImageCache.getImageFromCache(url, isImageModified, referrerURL));
 			} else {
@@ -244,7 +247,7 @@ public class AsyncImageComponent extends JPanel implements ImageConsumer, MouseL
 					pictureLoaded = ImageIO.read(imageConnection.getInputStream());
 
 				} catch (Throwable t) {
-					System.out.println("Error: " + t.getMessage());
+					System.out.println("Cannot load image: " + t.getMessage());
 				}
 
 				// System.out.println("Image URL:" + url + "        Viewer: " + viewerUrl);
