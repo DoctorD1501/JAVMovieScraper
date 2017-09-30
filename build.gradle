@@ -1,3 +1,6 @@
+plugins {
+  id "us.kirchmeier.capsule" version "1.0.2"
+}
 apply plugin: 'java'
 apply from: "gradle/git.gradle"
 
@@ -5,35 +8,27 @@ ext.mainClass = 'moviescraper.doctord.Main'
 version = getVersionCode()
 
 jar {
-    archiveName = project.name + ".jar"
-        from {
 
-        configurations.runtime.collect {
-            it.isDirectory() ? it : zipTree(it)
-        }
-
-        configurations.compile.collect {
-            it.isDirectory() ? it : zipTree(it)
-        }
-    }
     into 'resources', {
-		from 'resources'
-	  }
+        from 'resources'
+    }
     manifest {
         attributes("Implementation-Title": "Gradle",
                    "Implementation-Version": version,
                    "Main-Class" : mainClass)
     }
-    exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'
+}
+
+task dist(type: FatCapsule) {
+  applicationClass mainClass
+  archiveName project.name + ".jar"
 }
 
 repositories {
     mavenCentral()
     maven { url "http://clojars.org/repo/" }
-   flatDir {
-       dirs 'JAVMovieScraper/libs'
-   }
 }
+
 sourceSets {
     main {
         java {
