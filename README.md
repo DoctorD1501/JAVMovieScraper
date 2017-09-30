@@ -2,6 +2,7 @@ JAVMovieScraper
 ===============
 [![Build Status](https://travis-ci.org/Wizell/JAVMovieScraper.svg?branch=master)](https://travis-ci.org/Wizell/JAVMovieScraper)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/c4c66ac391234156b9796d9a6e286843)](https://www.codacy.com/app/Wizell/JAVMovieScraper?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Wizell/JAVMovieScraper&amp;utm_campaign=Badge_Grade)
+
 JAVMovieScraper is a Java Swing program to scrape English [Kodi](http://kodi.tv/) metadata for Japanese Adult Videos (JAV) are searched on:
 * JavLibrary.com
 * R18.com
