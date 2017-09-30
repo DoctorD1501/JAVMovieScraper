@@ -43,7 +43,6 @@ import moviescraper.doctord.model.dataitem.Year;
 public class IAFDParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
 	private boolean useSiteSearch = true;
-	private String yearFromFilename = "";
 	private String fileName;
 
 	@Override
@@ -282,6 +281,8 @@ public class IAFDParsingProfile extends SiteParsingProfile implements SpecificPr
 	public String createSearchString(File file) {
 		scrapedMovieFile = file;
 		String fileBaseName;
+		String yearFromFilename = "";
+
 		if (file.isFile())
 			fileBaseName = FilenameUtils.getBaseName(file.getName());
 		else

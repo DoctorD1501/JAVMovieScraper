@@ -2,6 +2,7 @@ package moviescraper.doctord.controller.siteparsingprofile.specific;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
@@ -593,6 +594,8 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 					}
 				}
 
+			} catch (SocketTimeoutException e) {
+				System.err.println("Cannot download from " + actressPageURL.toString() + ": Socket timed out: " + e.getLocalizedMessage());
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

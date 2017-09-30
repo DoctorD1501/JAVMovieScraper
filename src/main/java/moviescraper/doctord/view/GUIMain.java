@@ -95,7 +95,6 @@ public class GUIMain {
 
 	//Menus
 	private GUIMainMenuBar menuBar;
-	private JMenu preferenceMenu;
 	private String originalJavLibraryMovieTitleBeforeAmalgamate;
 
 	//Dimensions of various elements

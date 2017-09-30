@@ -17,8 +17,6 @@ import moviescraper.doctord.view.ScrapeAmalgamatedProgressDialog;
 
 public class ScrapeAmalgamatedMovieWorker extends SwingWorker<Void, Map<SiteParsingProfile, Movie>> {
 
-	private List<Thread> scrapeThreads;
-
 	boolean promptUserForURLWhenScraping = true; //do we stop to ask the user to pick a URL when scraping
 
 	int progress;
