@@ -1,34 +1,7 @@
 apply plugin: 'java'
+apply from: "gradle/git.gradle"
 
-def getVersionCode = { ->
-
-    try {
-        def code = new ByteArrayOutputStream()
-        exec {
-            commandLine 'git', 'tag', '--list'
-            standardOutput = code
-        }
-        return code.toString().split(System.getProperty("line.separator"))[-1]
-    }
-    catch (ignored) {
-        return -1;
-    }
-}
-
-def getVersionName = { ->
-    try {
-        def stdout = new ByteArrayOutputStream()
-        exec {
-            commandLine 'git', 'describe', '--tags', '--dirty'
-            standardOutput = stdout
-        }
-        return stdout.toString().trim()
-    }
-    catch (ignored) {
-        return null;
-    }
-}
-
+ext.mainClass = 'moviescraper.doctord.Main'
 version = getVersionCode()
 
 jar {
@@ -49,7 +22,7 @@ jar {
     manifest {
         attributes("Implementation-Title": "Gradle",
                    "Implementation-Version": version,
-                   "Main-Class" : "moviescraper.doctord.Main")
+                   "Main-Class" : mainClass)
     }
     exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'
 }

@@ -1,0 +1,28 @@
+project.ext.getVersionCode = {
+
+    try {
+        def code = new ByteArrayOutputStream()
+        exec {
+            commandLine 'git', 'tag', '--list'
+            standardOutput = code
+        }
+        return code.toString().split(System.getProperty("line.separator"))[-1]
+    }
+    catch (ignored) {
+        return -1;
+    }
+}
+
+project.ext.getVersionName = {
+    try {
+        def stdout = new ByteArrayOutputStream()
+        exec {
+            commandLine 'git', 'describe', '--tags', '--dirty'
+            standardOutput = stdout
+        }
+        return stdout.toString().trim()
+    }
+    catch (ignored) {
+        return null;
+    }
+}
