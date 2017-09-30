@@ -15,16 +15,12 @@ public class MessageConsoleGUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 
-	private static MessageConsoleGUI window;
+	private static final MessageConsoleGUI window = new MessageConsoleGUI();
 
 	public static void showWindow() {
-		if (window == null) {
-			window = new MessageConsoleGUI();
-			window.setVisible(true);
-		} else {
-			window.setState(NORMAL);
-			window.toFront();
-		}
+		window.setVisible(true);
+		window.setState(NORMAL);
+		window.toFront();
 	}
 
 	/**
@@ -50,7 +46,7 @@ public class MessageConsoleGUI extends JFrame {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent arg0) {
-				window = null;
+				window.setVisible(false);
 			}
 		});
 	}
