@@ -163,10 +163,10 @@ public class Main {
 					WebReleaseRenamer renamer = new WebReleaseRenamer();
 					File newFile = renamer.newFileName(currentFile);
 					boolean renameStatus = currentFile.renameTo(newFile);
-					if (renameStatus != true)
-						System.err.println("Rename failed! Perhaps a file name already exists with that name?");
-					else
+					if (renameStatus)
 						System.out.println("Renamed " + currentFile + " to " + newFile);
+					else
+						System.err.println("Rename failed! Perhaps a file name already exists with that name?");
 				} catch (IOException e) {
 					e.printStackTrace();
 				}

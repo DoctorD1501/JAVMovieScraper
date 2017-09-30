@@ -31,7 +31,7 @@ public class GuiSettings extends Settings {
 	}
 
 	public void setShowToolbar(boolean preferenceValue) {
-		setBooleanValue(Key.showToolbar, new Boolean(preferenceValue));
+		setBooleanValue(Key.showToolbar, Boolean.valueOf(preferenceValue));
 	}
 
 	public boolean getShowOutputPanel() {

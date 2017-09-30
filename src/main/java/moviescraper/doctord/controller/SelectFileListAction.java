@@ -31,7 +31,7 @@ public class SelectFileListAction implements ListSelectionListener {
 
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
-		if (e.getValueIsAdjusting() == false) {
+		if (!e.getValueIsAdjusting()) {
 
 			if (this.guiMain.getFileList().getSelectedIndex() == -1) {
 				// No selection

@@ -438,7 +438,7 @@ public abstract class SiteParsingProfile implements DataItemSource {
 		String patternString = "\\(\\d{4}\\)$";
 		Pattern pattern = Pattern.compile(patternString);
 		Matcher matcher = pattern.matcher(movieName);
-		while (matcher.find()) {
+		if (matcher.find()) {
 			return matcher.group().replace("(", "").replace(")", "").trim();
 		}
 		return "";

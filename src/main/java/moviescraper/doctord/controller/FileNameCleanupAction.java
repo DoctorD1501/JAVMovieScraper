@@ -44,7 +44,7 @@ public class FileNameCleanupAction implements ActionListener {
 					}
 				} else {
 					boolean renameStatus = currentFile.renameTo(newFileName);
-					if (renameStatus != true)
+					if (!renameStatus)
 						System.err.println("Rename failed! Perhaps a file name already exists with that name?");
 				}
 			}

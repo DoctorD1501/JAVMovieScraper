@@ -29,7 +29,7 @@ public abstract class ReleaseRenamer {
 	public static void renameToCleanName(File fileToRename, ReleaseRenamer releaseRenamerToUse) {
 		File newFileName = releaseRenamerToUse.newFileName(fileToRename);
 		boolean renameStatus = fileToRename.renameTo(newFileName);
-		if (renameStatus != true)
+		if (!renameStatus)
 			System.err.println("Rename failed on file: " + fileToRename.toString());
 	}
 
