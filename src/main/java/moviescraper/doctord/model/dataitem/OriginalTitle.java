@@ -7,9 +7,8 @@ public class OriginalTitle extends MovieDataItem {
 	public String getOriginalTitle() {
 		return originalTitle;
 	}
-	
-	public OriginalTitle()
-	{
+
+	public OriginalTitle() {
 		this.originalTitle = "";
 	}
 
@@ -31,6 +30,5 @@ public class OriginalTitle extends MovieDataItem {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
 
 }

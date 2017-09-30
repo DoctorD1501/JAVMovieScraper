@@ -42,8 +42,7 @@ public class OnePondoParsingProfile extends SiteParsingProfile implements Specif
 	//private boolean scrapeInEnglish;
 	private String englishPage;
 	private String japanesePage;
-	
-	
+
 	@Override
 	public String getParserName() {
 		return "1pondo";
@@ -52,8 +51,7 @@ public class OnePondoParsingProfile extends SiteParsingProfile implements Specif
 	@Override
 	public Title scrapeTitle() {
 		Element titleElement = document.select("title").first();
-		if(titleElement != null)
-		{
+		if (titleElement != null) {
 			String id = scrapeID().getId();
 			String title = titleElement.text().trim();
 			//replace used for english title
@@ -61,7 +59,7 @@ public class OnePondoParsingProfile extends SiteParsingProfile implements Specif
 			//replace used for japanese title
 			title = title.replaceAll(Pattern.quote(":"), "-");
 			//old scenes on the site that do no contain the actor name in the title
-			if(title.equals("1pondo.tv -"))
+			if (title.equals("1pondo.tv -"))
 				title = title + " " + id;
 			else
 				title = title + " - " + id;
@@ -73,10 +71,9 @@ public class OnePondoParsingProfile extends SiteParsingProfile implements Specif
 	@Override
 	public OriginalTitle scrapeOriginalTitle() {
 		//the original title is the japanese title
-		if(scrapingLanguage == Language.JAPANESE)
+		if (scrapingLanguage == Language.JAPANESE)
 			return new OriginalTitle(scrapeTitle().getTitle());
-		else
-		{
+		else {
 			Document originalDocument = document;
 			try {
 				document = Jsoup.connect(japanesePage).get();
@@ -105,7 +102,7 @@ public class OnePondoParsingProfile extends SiteParsingProfile implements Specif
 	@Override
 	public Rating scrapeRating() {
 		// This site has no rating information
-		return new Rating(0,"0");
+		return new Rating(0, "0");
 	}
 
 	@Override
@@ -114,29 +111,27 @@ public class OnePondoParsingProfile extends SiteParsingProfile implements Specif
 	}
 
 	@Override
-	public ReleaseDate scrapeReleaseDate(){
-		
+	public ReleaseDate scrapeReleaseDate() {
+
 		//Still having problems with this due to release-date element not loading on japanese site
-		
+
 		//new method after site redesign
 		Element releaseDate = document.select("dl.release-date dd.ng-binding").first();
-		if(releaseDate != null && releaseDate.text().length() == 10)
-		{
+		if (releaseDate != null && releaseDate.text().length() == 10) {
 			String releaseDateText = releaseDate.text().replaceAll("/", "-");
 			return new ReleaseDate(releaseDateText);
 		}
-		
+
 		//Old method of site before redesign: Get year from last 2 digits before the underscore in the ID of the movie
 		//Add "20" to these digits, so "14" becomes 2014, for example
 		//(this is ok because there are no scenes on 1pondo from 1999 or earlier)
 		ID movieID = scrapeID();
-		if(movieID != null && movieID.getId().contains("_"))
-				{
-			String year = "20" + movieID.getId().substring(4,6);
-			String month = movieID.getId().substring(0,2);
-			String day = movieID.getId().substring(2,4);
+		if (movieID != null && movieID.getId().contains("_")) {
+			String year = "20" + movieID.getId().substring(4, 6);
+			String month = movieID.getId().substring(0, 2);
+			String day = movieID.getId().substring(2, 4);
 			return new ReleaseDate(year + "-" + month + "-" + day);
-				}
+		}
 		return ReleaseDate.BLANK_RELEASEDATE;
 	}
 
@@ -187,17 +182,17 @@ public class OnePondoParsingProfile extends SiteParsingProfile implements Specif
 			String popupTwoURL = "http://www.1pondo.tv/assets/sample/" + scrapeID().getId() + "/popu/2.jpg";
 			String popupThreeURL = "http://www.1pondo.tv/assets/sample/" + scrapeID().getId() + "/popu/3.jpg";
 			String popupFourURL = "http://www.1pondo.tv/assets/sample/" + scrapeID().getId() + "/popu.jpg";
-			if(SiteParsingProfile.fileExistsAtURL(popupOneURL))
+			if (SiteParsingProfile.fileExistsAtURL(popupOneURL))
 				thumbList.add(new Thumb(popupOneURL));
-			if(SiteParsingProfile.fileExistsAtURL(popupTwoURL))
+			if (SiteParsingProfile.fileExistsAtURL(popupTwoURL))
 				thumbList.add(new Thumb(popupTwoURL));
-			if(SiteParsingProfile.fileExistsAtURL(popupThreeURL))
+			if (SiteParsingProfile.fileExistsAtURL(popupThreeURL))
 				thumbList.add(new Thumb(popupThreeURL));
-			if(SiteParsingProfile.fileExistsAtURL(bannerURL))
+			if (SiteParsingProfile.fileExistsAtURL(bannerURL))
 				thumbList.add(new Thumb(bannerURL));
-			if(SiteParsingProfile.fileExistsAtURL(backgroundURLTwo))
+			if (SiteParsingProfile.fileExistsAtURL(backgroundURLTwo))
 				thumbList.add(new Thumb(backgroundURLTwo));
-			if(SiteParsingProfile.fileExistsAtURL(popupFourURL))
+			if (SiteParsingProfile.fileExistsAtURL(popupFourURL))
 				thumbList.add(new Thumb(popupFourURL));
 			return thumbList.toArray(new Thumb[thumbList.size()]);
 		} catch (MalformedURLException e) {
@@ -218,17 +213,16 @@ public class OnePondoParsingProfile extends SiteParsingProfile implements Specif
 			String popupTwoURL = "http://www.1pondo.tv/assets/sample/" + scrapeID().getId() + "/popu/2.jpg";
 			String popupThreeURL = "http://www.1pondo.tv/assets/sample/" + scrapeID().getId() + "/popu/3.jpg";
 			String popupFourURL = "http://www.1pondo.tv/assets/sample/" + scrapeID().getId() + "/popu.jpg";
-			if(SiteParsingProfile.fileExistsAtURL(bannerURL))
+			if (SiteParsingProfile.fileExistsAtURL(bannerURL))
 				thumbList.add(new Thumb(bannerURL));
-			if(SiteParsingProfile.fileExistsAtURL(popupOneURL))
+			if (SiteParsingProfile.fileExistsAtURL(popupOneURL))
 				thumbList.add(new Thumb(popupOneURL));
-			if(SiteParsingProfile.fileExistsAtURL(popupTwoURL))
+			if (SiteParsingProfile.fileExistsAtURL(popupTwoURL))
 				thumbList.add(new Thumb(popupTwoURL));
-			if(SiteParsingProfile.fileExistsAtURL(popupThreeURL))
+			if (SiteParsingProfile.fileExistsAtURL(popupThreeURL))
 				thumbList.add(new Thumb(popupThreeURL));
 			//combine the two background images together to make the fanart if we are on a page that has split things into two images
-			if(SiteParsingProfile.fileExistsAtURL(backgroundURLOne) && SiteParsingProfile.fileExistsAtURL(backgroundURLTwo))
-			{
+			if (SiteParsingProfile.fileExistsAtURL(backgroundURLOne) && SiteParsingProfile.fileExistsAtURL(backgroundURLTwo)) {
 				try {
 					/*BufferedImage img1 = ImageIO.read(new URL(backgroundURLOne));
 					BufferedImage img2 = ImageIO.read(new URL(backgroundURLTwo));
@@ -238,21 +232,19 @@ public class OnePondoParsingProfile extends SiteParsingProfile implements Specif
 					//we did an operation to join the images, so we'll need to re-encode the jpgs. set the modified flag to true
 					//so we know to do this
 					joinedImageThumb.setIsModified(true);*/
-					
+
 					Thumb joinedImageThumb = new Thumb(backgroundURLOne, backgroundURLTwo);
 					thumbList.add(joinedImageThumb);
 				} catch (IOException e) {
 					thumbList.add(new Thumb(backgroundURLTwo));
 				}
 
-
-			}
-			else if(SiteParsingProfile.fileExistsAtURL(backgroundURLTwo))
+			} else if (SiteParsingProfile.fileExistsAtURL(backgroundURLTwo))
 				thumbList.add(new Thumb(backgroundURLTwo));
-			if(SiteParsingProfile.fileExistsAtURL(popupFourURL))
+			if (SiteParsingProfile.fileExistsAtURL(popupFourURL))
 				thumbList.add(new Thumb(popupFourURL));
 			return thumbList.toArray(new Thumb[thumbList.size()]);
-			
+
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -274,13 +266,12 @@ public class OnePondoParsingProfile extends SiteParsingProfile implements Specif
 	public ID scrapeID() {
 		//Just get the ID from the page URL by doing some string manipulation
 		String documentURL = document.location();
-		if(documentURL.length() > 0 && documentURL.contains("1pondo.tv"))
-		{
+		if (documentURL.length() > 0 && documentURL.contains("1pondo.tv")) {
 			documentURL = documentURL.replaceFirst("/index.html", "");
 			documentURL = documentURL.replaceFirst("/index.htm", "");
-			if(documentURL.endsWith("/"))
-				documentURL = documentURL.substring(0,documentURL.length()-1);
-			String idFromBaseUri = documentURL.substring(documentURL.lastIndexOf('/')+1);
+			if (documentURL.endsWith("/"))
+				documentURL = documentURL.substring(0, documentURL.length() - 1);
+			String idFromBaseUri = documentURL.substring(documentURL.lastIndexOf('/') + 1);
 			return new ID(idFromBaseUri);
 		}
 		return ID.BLANK_ID;
@@ -297,13 +288,12 @@ public class OnePondoParsingProfile extends SiteParsingProfile implements Specif
 	public ArrayList<Actor> scrapeActors() {
 		ArrayList<Actor> actorList = new ArrayList<>(1);
 		Element profileArea = document.select("div#profile-area").first();
-		if(profileArea != null)
-		{
-		String actressThumbURL = profileArea.select("img").attr("src");
-		//Fix for redirect 1pondo is doing for actor images due to new site layout
-		if(actressThumbURL.contains("/moviepages/"))
-			actressThumbURL = actressThumbURL.replace("/moviepages/", "/assets/sample/").replace("/images/", "/");
-		String actressName = profileArea.select(".bgoose h2, .bgg1").first().text();
+		if (profileArea != null) {
+			String actressThumbURL = profileArea.select("img").attr("src");
+			//Fix for redirect 1pondo is doing for actor images due to new site layout
+			if (actressThumbURL.contains("/moviepages/"))
+				actressThumbURL = actressThumbURL.replace("/moviepages/", "/assets/sample/").replace("/images/", "/");
+			String actressName = profileArea.select(".bgoose h2, .bgg1").first().text();
 			try {
 				actorList.add(new Actor(actressName, "", new Thumb(actressThumbURL)));
 			} catch (MalformedURLException e) {
@@ -326,33 +316,31 @@ public class OnePondoParsingProfile extends SiteParsingProfile implements Specif
 	public Studio scrapeStudio() {
 		return new Studio("1pondo");
 	}
-	
+
 	@Override
 	public Trailer scrapeTrailer() {
 		ID movieID = scrapeID();
 		String potentialTrailerURL = "http://smovie.1pondo.tv/moviepages/" + movieID.getId() + "/sample/sample.avi";
-		if(SiteParsingProfile.fileExistsAtURL(potentialTrailerURL))
+		if (SiteParsingProfile.fileExistsAtURL(potentialTrailerURL))
 			return new Trailer(potentialTrailerURL);
-		else return Trailer.BLANK_TRAILER;
+		else
+			return Trailer.BLANK_TRAILER;
 	}
 
 	@Override
 	public String createSearchString(File file) {
 		scrapedMovieFile = file;
 		String fileID = findIDTagFromFile(file);
-		if(fileID == null)
+		if (fileID == null)
 			return null;
 		fileID = fileID.toLowerCase();
 
 		if (fileID != null) {
 			englishPage = "http://en.1pondo.tv/eng/moviepages/" + fileID + "/index.htm";
 			japanesePage = "http://www.1pondo.tv/moviepages/" + fileID + "/index.html";
-			if(scrapingLanguage == Language.ENGLISH)
-			{
+			if (scrapingLanguage == Language.ENGLISH) {
 				return englishPage;
-			}
-			else
-			{
+			} else {
 				return japanesePage;
 			}
 		}
@@ -361,17 +349,16 @@ public class OnePondoParsingProfile extends SiteParsingProfile implements Specif
 	}
 
 	@Override
-	public SearchResult[] getSearchResults(String searchString)
-			throws IOException {
+	public SearchResult[] getSearchResults(String searchString) throws IOException {
 		SearchResult searchResult = new SearchResult(searchString);
-		SearchResult[] searchResultArray = {searchResult};
+		SearchResult[] searchResultArray = { searchResult };
 		return searchResultArray;
 	}
-	
+
 	public static String findIDTagFromFile(File file) {
 		return findIDTag(FilenameUtils.getName(file.getName()));
 	}
-	
+
 	public static String findIDTag(String fileName) {
 		Pattern pattern = Pattern.compile("[0-9]{6}_[0-9]{3}");
 		Matcher matcher = pattern.matcher(fileName);

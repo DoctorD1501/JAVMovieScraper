@@ -17,12 +17,12 @@ import moviescraper.doctord.model.dataitem.Actor;
 import moviescraper.doctord.model.dataitem.Director;
 
 public abstract class GenericParsingProfileTest {
-	
+
 	protected static Movie expectedMovie;
 	protected static Movie actualMovie;
 	protected static File expectedValueFile;
 	protected static SiteParsingProfile overloadedScraper;
-	
+
 	/**
 	 * Set up values of expectedValueMovie, scrapedValueMovie, expectedValueFile, and overloadedScraper in one of the subclasses with
 	 * the correct values for the scraper you are testing. This should be the only method you need to implement
@@ -32,101 +32,91 @@ public abstract class GenericParsingProfileTest {
 	 */
 	//@BeforeClass
 	//public static void initialize(){};
-	
-	
-	
+
 	@Test
-	public void testTitle(){
+	public void testTitle() {
 		assertEquals(expectedMovie.getTitle().getTitle(), actualMovie.getTitle().getTitle());
 	}
-	
+
 	@Test
-	public void testOriginalTitle(){
+	public void testOriginalTitle() {
 		assertEquals(expectedMovie.getOriginalTitle().getOriginalTitle(), actualMovie.getOriginalTitle().getOriginalTitle());
 	}
-	
+
 	@Test
-	public void testSet(){
+	public void testSet() {
 		assertEquals(expectedMovie.getSet().getSet(), actualMovie.getSet().getSet());
 	}
-	
+
 	@Test
-	public void testPlot(){
+	public void testPlot() {
 		//allow a few differences because they may have just added a space or two in there or fixed a small typo
 		assertTrue(StringUtils.getLevenshteinDistance(expectedMovie.getPlot().getPlot(), actualMovie.getPlot().getPlot()) < 4);
 		//assertEquals(expectedValueMovie.getPlot().getPlot(), scrapedValueMovie.getPlot().getPlot());
 	}
-	
+
 	@Test
-	public void testRuntime(){
+	public void testRuntime() {
 		assertEquals(expectedMovie.getRuntime().getRuntime(), actualMovie.getRuntime().getRuntime());
 	}
-	
+
 	@Test
 	public void testID() {
 		assertEquals(expectedMovie.getId().getId(), actualMovie.getId().getId());
 	}
-	
+
 	@Test
 	public void testYear() {
 		assertEquals(expectedMovie.getYear().getYear(), actualMovie.getYear().getYear());
 	}
-	
+
 	@Test
 	public void testTrailer() {
 		assertEquals(expectedMovie.getTrailer().getTrailer(), actualMovie.getTrailer().getTrailer());
 	}
-	
+
 	@Test
 	public void testReleaseDate() {
 		assertEquals(expectedMovie.getReleaseDate().getReleaseDate(), actualMovie.getReleaseDate().getReleaseDate());
 	}
-	
+
 	@Test
-	public void testGenre()
-	{
+	public void testGenre() {
 		assertEquals(expectedMovie.getGenres(), actualMovie.getGenres());
 	}
-	
+
 	@Test
-	public void testTop250()
-	{
+	public void testTop250() {
 		assertEquals(expectedMovie.getTop250().getTop250(), actualMovie.getTop250().getTop250());
 	}
-	
+
 	@Test
-	public void testTagline()
-	{
+	public void testTagline() {
 		assertEquals(expectedMovie.getTagline().getTagline(), actualMovie.getTagline().getTagline());
 	}
-	
+
 	@Test
-	public void testOutline()
-	{
+	public void testOutline() {
 		assertEquals(expectedMovie.getOutline().getOutline(), actualMovie.getOutline().getOutline());
 	}
-	
+
 	@Test
-	public void testMPAARating()
-	{
+	public void testMPAARating() {
 		assertEquals(expectedMovie.getMpaa().getMPAARating(), actualMovie.getMpaa().getMPAARating());
 	}
-	
+
 	@Test
-	public void testSortTitle()
-	{
+	public void testSortTitle() {
 		assertEquals(expectedMovie.getSortTitle().getSortTitle(), actualMovie.getSortTitle().getSortTitle());
 	}
-	
+
 	@Test
-	public void testStudio()
-	{
+	public void testStudio() {
 		assertEquals(expectedMovie.getStudio().getStudio(), actualMovie.getStudio().getStudio());
 	}
-	
+
 	@Test
-	public void testActor()
-	{
+	public void testActor() {
 		assertEquals(expectedMovie.getActors().size(), actualMovie.getActors().size());
 		Comparator<Actor> sortByActorName = new Comparator<Actor>() {
 
@@ -145,12 +135,11 @@ public abstract class GenericParsingProfileTest {
 			assertEquals(actorExpected.getRole(), actorActual.getRole());
 			assertEquals(actorExpected.getThumb(), actorActual.getThumb());
 		}
-			
+
 	}
-	
+
 	@Test
-	public void testDirector()
-	{
+	public void testDirector() {
 		assertEquals(expectedMovie.getDirectors().size(), actualMovie.getDirectors().size());
 		Comparator<Director> sortByDirectorName = new Comparator<Director>() {
 
@@ -170,31 +159,26 @@ public abstract class GenericParsingProfileTest {
 			//That is why I have removed the line below. If they ever allow it, we can uncomment this
 			//assertEquals(directorExpected.getThumb(), directorActual.getThumb());
 		}
-			
+
 	}
-	
+
 	@Test
-	public void testPosters()
-	{
+	public void testPosters() {
 		assertEquals(expectedMovie.getPosters().length, actualMovie.getPosters().length);
-		for(int i = 0; i < expectedMovie.getPosters().length; i++)
-		{
+		for (int i = 0; i < expectedMovie.getPosters().length; i++) {
 			assertEquals(expectedMovie.getPosters()[i], actualMovie.getPosters()[i]);
 		}
 	}
-	
+
 	@Test
-	public void testFanart()
-	{
+	public void testFanart() {
 		assertEquals(expectedMovie.getFanart().length, actualMovie.getFanart().length);
-		for(int i = 0; i < expectedMovie.getFanart().length; i++)
-		{
+		for (int i = 0; i < expectedMovie.getFanart().length; i++) {
 			assertEquals(expectedMovie.getFanart()[i], actualMovie.getFanart()[i]);
 		}
 	}
-	
-	public static Movie createMovieFromFileName(String fileName)
-	{
+
+	public static Movie createMovieFromFileName(String fileName) {
 		Movie scrapedMovieFromFile = null;
 		URI movieOneURI;
 		try {

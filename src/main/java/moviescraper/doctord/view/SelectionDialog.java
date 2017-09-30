@@ -30,9 +30,9 @@ import moviescraper.doctord.view.renderer.SearchResultsRenderer;
 public class SelectionDialog extends JPanel {
 
 	private static final long serialVersionUID = 5244704222222415993L;
-	
+
 	private final JPanel panel = this;
-	
+
 	private JList<SearchResult> labelList;
 	private SearchResult optionPickedFromPanel;
 	private JButton previewLinkButton;
@@ -47,15 +47,15 @@ public class SelectionDialog extends JPanel {
 		labelList.setVisible(true);
 		JScrollPane pane = new JScrollPane(labelList);
 		panel.add(pane, BorderLayout.CENTER);
-		
+
 		previewLinkButton = new JButton("Preview Link in Browser");
 		//previewLinkButton.setEnabled(false);
 		previewLinkButton.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				SearchResult selectedValueinAction = labelList.getSelectedValue();
-				if(selectedValueinAction != null && selectedValueinAction.getUrlPath() != null && selectedValueinAction.getUrlPath().length() > 0) {
+				if (selectedValueinAction != null && selectedValueinAction.getUrlPath() != null && selectedValueinAction.getUrlPath().length() > 0) {
 					try {
 						Desktop.getDesktop().browse(new URI(selectedValueinAction.getUrlPath()));
 					} catch (IOException e1) {
@@ -66,43 +66,41 @@ public class SelectionDialog extends JPanel {
 						e1.printStackTrace();
 					}
 				}
-				
+
 			}
 		});
 		panel.add(previewLinkButton, BorderLayout.SOUTH);
-		panel.setPreferredSize(new Dimension(500,400));
-		
-		final JDialog bwin = new JDialog();
-        bwin.addWindowFocusListener(new WindowFocusListener() {
-             @Override
-             public void windowLostFocus(WindowEvent e)
-             {
-               bwin.setVisible(false);
-               bwin.dispose();
-             }
+		panel.setPreferredSize(new Dimension(500, 400));
 
-             @Override
-             public void windowGainedFocus(WindowEvent e)
-             {
-             }
-         });
-         bwin.add(panel);
-         bwin.pack();
-       
-         labelList.addMouseListener(new MouseAdapter() {
-        	 @Override
+		final JDialog bwin = new JDialog();
+		bwin.addWindowFocusListener(new WindowFocusListener() {
+			@Override
+			public void windowLostFocus(WindowEvent e) {
+				bwin.setVisible(false);
+				bwin.dispose();
+			}
+
+			@Override
+			public void windowGainedFocus(WindowEvent e) {
+			}
+		});
+		bwin.add(panel);
+		bwin.pack();
+
+		labelList.addMouseListener(new MouseAdapter() {
+			@Override
 			public void mouseClicked(MouseEvent evt) {
-        		 //capture left-double mouse click and dispose frame
-        		 if ( evt.getButton() == MouseEvent.BUTTON1 ){
-        			 if ( evt.getClickCount() == 2 ) {
-        				 optionPickedFromPanel = labelList.getSelectedValue();
-        				 SwingUtilities.getWindowAncestor(bwin).dispose();
-        			 }
-        		 }
-        	 }
-         });
+				//capture left-double mouse click and dispose frame
+				if (evt.getButton() == MouseEvent.BUTTON1) {
+					if (evt.getClickCount() == 2) {
+						optionPickedFromPanel = labelList.getSelectedValue();
+						SwingUtilities.getWindowAncestor(bwin).dispose();
+					}
+				}
+			}
+		});
 	}
-	
+
 	public SearchResult getSelectedValue() {
 		if (optionPickedFromPanel == null)
 			optionPickedFromPanel = labelList.getSelectedValue();

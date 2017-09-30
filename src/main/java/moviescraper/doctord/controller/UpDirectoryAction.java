@@ -23,17 +23,14 @@ public class UpDirectoryAction implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		try{
+		try {
 			File parentDirectory = this.guiMain.getCurrentlySelectedDirectoryList().getParentFile();
-			if(parentDirectory != null && parentDirectory.exists())
-			{
+			if (parentDirectory != null && parentDirectory.exists()) {
 				this.guiMain.setCurrentlySelectedDirectoryList(parentDirectory);
 				this.guiMain.getFrmMoviescraper().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 				this.guiMain.updateFileListModel(this.guiMain.getCurrentlySelectedDirectoryList(), false);
 			}
-		}
-		finally
-		{
+		} finally {
 			this.guiMain.getGuiSettings().setLastUsedDirectory(this.guiMain.getCurrentlySelectedDirectoryList());
 			this.guiMain.getFrmMoviescraper().setCursor(Cursor.getDefaultCursor());
 		}

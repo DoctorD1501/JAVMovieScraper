@@ -9,7 +9,7 @@ import javax.swing.JPopupMenu;
 import moviescraper.doctord.view.AbstractFileDetailPanelEditGUI.Operation;
 
 public class FileDetailPanelPopup extends JPopupMenu {
-	
+
 	private static final long serialVersionUID = 8711342488935696278L;
 	private AbstractFileDetailPanelEditGUI editor;
 
@@ -26,7 +26,7 @@ public class FileDetailPanelPopup extends JPopupMenu {
 				editor.showGUI(Operation.ADD);
 			}
 		});
-		
+
 		JMenuItem editItem = new JMenuItem("Edit Item");
 		editItem.addActionListener(new ActionListener() {
 			@Override
@@ -34,7 +34,7 @@ public class FileDetailPanelPopup extends JPopupMenu {
 				editor.showGUI(Operation.EDIT);
 			}
 		});
-		
+
 		JMenuItem removeItem = new JMenuItem("Remove Item");
 		removeItem.addActionListener(new ActionListener() {
 			@Override
@@ -42,7 +42,7 @@ public class FileDetailPanelPopup extends JPopupMenu {
 				editor.deleteAction();
 			}
 		});
-		
+
 		this.add(addItem);
 		this.add(editItem);
 		this.add(removeItem);

@@ -13,11 +13,10 @@ import javax.imageio.ImageIO;
  */
 public class GUICommon {
 
-	public static Image getProgramIcon()
-	{
+	public static Image getProgramIcon() {
 		//initialize the icons used in the program
 		URL programIconURL = GUICommon.class.getResource("/res/AppIcon.png");
-		
+
 		//Used for icon in the title bar
 		Image programIcon = null;
 		try {
@@ -27,5 +26,5 @@ public class GUICommon {
 		}
 		return programIcon;
 	}
-	
+
 }

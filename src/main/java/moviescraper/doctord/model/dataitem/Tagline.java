@@ -1,7 +1,7 @@
 package moviescraper.doctord.model.dataitem;
 
 public class Tagline extends MovieDataItem {
-	
+
 	public static final Tagline BLANK_TAGLINE = new Tagline("");
 
 	private String tagline;
@@ -30,7 +30,7 @@ public class Tagline extends MovieDataItem {
 		return null;
 	}
 
-	public Tagline(){
+	public Tagline() {
 		tagline = "";
 	}
 

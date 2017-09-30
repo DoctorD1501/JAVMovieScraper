@@ -33,6 +33,4 @@ public class Outline extends MovieDataItem {
 		outline = "";
 	}
 
-
-
 }

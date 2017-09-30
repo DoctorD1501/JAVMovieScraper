@@ -7,20 +7,19 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 
-public class MessageConsolePanel extends JPanel{
+public class MessageConsolePanel extends JPanel {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-
 	public MessageConsolePanel() {
 		super();
 		setLayout(new BorderLayout());
 		JTextPane textPane = new JTextPane();
-		setPreferredSize(new Dimension(100,100));
-		setMaximumSize(new Dimension(100,100));
+		setPreferredSize(new Dimension(100, 100));
+		setMaximumSize(new Dimension(100, 100));
 		add(new JScrollPane(textPane), BorderLayout.CENTER);
 		MessageConsole mc = new MessageConsole(textPane);
 		mc.redirectOut(Color.BLACK, System.out);

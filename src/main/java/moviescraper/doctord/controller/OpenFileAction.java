@@ -22,12 +22,10 @@ public class OpenFileAction implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		for(int movieNumberInList = 0; movieNumberInList < this.guiMain.getCurrentlySelectedMovieFileList().size(); movieNumberInList++)
-		{
+		for (int movieNumberInList = 0; movieNumberInList < this.guiMain.getCurrentlySelectedMovieFileList().size(); movieNumberInList++) {
 			if (this.guiMain.getCurrentlySelectedMovieFileList() != null) {
 				try {
-					if(this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList).exists())
-					{
+					if (this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList).exists()) {
 						Desktop.getDesktop().open(this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList));
 					}
 				} catch (IOException e) {

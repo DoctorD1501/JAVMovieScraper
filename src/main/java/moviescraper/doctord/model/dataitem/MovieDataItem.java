@@ -1,25 +1,26 @@
 package moviescraper.doctord.model.dataitem;
 
 public abstract class MovieDataItem {
-	
+
 	protected final static int connectionTimeout = 10000; //10 seconds
-	protected final static int  readTimeout = 10000; //10 seconds
+	protected final static int readTimeout = 10000; //10 seconds
 	private DataItemSource dataItemSource;
-	
+
 	//Any MovieDataItem needs to know how to write itself to XML
 	abstract public String toXML();
-	
-	public final static String sanitizeString(String inputString)
-	{
-		if(inputString != null)
-			return inputString.replace("\u00a0"," ").trim(); //replace non breaking space (&nbsp) with regular space then trim things
-		else return null;
+
+	public final static String sanitizeString(String inputString) {
+		if (inputString != null)
+			return inputString.replace("\u00a0", " ").trim(); //replace non breaking space (&nbsp) with regular space then trim things
+		else
+			return null;
 	}
 
 	public DataItemSource getDataItemSource() {
-		if(dataItemSource == null)
+		if (dataItemSource == null)
 			return DefaultDataItemSource.DEFAULT_DATA_ITEM_SOURCE;
-		else return dataItemSource;
+		else
+			return dataItemSource;
 	}
 
 	public void setDataItemSource(DataItemSource dataItemSource) {
@@ -29,17 +30,17 @@ public abstract class MovieDataItem {
 		//if we don't retain the object that had all the HTML, it can get garbage collected
 		this.dataItemSource = dataItemSource.createInstanceOfSameType();
 	}
-	
-	public String dataItemSourceToString(){
+
+	public String dataItemSourceToString() {
 		return " source=\"" + getDataItemSource() + "\"";
 	}
-	
-	public boolean isStringValueEmpty()
-	{
+
+	public boolean isStringValueEmpty() {
 		String toStringValue = this.toString();
-		if(toStringValue.contains("=\"\""))
+		if (toStringValue.contains("=\"\""))
 			return false;
-		else return true;
+		else
+			return true;
 	}
 
 }

@@ -13,28 +13,24 @@ import javax.swing.filechooser.FileSystemView;
 
 import org.apache.commons.io.FilenameUtils;
 
-
 public class IconCache {
 
 	/**
 	 * Enumeration of icon providers for the items on the file list view
 	 */
-	public enum IconProviderType
-	{
-		SYSTEM,  /// Icon provider that uses the system shell to get an icon (default)
+	public enum IconProviderType {
+		SYSTEM, /// Icon provider that uses the system shell to get an icon (default)
 		CONTENT, /// Icon provider that determines icon by file content type
 	}
 
 	// Internal interface used by IconCache
-	private interface IconProvider
-	{
+	private interface IconProvider {
 		// return an icon for the specified file
 		Icon getIcon(File iconType) throws IOException;
 	}
 
 	// Default icon provider implementation: get shell icons on windows, only folder or file on linux
-	private static class SystemIconProvider implements IconProvider
-	{
+	private static class SystemIconProvider implements IconProvider {
 		@Override
 		public Icon getIcon(File iconType) throws IOException {
 			return FileSystemView.getFileSystemView().getSystemIcon(iconType);
@@ -42,10 +38,8 @@ public class IconCache {
 	}
 
 	// Alternative icon provider implementation: return resource icons based on file content type
-	private static class ContentIconProvider implements IconProvider
-	{
-		private Icon createIcon(String name)
-		{
+	private static class ContentIconProvider implements IconProvider {
+		private Icon createIcon(String name) {
 			return new ImageIcon(getClass().getResource("/res/mime/" + name + ".png"));
 		}
 
@@ -61,19 +55,17 @@ public class IconCache {
 			// skip dot files too (.hidden files on Linux)
 
 			String name = FilenameUtils.getName(iconType.getName());
-			String ext  = FilenameUtils.getExtension(iconType.getName());
+			String ext = FilenameUtils.getExtension(iconType.getName());
 
-			if ("".equals(ext) && !name.startsWith("."))
-			{
+			if ("".equals(ext) && !name.startsWith(".")) {
 				// determine content type
 
 				String mimeType = Files.probeContentType(iconType.toPath());
 
-				if (mimeType != null)
-				{
+				if (mimeType != null) {
 					// take top-level type into account only, this five types should cover the vast majority of cases
 
-					for(String type: new String[] { "text", "image", "video", "audio", "application" })
+					for (String type : new String[] { "text", "image", "video", "audio", "application" })
 						if (mimeType.startsWith(type + "/"))
 							return createIcon(type);
 				}
@@ -92,51 +84,43 @@ public class IconCache {
 	 * Sets the icon provider for the file list view
 	 * @param type The icon provider type
 	 */
-	public static void setIconProvider(IconProviderType type)
-	{
+	public static void setIconProvider(IconProviderType type) {
 		// determine current provider by class name, set only if necessary
 
 		String newType = type.toString() + "IconProvider";
 		String oldType = iconProvider.getClass().getSimpleName();
 
-		if (!newType.equalsIgnoreCase(oldType))
-		{
+		if (!newType.equalsIgnoreCase(oldType)) {
 			// flush cache
 			cache.clear();
 
-			switch(type)
-			{
-			case SYSTEM:    
-				iconProvider = new SystemIconProvider();
-				break;
-			case CONTENT:  
-				iconProvider = new ContentIconProvider();
-				break;
-			default:
-				break;
+			switch (type) {
+				case SYSTEM:
+					iconProvider = new SystemIconProvider();
+					break;
+				case CONTENT:
+					iconProvider = new ContentIconProvider();
+					break;
+				default:
+					break;
 			}
 		}
 	}
 
-
-
-	public static Icon getIconFromCache(File iconType) throws IOException
-	{
+	public static Icon getIconFromCache(File iconType) throws IOException {
 		// use "." as key for folders so we don't get a cached folder icon for files without extension or vice versa
 		// use "" as key for dot files (hidden files on Linux), to prevent getting a cache entry per file
 
 		String name = FilenameUtils.getName(iconType.getName());
-		String ext  = FilenameUtils.getExtension(iconType.getName());
-		String key  = iconType.isDirectory() ? "." : name.startsWith(".") ? "" : ext;
+		String ext = FilenameUtils.getExtension(iconType.getName());
+		String key = iconType.isDirectory() ? "." : name.startsWith(".") ? "" : ext;
 
 		//Cache already contains the item, so just return it
-		if(cache.containsKey(key))
-		{
+		if (cache.containsKey(key)) {
 			return cache.get(key);
 		}
 		//we didn't find it, so read the Icon into the cache and also return it
-		else
-		{
+		else {
 			Icon iconToCache = iconProvider.getIcon(iconType);
 			cache.put(key, iconToCache);
 

@@ -1,11 +1,9 @@
 package moviescraper.doctord.model.dataitem;
 
-
 public abstract class Person extends MovieDataItem {
 	private String name;
 	private Thumb thumb;
 	private boolean thumbEdited; //did we change the URL of the thumb since loading and thus need to force a refresh
-
 
 	public String getName() {
 		return name;
@@ -36,7 +34,6 @@ public abstract class Person extends MovieDataItem {
 	public String toString() {
 		return "Person [name=\"" + name + "\", thumb=" + thumb + "]";
 	}
-
 
 	@Override
 	public int hashCode() {
@@ -79,8 +76,8 @@ public abstract class Person extends MovieDataItem {
 	public void setThumbEdited(boolean thumbEdited) {
 		this.thumbEdited = thumbEdited;
 	}
-	
-	public Person(){
+
+	public Person() {
 		name = "";
 		thumb = null;
 		thumbEdited = false;

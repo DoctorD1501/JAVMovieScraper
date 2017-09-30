@@ -27,13 +27,11 @@ public class FanartPickerRenderer extends JLabel implements ListCellRenderer<Thu
 	}
 
 	@Override
-	public Component getListCellRendererComponent(JList<? extends Thumb> list, Thumb value,
-			int index, boolean isSelected, boolean cellHasFocus) {
+	public Component getListCellRendererComponent(JList<? extends Thumb> list, Thumb value, int index, boolean isSelected, boolean cellHasFocus) {
 		Thumb entry = (Thumb) value;
 		ImageIcon currentIcon = entry.getPreviewImageIconThumbImage();
 		//no preview image so let's just try to resize it
-		if(currentIcon == null)
-		{
+		if (currentIcon == null) {
 			currentIcon = entry.getImageIconThumbImage();
 			//Image scaledImg = currentIcon.getImage().getScaledInstance(250, 250, java.awt.Image.SCALE_SMOOTH);
 			BufferedImage img = (BufferedImage) currentIcon.getImage();

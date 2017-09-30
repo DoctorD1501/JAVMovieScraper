@@ -27,137 +27,125 @@ public class AsyncImageComponent extends JPanel implements ImageConsumer, MouseL
 	private static final long serialVersionUID = 1L;
 	private BufferedImage img;
 	private BufferedImage resizedImage;
-    URL url;
-    URL referrerURL;
-    Thumb thumb;
-    private int preferredX = 135;
-    private int preferredY = 135;
-    private boolean doAutoSelect;
-    private boolean doneLoading; 
-    private boolean selected;
-    private static final Border selectedBorder = BorderFactory.createLineBorder(Color.BLUE, 3);
-    private static final Border deselectedBorder = BorderFactory.createEmptyBorder();
-    private AsyncImageComponent[] siblings; //other items we may need to disable when we are clicked on. note this array contains self, so just be aware of that and avoid infinite loops and such
+	URL url;
+	URL referrerURL;
+	Thumb thumb;
+	private int preferredX = 135;
+	private int preferredY = 135;
+	private boolean doAutoSelect;
+	private boolean doneLoading;
+	private boolean selected;
+	private static final Border selectedBorder = BorderFactory.createLineBorder(Color.BLUE, 3);
+	private static final Border deselectedBorder = BorderFactory.createEmptyBorder();
+	private AsyncImageComponent[] siblings; //other items we may need to disable when we are clicked on. note this array contains self, so just be aware of that and avoid infinite loops and such
 	private boolean userMadeSelection = false;
 	private boolean isPosterCandidate = true; //height >= width, making this image suitable for a poster image
 	private boolean autoSelectFavorsHeight;
 	private boolean showPreviewImage;
 	private boolean useBorder;
-	
+
 	/**
-	 * 
+	 *
 	 * @param thumb - image to show
 	 * @param showPreviewImage - use the thumb's preview image, if possible, instead of the full resolution image
 	 * @param siblings - any siblings of this image. used for selecting things in a list - siblings become unselected
 	 * @param doAutoSelect - automatically select an image when all are done loading, the user hasn't clicked anything
 	 * @param autoSelectFavorsHeight - We prefer images taller than their width when doing autoselection. used for posters. if false that tends to be used for fanarts
 	 */
-    public AsyncImageComponent(Thumb thumb, boolean showPreviewImage, AsyncImageComponent[] siblings, boolean doAutoSelect, boolean autoSelectFavorsHeight, boolean useBorder){
-		
-    	this.setPreferredSize(new Dimension(preferredX,preferredY));
-    	selected = false;
-    	this.siblings = siblings;
-    	this.thumb = thumb;
-    	this.useBorder = useBorder;
-    	this.showPreviewImage = showPreviewImage;
-    	this.autoSelectFavorsHeight = autoSelectFavorsHeight;
-    	this.doAutoSelect = doAutoSelect;
-    	super.addMouseListener(this);
-    	
-    	setURLFromThumb();
-        getReferrerURLFromThumb();
-        //System.out.println("ViewerURL: " + viewerUrl);
-        //System.out.println("ThumbURL: " + url);
-        new ImageLoader(this, url, referrerURL, thumb == null ? false : thumb.isModified()).execute();
-    }
-    
-    public void setIcon(Thumb thumb, Dimension newSize)
-    {
-    	//this.resizedImage = null;
-    	this.thumb = thumb;
-    	this.setPreferredSize(newSize);
-    	setURLFromThumb();
-    	new ImageLoader(this, url, referrerURL, thumb.isModified()).execute();
-    }
-    
-    public void setIcon(Thumb thumb)
-    {
-    	//this.resizedImage = null;
-    	this.thumb = thumb;
-    	setURLFromThumb();
-    	new ImageLoader(this, url, referrerURL, thumb.isModified()).execute();
-    }
-    
-    
-   /* 
-    public void setIcon(BufferedImage image)
-    {
-    	//this.resizedImage = null;
-    	this.thumb = null;
-    	this.img = image;
-    	this.setPreferredSize(new Dimension(image.getWidth(), image.getHeight()));
-    	setURLFromThumb();
-    	repaint();
-    }
-    
-    public void setIcon(BufferedImage image, Dimension preferredSize)
-    {
-    	//this.resizedImage = null;
-    	this.thumb = null;
-    	this.img = image;
-    	this.setPreferredSize(preferredSize);
-    	setURLFromThumb();
-    	repaint();
-    }
-    */
-    
-    private void setURLFromThumb()
-    {
-    	if(thumb != null)
-    	{
-    		if(thumb.getPreviewURL() != null && showPreviewImage)
-    			this.url = thumb.getPreviewURL();
-    		else this.url = thumb.getThumbURL();
-    	}
-    	else
-    	{
-    		this.url = null;
-    	}
-    }
+	public AsyncImageComponent(Thumb thumb, boolean showPreviewImage, AsyncImageComponent[] siblings, boolean doAutoSelect, boolean autoSelectFavorsHeight, boolean useBorder) {
 
-    private void getReferrerURLFromThumb()
-    {
-    	if(thumb != null)
-    	{
-    		if(thumb.getReferrerURL() != null)
-    			this.referrerURL = thumb.getReferrerURL();
-    	}
-    	else
-    	{
-    		this.referrerURL = null;
-    	}
-    }
+		this.setPreferredSize(new Dimension(preferredX, preferredY));
+		selected = false;
+		this.siblings = siblings;
+		this.thumb = thumb;
+		this.useBorder = useBorder;
+		this.showPreviewImage = showPreviewImage;
+		this.autoSelectFavorsHeight = autoSelectFavorsHeight;
+		this.doAutoSelect = doAutoSelect;
+		super.addMouseListener(this);
 
-    
-    @Override
+		setURLFromThumb();
+		getReferrerURLFromThumb();
+		//System.out.println("ViewerURL: " + viewerUrl);
+		//System.out.println("ThumbURL: " + url);
+		new ImageLoader(this, url, referrerURL, thumb == null ? false : thumb.isModified()).execute();
+	}
+
+	public void setIcon(Thumb thumb, Dimension newSize) {
+		//this.resizedImage = null;
+		this.thumb = thumb;
+		this.setPreferredSize(newSize);
+		setURLFromThumb();
+		new ImageLoader(this, url, referrerURL, thumb.isModified()).execute();
+	}
+
+	public void setIcon(Thumb thumb) {
+		//this.resizedImage = null;
+		this.thumb = thumb;
+		setURLFromThumb();
+		new ImageLoader(this, url, referrerURL, thumb.isModified()).execute();
+	}
+
+	/*
+	public void setIcon(BufferedImage image)
+	{
+		//this.resizedImage = null;
+		this.thumb = null;
+		this.img = image;
+		this.setPreferredSize(new Dimension(image.getWidth(), image.getHeight()));
+		setURLFromThumb();
+		repaint();
+	}
+	
+	public void setIcon(BufferedImage image, Dimension preferredSize)
+	{
+		//this.resizedImage = null;
+		this.thumb = null;
+		this.img = image;
+		this.setPreferredSize(preferredSize);
+		setURLFromThumb();
+		repaint();
+	}
+	*/
+
+	private void setURLFromThumb() {
+		if (thumb != null) {
+			if (thumb.getPreviewURL() != null && showPreviewImage)
+				this.url = thumb.getPreviewURL();
+			else
+				this.url = thumb.getThumbURL();
+		} else {
+			this.url = null;
+		}
+	}
+
+	private void getReferrerURLFromThumb() {
+		if (thumb != null) {
+			if (thumb.getReferrerURL() != null)
+				this.referrerURL = thumb.getReferrerURL();
+		} else {
+			this.referrerURL = null;
+		}
+	}
+
+	@Override
 	public void imageLoaded(BufferedImage img) {
-    	//clean up old references, just to be safe
-    	this.resizedImage = null;
-    	this.img = null;
-    	
-    	this.img = img;
-    	if(img != null)
-    	{
-    		isPosterCandidate = (img.getHeight() >= img.getWidth());
-    		Dimension newImageSize = calculateDimensionFit(img.getWidth(), img.getHeight(), getSize().width, getSize().height);
-    		this.resizedImage = Scalr.resize(img, Method.QUALITY, Scalr.Mode.AUTOMATIC, newImageSize.width, newImageSize.height, Scalr.OP_ANTIALIAS);
-    		
-    	}
-    	doneLoading = true;
-        repaint();
-        handleAutoSelection();
-    }
-    
+		//clean up old references, just to be safe
+		this.resizedImage = null;
+		this.img = null;
+
+		this.img = img;
+		if (img != null) {
+			isPosterCandidate = (img.getHeight() >= img.getWidth());
+			Dimension newImageSize = calculateDimensionFit(img.getWidth(), img.getHeight(), getSize().width, getSize().height);
+			this.resizedImage = Scalr.resize(img, Method.QUALITY, Scalr.Mode.AUTOMATIC, newImageSize.width, newImageSize.height, Scalr.OP_ANTIALIAS);
+
+		}
+		doneLoading = true;
+		repaint();
+		handleAutoSelection();
+	}
+
 	/**
 	 * Calculate the max size we can resize an image while fitting within maxWidth and maxHeight
 	 * and still maintaining the aspect ratio
@@ -167,44 +155,34 @@ public class AsyncImageComponent extends JPanel implements ImageConsumer, MouseL
 	 * @param maxHeight - the maximum height the image can be
 	 * @return A Dimension object with the calculated width and heights set on it
 	 */
-	private static Dimension calculateDimensionFit(int imageWidth, int imageHeight, 
-			int maxWidth, int maxHeight)
-	{
-		double aspectRatio = Math.min((double) maxWidth / (double) imageWidth,
-				(double) maxHeight / (double) imageHeight);
-		return new Dimension((int)(imageWidth * aspectRatio), (int)(imageHeight * aspectRatio));
+	private static Dimension calculateDimensionFit(int imageWidth, int imageHeight, int maxWidth, int maxHeight) {
+		double aspectRatio = Math.min((double) maxWidth / (double) imageWidth, (double) maxHeight / (double) imageHeight);
+		return new Dimension((int) (imageWidth * aspectRatio), (int) (imageHeight * aspectRatio));
 	}
-    
-    @Override
-    public void setPreferredSize(Dimension newPreferredSize)
-    {
-    	super.setPreferredSize(newPreferredSize);
-    	revalidate();
-    	if(img != null)
-    	{
-    		Dimension newImageSize = calculateDimensionFit(img.getWidth(), img.getHeight(), getSize().width, getSize().height);
-    		this.resizedImage = Scalr.resize(img, Method.QUALITY, Scalr.Mode.AUTOMATIC, newImageSize.width, newImageSize.height, Scalr.OP_ANTIALIAS);
-    	}
-    	repaint();
-    }
 
-    /**
-     * Used to automatically select the first poster sized or fanart sized image in the sibling list
-     */
-    private void handleAutoSelection() {
-		if(siblings != null && doAutoSelect && didMyselfAndAllSiblingsFinishLoading() && !didUserMakeSelectionOnMyselfOrAnySiblings())
-		{
+	@Override
+	public void setPreferredSize(Dimension newPreferredSize) {
+		super.setPreferredSize(newPreferredSize);
+		revalidate();
+		if (img != null) {
+			Dimension newImageSize = calculateDimensionFit(img.getWidth(), img.getHeight(), getSize().width, getSize().height);
+			this.resizedImage = Scalr.resize(img, Method.QUALITY, Scalr.Mode.AUTOMATIC, newImageSize.width, newImageSize.height, Scalr.OP_ANTIALIAS);
+		}
+		repaint();
+	}
+
+	/**
+	 * Used to automatically select the first poster sized or fanart sized image in the sibling list
+	 */
+	private void handleAutoSelection() {
+		if (siblings != null && doAutoSelect && didMyselfAndAllSiblingsFinishLoading() && !didUserMakeSelectionOnMyselfOrAnySiblings()) {
 			int itemToSelect = 0;
-			for(int i = 0; i < siblings.length; i++)
-			{
+			for (int i = 0; i < siblings.length; i++) {
 				AsyncImageComponent currentImage = siblings[i];
-				if(autoSelectFavorsHeight && currentImage.isPosterCandidate)
-				{
+				if (autoSelectFavorsHeight && currentImage.isPosterCandidate) {
 					itemToSelect = i;
 					break;
-				}
-				else if(!autoSelectFavorsHeight && !currentImage.isPosterCandidate)
-				{
+				} else if (!autoSelectFavorsHeight && !currentImage.isPosterCandidate) {
 					itemToSelect = i;
 					break;
 				}
@@ -214,135 +192,120 @@ public class AsyncImageComponent extends JPanel implements ImageConsumer, MouseL
 	}
 
 	@Override
-    public void paintComponent(Graphics g){
-        super.paintComponent(g);
-        //Image as async loaded - we can draw it
-        if(resizedImage != null)
-        {
-        	g.drawImage(resizedImage, 0, 0, this);
-        }
-        else if (img != null) {
-            g.drawImage(img, 0, 0, this);
-        }
-        //draw a place holder if image still loading
-        else
-        {
-        	if(useBorder)
-        		g.drawRect(0, 0, getWidth(), getHeight());
-        }
-    }
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		//Image as async loaded - we can draw it
+		if (resizedImage != null) {
+			g.drawImage(resizedImage, 0, 0, this);
+		} else if (img != null) {
+			g.drawImage(img, 0, 0, this);
+		}
+		//draw a place holder if image still loading
+		else {
+			if (useBorder)
+				g.drawRect(0, 0, getWidth(), getHeight());
+		}
+	}
 
-    protected class ImageLoader extends SwingWorker<BufferedImage, BufferedImage> {
+	protected class ImageLoader extends SwingWorker<BufferedImage, BufferedImage> {
 
-        private ImageConsumer consumer;
-        URL url;
-        URL referrerURL;
-        BufferedImage pictureLoaded;
-        boolean isImageModified; //whether to use javCoverCropRoutine to crop the image
+		private ImageConsumer consumer;
+		URL url;
+		URL referrerURL;
+		BufferedImage pictureLoaded;
+		boolean isImageModified; //whether to use javCoverCropRoutine to crop the image
 
-        public ImageLoader(ImageConsumer consumer, URL url, URL referrerURL, boolean isImageModified) {
-            this.url = url;
-            this.consumer = consumer;
-            this.isImageModified = isImageModified;
-            this.referrerURL = referrerURL;
-            
-            //So far only data18 has been a problem, so we make it the referrer every time
-            if (this.referrerURL == null)
-            {
-            	this.referrerURL = Data18SharedMethods.getReferrerURLFromImageURL(url);
-            }
-        }
+		public ImageLoader(ImageConsumer consumer, URL url, URL referrerURL, boolean isImageModified) {
+			this.url = url;
+			this.consumer = consumer;
+			this.isImageModified = isImageModified;
+			this.referrerURL = referrerURL;
 
-        @Override
-        protected BufferedImage doInBackground() throws IOException {
+			//So far only data18 has been a problem, so we make it the referrer every time
+			if (this.referrerURL == null) {
+				this.referrerURL = Data18SharedMethods.getReferrerURLFromImageURL(url);
+			}
+		}
 
-        	if(ImageCache.isImageCached(url, isImageModified))
-        	{
-                    pictureLoaded = Thumb.convertToBufferedImage(ImageCache.getImageFromCache(url, isImageModified, referrerURL));   
-        	}
-        	else
-        	{             
+		@Override
+		protected BufferedImage doInBackground() throws IOException {
 
-                try {
-                    URLConnection imageConnection = url.openConnection();
-                    imageConnection.setRequestProperty("User-Agent","Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_5) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.65 Safari/537.31");
-                    if (referrerURL != null){
-                        imageConnection.setRequestProperty("Referer",referrerURL.toString());   
-                    }
-                    pictureLoaded = ImageIO.read(imageConnection.getInputStream());
-                 
-                } catch(Throwable t) {
-                    System.out.println("Error: " + t.getMessage());
-                }
+			if (ImageCache.isImageCached(url, isImageModified)) {
+				pictureLoaded = Thumb.convertToBufferedImage(ImageCache.getImageFromCache(url, isImageModified, referrerURL));
+			} else {
 
-               // System.out.println("Image URL:" + url + "        Viewer: " + viewerUrl);
-                
-                if(isImageModified) {
-                        pictureLoaded = Thumb.convertToBufferedImage(pictureLoaded);
-                }
-                ImageCache.putImageInCache(url, pictureLoaded, isImageModified);
-        	}
-            return pictureLoaded;
+				try {
+					URLConnection imageConnection = url.openConnection();
+					imageConnection.setRequestProperty("User-Agent",
+							"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_5) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.65 Safari/537.31");
+					if (referrerURL != null) {
+						imageConnection.setRequestProperty("Referer", referrerURL.toString());
+					}
+					pictureLoaded = ImageIO.read(imageConnection.getInputStream());
 
-        }
+				} catch (Throwable t) {
+					System.out.println("Error: " + t.getMessage());
+				}
 
-        @Override
+				// System.out.println("Image URL:" + url + "        Viewer: " + viewerUrl);
+
+				if (isImageModified) {
+					pictureLoaded = Thumb.convertToBufferedImage(pictureLoaded);
+				}
+				ImageCache.putImageInCache(url, pictureLoaded, isImageModified);
+			}
+			return pictureLoaded;
+
+		}
+
+		@Override
 		protected void done() {
-            try {
-                if(pictureLoaded != null)
-                	consumer.imageLoaded(pictureLoaded);
-            } catch (Exception exp) {
-                exp.printStackTrace();
-            }
-            finally {
-            	//clean up after ourselves so we don't keep any references around
-            	pictureLoaded = null;
-            	url = null;
-            	consumer = null;
-            }
-        }           
-    }
+			try {
+				if (pictureLoaded != null)
+					consumer.imageLoaded(pictureLoaded);
+			} catch (Exception exp) {
+				exp.printStackTrace();
+			} finally {
+				//clean up after ourselves so we don't keep any references around
+				pictureLoaded = null;
+				url = null;
+				consumer = null;
+			}
+		}
+	}
 
 	private void toggleSelected() {
-		if(selected)
-		{
+		if (selected) {
 			deselectSelf();
-		}
-		else if(!selected)
-		{
+		} else if (!selected) {
 			selectSelf();
 		}
 	}
-	
-	private void selectSelf()
-	{
+
+	private void selectSelf() {
 		deselectSiblings();
 		selected = true;
-		if(useBorder)
+		if (useBorder)
 			super.setBorder(selectedBorder);
 	}
-	
-	private void deselectSelf()
-	{
+
+	private void deselectSelf() {
 		selected = false;
-		if(useBorder)
+		if (useBorder)
 			super.setBorder(deselectedBorder);
 	}
 
 	private void deselectSiblings() {
-		if(siblings != null && siblings.length > 1)
-		{
-			for(int i = 0; i < siblings.length; i++)
-			{
-				if(siblings[i] != this)
-				{
+		if (siblings != null && siblings.length > 1) {
+			for (int i = 0; i < siblings.length; i++) {
+				if (siblings[i] != this) {
 					siblings[i].deselectSelf();
 				}
 			}
 		}
-		
+
 	}
-	
+
 	public boolean isSelected() {
 		return selected;
 	}
@@ -350,61 +313,62 @@ public class AsyncImageComponent extends JPanel implements ImageConsumer, MouseL
 	public Thumb getThumb() {
 		return thumb;
 	}
-	
-	public boolean didUserMakeSelection()
-	{
-		return userMadeSelection ;
+
+	public boolean didUserMakeSelection() {
+		return userMadeSelection;
 	}
-	
-	public boolean didMyselfAndAllSiblingsFinishLoading()
-	{
-		if(siblings != null)
-		{
-			for(int i = 0; i < siblings.length; i++)
-			{
-				if(!siblings[i].doneLoading)
+
+	public boolean didMyselfAndAllSiblingsFinishLoading() {
+		if (siblings != null) {
+			for (int i = 0; i < siblings.length; i++) {
+				if (!siblings[i].doneLoading)
 					return false;
 			}
 			return true;
 		}
 		return true;
 	}
-	
-	public boolean didUserMakeSelectionOnMyselfOrAnySiblings()
-	{
-		if(siblings != null)
-		{
-			for(int i = 0; i < siblings.length; i++)
-			{
-				if(siblings[i].didUserMakeSelection())
+
+	public boolean didUserMakeSelectionOnMyselfOrAnySiblings() {
+		if (siblings != null) {
+			for (int i = 0; i < siblings.length; i++) {
+				if (siblings[i].didUserMakeSelection())
 					return true;
 			}
 			return false;
 		}
 		return true;
 	}
-	
+
 	/*MouseListener methods*/
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		userMadeSelection = true;
 		toggleSelected();
-		
+
 	}
-	@Override public void mouseEntered(MouseEvent e){}
-	@Override public void mouseExited(MouseEvent e){}
-	@Override public void mousePressed(MouseEvent e){}
-	@Override public void mouseReleased(MouseEvent e){}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+	}
 
 	public void clear() {
 		this.thumb = null;
 		this.img = null;
 		this.resizedImage = null;
 		repaint();
-		
+
 	}
-
-
-	
-	
 }

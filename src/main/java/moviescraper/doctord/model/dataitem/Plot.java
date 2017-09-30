@@ -33,6 +33,4 @@ public class Plot extends MovieDataItem {
 		plot = "";
 	}
 
-
-
 }

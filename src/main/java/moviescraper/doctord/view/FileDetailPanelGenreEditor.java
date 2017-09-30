@@ -9,24 +9,21 @@ import javax.swing.JTextField;
 import moviescraper.doctord.model.Movie;
 import moviescraper.doctord.model.dataitem.Genre;
 
-public class FileDetailPanelGenreEditor extends AbstractFileDetailPanelEditGUI{
-	
+public class FileDetailPanelGenreEditor extends AbstractFileDetailPanelEditGUI {
+
 	public FileDetailPanelGenreEditor(FileDetailPanel fileDetailPanel) {
 		super(fileDetailPanel);
 	}
 
 	private JTextField textFieldGenre;
-	
-	
-	
+
 	/** Panel displayed in the genre editor */
-	private JPanel initializeInnerFrame(Genre genreToEdit)
-	{
+	private JPanel initializeInnerFrame(Genre genreToEdit) {
 		JPanel innerPanel = new JPanel();
 		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWeights = new double[]{0.0, 1.0};
+		gridBagLayout.columnWeights = new double[] { 0.0, 1.0 };
 		innerPanel.setLayout(gridBagLayout);
-		
+
 		JLabel lblGenre = new JLabel("Genre :");
 		GridBagConstraints gbc_lblGenre = new GridBagConstraints();
 		gbc_lblGenre.insets = new Insets(0, 0, 0, 5);
@@ -34,9 +31,9 @@ public class FileDetailPanelGenreEditor extends AbstractFileDetailPanelEditGUI{
 		gbc_lblGenre.gridx = 0;
 		gbc_lblGenre.gridy = 0;
 		innerPanel.add(lblGenre, gbc_lblGenre);
-		
+
 		textFieldGenre = new JTextField();
-		if(genreToEdit != null && genreToEdit.getGenre().length() >0)
+		if (genreToEdit != null && genreToEdit.getGenre().length() > 0)
 			textFieldGenre.setText(genreToEdit.getGenre());
 		GridBagConstraints gbc_textField = new GridBagConstraints();
 		gbc_textField.fill = GridBagConstraints.HORIZONTAL;
@@ -44,13 +41,13 @@ public class FileDetailPanelGenreEditor extends AbstractFileDetailPanelEditGUI{
 		gbc_textField.gridy = 0;
 		innerPanel.add(textFieldGenre, gbc_textField);
 		textFieldGenre.setColumns(10);
-		
+
 		return innerPanel;
 	}
+
 	private JPanel initializeInnerFrame() {
 		return initializeInnerFrame(new Genre(""));
 	}
-	
 
 	@Override
 	public String getMenuItemName() {
@@ -59,10 +56,10 @@ public class FileDetailPanelGenreEditor extends AbstractFileDetailPanelEditGUI{
 
 	@Override
 	public void showGUI(Operation operation) {
-		if(operation == Operation.ADD)
+		if (operation == Operation.ADD)
 			showOptionDialog(initializeInnerFrame(), "Add New Genre", operation);
-		else if(operation == Operation.EDIT)
-			showOptionDialog(initializeInnerFrame(new Genre(fileDetailPanel.getGenreList().getSelectedText())),"Edit Genre", operation);
+		else if (operation == Operation.EDIT)
+			showOptionDialog(initializeInnerFrame(new Genre(fileDetailPanel.getGenreList().getSelectedText())), "Edit Genre", operation);
 	}
 
 	@Override
@@ -80,7 +77,7 @@ public class FileDetailPanelGenreEditor extends AbstractFileDetailPanelEditGUI{
 		/*Genre genreToRemove = fileDetailPanel.getGenreList().getSelectedText();
 		fileDetailPanel.getCurrentMovie().getGenres().remove(genreToRemove);
 		fileDetailPanel.updateView(false, false);*/
-		
+
 	}
 
 	@Override
@@ -88,7 +85,7 @@ public class FileDetailPanelGenreEditor extends AbstractFileDetailPanelEditGUI{
 		/*Genre genreToEdit = fileDetailPanel.getGenreList().getSelectedText();
 		genreToEdit.setGenre(textFieldGenre.getText());
 		fileDetailPanel.updateView(false, false);*/
-		
+
 	}
-	
+
 }

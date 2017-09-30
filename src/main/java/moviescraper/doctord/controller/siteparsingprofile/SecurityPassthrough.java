@@ -10,14 +10,14 @@ import moviescraper.doctord.model.SearchResult;
  *
  */
 public interface SecurityPassthrough {
-	
+
 	/**
 	 * Examines the passed in document to determine if we need to run the security passthrough method on it
 	 * @param document - the document to examine. should already be downloaded with html of the target page you are trying to get
 	 * @return - true if we need to run the security passthrough method, false otherwise
 	 */
 	public boolean requiresSecurityPassthrough(Document document);
-	
+
 	/**
 	 * Given the passed in document, clicks any sort of captchas to get to the required page,
 	 * downloads it, and returns it

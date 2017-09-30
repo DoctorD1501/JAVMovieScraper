@@ -13,12 +13,12 @@ public class Settings {
 	private static final String fileNameOfPreferences = "settings.xml";
 
 	protected interface Key {
-		String getKey(); 
+		String getKey();
 	}
 
 	//Initialization that only happens once
 	static {
-		try (FileInputStream settingsInputStream = new FileInputStream(fileNameOfPreferences);){
+		try (FileInputStream settingsInputStream = new FileInputStream(fileNameOfPreferences);) {
 			programPreferences.loadFromXML(settingsInputStream);
 
 		} catch (InvalidPropertiesFormatException e) {
@@ -31,14 +31,15 @@ public class Settings {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
+
 	protected Settings() {
 		//prevent other people from calling this
 	}
 
 	public static void savePreferences() {
-		try (FileOutputStream settingsOutputStream = new FileOutputStream(fileNameOfPreferences);){
+		try (FileOutputStream settingsOutputStream = new FileOutputStream(fileNameOfPreferences);) {
 			programPreferences.storeToXML(settingsOutputStream, "");
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -51,11 +52,11 @@ public class Settings {
 
 	protected <K extends Key> void setBooleanValue(K preferenceName, Boolean preferenceValue) {
 		String key = preferenceName.getKey();
-		if(preferenceValue.booleanValue())
+		if (preferenceValue.booleanValue())
 			programPreferences.setProperty(key, "true");
 		else
 			programPreferences.setProperty(key, "false");
-		
+
 		savePreferences();
 	}
 
@@ -68,17 +69,17 @@ public class Settings {
 	protected <K extends Key> Boolean getBooleanValue(K preferenceName, Boolean defaultValue) {
 		String fieldValue = preferenceName.getKey();
 		String preferenceValue = programPreferences.getProperty(fieldValue);
-		if(preferenceValue == null)
+		if (preferenceValue == null)
 			return defaultValue;
-		if(preferenceValue.equals("true"))
+		if (preferenceValue.equals("true"))
 			return true;
-		else if(preferenceValue.equals("false"))
+		else if (preferenceValue.equals("false"))
 			return false;
-		
+
 		return defaultValue;
 	}
-	
-	protected <K extends Key>  void setStringValue(K preferenceName, String preferenceValue) {
+
+	protected <K extends Key> void setStringValue(K preferenceName, String preferenceValue) {
 		programPreferences.setProperty(preferenceName.getKey(), preferenceValue);
 		savePreferences();
 	}
@@ -86,15 +87,14 @@ public class Settings {
 	protected static <K extends Key> String getStringValue(K preferenceName, String defaultValue) {
 		String fieldValue = preferenceName.getKey();
 		String preferenceValue = programPreferences.getProperty(fieldValue);
-		if(preferenceValue != null)
+		if (preferenceValue != null)
 			return preferenceValue;
-		
+
 		return defaultValue;
 	}
-	
-		
+
 	@Override
-	public String toString(){
+	public String toString() {
 		return programPreferences.toString();
 	}
 }

@@ -10,18 +10,15 @@ import javax.swing.JList;
 import moviescraper.doctord.model.dataitem.Genre;
 
 public class GenreListRenderer extends DefaultListCellRenderer {
-	
 
 	private static final long serialVersionUID = 3855101965030097525L;
 	private static final Font font = new Font("helvitica", Font.PLAIN, 12);
 
 	@Override
-	public Component getListCellRendererComponent(JList<?> list, Object value,
-			int index, boolean isSelected, boolean cellHasFocus) {
-		JLabel label = (JLabel) super.getListCellRendererComponent(list,
-				value, index, isSelected, cellHasFocus);
+	public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+		JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 		label.setFont(font);
-		setText(((Genre)value).getGenre());
+		setText(((Genre) value).getGenre());
 		return this;
 	}
 

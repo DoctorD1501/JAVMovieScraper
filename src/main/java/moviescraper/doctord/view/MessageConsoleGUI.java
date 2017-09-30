@@ -11,44 +11,42 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.border.EmptyBorder;
 
-public class MessageConsoleGUI extends JFrame{
+public class MessageConsoleGUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 
 	private static MessageConsoleGUI window;
-		
-	public static void showWindow(){
-		if (window == null){
+
+	public static void showWindow() {
+		if (window == null) {
 			window = new MessageConsoleGUI();
 			window.setVisible(true);
-		}
-		else{
+		} else {
 			window.setState(NORMAL);
 			window.toFront();
 		}
 	}
-	
+
 	/**
 	 * Create the frame.
 	 */
-	private MessageConsoleGUI()
-	{
+	private MessageConsoleGUI() {
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 800, 600);
 		setTitle("JAVMovieScraper Console Window");
-		
+
 		JPanel somePanel = new JPanel();
 		somePanel.setLayout(new BorderLayout());
 		somePanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		this.add(somePanel);
 		JTextPane textPane = new JTextPane();
-		somePanel.add( new JScrollPane(textPane), BorderLayout.CENTER);
+		somePanel.add(new JScrollPane(textPane), BorderLayout.CENTER);
 		MessageConsole mc = new MessageConsole(textPane);
 		mc.redirectOut(Color.BLACK, System.out);
 		mc.redirectErr(Color.RED, System.err);
 		mc.setMessageLines(750);
 		this.setVisible(true);
-		
+
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent arg0) {

@@ -1,11 +1,10 @@
 package moviescraper.doctord.model.dataitem;
 
-
 /**
  * The year in which a movie is released. The correct format for this variable is YYYY where YYYY is the 4 digit year.
  */
 public class Year extends MovieDataItem {
-	
+
 	private String year;
 	public static final Year BLANK_YEAR = new Year("");
 
@@ -32,7 +31,7 @@ public class Year extends MovieDataItem {
 		return null;
 	}
 
-	public Year(){
+	public Year() {
 		year = "";
 	}
 

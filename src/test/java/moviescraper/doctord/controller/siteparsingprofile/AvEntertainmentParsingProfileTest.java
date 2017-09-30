@@ -35,13 +35,13 @@ public class AvEntertainmentParsingProfileTest {
 		profile = new AvEntertainmentParsingProfile();
 		profile.setDocument(document);
 	}
-	
+
 	@Test
 	public void testSearchResult() throws IOException {
 		SearchResult[] results = profile.getSearchResults("http://www.aventertainments.com/ppv/ppv_studioproducts.aspx?StudioID=45&languageID=1&VODTypeID=1");
-//		for (SearchResult sr : results) {
-//			TestTokyoHotParsingProfile.showImage(sr.getLabel(), sr.getPreviewImage().getThumbImage());
-//		}
+		//		for (SearchResult sr : results) {
+		//			TestTokyoHotParsingProfile.showImage(sr.getLabel(), sr.getPreviewImage().getThumbImage());
+		//		}
 		assertTrue("There should be 40 results.", results.length == 40);
 	}
 
@@ -52,13 +52,13 @@ public class AvEntertainmentParsingProfileTest {
 		assertEquals("Wrong actor name", "Yume Mizuki", scrapeActors.get(0).getName());
 		assertEquals("Wrong actor picture", "http://imgs.aventertainments.com/ActressImage/LargeImage/mizuki_yume.jpg", scrapeActors.get(0).getThumb().getThumbURL().toString());
 	}
-	
+
 	@Test
 	public void testTitle() {
 		Title scrapeTitle = profile.scrapeTitle();
 		assertEquals("Wrong Title", "GANKI MANIA : Yume Mizuki", scrapeTitle.getTitle());
 	}
-	
+
 	@Test
 	public void testGenres() {
 		ArrayList<Genre> genres = profile.scrapeGenres();
@@ -66,14 +66,15 @@ public class AvEntertainmentParsingProfileTest {
 		assertTrue(genres.contains(new Genre("Drama")));
 		assertTrue(genres.contains(new Genre("Editor's Pick")));
 	}
-	
+
 	@Test
 	public void testYear() {
 		Year year = profile.scrapeYear();
 		assertEquals("Found wrong year", "2014", year.getYear());
 	}
-	
-	@Test public void testReleaseDate(){
+
+	@Test
+	public void testReleaseDate() {
 		ReleaseDate releaseDate = profile.scrapeReleaseDate();
 		assertEquals("Found wrong release date", "2014-09-09", releaseDate.getReleaseDate());
 	}
@@ -83,13 +84,13 @@ public class AvEntertainmentParsingProfileTest {
 		Runtime runtime = profile.scrapeRuntime();
 		assertEquals("Wrong Runtime", "150", runtime.getRuntime());
 	}
-	
+
 	@Test
 	public void testPlot() {
 		Plot plot = profile.scrapePlot();
 		assertTrue("Found wrong Plot", plot.getPlot().startsWith(""));
 	}
-	
+
 	@Test
 	public void testPosters() throws IOException {
 		Thumb[] posters = profile.scrapePosters();
@@ -97,16 +98,16 @@ public class AvEntertainmentParsingProfileTest {
 		assertEquals("Wrong poster", "http://imgs.aventertainments.com/new/bigcover/dvd1pt-154.jpg", posters[0].getThumbURL().toString());
 		//TestingHelper.showImage("posters", posters[0].getThumbImage());
 	}
-	
+
 	@Test
 	public void testFanart() throws IOException {
 		Thumb[] fanart = profile.scrapeFanart();
 		assertTrue("There should be 1 Fanart.", fanart.length == 1);
-		
+
 		assertEquals("Wrong Fanart", "http://imgs.aventertainments.com/new/bigcover/dvd1pt-154.jpg", fanart[0].getThumbURL().toString());
 		//TestingHelper.showImage("Fanart", fanart[0].getThumbImage());
 	}
-	
+
 	@Test
 	public void testSet() {
 		Set set = profile.scrapeSet();

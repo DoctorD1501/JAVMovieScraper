@@ -27,8 +27,7 @@ public class Title extends MovieDataItem {
 		return "Title [title=\"" + title + "\"" + dataItemSourceToString() + "]";
 	}
 
-	public Title()
-	{
+	public Title() {
 		title = "";
 	}
 

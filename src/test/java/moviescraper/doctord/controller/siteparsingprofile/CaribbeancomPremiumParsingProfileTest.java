@@ -25,11 +25,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class CaribbeancomPremiumParsingProfileTest {
-	
+
 	static File file = new File("C:/Temp/Caribbeancom Premium 062014_878.avi");
 	static CaribbeancomPremiumParsingProfile parser = new CaribbeancomPremiumParsingProfile();
-	
-	
+
 	@BeforeClass
 	public static void initialize() {
 		parser = new CaribbeancomPremiumParsingProfile();
@@ -45,20 +44,20 @@ public class CaribbeancomPremiumParsingProfileTest {
 		}
 
 	}
-	
+
 	@SuppressWarnings("static-access")
 	@Test
 	public void testFindID() {
 		String findIDTagFromFile = parser.findIDTagFromFile(file, false);
 		assertEquals(findIDTagFromFile, "062014_878");
 	}
-	
+
 	@Test
-	public void testScrapeID(){
+	public void testScrapeID() {
 		String id = parser.scrapeID().getId();
 		assertEquals("062014_878", id);
 	}
-	
+
 	@Test
 	public void testScrapeTitle() {
 		Title title = parser.scrapeTitle();
@@ -67,66 +66,63 @@ public class CaribbeancomPremiumParsingProfileTest {
 		//this one and adjust as needed to fix the test case
 		assertEquals("Mercy Bo Koo DV 18 Glamorous Venus M - Ultimate Masochism BODY Rape -", title.getTitle());
 	}
-	
+
 	@Test
-	public void testScrapeOriginalTitle(){
+	public void testScrapeOriginalTitle() {
 		OriginalTitle originalTitle = parser.scrapeOriginalTitle();
 		assertEquals("Wrong original title", "メルシーボークー DV 18 Glamorous Venus M -究極マゾBODY姦-", originalTitle.getOriginalTitle());
 	}
-	
+
 	@Test
-	public void testScrapeRating(){
+	public void testScrapeRating() {
 		Rating rating = parser.scrapeRating();
 		assertEquals("Wrong rating", "", rating.getRatingOutOfTen());
 	}
-	
+
 	@Test
-	public void testScrapeYear(){
+	public void testScrapeYear() {
 		Year year = parser.scrapeYear();
 		assertEquals("Wrong year", "2014", year.getYear());
 	}
-	
+
 	@Test
-	public void testScrapeReleaseDate()
-	{
+	public void testScrapeReleaseDate() {
 		ReleaseDate releaseDate = parser.scrapeReleaseDate();
 		assertEquals("Wrong release date", "2014-01-20", releaseDate.getReleaseDate());
 	}
-	
+
 	@Test
-	public void testScrapePlot(){
+	public void testScrapePlot() {
 		Plot plot = parser.scrapePlot();
 		assertEquals("Didn't scrape something which is long and looks like a plot", true, plot.getPlot().length() > 35);
 	}
-	
+
 	@Test
-	public void testScrapeRuntime(){
+	public void testScrapeRuntime() {
 		moviescraper.doctord.model.dataitem.Runtime movieRuntime = parser.scrapeRuntime();
 		assertEquals("Wrong runtime", "120", movieRuntime.getRuntime());
 	}
-	
 
-	
 	@Test
-	public void testScrapeActors(){
+	public void testScrapeActors() {
 		ArrayList<Actor> actorList = parser.scrapeActors();
 		assertEquals("Wrong actor", "Ichiki Miho", actorList.get(0).getName());
 	}
-	
+
 	@Test
-	public void testScrapeGenre(){
+	public void testScrapeGenre() {
 		ArrayList<Genre> genreList = parser.scrapeGenres();
 		assertEquals("Wrong genre", "Pornstar", genreList.get(0).getGenre());
 	}
-	
+
 	@Test
-	public void testTrailer(){
+	public void testTrailer() {
 		Trailer trailer = parser.scrapeTrailer();
 		assertEquals("Wrong trailer", "http://sample.caribbeancompr.com/sample/movies/062014_878/480p.mp4", trailer.getTrailer());
 	}
-	
+
 	@Test
-	public void testScrapePoster(){
+	public void testScrapePoster() {
 		Thumb[] posters = parser.scrapePosters();
 		assertEquals("Poster size not right", true, posters.length > 0);
 		assertEquals("Wrong poster url", "http://en.caribbeancompr.com/moviepages/062014_878/images/main_b.jpg", posters[0].getThumbURL().toString());

@@ -43,20 +43,18 @@ import moviescraper.doctord.model.dataitem.Votes;
 import moviescraper.doctord.model.dataitem.Year;
 
 public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements SpecificProfile {
-	
+
 	@Override
-	public List<ScraperGroupName> getScraperGroupNames()
-	{
-		if(groupNames == null)
+	public List<ScraperGroupName> getScraperGroupNames() {
+		if (groupNames == null)
 			groupNames = Arrays.asList(ScraperGroupName.AMERICAN_ADULT_DVD_SCRAPER_GROUP);
 		return groupNames;
 	}
-	
+
 	@Override
 	public Title scrapeTitle() {
 		Element titleElement = document.select("title").first();
-		if(titleElement != null)
-		{
+		if (titleElement != null) {
 			String titleText = titleElement.text();
 			titleText = titleText.replaceFirst("Adult DVD", "");
 			titleText = titleText.replaceFirst("Blu-Ray", "");
@@ -90,9 +88,8 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 	@Override
 	public ReleaseDate scrapeReleaseDate() {
 		Element releaseDateElement = document.select("font:containsOwn(Released:) + font").first();
-		if(releaseDateElement != null)
-		{
-			ReleaseDate releaseDate = new ReleaseDate(releaseDateElement.text(),new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH));
+		if (releaseDateElement != null) {
+			ReleaseDate releaseDate = new ReleaseDate(releaseDateElement.text(), new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH));
 			return releaseDate;
 		}
 		return ReleaseDate.BLANK_RELEASEDATE;
@@ -124,13 +121,11 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 	@Override
 	public Plot scrapePlot() {
 		Element plotElement = document.select("a:has(font b:containsOwn(Description:)) + font").first();
-		if(plotElement != null)
-		{
+		if (plotElement != null) {
 			String plotElementText = plotElement.text().trim();
 			//They like to include their plot descriptions within quotes, so we can remove those quotes
-			if(plotElementText.startsWith("\"") && plotElementText.endsWith("\"") && plotElementText.length() > 2)
-			{
-				plotElementText = plotElementText.substring(1, plotElementText.length() -1);
+			if (plotElementText.startsWith("\"") && plotElementText.endsWith("\"") && plotElementText.length() > 2) {
+				plotElementText = plotElementText.substring(1, plotElementText.length() - 1);
 			}
 			return new Plot(plotElementText);
 		}
@@ -146,8 +141,7 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 	@Override
 	public Runtime scrapeRuntime() {
 		Element runtimeElement = document.select("font:containsOwn(Run Time:) + font").first();
-		if(runtimeElement != null)
-		{
+		if (runtimeElement != null) {
 			String runtimeText = runtimeElement.text().replace(" min.", "");
 			return new Runtime(runtimeText);
 		}
@@ -158,33 +152,29 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 	public Thumb[] scrapePosters() {
 		String movieID = scrapeID().getId();
 		String thumbPath = getPosterPathFromIDString(movieID);
-		if(thumbPath == null)
+		if (thumbPath == null)
 			return new Thumb[0];
 		try {
 			Thumb posterThumb = new Thumb(thumbPath);
-			Thumb[] thumbsToReturn = {posterThumb};
+			Thumb[] thumbsToReturn = { posterThumb };
 			return thumbsToReturn;
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 			return new Thumb[0];
 		}
 	}
-	
-	private String getPosterPathFromIDString(String movieID)
-	{
-		if(movieID == null)
+
+	private String getPosterPathFromIDString(String movieID) {
+		if (movieID == null)
 			return null;
 		return "http://images.excaliburfilms.com/DVD/reviews/imagesBB020609/largemoviepic/dvd_" + movieID + ".jpg";
 	}
-	
-	private String getPosterPreviewPathFromIDString(String movieID)
-	{
-		if(movieID == null)
+
+	private String getPosterPreviewPathFromIDString(String movieID) {
+		if (movieID == null)
 			return null;
 		return "http://images.excaliburfilms.com/dvd/dvdicon2/dvd_" + movieID + ".jpg";
 	}
-	
-	
 
 	@Override
 	public Thumb[] scrapeFanart() {
@@ -201,7 +191,7 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 		String thumbPath = "http://images.excaliburfilms.com/DVD/reviews/imagesBB020609/largemoviepic/dvd_" + movieID + "-b.jpg";
 		try {
 			Thumb posterThumb = new Thumb(thumbPath);
-			Thumb[] thumbsToReturn = {posterThumb};
+			Thumb[] thumbsToReturn = { posterThumb };
 			return thumbsToReturn;
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -212,8 +202,7 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 	@Override
 	public MPAARating scrapeMPAA() {
 		Element mpaaRatingElement = document.select("font:containsOwn(Rated:) + font a").first();
-		if(mpaaRatingElement != null)
-		{
+		if (mpaaRatingElement != null) {
 			String mpaaRatingText = mpaaRatingElement.text();
 			return new MPAARating(mpaaRatingText);
 		}
@@ -223,15 +212,13 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 	@Override
 	public ID scrapeID() {
 		String id = getIDStringFromDocumentLocation(document);
-		if(id != null)
-		{
+		if (id != null) {
 			return new ID(id);
 		}
 		return ID.BLANK_ID;
 	}
-	
-	private String getIDStringFromDocumentLocation(Document doc)
-	{
+
+	private String getIDStringFromDocumentLocation(Document doc) {
 		if (doc != null) {
 			String id = doc.location();
 			if (id.contains("/") && id.contains("_") && id.contains(".htm")) {
@@ -246,11 +233,9 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 	public ArrayList<Genre> scrapeGenres() {
 		ArrayList<Genre> genreList = new ArrayList<>();
 		Element genreElement = document.select("font:containsOwn(Fetish:) + a").first();
-		if(genreElement != null)
-		{
+		if (genreElement != null) {
 			String genreText = genreElement.text();
-			if(genreText.length() > 0 && !genreText.equals("BluRay"))
-			{
+			if (genreText.length() > 0 && !genreText.equals("BluRay")) {
 				genreList.add(new Genre(genreText));
 			}
 		}
@@ -262,53 +247,44 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 		ArrayList<Actor> actorList = new ArrayList<>();
 		Element firstActorList = document.select("font:containsOwn(Starring:) + font").first();
 		Elements actorListElements = firstActorList.select("a");
-		for(Element currentActor : actorListElements)
-		{
+		for (Element currentActor : actorListElements) {
 			String actorName = currentActor.text();
 			String pageName = currentActor.attr("href");
 			Thumb actorThumb = getThumbForPersonPageUrl(pageName);
-			if(actorThumb != null)
-			{
+			if (actorThumb != null) {
 				Actor currentActorToAdd = new Actor(actorName, "", actorThumb);
 				actorList.add(currentActorToAdd);
-			}
-			else
-			{
+			} else {
 				Actor currentActorToAdd = new Actor(actorName, "", null);
-				if(actorName.trim().length() > 0)
+				if (actorName.trim().length() > 0)
 					actorList.add(currentActorToAdd);
 			}
 		}
 		//get no image actors
 		String firstActorListText = firstActorList.ownText();
-		if(firstActorListText.length() > 0)
-		{
+		if (firstActorListText.length() > 0) {
 			String currentActorTextSplitByComma[] = firstActorListText.trim().split(",");
-			for(String currentNoThumbActor: currentActorTextSplitByComma)
-			{
+			for (String currentNoThumbActor : currentActorTextSplitByComma) {
 				String actorName = currentNoThumbActor.trim();
 				//last actor in the list has a period since the list is in sentence form, so we want to get rid of that
-				if(actorName.endsWith("."))
-					actorName = actorName.substring(0, actorName.length()-1);
+				if (actorName.endsWith("."))
+					actorName = actorName.substring(0, actorName.length() - 1);
 				//we already have some of the actors if they were added in the thumb version, so check before adding them again
 				boolean hadThisActorAlready = false;
-				for(Actor existingActor: actorList)
-				{
-					if(existingActor.getName().equals(actorName))
+				for (Actor existingActor : actorList) {
+					if (existingActor.getName().equals(actorName))
 						hadThisActorAlready = true;
 				}
-				if(!hadThisActorAlready && actorName.trim().length() > 0)
+				if (!hadThisActorAlready && actorName.trim().length() > 0)
 					actorList.add(new Actor(actorName, "", null));
 			}
 		}
 		return actorList;
 	}
-	
+
 	private Thumb getThumbForPersonPageUrl(String personPageUrl) {
-		String actorFromPageName = personPageUrl.substring(personPageUrl.lastIndexOf("/"), personPageUrl.length())
-				.replace(".htm", "");
-		String actorThumbURL = "http://Images.ExcaliburFilms.com/pornlist/starpicsAA020309" + actorFromPageName
-				+ ".jpg";
+		String actorFromPageName = personPageUrl.substring(personPageUrl.lastIndexOf("/"), personPageUrl.length()).replace(".htm", "");
+		String actorThumbURL = "http://Images.ExcaliburFilms.com/pornlist/starpicsAA020309" + actorFromPageName + ".jpg";
 		Thumb actorThumb = null;
 		try {
 			actorThumb = new Thumb(actorThumbURL);
@@ -322,13 +298,11 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 	public ArrayList<Director> scrapeDirectors() {
 		ArrayList<Director> directorList = new ArrayList<>();
 		Element directorElement = document.select("font:containsOwn(Director:) + a").first();
-		if(directorElement != null)
-		{
+		if (directorElement != null) {
 			String directorName = directorElement.text();
 			String directorPageURL = directorElement.attr("href");
 			Thumb directorThumb = null;
-			if(directorPageURL != null)
-			{
+			if (directorPageURL != null) {
 				directorThumb = getThumbForPersonPageUrl(directorPageURL);
 			}
 			Director directorToAdd = new Director(directorName, directorThumb);
@@ -340,8 +314,7 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 	@Override
 	public Studio scrapeStudio() {
 		Element studioElement = document.select("font:containsOwn(By:) + a").first();
-		if(studioElement != null)
-		{
+		if (studioElement != null) {
 			String studioText = studioElement.text();
 			return new Studio(studioText);
 		}
@@ -369,8 +342,7 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 		} catch (EncoderException e) {
 			e.printStackTrace();
 		}
-		fileBaseName = "http://www.excaliburfilms.com/search/adultSearch.htm?searchString=" + fileBaseName
-				+ "&Case=ExcalMovies&Search=AdultDVDMovies&SearchFor=Title.x";
+		fileBaseName = "http://www.excaliburfilms.com/search/adultSearch.htm?searchString=" + fileBaseName + "&Case=ExcalMovies&Search=AdultDVDMovies&SearchFor=Title.x";
 		return fileBaseName;
 	}
 
@@ -379,20 +351,19 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 		Document doc = Jsoup.connect(searchString).timeout(CONNECTION_TIMEOUT_VALUE).get();
 		boolean onSearchResultsPage = doc.location().contains("adultSearch.htm");
 		//found the movie without a search results page
-		if(doc.location() != null && !onSearchResultsPage)
-		{
+		if (doc.location() != null && !onSearchResultsPage) {
 			String idOfPage = getIDStringFromDocumentLocation(doc);
 			String posterPath = getPosterPreviewPathFromIDString(idOfPage);
 			String label = doc.select("title").first().text();
 			Thumb previewImage = new Thumb(posterPath);
 			//SearchResult directResult = new SearchResult(doc.location());
 			SearchResult result = null;
-			if(posterPath != null)
-				 result = new SearchResult(doc.location(), label, previewImage);
+			if (posterPath != null)
+				result = new SearchResult(doc.location(), label, previewImage);
 			else
 				result = new SearchResult(doc.location(), label, null);
 
-			SearchResult[] directResultArray = {result};
+			SearchResult[] directResultArray = { result };
 			return directResultArray;
 		}
 		//This selector in particular tends to break when they update their site. 
@@ -400,13 +371,13 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 		//hackery like width=600 stuff
 		Elements foundMovies = doc.select("table[width=600]:contains(Wish List) tr tbody:has(img)");
 		LinkedList<SearchResult> searchList = new LinkedList<>();
-		
-		for(Element movie: foundMovies){
+
+		for (Element movie : foundMovies) {
 			String urlPath = movie.select("a").first().attr("href");
 			String thumb = movie.select("img").first().attr("src");
 			String label = movie.select("img").first().attr("alt");
 			SearchResult searchResult = new SearchResult(urlPath, label, new Thumb(thumb));
-			if(!searchList.contains(searchResult))
+			if (!searchList.contains(searchResult))
 				searchList.add(searchResult);
 		}
 		return searchList.toArray(new SearchResult[searchList.size()]);

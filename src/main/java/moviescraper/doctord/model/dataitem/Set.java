@@ -32,6 +32,4 @@ public class Set extends MovieDataItem {
 		set = "";
 	}
 
-
-
 }

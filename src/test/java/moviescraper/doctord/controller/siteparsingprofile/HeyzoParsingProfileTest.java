@@ -23,32 +23,32 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class HeyzoParsingProfileTest {
-	
+
 	static File file = new File("C:/Temp/Heyzo 0194.wmv");
 	static HeyzoParsingProfile profile;
-	
+
 	@BeforeClass
 	public static void initialize() {
-		profile = new HeyzoParsingProfile( );
-                profile.setScrapingLanguage(Language.ENGLISH);
+		profile = new HeyzoParsingProfile();
+		profile.setScrapingLanguage(Language.ENGLISH);
 		String url = profile.createSearchString(file);
 		Document document = SiteParsingProfile.downloadDocumentFromURLString(url);
 		profile.setDocument(document);
 	}
-	
+
 	@Test
 	public void testSearchString() {
 		String searchString = profile.createSearchString(file);
-		assertEquals("Wrong searchString.", "http://en.heyzo.com/moviepages/0194/index.html" , searchString);
+		assertEquals("Wrong searchString.", "http://en.heyzo.com/moviepages/0194/index.html", searchString);
 	}
-	
+
 	@Test
 	public void testFindID() {
 		@SuppressWarnings("static-access")
 		String id = profile.findIDTagFromFile(file);
 		assertEquals("Found Wrong ID", "0194", id);
 	}
-	
+
 	@Test
 	public void testRuntime() {
 		//It seems there might be a bug on the site where the runtimes are all displaying as zero
@@ -58,19 +58,21 @@ public class HeyzoParsingProfileTest {
 		System.out.println("Runtime = " + runtime.getRuntime());
 		//assertEquals("Wrong Runtime", "68", runtime.getRuntime());
 	}
-	
-	@Test public void testTitle(){
+
+	@Test
+	public void testTitle() {
 		Title title = profile.scrapeTitle();
 		System.out.println("title = " + title);
 		assertEquals("Wrong Title", "Make Woopie with The Cutest Costume Idol! - Miku Oguri", title.getTitle());
 	}
-	
-	@Test public void testOriginalTitle(){
+
+	@Test
+	public void testOriginalTitle() {
 		OriginalTitle originalTitle = profile.scrapeOriginalTitle();
 		System.out.println("originalTitle = " + originalTitle);
 		assertEquals("Wrong original title", "ロリカワ！人気絶頂コスドルを撮影会でヤッちゃいました - おぐりみく", originalTitle.getOriginalTitle());
 	}
-	
+
 	//Not testing rating for now due to this site no longer supporting rating scraping. This used to be doable without using js
 	//but now the rating requires js to on the parser to get the rating
 	/*@Test public void testRating(){
@@ -82,32 +84,36 @@ public class HeyzoParsingProfileTest {
 						&& (new Double(rating.getRatingOutOfTen())
 								.doubleValue() < 10.0), true);
 	}*/
-	
-	@Test public void testYear(){
+
+	@Test
+	public void testYear() {
 		Year year = profile.scrapeYear();
 		System.out.println("year = " + year);
 		assertEquals("Wrong year", "2012", year.getYear());
 	}
-	
+
 	@Test
-	public void testReleaseDate(){
+	public void testReleaseDate() {
 		ReleaseDate scrapeReleaseDate = profile.scrapeReleaseDate();
 		assertEquals("Found wrong releaseDate", "2012-12-16", scrapeReleaseDate.getReleaseDate());
 	}
-	
-	@Test public void testPoster(){
+
+	@Test
+	public void testPoster() {
 		String posterURL = profile.scrapePosters()[0].getThumbURL().toString();
 		System.out.println("poster url of first poster = " + posterURL);
 		assertEquals("Wrong poster url", "http://en.heyzo.com/contents/3000/0194/gallery/001.jpg", posterURL);
 	}
-	
-	@Test public void testTrailer(){
+
+	@Test
+	public void testTrailer() {
 		Trailer trailer = profile.scrapeTrailer();
 		System.out.println("trailer = " + trailer);
 		assertEquals("Wrong trailer url", "http://sample.heyzo.com/contents/3000/0194/heyzo_hd_0194_sample.mp4", trailer.getTrailer());
 	}
-	
-	@Test public void testActors(){
+
+	@Test
+	public void testActors() {
 		ArrayList<Actor> actorList = profile.scrapeActors();
 		System.out.println("actorList = " + actorList);
 		assertEquals("Wrong actor list name", "Miku Oguri", actorList.get(0).getName());
@@ -118,8 +124,9 @@ public class HeyzoParsingProfileTest {
 			e.printStackTrace();
 		}
 	}
-	
-	@Test public void testGenres(){
+
+	@Test
+	public void testGenres() {
 		ArrayList<Genre> genreList = profile.scrapeGenres();
 		System.out.println("genreList = " + genreList);
 		assertEquals("Wrong genre list item", "Cosplay", genreList.get(6).getGenre());

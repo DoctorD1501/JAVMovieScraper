@@ -20,8 +20,7 @@ public class JapaneseCharacter {
 	 * Version information
 	 */
 	@SuppressWarnings("unused")
-	private final static String VERSION =
-			"$Id: JapaneseCharacter.java,v 1.2 2002/04/20 18:10:24 djmay Exp $";
+	private final static String VERSION = "$Id: JapaneseCharacter.java,v 1.2 2002/04/20 18:10:24 djmay Exp $";
 
 	/**
 	 * Determines if this character is a Japanese Kana.
@@ -139,67 +138,27 @@ public class JapaneseCharacter {
 	/**
 	 * The array used to map hirgana to romaji.
 	 */
-	protected static String romaji[] = {
-		"a", "a",
-		"i", "i",
-		"u", "u",
-		"e", "e",
-		"o", "o",
+	protected static String romaji[] = { "a", "a", "i", "i", "u", "u", "e", "e", "o", "o",
 
-		"ka", "ga",
-		"ki", "gi",
-		"ku", "gu",
-		"ke", "ge",
-		"ko", "go",
+			"ka", "ga", "ki", "gi", "ku", "gu", "ke", "ge", "ko", "go",
 
-		"sa", "za",
-		"shi", "ji",
-		"su", "zu",
-		"se", "ze",
-		"so", "zo",
+			"sa", "za", "shi", "ji", "su", "zu", "se", "ze", "so", "zo",
 
-		"ta", "da",
-		"chi", "ji",
-		"tsu", "tsu", "zu",
-		"te", "de",
-		"to", "do",
+			"ta", "da", "chi", "ji", "tsu", "tsu", "zu", "te", "de", "to", "do",
 
-		"na",
-		"ni",
-		"nu",
-		"ne",
-		"no",
+			"na", "ni", "nu", "ne", "no",
 
-		"ha", "ba", "pa",
-		"hi", "bi", "pi",
-		"fu", "bu", "pu",
-		"he", "be", "pe",
-		"ho", "bo", "po",
+			"ha", "ba", "pa", "hi", "bi", "pi", "fu", "bu", "pu", "he", "be", "pe", "ho", "bo", "po",
 
-		"ma",
-		"mi",
-		"mu",
-		"me",
-		"mo",
+			"ma", "mi", "mu", "me", "mo",
 
-		"a", "ya",
-		"u", "yu",
-		"o", "yo",
+			"a", "ya", "u", "yu", "o", "yo",
 
-		"ra",
-		"ri",
-		"ru",
-		"re",
-		"ro",
+			"ra", "ri", "ru", "re", "ro",
 
-		"wa", "wa",
-		"wi", "we",
-		"o",
-		"n",
+			"wa", "wa", "wi", "we", "o", "n",
 
-		"v",
-		"ka",
-		"ke"
+			"v", "ka", "ke"
 
 	};
 
@@ -209,40 +168,33 @@ public class JapaneseCharacter {
 	private static String lookupRomaji(char c) {
 		return romaji[c - 0x3041];
 	}
-	
-	public static String convertToRomaji(String input)
-	{
+
+	public static String convertToRomaji(String input) {
 		if (input == null || input.length() == 0)
 			return "";
-		
+
 		StringBuilder out = new StringBuilder();
-		
-		
-		for (int i = 0; i < input.length(); i++)
-		{
+
+		for (int i = 0; i < input.length(); i++) {
 			char ch = input.charAt(i);
-			if(JapaneseCharacter.isHiragana(ch))
+			if (JapaneseCharacter.isHiragana(ch))
 				out.append(JapaneseCharacter.toRomaji(ch));
-			else if(JapaneseCharacter.isKatakana(ch))
+			else if (JapaneseCharacter.isKatakana(ch))
 				out.append(JapaneseCharacter.toRomaji(ch));
-			else return null;
+			else
+				return null;
 		}
 		return out.toString();
-		
-		
+
 	}
-	
+
 	/**
 	 * Returns true if one or more letters in the word are katakana, kanji, or hiragana
 	 */
-	public static boolean containsJapaneseLetter(String word)
-	{
-		for(int i = 0; i < word.length(); i++)
-		{
+	public static boolean containsJapaneseLetter(String word) {
+		for (int i = 0; i < word.length(); i++) {
 			char currentChar = word.charAt(i);
-			if(JapaneseCharacter.isHiragana(currentChar) || JapaneseCharacter.isKanji(currentChar) 
-					|| JapaneseCharacter.isKatakana(currentChar))
-			{
+			if (JapaneseCharacter.isHiragana(currentChar) || JapaneseCharacter.isKanji(currentChar) || JapaneseCharacter.isKatakana(currentChar)) {
 				return true;
 			}
 		}

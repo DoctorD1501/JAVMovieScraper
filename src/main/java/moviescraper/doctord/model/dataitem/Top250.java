@@ -1,9 +1,7 @@
 package moviescraper.doctord.model.dataitem;
 
-
-
 public class Top250 extends MovieDataItem {
-	
+
 	private String top250;
 	public static final Top250 BLANK_TOP250 = new Top250("");
 
@@ -31,8 +29,7 @@ public class Top250 extends MovieDataItem {
 		return null;
 	}
 
-	public Top250()
-	{
+	public Top250() {
 		top250 = "";
 	}
 

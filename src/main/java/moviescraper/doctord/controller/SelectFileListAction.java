@@ -18,7 +18,7 @@ import moviescraper.doctord.view.GUIMain;
 
 public class SelectFileListAction implements ListSelectionListener {
 	/**
-	 * 
+	 *
 	 */
 	private final GUIMain guiMain;
 
@@ -41,36 +41,31 @@ public class SelectFileListAction implements ListSelectionListener {
 			} else {
 				try {
 					//It could take a while to read in a lot of nfo files if we have a large selection, so display the wait cursor
-					guiMain.getFrmMoviescraper()
-							.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+					guiMain.getFrmMoviescraper().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 					handleNewSelection();
-					
+
 				} finally {
 					guiMain.getFrmMoviescraper().setCursor(Cursor.getDefaultCursor());
 				}
-				
+
 			}
 		}
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	private void handleNewSelection() {
 		//totally new selection
 		this.guiMain.removeOldSelectedFileReferences();
 
-		
-		for(File currentSelectedFile : this.guiMain.getFileList().getSelectedValuesList())
-		{
-                        this.guiMain.getCurrentlySelectedNfoFileList().add(new File(Movie
-					.getFileNameOfNfo(currentSelectedFile, this.guiMain.getPreferences().getNfoNamedMovieDotNfo())));
-			this.guiMain.getCurrentlySelectedPosterFileList().add(new File(Movie
-					.getFileNameOfPoster(currentSelectedFile, this.guiMain.getPreferences().getNoMovieNameInImageFiles())));
-			this.guiMain.getCurrentlySelectedFolderJpgFileList().add(new File(Movie
-					.getFileNameOfFolderJpg(currentSelectedFile)));
-			this.guiMain.getCurrentlySelectedFanartFileList().add(new File(Movie
-					.getFileNameOfFanart(currentSelectedFile, this.guiMain.getPreferences().getNoMovieNameInImageFiles())));
+		for (File currentSelectedFile : this.guiMain.getFileList().getSelectedValuesList()) {
+			this.guiMain.getCurrentlySelectedNfoFileList().add(new File(Movie.getFileNameOfNfo(currentSelectedFile, this.guiMain.getPreferences().getNfoNamedMovieDotNfo())));
+			this.guiMain.getCurrentlySelectedPosterFileList()
+					.add(new File(Movie.getFileNameOfPoster(currentSelectedFile, this.guiMain.getPreferences().getNoMovieNameInImageFiles())));
+			this.guiMain.getCurrentlySelectedFolderJpgFileList().add(new File(Movie.getFileNameOfFolderJpg(currentSelectedFile)));
+			this.guiMain.getCurrentlySelectedFanartFileList()
+					.add(new File(Movie.getFileNameOfFanart(currentSelectedFile, this.guiMain.getPreferences().getNoMovieNameInImageFiles())));
 			this.guiMain.getCurrentlySelectedTrailerFileList().add(new File(Movie.getFileNameOfTrailer(currentSelectedFile)));
 		}
 
@@ -80,10 +75,7 @@ public class SelectFileListAction implements ListSelectionListener {
 		this.guiMain.debugWriter("fanartfiles after selection: " + this.guiMain.getCurrentlySelectedFanartFileList());
 		this.guiMain.debugWriter("trailer after selection: " + this.guiMain.getCurrentlySelectedTrailerFileList());
 
-
 		this.guiMain.setCurrentlySelectedMovieFileList(this.guiMain.getFileList().getSelectedValuesList());
-
-
 
 		this.guiMain.updateActorsFolder();
 
@@ -93,13 +85,11 @@ public class SelectFileListAction implements ListSelectionListener {
 		//this method is rather ineffecient - it has to reread the entire list's nfo every time
 		//instead of just reading ones it doesn't already have!
 		boolean readInAnInfo = false;
-		for(File currentSelectedFile : this.guiMain.getFileList().getSelectedValuesList())
-		{
+		for (File currentSelectedFile : this.guiMain.getFileList().getSelectedValuesList()) {
 			File potentialNfoFile = new File(Movie.getFileNameOfNfo(currentSelectedFile, this.guiMain.getPreferences().getNfoNamedMovieDotNfo()));
 			List<File> nfoList = guiMain.getCurrentlySelectedNfoFileList();
 			int potentialIndex = nfoList.indexOf(potentialNfoFile);
-			if(potentialIndex != -1)
-			{
+			if (potentialIndex != -1) {
 				if (nfoList.get(potentialIndex).exists()) {
 					readMovieFromNfoFile(guiMain.getCurrentlySelectedNfoFileList().get(potentialIndex));
 					readInAnInfo = true;
@@ -107,61 +97,55 @@ public class SelectFileListAction implements ListSelectionListener {
 			}
 
 		}
-		if(!readInAnInfo)
-		{
+		if (!readInAnInfo) {
 			guiMain.movieToWriteToDiskList.add(MovieFactory.createEmptyMovie());
 		}
-		
+
 		guiMain.updateAllFieldsOfFileDetailPanel(false, false);
-		
+
 		this.guiMain.debugWriter("currentlySelectedMovieFileList: " + guiMain.getCurrentlySelectedMovieFileList());
 		this.guiMain.debugWriter("movieToWriteToDiskList: " + guiMain.movieToWriteToDiskList.size());
-		
+
 		//Update gui with whether we have a valid movie to write to disk
-		if(shouldFileWritingBeEnabled()) {
+		if (shouldFileWritingBeEnabled()) {
 			guiMain.enableFileWrite();
-		}
-		else {
+		} else {
 			guiMain.disableFileWrite();
 		}
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @return true if any movie in the movie list has a title at least one letter long
 	 */
 	private boolean shouldFileWritingBeEnabled() {
 		boolean fileWritingEnabled = false;
-		for(Movie currentMovie : guiMain.movieToWriteToDiskList) {
-			if(currentMovie != null && currentMovie.hasValidTitle()) {
+		for (Movie currentMovie : guiMain.movieToWriteToDiskList) {
+			if (currentMovie != null && currentMovie.hasValidTitle()) {
 				fileWritingEnabled = true;
 				break;
 			}
 		}
 		return fileWritingEnabled;
 	}
-	
+
 	protected void readMovieFromNfoFile(File nfoFile) {
 		try (FileInputStream fisTargetFile = new FileInputStream(nfoFile);) {
-			
+
 			String targetFileStr = IOUtils.toString(fisTargetFile, "UTF-8");
 			//Sometimes there's some junk before the prolog tag. Do a workaround to remove that junk.
 			//This really isn't the cleanest way to do this, but it'll work for now
 			//check first to make sure the string even contains <?xml so we don't loop through an invalid file needlessly
-			if(targetFileStr.contains("<?xml"))
-			{
-				while(targetFileStr.length() > 0 && !targetFileStr.startsWith("<?xml"))
-				{
-					if(targetFileStr.length() > 1)
-					{
-						targetFileStr = targetFileStr.substring(1,targetFileStr.length());
-					}
-					else break;
+			if (targetFileStr.contains("<?xml")) {
+				while (targetFileStr.length() > 0 && !targetFileStr.startsWith("<?xml")) {
+					if (targetFileStr.length() > 1) {
+						targetFileStr = targetFileStr.substring(1, targetFileStr.length());
+					} else
+						break;
 				}
 			}
 			KodiXmlMovieBean xmlMovieBean = KodiXmlMovieBean.makeFromXML(targetFileStr);
-			if(xmlMovieBean != null)
-			{
+			if (xmlMovieBean != null) {
 				Movie movieFromNfo = xmlMovieBean.toMovie();
 				guiMain.movieToWriteToDiskList.add(movieFromNfo);
 			}

@@ -51,19 +51,19 @@ public class TokyoHotParsingProfile extends SiteParsingProfile implements Specif
 
 	public TokyoHotParsingProfile() {
 	}
-	
+
 	@Override
 	public void setDocument(Document document) {
 		super.setDocument(document);
 		docSite = document;
 		docImage = SiteParsingProfile.downloadDocumentFromURLString(imageLink);
 	}
-	
+
 	@Override
 	public Title scrapeTitle() {
 		Elements elements = docSite.select("div font[size=2]");
-		if ( elements.size() > 2 )
-			return new Title( elements.get(0).ownText().replace("&quot;", "").replace("\"", "") );
+		if (elements.size() > 2)
+			return new Title(elements.get(0).ownText().replace("&quot;", "").replace("\"", ""));
 		return null;
 	}
 
@@ -84,21 +84,19 @@ public class TokyoHotParsingProfile extends SiteParsingProfile implements Specif
 
 	@Override
 	public Rating scrapeRating() {
-		return new Rating(0,"");
+		return new Rating(0, "");
 	}
 
 	@Override
 	public Year scrapeYear() {
 		return scrapeReleaseDate().getYear();
 	}
-	
+
 	@Override
-	public ReleaseDate scrapeReleaseDate()
-	{
+	public ReleaseDate scrapeReleaseDate() {
 		ReleaseDate releaseDate = ReleaseDate.BLANK_RELEASEDATE;
 		Elements releaseDateElements = docImage.select("td[align=right]");
-		for(Element currentElement : releaseDateElements)
-		{
+		for (Element currentElement : releaseDateElements) {
 			if (releaseDateElements.size() > 2) {
 				Pattern pattern = Pattern.compile("[0-9]{4}");
 				String timecode = currentElement.ownText();
@@ -108,8 +106,7 @@ public class TokyoHotParsingProfile extends SiteParsingProfile implements Specif
 					// date, but I'm not 100% sure what each of these dates
 					// represents
 					// since they seem to vary by a few days usually
-					releaseDate = new ReleaseDate(timecode,
-							tokyoHotReleaseDateFormat);
+					releaseDate = new ReleaseDate(timecode, tokyoHotReleaseDateFormat);
 				}
 			}
 		}
@@ -158,7 +155,7 @@ public class TokyoHotParsingProfile extends SiteParsingProfile implements Specif
 			if (matcher.find()) {
 				time = matcher.group();
 				Matcher minMatcher = minPattern.matcher(time);
-				if ( minMatcher.find() ) {
+				if (minMatcher.find()) {
 					time = minMatcher.group();
 				}
 			}
@@ -221,8 +218,8 @@ public class TokyoHotParsingProfile extends SiteParsingProfile implements Specif
 	public ArrayList<Actor> scrapeActors() {
 		ArrayList<Actor> list = new ArrayList<>();
 		Elements elements = docSite.select("div font[size=2]");
-		if ( elements.size() > 2 )
-			list.add( new Actor(elements.get(1).childNode(0).toString(), null, null) );
+		if (elements.size() > 2)
+			list.add(new Actor(elements.get(1).childNode(0).toString(), null, null));
 		return list;
 	}
 
@@ -243,29 +240,30 @@ public class TokyoHotParsingProfile extends SiteParsingProfile implements Specif
 	public String createSearchString(File file) {
 		scrapedMovieFile = file;
 		String fileID = findIDTagFromFile(file).toLowerCase();
-		
-		if ( fileID != null ) {
+
+		if (fileID != null) {
 			try {
-				Document doc = Jsoup.connect("http://cdn.www.tokyo-hot.com/igs/").userAgent("Mozilla").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
+				Document doc = Jsoup.connect("http://cdn.www.tokyo-hot.com/igs/").userAgent("Mozilla").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE)
+						.get();
 				Elements select = doc.select("tr td a");
 				String foundLink = null;
 				for (Element element : select) {
 					String link = element.attr("href");
-					if ( link.startsWith( fileID ) ) {
+					if (link.startsWith(fileID)) {
 						foundLink = link;
 						break;
 					}
 				}
-				if ( foundLink == null ) {
+				if (foundLink == null) {
 					System.out.println("Found no Link for TokyoHot");
 					return null;
 				}
 				id = foundLink.replace("/", "");
 				imageLink = getImageLink(id);
 				siteLink = getSiteLink(id);
-				
+
 				return siteLink;
-						
+
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -276,17 +274,16 @@ public class TokyoHotParsingProfile extends SiteParsingProfile implements Specif
 	}
 
 	@Override
-	public SearchResult[] getSearchResults(String searchString)
-			throws IOException {
-		SearchResult searchResult = new SearchResult( searchString, searchString);
-		SearchResult[] sr = {searchResult};
+	public SearchResult[] getSearchResults(String searchString) throws IOException {
+		SearchResult searchResult = new SearchResult(searchString, searchString);
+		SearchResult[] sr = { searchResult };
 		return sr;
 	}
-	
+
 	public static String findIDTagFromFile(File file) {
 		return findIDTag(FilenameUtils.getName(file.getName()));
 	}
-	
+
 	public static String findIDTag(String fileName) {
 		Pattern pattern = Pattern.compile("n[0-9]{3,4}");
 		Matcher matcher = pattern.matcher(fileName);
@@ -300,7 +297,7 @@ public class TokyoHotParsingProfile extends SiteParsingProfile implements Specif
 	private String getImageLink(String searchString) {
 		return "http://cdn.www.tokyo-hot.com/igs/" + searchString + "/";
 	}
-	
+
 	private String getSiteLink(String searchString) {
 		this.searchString = searchString;
 		return "http://cdn.www.tokyo-hot.com/e/" + searchString + "_e.html";

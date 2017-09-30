@@ -9,7 +9,7 @@ import moviescraper.doctord.view.FavoriteTagPickerPanel;
 import moviescraper.doctord.view.GUIMain;
 
 public class ChooseFavoriteTagsAction implements ActionListener {
-	
+
 	GUIMain guiMain;
 
 	public ChooseFavoriteTagsAction(GUIMain guiMain) {
@@ -18,17 +18,12 @@ public class ChooseFavoriteTagsAction implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		
+
 		FavoriteTagPickerPanel tagPickerPanel = new FavoriteTagPickerPanel();
-		int result = JOptionPane.showOptionDialog(guiMain.getFrmMoviescraper(), tagPickerPanel, "Favorite Tags...",
-                JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,
-                null, null, null);
-		if(result == JOptionPane.OK_OPTION)
-		{
+		int result = JOptionPane.showOptionDialog(guiMain.getFrmMoviescraper(), tagPickerPanel, "Favorite Tags...", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null,
+				null, null);
+		if (result == JOptionPane.OK_OPTION) {
 			tagPickerPanel.storeSettingValues();
 		}
-		
-
 	}
-
 }

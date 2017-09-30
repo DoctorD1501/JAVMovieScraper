@@ -40,17 +40,16 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 public class SquarePlusParsingProfile extends SiteParsingProfile implements SpecificProfile {
-	
-	private static final SimpleDateFormat squarePlusReleaseDateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.ENGLISH); 
-	
+
+	private static final SimpleDateFormat squarePlusReleaseDateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.ENGLISH);
+
 	@Override
-	public List<ScraperGroupName> getScraperGroupNames()
-	{
-		if(groupNames == null)
+	public List<ScraperGroupName> getScraperGroupNames() {
+		if (groupNames == null)
 			groupNames = Arrays.asList(ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP);
 		return groupNames;
 	}
-	
+
 	public SquarePlusParsingProfile(Document document) {
 		super(document);
 	}
@@ -62,21 +61,18 @@ public class SquarePlusParsingProfile extends SiteParsingProfile implements Spec
 	@Override
 	public Title scrapeTitle() {
 
-		Element titleElement = document
-				.select("div.product-name.page-title h1")
-				.first();
+		Element titleElement = document.select("div.product-name.page-title h1").first();
 		//remove the ID number off the end of the title, if it exists
-		if(titleElement != null)
-		{
+		if (titleElement != null) {
 			String titleElementText = titleElement.text().trim();
-			if(titleElementText.contains("("))
-			{
-				titleElementText = titleElementText.substring(0, StringUtils.lastIndexOf(titleElementText,"("));
+			if (titleElementText.contains("(")) {
+				titleElementText = titleElementText.substring(0, StringUtils.lastIndexOf(titleElementText, "("));
 			}
 			return new Title(titleElementText);
 		}
 		//this shouldn't really ever happen...
-		else return new Title("");
+		else
+			return new Title("");
 	}
 
 	@Override
@@ -97,7 +93,7 @@ public class SquarePlusParsingProfile extends SiteParsingProfile implements Spec
 		Element setElement = document.select("th.label:containsOwn(Series) ~ td").first();
 		if (setElement != null)
 			return new Set(setElement.text());
-		
+
 		return Set.BLANK_SET;
 
 	}
@@ -112,12 +108,11 @@ public class SquarePlusParsingProfile extends SiteParsingProfile implements Spec
 	public Year scrapeYear() {
 		return scrapeReleaseDate().getYear();
 	}
-	
+
 	@Override
 	public ReleaseDate scrapeReleaseDate() {
 		Element releaseDateElement = document.select("th.label:containsOwn(Release date) ~ td").first();
-		if(releaseDateElement != null && releaseDateElement.text().length() > 4)
-		{
+		if (releaseDateElement != null && releaseDateElement.text().length() > 4) {
 			String releaseDateText = releaseDateElement.text().trim();
 			return new ReleaseDate(releaseDateText, squarePlusReleaseDateFormat);
 		}
@@ -142,7 +137,7 @@ public class SquarePlusParsingProfile extends SiteParsingProfile implements Spec
 
 	@Override
 	public Plot scrapePlot() {
-			return Plot.BLANK_PLOT;
+		return Plot.BLANK_PLOT;
 	}
 
 	@Override
@@ -153,9 +148,10 @@ public class SquarePlusParsingProfile extends SiteParsingProfile implements Spec
 	@Override
 	public Runtime scrapeRuntime() {
 		Element runtimeElement = document.select("th.label:containsOwn(Play Time) ~ td").first();
-		if(runtimeElement != null)
+		if (runtimeElement != null)
 			return new Runtime(runtimeElement.text());
-		else return Runtime.BLANK_RUNTIME;
+		else
+			return Runtime.BLANK_RUNTIME;
 	}
 
 	@Override
@@ -167,21 +163,19 @@ public class SquarePlusParsingProfile extends SiteParsingProfile implements Spec
 	public Thumb[] scrapeFanart() {
 		return scrapePostersAndFanart(false);
 	}
-	
-	private Thumb[] scrapePostersAndFanart(boolean doCrop)
-	{
+
+	private Thumb[] scrapePostersAndFanart(boolean doCrop) {
 		Element boxArtElement = document.select("p.product-image a").first();
-		if(boxArtElement != null)
-		{
+		if (boxArtElement != null) {
 			Thumb poster;
 			try {
 				poster = new Thumb(boxArtElement.attr("href"), doCrop);
-				Thumb[] posters = {poster};
+				Thumb[] posters = { poster };
 				return posters;
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
+
 		}
 		return new Thumb[0];
 	}
@@ -194,28 +188,25 @@ public class SquarePlusParsingProfile extends SiteParsingProfile implements Spec
 
 	@Override
 	public ID scrapeID() {
-		Element idElement = document
-				.select("div.page-title h1")
-				.first();
+		Element idElement = document.select("div.page-title h1").first();
 		//just get the ID number off the end of the title, if it exists
-		if(idElement != null && idElement.text().contains("("))
-		{
+		if (idElement != null && idElement.text().contains("(")) {
 			String idElementText = idElement.text().trim();
-			idElementText = idElementText.substring(StringUtils.lastIndexOf(idElementText,"(")+1, idElementText.length()-1);
+			idElementText = idElementText.substring(StringUtils.lastIndexOf(idElementText, "(") + 1, idElementText.length() - 1);
 			return new ID(idElementText);
 		}
 		//maybe some titles don't have ID numbers on squareplus or we got some other error
-		else return ID.BLANK_ID;
+		else
+			return ID.BLANK_ID;
 	}
 
 	@Override
 	public ArrayList<Genre> scrapeGenres() {
 		ArrayList<Genre> genreList = new ArrayList<>();
 		Element genreElement = document.select("th.label:containsOwn(Genre) ~ td").first();
-		if(genreElement != null)
-		{
-			String [] actorSplitList = genreElement.text().split(",");
-			for(String genreToAdd : actorSplitList)
+		if (genreElement != null) {
+			String[] actorSplitList = genreElement.text().split(",");
+			for (String genreToAdd : actorSplitList)
 				genreList.add(new Genre(genreToAdd));
 		}
 		return genreList;
@@ -224,23 +215,21 @@ public class SquarePlusParsingProfile extends SiteParsingProfile implements Spec
 	@Override
 	public ArrayList<Actor> scrapeActors() {
 		ArrayList<Actor> actorList = new ArrayList<>();
-		
+
 		Element featuringElement = document.select("th.label:containsOwn(Featuring) ~ td:not(:containsOwn(Various))").first();
-		if(featuringElement != null)
-		{
-			String [] actorSplitList = featuringElement.text().split(",");
-			for(String actorToAdd : actorSplitList)
-				actorList.add(new Actor(actorToAdd,"",null));
+		if (featuringElement != null) {
+			String[] actorSplitList = featuringElement.text().split(",");
+			for (String actorToAdd : actorSplitList)
+				actorList.add(new Actor(actorToAdd, "", null));
 		}
-		
+
 		Element starringElement = document.select("th.label:containsOwn(Starring) ~ td:not(:containsOwn(Various))").first();
-		if(starringElement != null)
-		{
-			String [] actorSplitList = starringElement.text().split(",");
-			for(String actorToAdd : actorSplitList)
-				actorList.add(new Actor(actorToAdd,"",null));
+		if (starringElement != null) {
+			String[] actorSplitList = starringElement.text().split(",");
+			for (String actorToAdd : actorSplitList)
+				actorList.add(new Actor(actorToAdd, "", null));
 		}
-		return actorList;	
+		return actorList;
 	}
 
 	@Override
@@ -252,9 +241,9 @@ public class SquarePlusParsingProfile extends SiteParsingProfile implements Spec
 	@Override
 	public Studio scrapeStudio() {
 		Element studioElement = document.select("th.label:containsOwn(Label) ~ td:not(:containsOwn(Other))").first();
-		if(studioElement != null)
+		if (studioElement != null)
 			return new Studio(studioElement.text());
-		
+
 		return Studio.BLANK_STUDIO;
 	}
 
@@ -269,41 +258,39 @@ public class SquarePlusParsingProfile extends SiteParsingProfile implements Spec
 	public SearchResult[] getSearchResults(String searchString) throws IOException {
 		if (searchString == null)
 			return new SearchResult[0];
-				
+
 		Document doc = Jsoup.connect(searchString).timeout(CONNECTION_TIMEOUT_VALUE).get();
 		Elements foundMovies = doc.select("ul.products-grid>li");
 		String searchId = searchString.replaceAll(".*\\?q=(.*)$", "$1").replace("-", "").toLowerCase();
 		LinkedList<SearchResult> searchList = new LinkedList<>();
-		
-		for(Element movie: foundMovies){
+
+		for (Element movie : foundMovies) {
 			String urlPath = movie.select("a").first().attr("href");
 			String thumb = movie.select("img").first().attr("src");
 			String label = movie.select(".product-name,.actresslist").text();
 			SearchResult searchResult = new SearchResult(urlPath, label, new Thumb(thumb));
-			
+
 			if (urlPath.endsWith("/" + searchId + ".html"))
 				searchList.addFirst(searchResult);
 			else
 				searchList.addLast(searchResult);
 		}
-		
+
 		// if both DVD and Blue-Ray gets listed, pick the correct one
 		if (searchList.size() == 2)
-			if (searchList.get(0).getUrlPath().endsWith("/"+searchId+".html"))
-				if (searchList.get(1).getUrlPath().endsWith("/9"+searchId+".html"))
+			if (searchList.get(0).getUrlPath().endsWith("/" + searchId + ".html"))
+				if (searchList.get(1).getUrlPath().endsWith("/9" + searchId + ".html"))
 					searchList.remove(1);
-		
+
 		return searchList.toArray(new SearchResult[searchList.size()]);
 	}
 
 	@Override
 	public Thumb[] scrapeExtraFanart() {
 		Elements extraFanartElements = document.select("div.more-views ul li a");
-		if(extraFanartElements != null)
-		{
+		if (extraFanartElements != null) {
 			ArrayList<Thumb> extrafanartThumbList = new ArrayList<>(extraFanartElements.size());
-			for(Element extraFanartElement : extraFanartElements)
-			{
+			for (Element extraFanartElement : extraFanartElements) {
 				Thumb thumbToAdd;
 				try {
 					thumbToAdd = new Thumb(extraFanartElement.attr("href"));
@@ -316,9 +303,9 @@ public class SquarePlusParsingProfile extends SiteParsingProfile implements Spec
 		}
 		return new Thumb[0];
 	}
-	
+
 	@Override
-	public String toString(){
+	public String toString() {
 		return "SquarePlus";
 	}
 

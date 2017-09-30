@@ -1,6 +1,5 @@
 package moviescraper.doctord.model.dataitem;
 
-
 public class Director extends Person {
 
 	public Director(String name, Thumb thumb) {
@@ -15,10 +14,10 @@ public class Director extends Person {
 
 	@Override
 	public String toString() {
-		return "Director [toString()=" + super.toString() + " ,\"" +dataItemSourceToString() + "\"]";
+		return "Director [toString()=" + super.toString() + " ,\"" + dataItemSourceToString() + "\"]";
 	}
 
-	public Director(){
+	public Director() {
 		super();
 	}
 

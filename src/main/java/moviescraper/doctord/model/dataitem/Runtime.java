@@ -33,6 +33,4 @@ public class Runtime extends MovieDataItem {
 		runtime = "";
 	}
 
-
-
 }

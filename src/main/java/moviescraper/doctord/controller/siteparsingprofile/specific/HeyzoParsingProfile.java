@@ -43,25 +43,22 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 
 	private String englishPage;
 	private String japanesePage;
-	
+
 	Document japaneseDocument;
-	
+
 	@Override
 	public String getParserName() {
 		return "HEYZO";
 	}
-	
-	public HeyzoParsingProfile()
-	{
+
+	public HeyzoParsingProfile() {
 		super();
 	}
-	
 
 	@Override
 	public Title scrapeTitle() {
 		Element titleElement = document.select("div#movie h1").first();
-		if(titleElement != null)
-		{
+		if (titleElement != null) {
 			String titleElementText = titleElement.text().trim().replaceAll("[ ]+", " ");
 			return new Title(titleElementText);
 		}
@@ -70,10 +67,9 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 
 	@Override
 	public OriginalTitle scrapeOriginalTitle() {
-		if(scrapingLanguage == Language.JAPANESE)
+		if (scrapingLanguage == Language.JAPANESE)
 			return new OriginalTitle(scrapeTitle().getTitle());
-		else
-		{
+		else {
 			Document originalDocument = document;
 			document = japaneseDocument;
 			OriginalTitle originalTitle = new OriginalTitle(scrapeTitle().getTitle());
@@ -112,21 +108,18 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 	public Year scrapeYear() {
 		return scrapeReleaseDate().getYear();
 	}
-	
+
 	@Override
-	public ReleaseDate scrapeReleaseDate()
-	{
+	public ReleaseDate scrapeReleaseDate() {
 		Elements elements = japaneseDocument.select("table.movieInfo tr.table-release-day");
 		Element releaseDateElement = elements.first().children().last();
-		if(releaseDateElement != null)
-		{
+		if (releaseDateElement != null) {
 			//System.out.println("year = " + yearElement.text());
 			String yearText = releaseDateElement.text().trim();
-			if(yearText.length() > 4)
-			{
+			if (yearText.length() > 4) {
 				return new ReleaseDate(yearText);
 			}
-			
+
 		}
 		return ReleaseDate.BLANK_RELEASEDATE;
 	}
@@ -159,15 +152,13 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 	@Override
 	public Runtime scrapeRuntime() {
 		Element runtimeElement = document.select("tbody:contains(Whole Movie File Download) tr:contains(:) td").first();
-		if(runtimeElement != null)
-		{
+		if (runtimeElement != null) {
 			String[] runtimeTextSplit = runtimeElement.text().trim().split((":"));
-			if(runtimeTextSplit.length == 3)
-			{
+			if (runtimeTextSplit.length == 3) {
 				int hours = Integer.parseInt(runtimeTextSplit[0]);
 				int minutes = Integer.parseInt(runtimeTextSplit[1]);
 				int totalMinutes = (hours * 60) + minutes;
-				if(totalMinutes > 0)
+				if (totalMinutes > 0)
 					return new Runtime(new Integer(totalMinutes).toString());
 			}
 		}
@@ -180,16 +171,14 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 		String scrapedId = scrapeID().getId();
 		try {
 			//gallery links
-			for(int i = 1; i <= 21; i++)
-			{
-				String potentialGalleryImageURL = "http://en.heyzo.com/contents/3000/" + scrapedId + "/gallery/0" + String.format("%02d",i) + ".jpg";
-				String potentialGalleryPreviewImageURL = "http://en.heyzo.com/contents/3000/" + scrapedId + "/gallery/thumbnail_0" + String.format("%02d",i) + ".jpg";
-				if(SiteParsingProfile.fileExistsAtURL(potentialGalleryImageURL))
-				{
+			for (int i = 1; i <= 21; i++) {
+				String potentialGalleryImageURL = "http://en.heyzo.com/contents/3000/" + scrapedId + "/gallery/0" + String.format("%02d", i) + ".jpg";
+				String potentialGalleryPreviewImageURL = "http://en.heyzo.com/contents/3000/" + scrapedId + "/gallery/thumbnail_0" + String.format("%02d", i) + ".jpg";
+				if (SiteParsingProfile.fileExistsAtURL(potentialGalleryImageURL)) {
 					Thumb thumbToAdd = new Thumb(potentialGalleryImageURL);
 					thumbToAdd.setPreviewURL(new URL(potentialGalleryPreviewImageURL));
 					thumbList.add(thumbToAdd);
-						
+
 				}
 			}
 			//image that is the preview of the trailer
@@ -204,14 +193,14 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 	}
 
 	@Override
-	public Trailer scrapeTrailer(){
+	public Trailer scrapeTrailer() {
 		String scrapedId = scrapeID().getId();
 		String trailerURL = "http://sample.heyzo.com/contents/3000/" + scrapedId + "/heyzo_hd_0194_sample.mp4";
-		if(SiteParsingProfile.fileExistsAtURL(trailerURL))
+		if (SiteParsingProfile.fileExistsAtURL(trailerURL))
 			return new Trailer(trailerURL);
 		return Trailer.BLANK_TRAILER;
 	}
-	
+
 	@Override
 	public Thumb[] scrapeFanart() {
 		return scrapePosters();
@@ -231,10 +220,9 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 	public ID scrapeID() {
 		//Just get the ID from the page URL by doing some string manipulation
 		String baseUri = document.baseUri();
-		if(baseUri.length() > 0 && baseUri.contains("heyzo.com"))
-		{
+		if (baseUri.length() > 0 && baseUri.contains("heyzo.com")) {
 			baseUri = baseUri.replaceFirst("/index.html", "");
-			String idFromBaseUri = baseUri.substring(baseUri.lastIndexOf('/')+1);
+			String idFromBaseUri = baseUri.substring(baseUri.lastIndexOf('/') + 1);
 			return new ID(idFromBaseUri);
 		}
 		return ID.BLANK_ID;
@@ -244,11 +232,9 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 	public ArrayList<Genre> scrapeGenres() {
 		ArrayList<Genre> genreList = new ArrayList<>();
 		Elements genreElements = document.select(".movieInfo a[href*=/listpages/category");
-		if(genreElements != null)
-		{
-			for(Element currentGenre : genreElements)
-			{
-				if(currentGenre.text().trim().length() > 0)
+		if (genreElements != null) {
+			for (Element currentGenre : genreElements) {
+				if (currentGenre.text().trim().length() > 0)
 					genreList.add(new Genre(currentGenre.text().trim()));
 			}
 		}
@@ -259,24 +245,20 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 	public ArrayList<Actor> scrapeActors() {
 		Elements actorElements = document.select(".movieInfo a[href*=/listpages/actor");
 		ArrayList<Actor> actorList = new ArrayList<>();
-		for(Element currentActor : actorElements)
-		{
+		for (Element currentActor : actorElements) {
 			String actorName = currentActor.text().trim();
 			String actorHref = currentActor.attr("href");
 			String actorNumber = null;
 			String actorThumbUrl = null;
-			if(actorHref != null && actorHref.length() > 0)
-			{
-				String [] splitHrefByUnderScore = actorHref.split("_");
-				if(splitHrefByUnderScore.length > 0)
-				{
+			if (actorHref != null && actorHref.length() > 0) {
+				String[] splitHrefByUnderScore = actorHref.split("_");
+				if (splitHrefByUnderScore.length > 0) {
 					actorNumber = splitHrefByUnderScore[1];
 					actorThumbUrl = "http://en.heyzo.com/actorprofile/3000/" + String.format("%04d", Integer.parseInt(actorNumber)) + "/profile.jpg";
 				}
 			}
 			//we found a thumbnail image for this actor
-			if(actorThumbUrl != null && SiteParsingProfile.fileExistsAtURL(actorThumbUrl))
-			{
+			if (actorThumbUrl != null && SiteParsingProfile.fileExistsAtURL(actorThumbUrl)) {
 				try {
 					actorList.add(new Actor(actorName, "", new Thumb(actorThumbUrl)));
 				} catch (MalformedURLException e) {
@@ -285,10 +267,9 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 				}
 			}
 			//we didn't find a thumbnail image for this actor
-			else
-			{
+			else {
 				actorList.add(new Actor(actorName, "", null));
-			}	
+			}
 		}
 		return actorList;
 	}
@@ -310,7 +291,7 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 		String fileID = findIDTagFromFile(file).toLowerCase();
 
 		if (fileID != null) {
-			
+
 			englishPage = "http://en.heyzo.com/moviepages/" + fileID + "/index.html";
 			japanesePage = "http://www.heyzo.com/moviepages/" + fileID + "/index.html";
 			try {
@@ -319,12 +300,9 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			if(scrapingLanguage == Language.ENGLISH)
-			{
+			if (scrapingLanguage == Language.ENGLISH) {
 				return englishPage;
-			}
-			else
-			{
+			} else {
 				return japanesePage;
 			}
 		}
@@ -333,17 +311,16 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 	}
 
 	@Override
-	public SearchResult[] getSearchResults(String searchString)
-			throws IOException {
+	public SearchResult[] getSearchResults(String searchString) throws IOException {
 		SearchResult searchResult = new SearchResult(searchString);
-		SearchResult[] searchResultArray = {searchResult};
+		SearchResult[] searchResultArray = { searchResult };
 		return searchResultArray;
 	}
-	
+
 	public static String findIDTagFromFile(File file) {
 		return findIDTag(FilenameUtils.getName(file.getName()));
 	}
-	
+
 	public static String findIDTag(String fileName) {
 		Pattern pattern = Pattern.compile("[0-9]{4}");
 		Matcher matcher = pattern.matcher(fileName);

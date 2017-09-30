@@ -16,8 +16,7 @@ public class WebReleaseRenamer extends ReleaseRenamer {
 	private List<CSVRecord> removeTheseWords;
 	private List<CSVRecord> replaceFirstInstanceOfTheseWords;
 
-	public WebReleaseRenamer() throws IOException
-	{
+	public WebReleaseRenamer() throws IOException {
 		removeTheseWords = readWordsToRemoveFromCSV();
 		replaceFirstInstanceOfTheseWords = readSiteNamesToReplaceFromCSV();
 	}
@@ -31,11 +30,10 @@ public class WebReleaseRenamer extends ReleaseRenamer {
 		 * scene / movie name such as par2, xvid, divx, etc
 		 */
 		cleanFileName += " "; //add a space at the end so we our regex works in the next step for the last word
-		for(CSVRecord wordsToRemove : removeTheseWords)
-		{
+		for (CSVRecord wordsToRemove : removeTheseWords) {
 			//putting spaces in front of it so we only get an actual word, not parts of a word
 			String wordToRemove = wordsToRemove.get(0).toLowerCase();
-			cleanFileName = cleanFileName.replaceFirst("\\b"+wordToRemove+"\\b", "");
+			cleanFileName = cleanFileName.replaceFirst("\\b" + wordToRemove + "\\b", "");
 		}
 		cleanFileName = cleanFileName.trim();
 		/* 
@@ -43,8 +41,7 @@ public class WebReleaseRenamer extends ReleaseRenamer {
 		 * messes up doing google searches on them, so we'll do a substitution to get the full name
 		 */
 		boolean doneReplacingabbreviation = false;
-		for(CSVRecord siteNameReplacement : replaceFirstInstanceOfTheseWords)
-		{
+		for (CSVRecord siteNameReplacement : replaceFirstInstanceOfTheseWords) {
 			/*
 			 * Our format in this file is that the first word on each line is the full name
 			 * of the abbreviation and each subsequent comma seperated entry on the line
@@ -52,12 +49,10 @@ public class WebReleaseRenamer extends ReleaseRenamer {
 			 */
 			String fullSiteName = siteNameReplacement.get(0);
 			//WebReleaseRenamer.System.out.println("FullSiteName = " + fullSiteName);
-			for(String abbreviation : siteNameReplacement)
-			{
-				abbreviation = abbreviation.replace("\"","");
+			for (String abbreviation : siteNameReplacement) {
+				abbreviation = abbreviation.replace("\"", "");
 				//System.out.println("abbreviation = " + abbreviation.trim().toLowerCase());
-				if(cleanFileName.startsWith(abbreviation.trim().toLowerCase() + " ") && abbreviation.trim().length() > 0)
-				{
+				if (cleanFileName.startsWith(abbreviation.trim().toLowerCase() + " ") && abbreviation.trim().length() > 0) {
 					//System.out.println("Found match = " + abbreviation.trim().toLowerCase());
 					cleanFileName = cleanFileName.replaceFirst(Pattern.quote(abbreviation.trim().toLowerCase() + " "), fullSiteName + " ");
 					doneReplacingabbreviation = true;
@@ -65,7 +60,7 @@ public class WebReleaseRenamer extends ReleaseRenamer {
 				}
 				//System.out.println("CFN: " + cleanFileName);
 			}
-			if(doneReplacingabbreviation)
+			if (doneReplacingabbreviation)
 				break;
 			//System.out.println(siteNameReplacement);
 		}
@@ -74,19 +69,17 @@ public class WebReleaseRenamer extends ReleaseRenamer {
 		return cleanFileName;
 	}
 
-	public List<CSVRecord> readWordsToRemoveFromCSV() throws IOException
-	{
+	public List<CSVRecord> readWordsToRemoveFromCSV() throws IOException {
 		return readFromCSVFile("/moviescraper/doctord/controller/releaserenamer/WordsToRemove.csv");
 	}
 
-	public List<CSVRecord> readSiteNamesToReplaceFromCSV() throws IOException{
+	public List<CSVRecord> readSiteNamesToReplaceFromCSV() throws IOException {
 		return readFromCSVFile("/moviescraper/doctord/controller/releaserenamer/SiteNameAbbreviations.csv");
 	}
 
 	public List<CSVRecord> readFromCSVFile(String filePath) throws IOException {
 		CSVFormat format = CSVFormat.RFC4180.withDelimiter(',').withCommentMarker('#');
-		try (InputStream inputStream = getClass().getResourceAsStream(filePath);
-				CSVParser parser = new CSVParser(new InputStreamReader(inputStream), format);) {
+		try (InputStream inputStream = getClass().getResourceAsStream(filePath); CSVParser parser = new CSVParser(new InputStreamReader(inputStream), format);) {
 			List<CSVRecord> csvRecords = parser.getRecords();
 			return csvRecords;
 		}

@@ -49,12 +49,12 @@ public class CaptcherGUI extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		GridBagLayout gbl_contentPane = new GridBagLayout();
-		gbl_contentPane.columnWidths = new int[]{0, 0, 0};
-		gbl_contentPane.rowHeights = new int[]{0, 0, 0, 0};
-		gbl_contentPane.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
-		gbl_contentPane.rowWeights = new double[]{1.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_contentPane.columnWidths = new int[] { 0, 0, 0 };
+		gbl_contentPane.rowHeights = new int[] { 0, 0, 0, 0 };
+		gbl_contentPane.columnWeights = new double[] { 0.0, 1.0, Double.MIN_VALUE };
+		gbl_contentPane.rowWeights = new double[] { 1.0, 0.0, 0.0, Double.MIN_VALUE };
 		contentPane.setLayout(gbl_contentPane);
-		
+
 		JLabel lblIcon = new JLabel("Icon :");
 		GridBagConstraints gbc_lblIcon = new GridBagConstraints();
 		gbc_lblIcon.anchor = GridBagConstraints.EAST;
@@ -62,14 +62,14 @@ public class CaptcherGUI extends JFrame {
 		gbc_lblIcon.gridx = 0;
 		gbc_lblIcon.gridy = 0;
 		contentPane.add(lblIcon, gbc_lblIcon);
-		
+
 		JLabel lblCaptcha = new JLabel("New label");
 		GridBagConstraints gbc_lblCaptcha = new GridBagConstraints();
 		gbc_lblCaptcha.insets = new Insets(0, 0, 5, 0);
 		gbc_lblCaptcha.gridx = 1;
 		gbc_lblCaptcha.gridy = 0;
 		contentPane.add(lblCaptcha, gbc_lblCaptcha);
-		
+
 		JLabel lblText = new JLabel("Text :");
 		GridBagConstraints gbc_lblText = new GridBagConstraints();
 		gbc_lblText.anchor = GridBagConstraints.EAST;
@@ -77,7 +77,7 @@ public class CaptcherGUI extends JFrame {
 		gbc_lblText.gridx = 0;
 		gbc_lblText.gridy = 1;
 		contentPane.add(lblText, gbc_lblText);
-		
+
 		textField = new JTextField();
 		GridBagConstraints gbc_textField = new GridBagConstraints();
 		gbc_textField.insets = new Insets(0, 0, 5, 0);
@@ -86,7 +86,7 @@ public class CaptcherGUI extends JFrame {
 		gbc_textField.gridy = 1;
 		contentPane.add(textField, gbc_textField);
 		textField.setColumns(10);
-		
+
 		JPanel panel = new JPanel();
 		GridBagConstraints gbc_panel = new GridBagConstraints();
 		gbc_panel.gridwidth = 2;
@@ -95,10 +95,10 @@ public class CaptcherGUI extends JFrame {
 		gbc_panel.gridx = 0;
 		gbc_panel.gridy = 2;
 		contentPane.add(panel, gbc_panel);
-		
+
 		JButton btnOk = new JButton("OK");
 		panel.add(btnOk);
-		
+
 		JButton btnCancel = new JButton("Cancel");
 		panel.add(btnCancel);
 	}

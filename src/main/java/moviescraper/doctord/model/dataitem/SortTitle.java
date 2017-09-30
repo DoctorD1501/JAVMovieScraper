@@ -1,7 +1,7 @@
 package moviescraper.doctord.model.dataitem;
 
 public class SortTitle extends MovieDataItem {
-	
+
 	private String sortTitle;
 	public static final SortTitle BLANK_SORTTITLE = new SortTitle("");
 
@@ -15,9 +15,10 @@ public class SortTitle extends MovieDataItem {
 	}
 
 	public void setSortTitle(String sortTitle) {
-		if(sortTitle != null)
+		if (sortTitle != null)
 			this.sortTitle = sanitizeString(sortTitle);
-		else this.sortTitle = "";
+		else
+			this.sortTitle = "";
 	}
 
 	public SortTitle(String sortTitle) {
@@ -30,7 +31,7 @@ public class SortTitle extends MovieDataItem {
 		return null;
 	}
 
-	public SortTitle(){
+	public SortTitle() {
 		sortTitle = "";
 	}
 

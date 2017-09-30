@@ -16,9 +16,10 @@ public class Trailer extends MovieDataItem {
 	}
 
 	public void setTrailer(String trailer) {
-		if(trailer == null)
+		if (trailer == null)
 			this.trailer = "";
-		else this.trailer = trailer;
+		else
+			this.trailer = trailer;
 	}
 
 	public Trailer(String trailer) {
@@ -29,23 +30,22 @@ public class Trailer extends MovieDataItem {
 	public String toString() {
 		return "Trailer [trailer=\"" + trailer + "\"" + dataItemSourceToString() + "]";
 	}
-	
+
 	public void writeTrailerToFile(File fileNameToWrite) throws IOException {
 		//we don't want to rewrite trailer if the file already exists since that can retrigger a pointlessly long download
-		if(getTrailer() != null && getTrailer().length() > 0 && !fileNameToWrite.exists())
-		{
+		if (getTrailer() != null && getTrailer().length() > 0 && !fileNameToWrite.exists()) {
 			System.out.println("Writing trailer: " + this.toString() + " into file " + fileNameToWrite);
 			FileUtils.copyURLToFile(new URL(getTrailer()), fileNameToWrite, connectionTimeout, readTimeout);
 		}
 	}
-	
+
 	@Override
 	public String toXML() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public Trailer(){
+	public Trailer() {
 		trailer = "";
 	}
 

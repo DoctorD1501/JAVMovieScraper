@@ -28,7 +28,7 @@ public class Studio extends MovieDataItem {
 		return null;
 	}
 
-	public Studio(){
+	public Studio() {
 		studio = "";
 	}
 

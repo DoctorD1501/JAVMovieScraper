@@ -69,7 +69,7 @@ public class GUIMain {
 	private AllAmalgamationOrderingPreferences allAmalgamationOrderingPreferences;
 
 	//scraped movies
-	public List <Movie> movieToWriteToDiskList;
+	public List<Movie> movieToWriteToDiskList;
 
 	//Gui Elements
 	JFrame frmMoviescraper;
@@ -83,9 +83,9 @@ public class GUIMain {
 	private JSplitPane fileListFileDetailSplitPane;
 	private JList<File> fileList;
 	private DirectoryChooser chooser;
-	
+
 	private MessageConsolePanel messageConsolePanel;
-	
+
 	private ProgressMonitor progressMonitor;
 
 	//variables for fileList
@@ -110,7 +110,7 @@ public class GUIMain {
 	//You can comment this variable out and you will see the file browsing no longer works :)
 	@SuppressWarnings("unused")
 	private final JFXPanel fxPanel = new JFXPanel(); //ensures the JavaFX library is loaded - allows us to use DirectoryChooser later on
-	
+
 	/**
 	 * Launch the application.
 	 */
@@ -119,8 +119,7 @@ public class GUIMain {
 			@Override
 			public void run() {
 				try {
-					UIManager.setLookAndFeel(UIManager
-							.getSystemLookAndFeelClassName());
+					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 					//Prevent text area font from looking different than text field font
 					UIManager.getDefaults().put("TextArea.font", UIManager.getFont("TextField.font"));
 					GUIMain window = new GUIMain();
@@ -128,7 +127,7 @@ public class GUIMain {
 					window.frmMoviescraper.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
-					JOptionPane.showMessageDialog(null, ExceptionUtils.getStackTrace(e),"Unhandled Exception",JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null, ExceptionUtils.getStackTrace(e), "Unhandled Exception", JOptionPane.ERROR_MESSAGE);
 
 				}
 			}
@@ -142,35 +141,32 @@ public class GUIMain {
 		initialize();
 	}
 
-	public void debugWriter(String message)
-	{
-		if(debugMessages)
+	public void debugWriter(String message) {
+		if (debugMessages)
 			System.out.println(message);
 	}
-
 
 	/**
 	 * Restore amalgamation preferences from what is saved on disk
 	 */
-	public void reinitializeAmalgamationPreferencesFromFile()
-	{
-		
+	public void reinitializeAmalgamationPreferencesFromFile() {
 
 		allAmalgamationOrderingPreferences = new AllAmalgamationOrderingPreferences();
-				
+
 		allAmalgamationOrderingPreferences = allAmalgamationOrderingPreferences.initializeValuesFromPreferenceFile();
-		
+
 	}
+
 	/**
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		
+
 		preferences = MoviescraperPreferences.getInstance();
 		guiSettings = GuiSettings.getInstance();
-		
+
 		reinitializeAmalgamationPreferencesFromFile();
-		
+
 		setCurrentlySelectedNfoFileList(new ArrayList<File>());
 		setCurrentlySelectedMovieFileList(new ArrayList<File>());
 		setCurrentlySelectedPosterFileList(new ArrayList<File>());
@@ -190,23 +186,21 @@ public class GUIMain {
 		frmMoviescraper.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		//create tree view icon provider
-		IconCache.setIconProvider(getGuiSettings().getUseContentBasedTypeIcons() ? IconCache.IconProviderType.CONTENT
-						: IconCache.IconProviderType.SYSTEM);
-		
+		IconCache.setIconProvider(getGuiSettings().getUseContentBasedTypeIcons() ? IconCache.IconProviderType.CONTENT : IconCache.IconProviderType.SYSTEM);
+
 		//Used for icon in the title bar
 		frmMoviescraper.setIconImage(GUICommon.getProgramIcon());
-		
+
 		//Set up the file list panel - the panel where the user picks what file to scrape
 		setUpFileListPanel();
-		
-		
+
 		//Set up the bottom panel - area for message panel
 		messageConsolePanel = new MessageConsolePanel();
 		frmMoviescraper.getContentPane().add(messageConsolePanel, BorderLayout.SOUTH);
 
 		buttonPanel = new GUIMainButtonPanel(this);
 		frmMoviescraper.getContentPane().add(buttonPanel, BorderLayout.NORTH);
-		
+
 		//add in the menu bar
 		menuBar = new GUIMainMenuBar(this);
 		frmMoviescraper.setJMenuBar(menuBar);
@@ -215,11 +209,11 @@ public class GUIMain {
 		fileListFileDetailSplitPane.setBorder(BorderFactory.createEmptyBorder());
 		fileListFileDetailSplitPane.setDividerSize(gap);
 		messageConsolePanel.setBorder(BorderFactory.createEmptyBorder(gap, 0, 0, 0));
-		
+
 		// restore gui state
 		buttonPanel.setVisible(guiSettings.getShowToolbar());
 		messageConsolePanel.setVisible(guiSettings.getShowOutputPanel());
-		
+
 	}
 
 	/**
@@ -232,7 +226,7 @@ public class GUIMain {
 
 		defaultHomeDirectory = getGuiSettings().getLastUsedDirectory();
 		setCurrentlySelectedDirectoryList(defaultHomeDirectory);
-		
+
 		listModelFiles = new DefaultListModel<>();
 		setFileList(new JList<>(listModelFiles));
 
@@ -272,8 +266,7 @@ public class GUIMain {
 				// strings in a more search-efficient data structure such as a Trie
 				// or a Ternary Search Tree would lead to much faster find.
 				for (int i = 0; i < getFileList().getModel().getSize(); i++) {
-					String str = getFileList().getModel().getElementAt(i).getName()
-							.toString().toLowerCase();
+					String str = getFileList().getModel().getElementAt(i).getName().toString().toLowerCase();
 					if (str.startsWith(m_key)) {
 						getFileList().setSelectedIndex(i); // change selected item in list
 						getFileList().ensureIndexIsVisible(i); // change listbox
@@ -302,26 +295,21 @@ public class GUIMain {
 
 			@Override
 			public void mousePressed(MouseEvent e) {
-				if(e.getClickCount() >= 2){
+				if (e.getClickCount() >= 2) {
 					@SuppressWarnings("unchecked")
 					JList<File> theList = (JList<File>) e.getSource();
 					try {
-						File doubleClickedFile  = theList.getSelectedValue();
-						if(doubleClickedFile != null && doubleClickedFile.exists() && doubleClickedFile.isDirectory())
-						{
-							try{
+						File doubleClickedFile = theList.getSelectedValue();
+						if (doubleClickedFile != null && doubleClickedFile.exists() && doubleClickedFile.isDirectory()) {
+							try {
 								setCurrentlySelectedDirectoryList(doubleClickedFile);
 								frmMoviescraper.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 								updateFileListModel(getCurrentlySelectedDirectoryList(), false);
-							}
-							finally
-							{
+							} finally {
 								getGuiSettings().setLastUsedDirectory(getCurrentlySelectedDirectoryList());
 								frmMoviescraper.setCursor(Cursor.getDefaultCursor());
 							}
-						}
-						else
-						{
+						} else {
 							Desktop.getDesktop().open(theList.getSelectedValue());
 						}
 					} catch (IOException e1) {
@@ -353,28 +341,27 @@ public class GUIMain {
 
 		getFileList().addListSelectionListener(new SelectFileListAction(this));
 		FileList fl = new FileList();
-		fileListScrollPane = fl.getGui(
-				showFileListSorted(getCurrentlySelectedDirectoryList()), listModelFiles,
-				true);
+		fileListScrollPane = fl.getGui(showFileListSorted(getCurrentlySelectedDirectoryList()), listModelFiles, true);
 		fileListPanel.setLayout(new BoxLayout(fileListPanel, BoxLayout.Y_AXIS));
 		fileListPanel.add(fileListScrollPane);
 
 		fileDetailPanel = new FileDetailPanel(getPreferences(), this);
 		JScrollPane fileDetailsScrollPane = new JScrollPane(fileDetailPanel);
-		
+
 		fileListFileDetailSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, fileListPanel, fileDetailsScrollPane);
-		fileListPanel.setMinimumSize(new Dimension(200,50));
-		fileDetailsScrollPane.setMinimumSize(new Dimension(100,50));
-		
+		fileListPanel.setMinimumSize(new Dimension(200, 50));
+		fileDetailsScrollPane.setMinimumSize(new Dimension(100, 50));
+
 		frmMoviescraper.getContentPane().add(fileListFileDetailSplitPane, BorderLayout.CENTER);
 	}
 
 	public void removeOldScrapedMovieReferences() {
 		setOriginalJavLibraryMovieTitleBeforeAmalgamate(null);
-		if(movieToWriteToDiskList != null)
+		if (movieToWriteToDiskList != null)
 			movieToWriteToDiskList.clear();
 	}
-	public void removeOldSelectedFileReferences(){
+
+	public void removeOldSelectedFileReferences() {
 		getCurrentlySelectedNfoFileList().clear();
 		getCurrentlySelectedMovieFileList().clear();
 		getCurrentlySelectedActorsFolderList().clear();
@@ -388,46 +375,40 @@ public class GUIMain {
 
 	public void updateFileListModel(File currentlySelectedDirectory, boolean keepSelectionsAndReferences) {
 		//make sure this happens on the event dispatch thread, since it can be called from, for example, a background thread that is writing 		the files 
-		 SwingUtilities.invokeLater(() -> {
-			 try{
-					getFrmMoviescraper().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-					File [] filesToList = showFileListSorted(currentlySelectedDirectory);
-					List<File> selectValuesListBeforeUpdate = getFileList().getSelectedValuesList();
+		SwingUtilities.invokeLater(() -> {
+			try {
+				getFrmMoviescraper().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+				File[] filesToList = showFileListSorted(currentlySelectedDirectory);
+				List<File> selectValuesListBeforeUpdate = getFileList().getSelectedValuesList();
 
-					//We don't want to fire the listeners events when reselecting the items because this 
-					//will cause us additional IO that is not needed as the program rereads the nfo.
-					//To avoid this, we can save out the old listener, remove it, select the items and then add it back
-					ListSelectionListener[] fileListSelectionListener = null;
-					if(keepSelectionsAndReferences)
-					{
-						fileListSelectionListener = getFileList().getListSelectionListeners();
-						getFileList().removeListSelectionListener(getFileList().getListSelectionListeners()[0]);
-					}
-					listModelFiles.removeAllElements();
-					for (File file : filesToList) {
-						listModelFiles.addElement(file);
-					}
-					if(!keepSelectionsAndReferences)
-					{
-						removeOldScrapedMovieReferences();
-						removeOldSelectedFileReferences();
-					}
-					//select the old values we had before we updated the list
-					for(File currentValueToSelect : selectValuesListBeforeUpdate)
-					{
-						getFileList().setSelectedValue(currentValueToSelect, false);
-					}
-					if(keepSelectionsAndReferences && fileListSelectionListener != null)
-					{
-						getFileList().addListSelectionListener(fileListSelectionListener[0]);
-					}
+				//We don't want to fire the listeners events when reselecting the items because this 
+				//will cause us additional IO that is not needed as the program rereads the nfo.
+				//To avoid this, we can save out the old listener, remove it, select the items and then add it back
+				ListSelectionListener[] fileListSelectionListener = null;
+				if (keepSelectionsAndReferences) {
+					fileListSelectionListener = getFileList().getListSelectionListeners();
+					getFileList().removeListSelectionListener(getFileList().getListSelectionListeners()[0]);
 				}
-				finally
-				{
-					getFrmMoviescraper().setCursor(Cursor.getDefaultCursor());
+				listModelFiles.removeAllElements();
+				for (File file : filesToList) {
+					listModelFiles.addElement(file);
 				}
-		 });
-		
+				if (!keepSelectionsAndReferences) {
+					removeOldScrapedMovieReferences();
+					removeOldSelectedFileReferences();
+				}
+				//select the old values we had before we updated the list
+				for (File currentValueToSelect : selectValuesListBeforeUpdate) {
+					getFileList().setSelectedValue(currentValueToSelect, false);
+				}
+				if (keepSelectionsAndReferences && fileListSelectionListener != null) {
+					getFileList().addListSelectionListener(fileListSelectionListener[0]);
+				}
+			} finally {
+				getFrmMoviescraper().setCursor(Cursor.getDefaultCursor());
+			}
+		});
+
 	}
 
 	private File[] showFileListSorted(File currentlySelectedDirectory) {
@@ -458,11 +439,6 @@ public class GUIMain {
 		return sortedList;
 	}
 
-
-
-
-	
-
 	public void clearAllFieldsOfFileDetailPanel() {
 		fileDetailPanel.clearView();
 		fileDetailPanel.setTitleEditable(false);
@@ -470,33 +446,27 @@ public class GUIMain {
 
 	//Update the File Detail Panel GUI so the user can see what is scraped in
 	public void updateAllFieldsOfFileDetailPanel(boolean forceUpdatePoster, boolean newMovieWasSet) {
-			fileDetailPanel.currentListIndexOfDisplayedMovie = 0;
-			fileDetailPanel.updateView(forceUpdatePoster, newMovieWasSet);
+		fileDetailPanel.currentListIndexOfDisplayedMovie = 0;
+		fileDetailPanel.updateView(forceUpdatePoster, newMovieWasSet);
 	}
 
-
-
-	public static SearchResult showOptionPane(SearchResult [] searchResults, String siteName)
-	{
-		if(searchResults.length > 0)
-		{
+	public static SearchResult showOptionPane(SearchResult[] searchResults, String siteName) {
+		if (searchResults.length > 0) {
 
 			SelectionDialog selectionDialog = new SelectionDialog(searchResults, siteName);
 
-			int optionPicked = JOptionPane.showOptionDialog(null, selectionDialog, "Select Movie to Scrape From " + siteName,
-					JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,
-					null, null, null);
-			if(optionPicked == JOptionPane.CANCEL_OPTION)
+			int optionPicked = JOptionPane.showOptionDialog(null, selectionDialog, "Select Movie to Scrape From " + siteName, JOptionPane.OK_CANCEL_OPTION,
+					JOptionPane.PLAIN_MESSAGE, null, null, null);
+			if (optionPicked == JOptionPane.CANCEL_OPTION)
 				return null;
 			return selectionDialog.getSelectedValue();
-		}
-		else return null;
+		} else
+			return null;
 	}
 
 	class FileList {
 
-		public JScrollPane getGui(File[] all,
-				DefaultListModel<File> listModelFiles, boolean vertical) {
+		public JScrollPane getGui(File[] all, DefaultListModel<File> listModelFiles, boolean vertical) {
 
 			//Gotta clear out the old list before we can populate it with new stuff
 			getFileList().removeAll();
@@ -518,44 +488,32 @@ public class GUIMain {
 	}
 
 	public void updateActorsFolder() {
-		for(int movieNumberInList = 0; movieNumberInList < getCurrentlySelectedMovieFileList().size(); movieNumberInList++)
-		{
-			if(getCurrentlySelectedMovieFileList().get(movieNumberInList).isDirectory())
-			{
+		for (int movieNumberInList = 0; movieNumberInList < getCurrentlySelectedMovieFileList().size(); movieNumberInList++) {
+			if (getCurrentlySelectedMovieFileList().get(movieNumberInList).isDirectory()) {
 				currentlySelectedActorsFolderList.add(new File(getCurrentlySelectedMovieFileList().get(movieNumberInList).getPath() + File.separator + ".actors"));
-			}
-			else if(getCurrentlySelectedMovieFileList().get(movieNumberInList).isFile())
-			{
+			} else if (getCurrentlySelectedMovieFileList().get(movieNumberInList).isFile()) {
 				currentlySelectedActorsFolderList.add(new File(getCurrentlySelectedDirectoryList().getPath() + File.separator + ".actors"));
 			}
 		}
 	}
 
 	public void setMainGUIEnabled(boolean value) {
-		if(value)
+		if (value)
 			frmMovieScraperBlocker.unBlock();
-		else if(!value)
+		else if (!value)
 			frmMovieScraperBlocker.block();
 	}
 
-
 	public File[] actorFolderFiles(int movieNumberInList) {
 		ArrayList<File> actorFiles = new ArrayList<>();
-		if(movieToWriteToDiskList != null 
-				&& movieToWriteToDiskList.size() > 0
-				&& movieToWriteToDiskList.size() > movieNumberInList
-				&& movieToWriteToDiskList.get(movieNumberInList) != null
-				&& movieToWriteToDiskList.get(movieNumberInList).getActors() != null)
-		{
-			if(currentlySelectedActorsFolderList != null && currentlySelectedActorsFolderList.get(movieNumberInList).isDirectory())
-			{
-				for (Actor currentActor : movieToWriteToDiskList.get(movieNumberInList).getActors())
-				{
+		if (movieToWriteToDiskList != null && movieToWriteToDiskList.size() > 0 && movieToWriteToDiskList.size() > movieNumberInList
+				&& movieToWriteToDiskList.get(movieNumberInList) != null && movieToWriteToDiskList.get(movieNumberInList).getActors() != null) {
+			if (currentlySelectedActorsFolderList != null && currentlySelectedActorsFolderList.get(movieNumberInList).isDirectory()) {
+				for (Actor currentActor : movieToWriteToDiskList.get(movieNumberInList).getActors()) {
 					String currentActorNameAsPotentialFileName = currentActor.getName().replace(' ', '_');
-					File [] listFiles = currentlySelectedActorsFolderList.get(movieNumberInList).listFiles();
-					for(File currentFile : listFiles)
-					{
-						if(currentFile.isFile() && FilenameUtils.removeExtension(currentFile.getName()).equals(currentActorNameAsPotentialFileName)){										
+					File[] listFiles = currentlySelectedActorsFolderList.get(movieNumberInList).listFiles();
+					for (File currentFile : listFiles) {
+						if (currentFile.isFile() && FilenameUtils.removeExtension(currentFile.getName()).equals(currentActorNameAsPotentialFileName)) {
 							actorFiles.add(currentFile);
 						}
 					}
@@ -564,8 +522,6 @@ public class GUIMain {
 		}
 		return actorFiles.toArray(new File[actorFiles.size()]);
 	}
-
-
 
 	public FileDetailPanel getFileDetailPanel() {
 		return fileDetailPanel;
@@ -577,8 +533,6 @@ public class GUIMain {
 		return null;
 	}
 
-
-
 	public JFrame getFrmMoviescraper() {
 		return frmMoviescraper;
 	}
@@ -587,8 +541,7 @@ public class GUIMain {
 		return currentlySelectedActorsFolderList;
 	}
 
-	public void setCurrentlySelectedActorsFolderList(
-			List<File> currentlySelectedActorsFolderList) {
+	public void setCurrentlySelectedActorsFolderList(List<File> currentlySelectedActorsFolderList) {
 		this.currentlySelectedActorsFolderList = currentlySelectedActorsFolderList;
 	}
 
@@ -604,8 +557,7 @@ public class GUIMain {
 		return currentlySelectedMovieFileList;
 	}
 
-	public void setCurrentlySelectedMovieFileList(
-			List<File> currentlySelectedMovieFileList) {
+	public void setCurrentlySelectedMovieFileList(List<File> currentlySelectedMovieFileList) {
 		this.currentlySelectedMovieFileList = currentlySelectedMovieFileList;
 	}
 
@@ -613,8 +565,7 @@ public class GUIMain {
 		return currentlySelectedPosterFileList;
 	}
 
-	public void setCurrentlySelectedPosterFileList(
-			List<File> currentlySelectedPosterFileList) {
+	public void setCurrentlySelectedPosterFileList(List<File> currentlySelectedPosterFileList) {
 		this.currentlySelectedPosterFileList = currentlySelectedPosterFileList;
 	}
 
@@ -622,8 +573,7 @@ public class GUIMain {
 		return currentlySelectedFanartFileList;
 	}
 
-	public void setCurrentlySelectedFanartFileList(
-			List<File> currentlySelectedFanartFileList) {
+	public void setCurrentlySelectedFanartFileList(List<File> currentlySelectedFanartFileList) {
 		this.currentlySelectedFanartFileList = currentlySelectedFanartFileList;
 	}
 
@@ -647,8 +597,7 @@ public class GUIMain {
 		return currentlySelectedDirectoryList;
 	}
 
-	public void setCurrentlySelectedDirectoryList(
-			File currentlySelectedDirectoryList) {
+	public void setCurrentlySelectedDirectoryList(File currentlySelectedDirectoryList) {
 		this.currentlySelectedDirectoryList = currentlySelectedDirectoryList;
 	}
 
@@ -656,8 +605,7 @@ public class GUIMain {
 		return currentlySelectedNfoFileList;
 	}
 
-	public void setCurrentlySelectedNfoFileList(
-			List<File> currentlySelectedNfoFileList) {
+	public void setCurrentlySelectedNfoFileList(List<File> currentlySelectedNfoFileList) {
 		this.currentlySelectedNfoFileList = currentlySelectedNfoFileList;
 	}
 
@@ -665,8 +613,7 @@ public class GUIMain {
 		return currentlySelectedFolderJpgFileList;
 	}
 
-	public void setCurrentlySelectedFolderJpgFileList(
-			List<File> currentlySelectedFolderJpgFileList) {
+	public void setCurrentlySelectedFolderJpgFileList(List<File> currentlySelectedFolderJpgFileList) {
 		this.currentlySelectedFolderJpgFileList = currentlySelectedFolderJpgFileList;
 	}
 
@@ -674,11 +621,9 @@ public class GUIMain {
 		return currentlySelectedTrailerFileList;
 	}
 
-	public void setCurrentlySelectedTrailerFileList(
-			List<File> currentlySelectedTrailerFileList) {
+	public void setCurrentlySelectedTrailerFileList(List<File> currentlySelectedTrailerFileList) {
 		this.currentlySelectedTrailerFileList = currentlySelectedTrailerFileList;
 	}
-
 
 	public JList<File> getFileList() {
 		return fileList;
@@ -697,23 +642,23 @@ public class GUIMain {
 	public void setProgressMonitor(ProgressMonitor progressMonitor) {
 		this.progressMonitor = progressMonitor;
 	}
-	
-	public void showMessageConsolePanel(){
+
+	public void showMessageConsolePanel() {
 		messageConsolePanel.setVisible(true);
 		guiSettings.setShowOutputPanel(true);
 	}
-	
-	public void hideMessageConsolePanel(){
+
+	public void hideMessageConsolePanel() {
 		messageConsolePanel.setVisible(false);
 		guiSettings.setShowOutputPanel(false);
 	}
-	
-	public void showButtonPanel(){
+
+	public void showButtonPanel() {
 		buttonPanel.setVisible(true);
 		guiSettings.setShowToolbar(true);
 	}
-	
-	public void hideButtonPanel(){
+
+	public void hideButtonPanel() {
 		buttonPanel.setVisible(false);
 		guiSettings.setShowToolbar(false);
 	}
@@ -722,13 +667,12 @@ public class GUIMain {
 		return originalJavLibraryMovieTitleBeforeAmalgamate;
 	}
 
-	public void setOriginalJavLibraryMovieTitleBeforeAmalgamate(
-			String originalJavLibraryMovieTitleBeforeAmalgamate) {
+	public void setOriginalJavLibraryMovieTitleBeforeAmalgamate(String originalJavLibraryMovieTitleBeforeAmalgamate) {
 		this.originalJavLibraryMovieTitleBeforeAmalgamate = originalJavLibraryMovieTitleBeforeAmalgamate;
 	}
-	
+
 	public boolean showAmalgamationSettingsDialog() {
-		AmalgamationSettingsDialog dialog =  new AmalgamationSettingsDialog(this, getAllAmalgamationOrderingPreferences());
+		AmalgamationSettingsDialog dialog = new AmalgamationSettingsDialog(this, getAllAmalgamationOrderingPreferences());
 		return dialog.show();
 	}
 
@@ -740,19 +684,18 @@ public class GUIMain {
 		return allAmalgamationOrderingPreferences;
 	}
 
-	public void setAllAmalgamationOrderingPreferences(
-			AllAmalgamationOrderingPreferences allAmalgamationOrderingPreferences) {
+	public void setAllAmalgamationOrderingPreferences(AllAmalgamationOrderingPreferences allAmalgamationOrderingPreferences) {
 		this.allAmalgamationOrderingPreferences = allAmalgamationOrderingPreferences;
 	}
-	
+
 	public void enableFileWrite() {
 		menuBar.enableWriteFile();
 		buttonPanel.enableWriteFile();
 	}
-	
+
 	public void disableFileWrite() {
 		menuBar.disableWriteFile();
 		buttonPanel.disableWriteFile();
 	}
-	
+
 }

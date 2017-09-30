@@ -17,18 +17,16 @@ public class FavoriteGenrePickerPanel extends FavoriteItemPickerPanel {
 	public String[] getSettingValues() {
 		ArrayList<Genre> favoriteGenreArrayList = getFavoriteGenresFromPreferences();
 		String[] genreArray = new String[favoriteGenreArrayList.size()];
-		for(int i = 0; i < favoriteGenreArrayList.size(); i++)
-		{
+		for (int i = 0; i < favoriteGenreArrayList.size(); i++) {
 			genreArray[i] = favoriteGenreArrayList.get(i).getGenre();
 		}
 		return genreArray;
 	}
-	
+
 	public static ArrayList<Genre> getFavoriteGenresFromPreferences() {
 		String[] existingFavoriteGenresArray = MoviescraperPreferences.getInstance().getfrequentlyUsedGenres().split(listSeperator);
 		ArrayList<Genre> favoriteGenresToReturn = new ArrayList<>(existingFavoriteGenresArray.length);
-		for(String existingFavoriteGenre : existingFavoriteGenresArray)
-		{
+		for (String existingFavoriteGenre : existingFavoriteGenresArray) {
 			favoriteGenresToReturn.add(new Genre(existingFavoriteGenre));
 		}
 		//alphabetical order list
@@ -39,11 +37,10 @@ public class FavoriteGenrePickerPanel extends FavoriteItemPickerPanel {
 	@Override
 	public void storeSettingValues() {
 		String preferenceValue = "";
-		for(int i = 0; i < favoritesListModel.size(); i++)
-		{
+		for (int i = 0; i < favoritesListModel.size(); i++) {
 			preferenceValue += favoritesListModel.get(i);
-			if(i != favoritesListModel.size() -1)
-				preferenceValue += listSeperator ;
+			if (i != favoritesListModel.size() - 1)
+				preferenceValue += listSeperator;
 		}
 		MoviescraperPreferences.getInstance().setFrequentlyUsedGenres(preferenceValue);
 

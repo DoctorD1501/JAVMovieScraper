@@ -22,53 +22,46 @@ import javax.swing.border.Border;
 
 import moviescraper.doctord.model.dataitem.Genre;
 
-
-
 public class GenreEditorPanel extends JPanel implements ItemListener {
-	
+
 	private static final long serialVersionUID = 1L;
 	private JTextField textFieldGenre;
 	private ArrayList<JCheckBox> genreCheckBoxes;
 	private List<Genre> originalGenreList; //original values in case we hit cancel
 	private List<Genre> editedGenreList; //edited values which become active when we hit ok
-	
+
 	private static final int DEFAULT_GENRE_LENGTH = 15;
-	
-	public GenreEditorPanel(final List<Genre> genreList){
+
+	public GenreEditorPanel(final List<Genre> genreList) {
 		super(new BorderLayout());
 		this.originalGenreList = genreList;
 		editedGenreList = cloneOriginalGenreListDeepCopy();
-		
-		super.setMaximumSize(new Dimension(600,400));
+
+		super.setMaximumSize(new Dimension(600, 400));
 		final JPanel currentMovieGenresPanel = new JPanel(new ModifiedFlowLayout());
-		
+
 		Border panelBorder = BorderFactory.createEtchedBorder();
 		JPanel favoriteMovieGenresPanel = new JPanel();
 		favoriteMovieGenresPanel.setLayout(new BoxLayout(favoriteMovieGenresPanel, BoxLayout.Y_AXIS));
 		JPanel enterANewGenrePanel = new JPanel();
 		//enterANewGenrePanel.setBorder(blackline);
-		
 
 		//enter a new genre panel
 		JLabel lblGenre = new JLabel("Add Genre to Current Movie: ");
 		JButton addNewGenreButton = new JButton("Add");
-		
+
 		//Adds a new checkbox, in the checked state. Also adds this to the list of genres
 		ActionListener addGenreActionListener = new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
-				if(textFieldGenre != null && 
-						textFieldGenre.getText()!= null 
-						&& textFieldGenre.getText().length() > 0 && editedGenreList != null){
+
+				if (textFieldGenre != null && textFieldGenre.getText() != null && textFieldGenre.getText().length() > 0 && editedGenreList != null) {
 					Genre genreToAdd = new Genre(textFieldGenre.getText());
-					if(!editedGenreList.contains(genreToAdd))
-					{
+					if (!editedGenreList.contains(genreToAdd)) {
 						editedGenreList.add(genreToAdd);
 						addGenreCheckBoxToPanel(currentMovieGenresPanel, genreToAdd, true);
-						if(textFieldGenre != null)
-						{
+						if (textFieldGenre != null) {
 							textFieldGenre.setText("");
 							textFieldGenre.requestFocus();
 						}
@@ -76,31 +69,28 @@ public class GenreEditorPanel extends JPanel implements ItemListener {
 				}
 			}
 		};
-		
+
 		addNewGenreButton.addActionListener(addGenreActionListener);
-		
+
 		enterANewGenrePanel.add(lblGenre);
 		textFieldGenre = new JTextField(DEFAULT_GENRE_LENGTH);
 		textFieldGenre.addActionListener(addGenreActionListener);
 		enterANewGenrePanel.add(textFieldGenre);
 		enterANewGenrePanel.add(addNewGenreButton);
-		
+
 		//existing genres panel
 		genreCheckBoxes = new ArrayList<>(editedGenreList.size());
 		//get all the labels of the check boxes set up
-		for(Genre currentGenreToAdd : editedGenreList)
-		{
+		for (Genre currentGenreToAdd : editedGenreList) {
 			addGenreCheckBoxToPanel(currentMovieGenresPanel, currentGenreToAdd, true);
 		}
-		
-		
+
 		//favorite genres panel
 		JLabel favoriteLabel = new JLabel("Favorites");
 		ArrayList<Genre> existingFavoriteGenresArray = FavoriteGenrePickerPanel.getFavoriteGenresFromPreferences();
 		final JPanel quickGenresCheckboxPanel = new JPanel();
 		quickGenresCheckboxPanel.setLayout(new BoxLayout(quickGenresCheckboxPanel, BoxLayout.Y_AXIS));
-		for(Genre existingFavoriteGenres : existingFavoriteGenresArray)
-		{
+		for (Genre existingFavoriteGenres : existingFavoriteGenresArray) {
 			addGenreCheckBoxToPanel(quickGenresCheckboxPanel, existingFavoriteGenres, false);
 		}
 		quickGenresCheckboxPanel.add(Box.createVerticalGlue());
@@ -108,78 +98,67 @@ public class GenreEditorPanel extends JPanel implements ItemListener {
 		quickGenresCheckboxPanelScrollPane.setBorder(BorderFactory.createEmptyBorder());
 		//quickGenresCheckboxPanel.setBorder(BorderFactory.createEmptyBorder());
 		quickGenresCheckboxPanelScrollPane.setPreferredSize(new Dimension(240, 310));
-		
+
 		favoriteMovieGenresPanel.add(favoriteLabel);
 		favoriteMovieGenresPanel.add(quickGenresCheckboxPanelScrollPane);
 		favoriteMovieGenresPanel.add(Box.createVerticalGlue());
-		
-		
+
 		//scroll panes
 		final JScrollPane currentMovieGenresPanelScrollPane = new JScrollPane(currentMovieGenresPanel);
 		//currentMovieGenresPanelScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		currentMovieGenresPanelScrollPane.setBorder(BorderFactory.createEmptyBorder());
 		currentMovieGenresPanelScrollPane.setPreferredSize(new Dimension(400, 310));
-		
+
 		JPanel westPanel = new JPanel(new BorderLayout());
 		westPanel.setBorder(panelBorder);
 		JPanel eastPanel = new JPanel(new BorderLayout());
 		eastPanel.setBorder(panelBorder);
-		
-		
-		
+
 		westPanel.add(enterANewGenrePanel, BorderLayout.NORTH);
-		
+
 		westPanel.add(currentMovieGenresPanelScrollPane, BorderLayout.CENTER);
 		eastPanel.add(favoriteMovieGenresPanel);
 		add(westPanel, BorderLayout.WEST);
 		add(eastPanel, BorderLayout.EAST);
-		
+
 	}
-	
+
 	private List<Genre> cloneOriginalGenreListDeepCopy() {
 		ArrayList<Genre> clonedList = new ArrayList<>(originalGenreList.size());
-		for (Genre originalGenre : originalGenreList)
-		{
+		for (Genre originalGenre : originalGenreList) {
 			clonedList.add(new Genre(originalGenre.getGenre()));
 		}
 		return clonedList;
 	}
 
-	private void addGenreCheckBoxToPanel(JPanel panel, Genre genre, boolean initialStatus)
-	{
+	private void addGenreCheckBoxToPanel(JPanel panel, Genre genre, boolean initialStatus) {
 		JCheckBox checkBoxOfGenre = new JCheckBox(genre.getGenre());
 		checkBoxOfGenre.setSelected(initialStatus);
 		checkBoxOfGenre.addItemListener(this);
 		panel.add(checkBoxOfGenre);
 		panel.revalidate();
 	}
-	
+
 	//What happens when a checkbox in the genre editor is checked or unchecked
 	@Override
 	public void itemStateChanged(ItemEvent event) {
-		if(genreCheckBoxes != null && editedGenreList != null)
-		{
+		if (genreCheckBoxes != null && editedGenreList != null) {
 			JCheckBox eventItem = (JCheckBox) event.getItem();
 			Genre genreNameToEdit = new Genre(eventItem.getText());
-			if(event.getStateChange() == ItemEvent.SELECTED)
-			{
-				if(!editedGenreList.contains(genreNameToEdit))
-				{
+			if (event.getStateChange() == ItemEvent.SELECTED) {
+				if (!editedGenreList.contains(genreNameToEdit)) {
 					editedGenreList.add(genreNameToEdit);
 				}
-			}
-			else if(event.getStateChange() == ItemEvent.DESELECTED)
-			{
+			} else if (event.getStateChange() == ItemEvent.DESELECTED) {
 				editedGenreList.remove(genreNameToEdit);
 			}
 		}
 	}
-	
+
 	/**
 	 * Finalize changes made
 	 */
-	public void save()
-	{
+	public void save() {
 		originalGenreList.clear();
 		originalGenreList.addAll(editedGenreList);
 	}

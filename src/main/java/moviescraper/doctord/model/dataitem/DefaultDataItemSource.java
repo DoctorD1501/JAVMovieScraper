@@ -2,20 +2,19 @@ package moviescraper.doctord.model.dataitem;
 
 import javax.swing.ImageIcon;
 
-public class DefaultDataItemSource implements DataItemSource{
-	
+public class DefaultDataItemSource implements DataItemSource {
+
 	public static final DefaultDataItemSource DEFAULT_DATA_ITEM_SOURCE = new DefaultDataItemSource();
 	private boolean isDisabled;
 	ImageIcon profileIcon;
-	
+
 	@Override
 	public String getDataItemSourceName() {
 		return "Default Data Item Source";
 	}
-	
+
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return getDataItemSourceName();
 	}
 

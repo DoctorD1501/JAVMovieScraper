@@ -8,8 +8,6 @@ import javax.swing.JLabel;
 
 public class TestingHelper {
 
-
-	
 	public static void showImage(final String title, final Image image) {
 		EventQueue.invokeLater(new Runnable() {
 			@Override
@@ -17,7 +15,7 @@ public class TestingHelper {
 				try {
 					JFrame jFrame = new JFrame(title);
 					jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-					jFrame.add( new JLabel(new ImageIcon(image)) );
+					jFrame.add(new JLabel(new ImageIcon(image)));
 					jFrame.pack();
 					jFrame.setVisible(true);
 				} catch (Exception e) {

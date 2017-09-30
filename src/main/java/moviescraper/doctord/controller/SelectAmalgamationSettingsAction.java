@@ -15,11 +15,11 @@ public class SelectAmalgamationSettingsAction implements ActionListener {
 	public SelectAmalgamationSettingsAction(GUIMain guiMain) {
 		this.guiMain = guiMain;
 	}
-	
+
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		guiMain.showAmalgamationSettingsDialog();
-		
+
 	}
 
 }

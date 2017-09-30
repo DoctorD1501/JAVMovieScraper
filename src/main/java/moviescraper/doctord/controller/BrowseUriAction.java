@@ -8,26 +8,22 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 public class BrowseUriAction implements ActionListener {
-	
+
 	String uri;
-	
-	public BrowseUriAction(String uri)
-	{
+
+	public BrowseUriAction(String uri) {
 		this.uri = uri;
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		try
-		{
+		try {
 			Desktop.getDesktop().browse(new URI(uri));
-		}
-		catch(IOException | URISyntaxException ex)
-		{
+		} catch (IOException | URISyntaxException ex) {
 			ex.printStackTrace();
 		}
 	}
 
 	public static final String MainWebsiteUri = "https://github.com/DoctorD1501/JAVMovieScraper";
-	public static final String ReportBugUri = "https://github.com/DoctorD1501/JAVMovieScraper/issues?q=label%3Abug";	
+	public static final String ReportBugUri = "https://github.com/DoctorD1501/JAVMovieScraper/issues?q=label%3Abug";
 }

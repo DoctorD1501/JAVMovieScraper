@@ -31,35 +31,33 @@ import moviescraper.doctord.model.dataitem.Actor;
 public class ActressListRenderer extends DefaultListCellRenderer {
 
 	private static final Font font = new Font("helvitica", Font.PLAIN, 12);
-	private static final Dimension maxActorSizeDimension = new Dimension (150,150);
+	private static final Dimension maxActorSizeDimension = new Dimension(150, 150);
 
 	List<File> currentlySelectedActorsFolderList;
+
 	public ActressListRenderer(List<File> currentlySelectedActorsFolderList) {
 		setBorder(new EmptyBorder(1, 1, 1, 1));
 		this.currentlySelectedActorsFolderList = currentlySelectedActorsFolderList;
 	}
 
 	@Override
-	public Component getListCellRendererComponent(JList<?> list, Object value,
-			int index, boolean isSelected, boolean cellHasFocus) {
+	public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 		if (value instanceof Actor) {
 			Actor actor = (Actor) value;
 			String role = actor.getRole();
-			if(role != null && role.length() > 0)
-			{
+			if (role != null && role.length() > 0) {
 				//two line version if thumbnail, otherwise show it one lines
-				if(actor.getThumb() != null && actor.getThumb().getThumbURL() != null)
+				if (actor.getThumb() != null && actor.getThumb().getThumbURL() != null)
 					value = "<html><body><b>" + actor.getName() + "</b><br> as <b>" + role + "</b></body></html>";
 				else
 					value = "<html><body><b>" + actor.getName() + "</b> as <b>" + role + "</b></body></html>";
-			}
-			else value = "<html><body><b> "+ actor.getName() + "</b>";
+			} else
+				value = "<html><body><b> " + actor.getName() + "</b>";
 		}
-		JLabel label = (JLabel) super.getListCellRendererComponent(list,
-				value, index, isSelected, cellHasFocus);
+		JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 		Object listElement = list.getModel().getElementAt(index);
 		if (listElement != null && listElement instanceof Actor && label.getIcon() == null) {
-			label.setIcon(getImageIconForLabelName((Actor)listElement));		
+			label.setIcon(getImageIconForLabelName((Actor) listElement));
 		}
 		label.setHorizontalTextPosition(JLabel.RIGHT);
 		label.setFont(font);
@@ -71,55 +69,49 @@ public class ActressListRenderer extends DefaultListCellRenderer {
 		}
 		return label;
 	}
-	
+
 	/**
 	 * Converts a given Image into a BufferedImage
 	 *
 	 * @param img The Image to be converted
 	 * @return The converted BufferedImage
 	 */
-	private static BufferedImage toBufferedImage(Image img)
-	{
-	    if (img instanceof BufferedImage)
-	    {
-	        return (BufferedImage) img;
-	    }
+	private static BufferedImage toBufferedImage(Image img) {
+		if (img instanceof BufferedImage) {
+			return (BufferedImage) img;
+		}
 
-	    // Create a buffered image with transparency
-	    BufferedImage bimage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+		// Create a buffered image with transparency
+		BufferedImage bimage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
 
-	    // Draw the image on to the buffered image
-	    Graphics2D bGr = bimage.createGraphics();
-	    bGr.drawImage(img, 0, 0, null);
-	    bGr.dispose();
+		// Draw the image on to the buffered image
+		Graphics2D bGr = bimage.createGraphics();
+		bGr.drawImage(img, 0, 0, null);
+		bGr.dispose();
 
-	    // Return the buffered image
-	    return bimage;
+		// Return the buffered image
+		return bimage;
 	}
-	
-	private ImageIcon resizeToMaxDimensions(Image image)
-	{
-		if(image.getWidth(null) > maxActorSizeDimension.width || image.getHeight(null) > maxActorSizeDimension.height)
+
+	private ImageIcon resizeToMaxDimensions(Image image) {
+		if (image.getWidth(null) > maxActorSizeDimension.width || image.getHeight(null) > maxActorSizeDimension.height)
 			return new ImageIcon(Scalr.resize(toBufferedImage(image), Method.QUALITY, maxActorSizeDimension.width, maxActorSizeDimension.height, Scalr.OP_ANTIALIAS));
 		else
 			return new ImageIcon(toBufferedImage(image));
 	}
-	
+
 	//TODO: I should probably re-implement this to use Maps instead of arrays
 	private ImageIcon getImageIconForLabelName(Actor currentActor) {
-	
-		if (currentActor.getThumb() != null)
-		{
+
+		if (currentActor.getThumb() != null) {
 			//see if we can find a local copy in the .actors folder before trying to download, but only if the image is not already in memory
-			if(!currentActor.isThumbEdited() && currentlySelectedActorsFolderList != null && currentlySelectedActorsFolderList.size() > 0 && currentlySelectedActorsFolderList.get(0).isDirectory())
-			{
+			if (!currentActor.isThumbEdited() && currentlySelectedActorsFolderList != null && currentlySelectedActorsFolderList.size() > 0
+					&& currentlySelectedActorsFolderList.get(0).isDirectory()) {
 				String currentActorNameAsPotentialFileName = currentActor.getName().replace(' ', '_');
-				File [] listFiles = currentlySelectedActorsFolderList.get(0).listFiles();
-				if(listFiles != null)
-				{
-					for(File currentFile : listFiles)
-					{
-						if(currentFile.isFile() && FilenameUtils.removeExtension(currentFile.getName()).equals(currentActorNameAsPotentialFileName)){
+				File[] listFiles = currentlySelectedActorsFolderList.get(0).listFiles();
+				if (listFiles != null) {
+					for (File currentFile : listFiles) {
+						if (currentFile.isFile() && FilenameUtils.removeExtension(currentFile.getName()).equals(currentActorNameAsPotentialFileName)) {
 							try {
 								return resizeToMaxDimensions(ImageCache.getImageFromCache(currentFile.toURI().toURL(), false, null));
 							} catch (MalformedURLException e) {
@@ -130,8 +122,7 @@ public class ActressListRenderer extends DefaultListCellRenderer {
 						}
 					}
 				}
-				if(currentActor.getThumb().getThumbURL() != null)
-				{
+				if (currentActor.getThumb().getThumbURL() != null) {
 					try {
 						return resizeToMaxDimensions(currentActor.getThumb().getThumbImage());
 					} catch (IOException e) {
@@ -140,8 +131,7 @@ public class ActressListRenderer extends DefaultListCellRenderer {
 				}
 			}
 
-			else 
-			{
+			else {
 				try {
 					return resizeToMaxDimensions(currentActor.getThumb().getThumbImage());
 				} catch (IOException | NullPointerException e) {
@@ -150,6 +140,6 @@ public class ActressListRenderer extends DefaultListCellRenderer {
 				}
 			}
 		}
-		return new ImageIcon();			
+		return new ImageIcon();
 	}
 }

@@ -8,7 +8,7 @@ import javax.swing.ImageIcon;
  */
 public interface DataItemSource {
 	public String getDataItemSourceName();
-	
+
 	/**
 	 * 
 	 * @return A new object of the same class as the caller. All fields are reinitialized
@@ -19,7 +19,7 @@ public interface DataItemSource {
 	public boolean isDisabled();
 
 	public void setDisabled(boolean b);
-	
+
 	public ImageIcon getProfileIcon();
 
 }

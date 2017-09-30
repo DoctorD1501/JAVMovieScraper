@@ -3,7 +3,7 @@ package moviescraper.doctord.model.dataitem;
 import java.util.ArrayList;
 
 public class Tag extends MovieDataItem {
-	
+
 	public static final ArrayList<Tag> BLANK_TAGS = new ArrayList<>();
 	String tag;
 
@@ -30,7 +30,6 @@ public class Tag extends MovieDataItem {
 		this.tag = sanitizeString(tag);
 	}
 
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -56,11 +55,8 @@ public class Tag extends MovieDataItem {
 		return true;
 	}
 
-	public Tag(){
+	public Tag() {
 		tag = "";
 	}
-	
-	
 
 }
-

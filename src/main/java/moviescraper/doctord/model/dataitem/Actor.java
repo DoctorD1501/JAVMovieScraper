@@ -15,7 +15,7 @@ public class Actor extends Person {
 	}
 
 	@Override
-	public String  toXML() {
+	public String toXML() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -34,9 +34,9 @@ public class Actor extends Person {
 	}
 
 	public void writeImageToFile(File fileNameToWrite) throws IOException {
-		if(getThumb() != null && getThumb().getThumbURL() != null && getThumb().getThumbURL().getPath().length() > 0)
+		if (getThumb() != null && getThumb().getThumbURL() != null && getThumb().getThumbURL().getPath().length() > 0)
 			FileUtils.copyURLToFile(getThumb().getThumbURL(), fileNameToWrite, connectionTimeout, readTimeout);
-		
+
 	}
 
 	@Override
@@ -64,12 +64,9 @@ public class Actor extends Person {
 		return true;
 	}
 
-	public Actor(){
+	public Actor() {
 		super();
 		role = "";
 	}
-	
-	
-
 
 }

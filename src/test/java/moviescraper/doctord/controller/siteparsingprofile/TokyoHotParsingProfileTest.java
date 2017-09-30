@@ -21,21 +21,20 @@ import static org.junit.Assert.*;
 import org.jsoup.nodes.Document;
 import org.junit.BeforeClass;
 
-
 public class TokyoHotParsingProfileTest {
 
 	static File file = new File("C:/Temp/Tokyo Hot n0754 abc.avi");
 	TokyoHotParsingProfile parser = new TokyoHotParsingProfile();
-	
+
 	private static TokyoHotParsingProfile profile;
-	
+
 	@BeforeClass
 	public static void initialize() {
 		profile = new TokyoHotParsingProfile();
 		String searchString = profile.createSearchString(file);
-                if(searchString == null) {
-                    return;
-                }
+		if (searchString == null) {
+			return;
+		}
 		System.out.println(searchString);
 		Document document = SiteParsingProfile.downloadDocumentFromURLString(searchString);
 		profile.setDocument(document);
@@ -82,7 +81,7 @@ public class TokyoHotParsingProfileTest {
 		ReleaseDate releaseDate = profile.scrapeReleaseDate();
 		assertEquals("Found wrong release date ", "2012-06-15", releaseDate.getReleaseDate());
 	}
-
+	
 	@Test
 	public void testRuntime() {
 		moviescraper.doctord.model.dataitem.Runtime runTime = profile.scrapeRuntime();

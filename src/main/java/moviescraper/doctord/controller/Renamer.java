@@ -24,7 +24,7 @@ public class Renamer {
 	private Title originalTitle;
 	private String sanitizer;
 	private File oldFile;
-	
+
 	private String extension;
 	private String filename;
 	private String path;
@@ -42,13 +42,13 @@ public class Renamer {
 	private final static String STUDIO = "<STUDIO>";
 	private final static String GENRES = "<GENRES>";
 	private final static String period = ".";
-	private final static String[] availableRenameTags = {ID, TITLE, ACTORS, GENRES, SET, STUDIO, YEAR, RELEASEDATE, ORIGINALTITLE};
-	
+	private final static String[] availableRenameTags = { ID, TITLE, ACTORS, GENRES, SET, STUDIO, YEAR, RELEASEDATE, ORIGINALTITLE };
+
 	//folder tags
 	private final static String BASEDIRECTORY = "<BASEDIRECTORY>";
 	private final static String PATHSEPERATOR = "<PATHSEPERATOR>";
-	private final static String[] availableFolderRenameTags = {BASEDIRECTORY, PATHSEPERATOR, ID, TITLE, ACTORS, GENRES, SET, STUDIO, YEAR, RELEASEDATE, ORIGINALTITLE};
-	
+	private final static String[] availableFolderRenameTags = { BASEDIRECTORY, PATHSEPERATOR, ID, TITLE, ACTORS, GENRES, SET, STUDIO, YEAR, RELEASEDATE, ORIGINALTITLE };
+
 	public Renamer(String fileNameRenameString, String folderNameRenameString, String sanitizer, Movie toRename, File oldFile) {
 		this.fileNameRenameString = fileNameRenameString;
 		this.folderNameRenameString = folderNameRenameString;
@@ -57,39 +57,35 @@ public class Renamer {
 		this.originalTitle = movie.getTitle();
 		this.oldFile = oldFile;
 	}
-	
+
 	/**
 	 * Returns the new name given by the constructed renamer string used from the movie scraper preferences and arguments passed into the renamer object
 	 * @param isFolderName - if true will remove the extension and enders such as -poster and -trailer from the filename. otherwise leaves them on
 	 */
 	public String getNewFileName(boolean isFolderName) {
-		
+
 		extension = FilenameUtils.getExtension(oldFile.toString());
-		if(oldFile.isDirectory())
+		if (oldFile.isDirectory())
 			extension = "";
 		filename = FilenameUtils.getBaseName(oldFile.toString());
 		path = FilenameUtils.getFullPath(oldFile.toString());
 		path = getRenamedFolderPath(path);
 		String dot = ".";
-		if(oldFile.isDirectory())
+		if (oldFile.isDirectory())
 			dot = "";
-		String newName = getSanitizedString (replace(fileNameRenameString));
-		if(isFolderName)
-		{
+		String newName = getSanitizedString(replace(fileNameRenameString));
+		if (isFolderName) {
 			newName = path + newName;
-		}
-		else
-		{
+		} else {
 			newName = path + newName + getAppendix() + getPosterFanartTrailerEnder() + dot + extension;
 			System.out.println("Was file, new name = " + newName);
 		}
-		
+
 		//shorten the string if it still doesn't fit
-		if((newName.length() + extraFlexForFileNameLength) > maxFileNameLength)
-		{
+		if ((newName.length() + extraFlexForFileNameLength) > maxFileNameLength) {
 			//Cut the title down by one character and try again
 			System.out.println("Potential filename was too long. Cutting letters off title");
-			Title newTitle = new Title(movie.getTitle().getTitle().substring(0, movie.getTitle().getTitle().length()-1));
+			Title newTitle = new Title(movie.getTitle().getTitle().substring(0, movie.getTitle().getTitle().length() - 1));
 			System.out.println("New truncated title is = " + newTitle.getTitle());
 			movie.setTitle(newTitle);
 			return getNewFileName(isFolderName);
@@ -98,7 +94,7 @@ public class Renamer {
 		movie.setTitle(originalTitle);
 		return newName;
 	}
-	
+
 	private String getRenamedFolderPath(String path) {
 		//System.out.println("Old Path: " + path);
 		String newPath = replace(folderNameRenameString);
@@ -106,13 +102,11 @@ public class Renamer {
 		//However, if this is a network share, it's OK for the path to start with \\, so we will add it back in later
 		String doublePathSeperator = File.separator + File.separator;
 		String cutPath = "";
-		if(newPath.startsWith(doublePathSeperator))
-		{
+		if (newPath.startsWith(doublePathSeperator)) {
 			cutPath = doublePathSeperator;
-			newPath = newPath.substring(2,newPath.length());
+			newPath = newPath.substring(2, newPath.length());
 		}
-		while(newPath.contains(doublePathSeperator))
-		{
+		while (newPath.contains(doublePathSeperator)) {
 			newPath = newPath.replace(doublePathSeperator, File.separator);
 		}
 		newPath = cutPath + newPath;
@@ -134,11 +128,11 @@ public class Renamer {
 		String baseDirectory = oldFile.getParent();
 		String pathSeperator = File.separator;
 		String newName = target;
-				
+
 		//path stuff
 		newName = renameReplaceAll(newName, BASEDIRECTORY, baseDirectory);
 		newName = renameReplaceAll(newName, PATHSEPERATOR, pathSeperator);
-		
+
 		//metadata stuff
 		newName = renameReplaceAll(newName, ID, movieID);
 		newName = renameReplaceAll(newName, TITLE, movieTitle);
@@ -148,38 +142,36 @@ public class Renamer {
 		newName = renameReplaceAll(newName, SET, movieSet);
 		newName = renameReplaceAll(newName, STUDIO, movieStudio);
 		newName = renameReplaceAll(newName, GENRES, movieGenres);
-		
+
 		//we need to watch out when renaming a file that a large number of actors doesn't create
 		//a movie name that is too long
-		String potentialNameWithActors =  renameReplaceAll(newName, ACTORS, movieActors);
-		if(potentialNameWithActors.length() + path.length() + getAppendix().length() + getPosterFanartTrailerEnder().length() + period.length() + extension.length() < maxFileNameLength )
+		String potentialNameWithActors = renameReplaceAll(newName, ACTORS, movieActors);
+		if (potentialNameWithActors.length() + path.length() + getAppendix().length() + getPosterFanartTrailerEnder().length() + period.length()
+				+ extension.length() < maxFileNameLength)
 			newName = potentialNameWithActors;
 		else
 			newName = renameReplaceAll(newName, ACTORS, "");
 
 		return newName.trim();
 	}
-	
-	private String renameReplaceAll(String replacementString, String tagName, String movieContentOfTag)
-	{
+
+	private String renameReplaceAll(String replacementString, String tagName, String movieContentOfTag) {
 		String replacedString = replacementString;
 		//Remove's stuff like <RELEASEDATE> when this field is null
-		if(movieContentOfTag == null)
-		{
+		if (movieContentOfTag == null) {
 			replacedString = replacedString.replace(tagName, "");
 		}
 
-		if(replacedString.contains(tagName)){
+		if (replacedString.contains(tagName)) {
 			replacedString = StringUtils.replace(replacedString, tagName, movieContentOfTag);
 		}
 		//Get rid of empty parens that are left over from blank field replacements like these : ()
-		if(movieContentOfTag == null || movieContentOfTag.trim().equals(""))
-		{
+		if (movieContentOfTag == null || movieContentOfTag.trim().equals("")) {
 			replacedString = replacedString.replaceAll("\\[\\]|\\(\\)", "");
 		}
 		return replacedString;
 	}
-	
+
 	private String combineActorList(List<Actor> actors) {
 		String actorsString = "";
 		for (int i = 0; i < movie.getActors().size(); i++) {
@@ -189,78 +181,68 @@ public class Renamer {
 		}
 		return actorsString;
 	}
-	
-	public static void rename(File fileToRename, MoviescraperPreferences preferences) throws IOException
-	{
+
+	public static void rename(File fileToRename, MoviescraperPreferences preferences) throws IOException {
 		File nfoFile = new File(Movie.getFileNameOfNfo(fileToRename, preferences.getNfoNamedMovieDotNfo()));
 		File posterFile = new File(Movie.getFileNameOfPoster(fileToRename, preferences.getNoMovieNameInImageFiles()));
 		File fanartFile = new File(Movie.getFileNameOfFanart(fileToRename, preferences.getNoMovieNameInImageFiles()));
 		File trailerFile = new File(Movie.getFileNameOfTrailer(fileToRename));
-		if(nfoFile.exists() && fileToRename.exists())
-		{
+		if (nfoFile.exists() && fileToRename.exists()) {
 			Movie movieReadFromNfo = Movie.createMovieFromNfo(nfoFile);
-			if(movieReadFromNfo != null && movieReadFromNfo.getTitle() != null)
-			{
-				Renamer renamer = new Renamer(MoviescraperPreferences.getRenamerString(), MoviescraperPreferences.getRenamerString(), MoviescraperPreferences.getSanitizerForFilename(), movieReadFromNfo, fileToRename);
-				
+			if (movieReadFromNfo != null && movieReadFromNfo.getTitle() != null) {
+				Renamer renamer = new Renamer(MoviescraperPreferences.getRenamerString(), MoviescraperPreferences.getRenamerString(),
+						MoviescraperPreferences.getSanitizerForFilename(), movieReadFromNfo, fileToRename);
+
 				//Figure out all the new names
-			    File newMovieFilename = new File(renamer.getNewFileName(fileToRename.isDirectory()));
-			    
-			    renamer.setOldFilename(nfoFile);
-			    File newNfoFilename = new File(renamer.getNewFileName(false));
-				
+				File newMovieFilename = new File(renamer.getNewFileName(fileToRename.isDirectory()));
+
+				renamer.setOldFilename(nfoFile);
+				File newNfoFilename = new File(renamer.getNewFileName(false));
+
 				renamer.setOldFilename(posterFile);
 				File newPosterFilename = new File(renamer.getNewFileName(false));
-				
+
 				renamer.setOldFilename(fanartFile);
 				File newFanartFilename = new File(renamer.getNewFileName(false));
-				
+
 				renamer.setOldFilename(trailerFile);
 				File newTrailerFilename = new File(renamer.getNewFileName(false));
-				
+
 				//Do All the Renames
-				if(fileToRename.exists())
-				{
+				if (fileToRename.exists()) {
 					System.out.println("Renaming " + fileToRename.getPath() + " to " + newMovieFilename);
 					fileToRename.renameTo(newMovieFilename);
 				}
-				
-				if(nfoFile.exists())
-				{
+
+				if (nfoFile.exists()) {
 					System.out.println("Renaming " + nfoFile.getPath() + " to " + newNfoFilename);
 					FileUtils.moveFile(nfoFile, newNfoFilename);
 				}
-				
-				if(posterFile.exists())
-				{
+
+				if (posterFile.exists()) {
 					System.out.println("Renaming " + posterFile.getPath() + " to " + newPosterFilename);
 					FileUtils.moveFile(posterFile, newPosterFilename);
 				}
-				
-				if(fanartFile.exists())
-				{
+
+				if (fanartFile.exists()) {
 					System.out.println("Renaming " + fanartFile.getPath() + " to " + newFanartFilename);
 					FileUtils.moveFile(fanartFile, newFanartFilename);
 				}
-				
-				if(trailerFile.exists())
-				{
+
+				if (trailerFile.exists()) {
 					System.out.println("Renaming " + trailerFile.getPath() + " to " + newTrailerFilename);
 					FileUtils.moveFile(trailerFile, newTrailerFilename);
 				}
-				
+
 				//In case of stacked movie files (Movies which are split into multiple files such AS CD1, CD2, etc) get the list of all files
 				//which are part of this movie's stack
 				File currentDirectory = fileToRename.getParentFile();
 				String currentlySelectedMovieFileWihoutStackSuffix = SiteParsingProfile.stripDiscNumber(FilenameUtils.removeExtension(fileToRename.getName()));
-				if(currentDirectory != null)
-				{
+				if (currentDirectory != null) {
 
-					for(File currentFile : currentDirectory.listFiles())
-					{
+					for (File currentFile : currentDirectory.listFiles()) {
 						String currentFileNameWithoutStackSuffix = SiteParsingProfile.stripDiscNumber(FilenameUtils.removeExtension(currentFile.getName()));
-						if(currentFile.isFile() && currentFileNameWithoutStackSuffix.equals(currentlySelectedMovieFileWihoutStackSuffix))
-						{
+						if (currentFile.isFile() && currentFileNameWithoutStackSuffix.equals(currentlySelectedMovieFileWihoutStackSuffix)) {
 							renamer.setOldFilename(currentFile);
 							File newStackedFilename = new File(renamer.getNewFileName(false));
 							System.out.println("Renaming " + currentFile.getPath() + " to " + newStackedFilename);
@@ -269,13 +251,11 @@ public class Renamer {
 					}
 				}
 			}
-		}
-		else if(!nfoFile.exists())
-		{
+		} else if (!nfoFile.exists()) {
 			System.err.println("No scraped nfo file found for: " + fileToRename + "  - skipping rename.");
 		}
 	}
-	
+
 	private String combineGenreList(List<Genre> genres) {
 		String genresString = "";
 		for (int i = 0; i < movie.getGenres().size(); i++) {
@@ -285,7 +265,7 @@ public class Renamer {
 		}
 		return genresString;
 	}
-	
+
 	private String getAppendix() {
 		//TODO: make this method more flexible to check all the possible types of disc names
 		//(I already have a method somewhere else in this project which has a good regular expression to use)
@@ -332,10 +312,10 @@ public class Renamer {
 		hasAppendix = filename.matches(".*CD\\s?14.*");
 		if (hasAppendix)
 			appendix = " CD14";
-                return appendix;
+		return appendix;
 	}
-	
-	private String getPosterFanartTrailerEnder(){
+
+	private String getPosterFanartTrailerEnder() {
 		String fileNameEnder = "";
 		boolean hasFileNameEnder = oldFile.getPath().matches(".*-poster[\\.].+");
 		if (hasFileNameEnder)
@@ -346,32 +326,28 @@ public class Renamer {
 		hasFileNameEnder = oldFile.getPath().matches(".*-fanart[\\.].+");
 		if (hasFileNameEnder)
 			fileNameEnder = "-fanart";
-		
+
 		return fileNameEnder;
 	}
-	
+
 	private String getSanitizedString(String fileName) {
 		final Pattern ILLEGAL_CHARACTERS = Pattern.compile(sanitizer);
 		String sanitizedFileName = ILLEGAL_CHARACTERS.matcher(fileName).replaceAll("").replaceAll("\\s+", " ").trim();
 		return sanitizedFileName;
 	}
-	
-	public static String getAvailableFileTags()
-	{
+
+	public static String getAvailableFileTags() {
 		String tags = "";
-		for (String tag : availableRenameTags)
-		{
-			tags= tags + " " + tag;
+		for (String tag : availableRenameTags) {
+			tags = tags + " " + tag;
 		}
 		return tags.trim();
 	}
-	
-	public static String getAvailableFolderTags()
-	{
+
+	public static String getAvailableFolderTags() {
 		String tags = "";
-		for (String tag : availableFolderRenameTags)
-		{
-			tags= tags + " " + tag;
+		for (String tag : availableFolderRenameTags) {
+			tags = tags + " " + tag;
 		}
 		return tags.trim();
 	}
@@ -383,5 +359,4 @@ public class Renamer {
 	public void setOldFilename(File oldFile) {
 		this.oldFile = oldFile;
 	}
-	
 }

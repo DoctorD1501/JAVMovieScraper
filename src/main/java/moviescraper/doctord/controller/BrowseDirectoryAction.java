@@ -12,6 +12,7 @@ import moviescraper.doctord.view.GUIMain;
 
 public class BrowseDirectoryAction implements ActionListener {
 	private final GUIMain guiMain;
+
 	public BrowseDirectoryAction(GUIMain guiMain) {
 		this.guiMain = guiMain;
 	}
@@ -46,12 +47,10 @@ public class BrowseDirectoryAction implements ActionListener {
 							// display a wait cursor while repopulating the list
 							// as this can sometimes be slow
 							try {
-								myGuiMain.getFrmMoviescraper()
-										.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+								myGuiMain.getFrmMoviescraper().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 								myGuiMain.updateFileListModel(myGuiMain.getCurrentlySelectedDirectoryList(), false);
 							} finally {
-								myGuiMain.getGuiSettings()
-										.setLastUsedDirectory(myGuiMain.getCurrentlySelectedDirectoryList());
+								myGuiMain.getGuiSettings().setLastUsedDirectory(myGuiMain.getCurrentlySelectedDirectoryList());
 								myGuiMain.getFrmMoviescraper().setCursor(Cursor.getDefaultCursor());
 							}
 						}
@@ -61,10 +60,10 @@ public class BrowseDirectoryAction implements ActionListener {
 		});
 
 	}
-	
+
 	private static DirectoryChooser createDirectoryFileChooser() {
 		DirectoryChooser fileChooser = new DirectoryChooser();
-        fileChooser.setTitle("Pick Scraping Directory");
-        return fileChooser;
+		fileChooser.setTitle("Pick Scraping Directory");
+		return fileChooser;
 	}
 }

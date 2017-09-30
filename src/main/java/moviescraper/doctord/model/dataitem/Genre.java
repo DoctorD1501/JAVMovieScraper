@@ -1,7 +1,7 @@
 package moviescraper.doctord.model.dataitem;
 
 public class Genre extends MovieDataItem {
-	
+
 	String genre;
 
 	public Genre(String genre) {
@@ -26,7 +26,6 @@ public class Genre extends MovieDataItem {
 	public void setGenre(String genre) {
 		this.genre = sanitizeString(genre);
 	}
-
 
 	@Override
 	public int hashCode() {
@@ -53,10 +52,8 @@ public class Genre extends MovieDataItem {
 		return true;
 	}
 
-	public Genre(){
+	public Genre() {
 		genre = "";
 	}
-	
-	
 
 }

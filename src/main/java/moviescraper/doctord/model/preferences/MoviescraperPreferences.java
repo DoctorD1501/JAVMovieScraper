@@ -3,9 +3,9 @@ package moviescraper.doctord.model.preferences;
 import moviescraper.doctord.view.FavoriteGenrePickerPanel;
 
 public class MoviescraperPreferences extends Settings {
-	
+
 	private static MoviescraperPreferences INSTANCE;
-	
+
 	enum Key implements Settings.Key {
 		writeFanartAndPosters, //fanart and poster files will be downloaded and then written to disk when writing the movie's metadata.
 		overwriteFanartAndPosters, //overwrites existing fanart and poster files when writing the metadata to disk
@@ -23,7 +23,7 @@ public class MoviescraperPreferences extends Settings {
 		scrapeInJapanese, //For sites that support it, downloaded info will be in Japanese instead of English
 		promptForUserProvidedURLWhenScraping, //Prompt user to manually provide their own url when scraping a file. Useful if search just can't find a file, but the user knows what to use anyways. Not intended to be left on all the time.
 		considerUserSelectionOneURLWhenScraping, //Consider all selected items to be one 'movie'.  To keep from being prompted for each CD/Scene
-		isFirstWordOfFileID, //Usually the scraper expects the last word of the file to be the ID. This option if enabled will instead look at the first word. 
+		isFirstWordOfFileID, //Usually the scraper expects the last word of the file to be the ID. This option if enabled will instead look at the first word.
 		appendIDToStartOfTitle, //Scraped ID will be put as the first word of the title if enabled. Useful for people who like to keep releases from the same company alphabetically together.
 		useFilenameAsTitle, //Filename will be writen to the title field of the nfo file instead of using the scraped result
 		selectArtManuallyWhenScraping, //Confirmation dialog to allow user to select art will be shown. If false, art is still picked, but it will be automatically chosen.
@@ -39,17 +39,15 @@ public class MoviescraperPreferences extends Settings {
 			return "Preferences:" + toString();
 		}
 	}
-	
-	private MoviescraperPreferences(){
-		
+
+	private MoviescraperPreferences() {
+
 		//initialize default values that must exist in the settings file
 
 	}
-	
-	public static synchronized MoviescraperPreferences getInstance()
-	{
-		if(INSTANCE == null)
-		{
+
+	public static synchronized MoviescraperPreferences getInstance() {
+		if (INSTANCE == null) {
 			INSTANCE = new MoviescraperPreferences();
 			INSTANCE.setSanitizerForFilename(getSanitizerForFilename());
 			INSTANCE.setRenamerString(getRenamerString());
@@ -57,29 +55,23 @@ public class MoviescraperPreferences extends Settings {
 		return INSTANCE;
 	}
 
-
-	public void setOverWriteFanartAndPostersPreference(Boolean preferenceValue){
+	public void setOverWriteFanartAndPostersPreference(Boolean preferenceValue) {
 		setBooleanValue(Key.overwriteFanartAndPosters, preferenceValue);
 	}
 
-	public Boolean getOverWriteFanartAndPostersPreference()
-	{
+	public Boolean getOverWriteFanartAndPostersPreference() {
 		return getBooleanValue(Key.overwriteFanartAndPosters, Boolean.TRUE);
 	}
 
-	public void setWriteFanartAndPostersPreference(Boolean preferenceValue){
+	public void setWriteFanartAndPostersPreference(Boolean preferenceValue) {
 		setBooleanValue(Key.writeFanartAndPosters, preferenceValue);
 	}
 
-
-
-	public void setDownloadActorImagesToActorFolderPreference(Boolean preferenceValue)
-	{
+	public void setDownloadActorImagesToActorFolderPreference(Boolean preferenceValue) {
 		setBooleanValue(Key.downloadActorImagesToActorFolder, preferenceValue);
 	}
 
-	public Boolean getDownloadActorImagesToActorFolderPreference()
-	{
+	public Boolean getDownloadActorImagesToActorFolderPreference() {
 		return getBooleanValue(Key.downloadActorImagesToActorFolder, true);
 	}
 
@@ -91,7 +83,7 @@ public class MoviescraperPreferences extends Settings {
 		return getBooleanValue(Key.extraFanartScrapingEnabled, false);
 	}
 
-	public void setExtraFanartScrapingEnabledPreference(Boolean preferenceValue){
+	public void setExtraFanartScrapingEnabledPreference(Boolean preferenceValue) {
 		setBooleanValue(Key.extraFanartScrapingEnabled, preferenceValue);
 	}
 
@@ -104,27 +96,27 @@ public class MoviescraperPreferences extends Settings {
 		return getBooleanValue(Key.createFolderJpg, false);
 	}
 
-	public Boolean getNoMovieNameInImageFiles(){
+	public Boolean getNoMovieNameInImageFiles() {
 		return getBooleanValue(Key.noMovieNameInImageFiles, Boolean.FALSE);
 	}
 
-	public void setNoMovieNameInImageFiles(Boolean preferenceValue){
+	public void setNoMovieNameInImageFiles(Boolean preferenceValue) {
 		setBooleanValue(Key.noMovieNameInImageFiles, preferenceValue);
 	}
 
-	public Boolean getWriteTrailerToFile(){
+	public Boolean getWriteTrailerToFile() {
 		return getBooleanValue(Key.writeTrailerToFile, Boolean.FALSE);
 	}
 
-	public void setWriteTrailerToFile(Boolean preferenceValue){
+	public void setWriteTrailerToFile(Boolean preferenceValue) {
 		setBooleanValue(Key.writeTrailerToFile, preferenceValue);
 	}
 
-	public Boolean getNfoNamedMovieDotNfo(){
+	public Boolean getNfoNamedMovieDotNfo() {
 		return getBooleanValue(Key.nfoNamedMovieDotNfo, Boolean.FALSE);
 	}
 
-	public void setNfoNamedMovieDotNfo(Boolean preferenceValue){
+	public void setNfoNamedMovieDotNfo(Boolean preferenceValue) {
 		setBooleanValue(Key.nfoNamedMovieDotNfo, preferenceValue);
 	}
 
@@ -151,11 +143,11 @@ public class MoviescraperPreferences extends Settings {
 	public void setRenamerString(String preferenceValue) {
 		setStringValue(Key.renamerString, preferenceValue);
 	}
-	
+
 	public static String getFolderRenamerString() {
 		return getStringValue(Key.folderRenamerString, "<BASEDIRECTORY><PATHSEPERATOR>");
 	}
-	
+
 	public void setFolderRenamerString(String preferenceValue) {
 		setStringValue(Key.folderRenamerString, preferenceValue);
 	}
@@ -168,111 +160,99 @@ public class MoviescraperPreferences extends Settings {
 		setBooleanValue(Key.renameMovieFile, preferenceValue);
 	}
 
-	public Boolean getScrapeInJapanese(){
+	public Boolean getScrapeInJapanese() {
 		return getBooleanValue(Key.scrapeInJapanese, Boolean.FALSE);
 	}
 
-	public void setScrapeInJapanese(Boolean preferenceValue){
+	public void setScrapeInJapanese(Boolean preferenceValue) {
 		setBooleanValue(Key.scrapeInJapanese, preferenceValue);
 	}
-	
-	public Boolean getPromptForUserProvidedURLWhenScraping(){
+
+	public Boolean getPromptForUserProvidedURLWhenScraping() {
 		return getBooleanValue(Key.promptForUserProvidedURLWhenScraping, Boolean.FALSE);
 	}
 
-	public void setPromptForUserProvidedURLWhenScraping(Boolean preferenceValue){
+	public void setPromptForUserProvidedURLWhenScraping(Boolean preferenceValue) {
 		setBooleanValue(Key.promptForUserProvidedURLWhenScraping, preferenceValue);
 	}
 
-        public Boolean getConsiderUserSelectionOneURLWhenScraping(){
+	public Boolean getConsiderUserSelectionOneURLWhenScraping() {
 		return getBooleanValue(Key.considerUserSelectionOneURLWhenScraping, Boolean.FALSE);
 	}
 
-	public void setConsiderUserSelectionOneURLWhenScraping(Boolean preferenceValue){
+	public void setConsiderUserSelectionOneURLWhenScraping(Boolean preferenceValue) {
 		setBooleanValue(Key.considerUserSelectionOneURLWhenScraping, preferenceValue);
 	}
-	
-	public Boolean getIsFirstWordOfFileID(){
+
+	public Boolean getIsFirstWordOfFileID() {
 		return getBooleanValue(Key.isFirstWordOfFileID, Boolean.FALSE);
 	}
-	
-	public void setIsFirstWordOfFileID(Boolean preferenceValue){
+
+	public void setIsFirstWordOfFileID(Boolean preferenceValue) {
 		setBooleanValue(Key.isFirstWordOfFileID, preferenceValue);
 	}
-	
-	public Boolean getAppendIDToStartOfTitle(){
+
+	public Boolean getAppendIDToStartOfTitle() {
 		return getBooleanValue(Key.appendIDToStartOfTitle, Boolean.FALSE);
 	}
-	
-	public void setAppendIDToStartOfTitle(Boolean preferenceValue){
+
+	public void setAppendIDToStartOfTitle(Boolean preferenceValue) {
 		setBooleanValue(Key.appendIDToStartOfTitle, preferenceValue);
 	}
-	
-	public Boolean getUseFileNameAsTitle(){
+
+	public Boolean getUseFileNameAsTitle() {
 		return getBooleanValue(Key.useFilenameAsTitle, Boolean.FALSE);
 	}
-	
-	public void setUseFileNameAsTitle(Boolean preferenceValue){
+
+	public void setUseFileNameAsTitle(Boolean preferenceValue) {
 		setBooleanValue(Key.useFilenameAsTitle, preferenceValue);
 	}
-	
-	public Boolean getSelectArtManuallyWhenScraping()
-	{
+
+	public Boolean getSelectArtManuallyWhenScraping() {
 		return getBooleanValue(Key.selectArtManuallyWhenScraping, Boolean.TRUE);
 	}
-	
-	public void setSelectArtManuallyWhenScraping(Boolean preferenceValue)
-	{
+
+	public void setSelectArtManuallyWhenScraping(Boolean preferenceValue) {
 		setBooleanValue(Key.selectArtManuallyWhenScraping, preferenceValue);
 	}
-	
-	public Boolean getSelectSearchResultManuallyWhenScraping()
-	{
+
+	public Boolean getSelectSearchResultManuallyWhenScraping() {
 		return getBooleanValue(Key.selectSearchResultManuallyWhenScraping, Boolean.FALSE);
 	}
-	
-	public void setSelectSearchResultManuallyWhenScraping(Boolean preferenceValue)
-	{
+
+	public void setSelectSearchResultManuallyWhenScraping(Boolean preferenceValue) {
 		setBooleanValue(Key.selectSearchResultManuallyWhenScraping, preferenceValue);
 	}
-	
-	public Boolean getConfirmCleanUpFileNameNameBeforeRenaming()
-	{
+
+	public Boolean getConfirmCleanUpFileNameNameBeforeRenaming() {
 		return getBooleanValue(Key.confirmCleanUpFileNameNameBeforeRenaming, Boolean.TRUE);
 	}
-	
-	public void setConfirmCleanUpFileNameNameBeforeRenaming(Boolean preferenceValue)
-	{
+
+	public void setConfirmCleanUpFileNameNameBeforeRenaming(Boolean preferenceValue) {
 		setBooleanValue(Key.confirmCleanUpFileNameNameBeforeRenaming, preferenceValue);
 	}
-	
-	public String getfrequentlyUsedGenres()
-	{
-		return getStringValue(Key.frequentlyUsedGenres, "Adult" + FavoriteGenrePickerPanel.listSeperator +  "JAV");
+
+	public String getfrequentlyUsedGenres() {
+		return getStringValue(Key.frequentlyUsedGenres, "Adult" + FavoriteGenrePickerPanel.listSeperator + "JAV");
 	}
-	
-	public void setFrequentlyUsedGenres(String value)
-	{
+
+	public void setFrequentlyUsedGenres(String value) {
 		setStringValue(Key.frequentlyUsedGenres, value);
 	}
-	
-	public String getfrequentlyUsedTags()
-	{
+
+	public String getfrequentlyUsedTags() {
 		return getStringValue(Key.frequentlyUsedTags, "Feature");
 	}
-	
-	public void setFrequentlyUsedTags(String value)
-	{
+
+	public void setFrequentlyUsedTags(String value) {
 		setStringValue(Key.frequentlyUsedTags, value);
 	}
-	
-	public Boolean getWriteThumbTagsForPosterAndFanartToNfo()
-	{
+
+	public Boolean getWriteThumbTagsForPosterAndFanartToNfo() {
 		return getBooleanValue(Key.writeThumbTagsForPosterAndFanartToNfo, true);
 	}
-	
-	public void setWriteThumbTagsForPosterAndFanartToNfo(Boolean preferenceValue)
-	{
+
+	public void setWriteThumbTagsForPosterAndFanartToNfo(Boolean preferenceValue) {
 		setBooleanValue(Key.writeThumbTagsForPosterAndFanartToNfo, preferenceValue);
 	}
 }

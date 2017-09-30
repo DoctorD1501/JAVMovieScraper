@@ -26,47 +26,35 @@ public class FileNameCleanupAction implements ActionListener {
 		System.out.println("Files selected = " + filesSelected);
 		try {
 			WebReleaseRenamer webReleaseRenamer = new WebReleaseRenamer();
-			for(File currentFile : filesSelected)
-			{
+			for (File currentFile : filesSelected) {
 				System.out.println("currentFile = " + currentFile);
 				System.out.println("currentFileRenamer = " + webReleaseRenamer.getCleanName(currentFile.getName()));
 				System.out.println("I want to rename to " + webReleaseRenamer.newFileName(currentFile));
 				File newFileName = webReleaseRenamer.newFileName(currentFile);
-				if(currentFile.getName().equals(newFileName.getName()))
-				{
+				if (currentFile.getName().equals(newFileName.getName())) {
 					System.out.println("New file and old file are the same. No rename necessary.");
-				}
-				else if(guiMain != null && MoviescraperPreferences.getInstance().getConfirmCleanUpFileNameNameBeforeRenaming())
-				{
-					int optionPicked = JOptionPane.showConfirmDialog(
-							guiMain.getFrmMoviescraper(),
-							"<html>Rename <b>" + currentFile + "</b><br> to <b>" + newFileName + "</b> ?</html>",
-							"Confirm Rename",
-							JOptionPane.YES_NO_OPTION);
+				} else if (guiMain != null && MoviescraperPreferences.getInstance().getConfirmCleanUpFileNameNameBeforeRenaming()) {
+					int optionPicked = JOptionPane.showConfirmDialog(guiMain.getFrmMoviescraper(),
+							"<html>Rename <b>" + currentFile + "</b><br> to <b>" + newFileName + "</b> ?</html>", "Confirm Rename", JOptionPane.YES_NO_OPTION);
 
-					if(optionPicked == JOptionPane.YES_OPTION)
-					{
+					if (optionPicked == JOptionPane.YES_OPTION) {
 						boolean renameStatus = currentFile.renameTo(newFileName);
-						if(renameStatus != true)
+						if (renameStatus != true)
 							System.err.println("Rename failed! Perhaps a file name already exists with that name?");
 					}
-				}
-				else
-				{
+				} else {
 					boolean renameStatus = currentFile.renameTo(newFileName);
-					if(renameStatus != true)
+					if (renameStatus != true)
 						System.err.println("Rename failed! Perhaps a file name already exists with that name?");
-				}	
+				}
 			}
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		finally{
+		} finally {
 			guiMain.updateFileListModel(guiMain.getCurrentlySelectedDirectoryList(), false);
 		}
-
 
 	}
 

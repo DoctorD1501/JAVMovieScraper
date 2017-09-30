@@ -39,13 +39,13 @@ import moviescraper.doctord.model.dataitem.Votes;
 import moviescraper.doctord.model.dataitem.Year;
 
 public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON implements SpecificProfile {
-	
+
 	//include adult results when searching
 	private boolean includeAdult = true;
 	//change this to false to get non adult movies in the search results
 	//that might be useful as a future preference value
 	//includeAdult also must be true for adult results to be returned
-	private boolean onlyReturnAdultResults = true; 
+	private boolean onlyReturnAdultResults = true;
 	//This is Kodi's key - hopefully this is OK to use as I'm scraping Kodi data...
 	private final String tmdbKey = "f7f51775877e0bb6703520952b3c7840";
 	private final String movieImagePathPrefix = "https://image.tmdb.org/t/p/original";
@@ -53,20 +53,16 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 	private final String movieImageFanartThumbnailPathPrefix = "https://image.tmdb.org/t/p/w300";
 	private final String movieImagePosterThumbnailPathPrefix = "https://image.tmdb.org/t/p/w185";
 	private JSONObject movieJSON;
-	
+
 	@Override
-	public List<ScraperGroupName> getScraperGroupNames()
-	{
-		if(groupNames == null)
+	public List<ScraperGroupName> getScraperGroupNames() {
+		if (groupNames == null)
 			groupNames = Arrays.asList(ScraperGroupName.AMERICAN_ADULT_DVD_SCRAPER_GROUP);
 		return groupNames;
 	}
-	
-	
-	private JSONObject getMovieJSON()
-	{
-		if(movieJSON == null && document != null)
-		{
+
+	private JSONObject getMovieJSON() {
+		if (movieJSON == null && document != null) {
 			try {
 				movieJSON = getJSONObjectFromURL(document.location());
 				return movieJSON;
@@ -76,15 +72,14 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 		}
 		return movieJSON;
 	}
-	
+
 	@Override
 	public Title scrapeTitle() {
 		JSONObject pageJSON = getMovieJSON();
-		if(pageJSON != null)
-		{
+		if (pageJSON != null) {
 			try {
 				String titleString = pageJSON.getString("title");
-				if(titleString != null)
+				if (titleString != null)
 					return new Title(titleString);
 			} catch (JSONException e) {
 				e.printStackTrace();
@@ -96,11 +91,10 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 	@Override
 	public OriginalTitle scrapeOriginalTitle() {
 		JSONObject pageJSON = getMovieJSON();
-		if(pageJSON != null)
-		{
+		if (pageJSON != null) {
 			try {
 				String originalTitleString = pageJSON.getString("original_title");
-				if(originalTitleString != null)
+				if (originalTitleString != null)
 					return new OriginalTitle(originalTitleString);
 			} catch (JSONException e) {
 				e.printStackTrace();
@@ -117,14 +111,12 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 	@Override
 	public Set scrapeSet() {
 		JSONObject pageJSON = getMovieJSON();
-		if(pageJSON != null)
-		{
+		if (pageJSON != null) {
 			try {
 				JSONObject collectionJSON = pageJSON.getJSONObject("belongs_to_collection");
-				if(collectionJSON != null)
-				{
+				if (collectionJSON != null) {
 					String setName = collectionJSON.getString("name");
-					if(setName != null)
+					if (setName != null)
 						return new Set(setName);
 				}
 			} catch (JSONException e) {
@@ -137,11 +129,10 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 	@Override
 	public Rating scrapeRating() {
 		JSONObject pageJSON = getMovieJSON();
-		if(pageJSON != null)
-		{
+		if (pageJSON != null) {
 			try {
 				double originalTitleString = pageJSON.getDouble("vote_average");
-				return new Rating(10.0,new Double(originalTitleString).toString());
+				return new Rating(10.0, new Double(originalTitleString).toString());
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
@@ -153,15 +144,14 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 	public Year scrapeYear() {
 		return scrapeReleaseDate().getYear();
 	}
-	
+
 	@Override
 	public ReleaseDate scrapeReleaseDate() {
 		JSONObject pageJSON = getMovieJSON();
-		if(pageJSON != null)
-		{
+		if (pageJSON != null) {
 			try {
 				String releaseDate = pageJSON.getString("release_date");
-				if(releaseDate != null && releaseDate.length() > 4)
+				if (releaseDate != null && releaseDate.length() > 4)
 					return new ReleaseDate(releaseDate);
 			} catch (JSONException e) {
 				e.printStackTrace();
@@ -178,11 +168,10 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 	@Override
 	public Votes scrapeVotes() {
 		JSONObject pageJSON = getMovieJSON();
-		if(pageJSON != null)
-		{
+		if (pageJSON != null) {
 			try {
 				int idString = pageJSON.getInt("vote_count");
-				if(idString >= 0)
+				if (idString >= 0)
 					return new Votes(new Integer(idString).toString());
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
@@ -200,11 +189,10 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 	@Override
 	public Plot scrapePlot() {
 		JSONObject pageJSON = getMovieJSON();
-		if(pageJSON != null)
-		{
+		if (pageJSON != null) {
 			try {
 				String overview = pageJSON.getString("overview");
-				if(overview != null)
+				if (overview != null)
 					return new Plot(overview);
 			} catch (JSONException e) {
 				e.printStackTrace();
@@ -216,11 +204,10 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 	@Override
 	public Tagline scrapeTagline() {
 		JSONObject pageJSON = getMovieJSON();
-		if(pageJSON != null)
-		{
+		if (pageJSON != null) {
 			try {
 				String taglineString = pageJSON.getString("tagline");
-				if(taglineString != null)
+				if (taglineString != null)
 					return new Tagline(taglineString);
 			} catch (JSONException e) {
 				e.printStackTrace();
@@ -232,11 +219,10 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 	@Override
 	public Runtime scrapeRuntime() {
 		JSONObject pageJSON = getMovieJSON();
-		if(pageJSON != null)
-		{
+		if (pageJSON != null) {
 			try {
 				int runtimeString = pageJSON.getInt("runtime");
-				if(runtimeString > 0)
+				if (runtimeString > 0)
 					return new Runtime(new Integer(runtimeString).toString());
 			} catch (JSONException e) {
 				e.printStackTrace();
@@ -244,23 +230,18 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 		}
 		return Runtime.BLANK_RUNTIME;
 	}
-	
-	private Thumb[] scrapePostersAndFanart(String arrayName, String previewPrefix)
-	{
+
+	private Thumb[] scrapePostersAndFanart(String arrayName, String previewPrefix) {
 		JSONObject pageJSON = getMovieJSON();
-		if(pageJSON != null)
-		{
+		if (pageJSON != null) {
 			try {
 				JSONObject imageJSON = pageJSON.getJSONObject("images");
 				JSONArray posterArrays = imageJSON.getJSONArray(arrayName);
-				if(posterArrays != null)
-				{
-					Thumb [] thumbArray = new Thumb[posterArrays.length()];
-					for(int i = 0; i < posterArrays.length(); i++)
-					{
+				if (posterArrays != null) {
+					Thumb[] thumbArray = new Thumb[posterArrays.length()];
+					for (int i = 0; i < posterArrays.length(); i++) {
 						JSONObject posterOrBackdropObject = posterArrays.getJSONObject(i);
-						if(posterOrBackdropObject != null)
-						{
+						if (posterOrBackdropObject != null) {
 							String filePath = posterOrBackdropObject.getString("file_path");
 							Thumb thumbToAdd = new Thumb(movieImagePathPrefix + filePath);
 							thumbToAdd.setPreviewURL(new URL(previewPrefix + filePath));
@@ -275,12 +256,11 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 		}
 		return new Thumb[0];
 	}
-	
+
 	@Override
 	public Thumb[] scrapePosters() {
 		return scrapePostersAndFanart("posters", movieImagePosterThumbnailPathPrefix);
 	}
-
 
 	@Override
 	public Thumb[] scrapeFanart() {
@@ -301,11 +281,10 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 	@Override
 	public ID scrapeID() {
 		JSONObject pageJSON = getMovieJSON();
-		if(pageJSON != null)
-		{
+		if (pageJSON != null) {
 			try {
 				int idString = pageJSON.getInt("id");
-				if(idString >= 0)
+				if (idString >= 0)
 					return new ID(new Integer(idString).toString());
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
@@ -321,16 +300,13 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 		//I'm leaving keywords out for now but may revist them at a later date
 		ArrayList<Genre> genreList = new ArrayList<>();
 		JSONObject pageJSON = getMovieJSON();
-		if(pageJSON != null)
-		{
+		if (pageJSON != null) {
 			try {
 				JSONArray genreJSON = pageJSON.getJSONArray("genres");
-				if(genreJSON != null)
-				{
-					for(int i = 0; i < genreJSON.length(); i++)
-					{
+				if (genreJSON != null) {
+					for (int i = 0; i < genreJSON.length(); i++) {
 						String genreName = genreJSON.getJSONObject(i).getString("name");
-						if(genreName != null)
+						if (genreName != null)
 							genreList.add(new Genre(genreName));
 					}
 				}
@@ -345,44 +321,35 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 	public ArrayList<Actor> scrapeActors() {
 		ArrayList<Actor> actorList = new ArrayList<>();
 		JSONObject pageJSON = getMovieJSON();
-		if(pageJSON != null)
-		{
-				try {
-					JSONObject creditsJSON = pageJSON.getJSONObject("credits");
-					if(creditsJSON != null)
-					{
-						JSONArray castArray = creditsJSON.getJSONArray("cast");
-						if(castArray != null)
-						{
-							for(int i = 0; i < castArray.length(); i++)
-							{
-								String actorName = castArray.getJSONObject(i).getString("name");
-								String actorRole = castArray.getJSONObject(i).getString("character");
-								String thumbPath = "";
-								try
-								{
-									thumbPath = castArray.getJSONObject(i).getString("profile_path");
-								}
-								catch(JSONException e)
-								{
-									//we don't care if there wasn't a thumbnail path, ignore the error
-								}
-								if(thumbPath != null && thumbPath.length() > 0)
-								{
-									try {
-										actorList.add(new Actor(actorName, actorRole, new Thumb(movieImagePathPrefix + thumbPath)));
-									} catch (MalformedURLException e) {
-										actorList.add(new Actor(actorName, actorRole, null));
-									}
-								}
-								else
-									actorList.add(new Actor(actorName, actorRole, null));
+		if (pageJSON != null) {
+			try {
+				JSONObject creditsJSON = pageJSON.getJSONObject("credits");
+				if (creditsJSON != null) {
+					JSONArray castArray = creditsJSON.getJSONArray("cast");
+					if (castArray != null) {
+						for (int i = 0; i < castArray.length(); i++) {
+							String actorName = castArray.getJSONObject(i).getString("name");
+							String actorRole = castArray.getJSONObject(i).getString("character");
+							String thumbPath = "";
+							try {
+								thumbPath = castArray.getJSONObject(i).getString("profile_path");
+							} catch (JSONException e) {
+								//we don't care if there wasn't a thumbnail path, ignore the error
 							}
+							if (thumbPath != null && thumbPath.length() > 0) {
+								try {
+									actorList.add(new Actor(actorName, actorRole, new Thumb(movieImagePathPrefix + thumbPath)));
+								} catch (MalformedURLException e) {
+									actorList.add(new Actor(actorName, actorRole, null));
+								}
+							} else
+								actorList.add(new Actor(actorName, actorRole, null));
 						}
 					}
-				} catch (JSONException e) {
-					e.printStackTrace();
 				}
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
 		}
 		return actorList;
 	}
@@ -391,27 +358,23 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 	public ArrayList<Director> scrapeDirectors() {
 		ArrayList<Director> directorList = new ArrayList<>();
 		JSONObject pageJSON = getMovieJSON();
-		if(pageJSON != null)
-		{
-				try {
-					JSONObject creditsJSON = pageJSON.getJSONObject("credits");
-					if(creditsJSON != null)
-					{
-						JSONArray crewArray = creditsJSON.getJSONArray("crew");
-						if(crewArray != null)
-						{
-							for(int i = 0; i < crewArray.length(); i++)
-							{
-								String personName = crewArray.getJSONObject(i).getString("name");
-								String job = crewArray.getJSONObject(i).getString("job");
-								if(job != null && job.equals("Director"))
-									directorList.add(new Director(personName, null));
-							}
+		if (pageJSON != null) {
+			try {
+				JSONObject creditsJSON = pageJSON.getJSONObject("credits");
+				if (creditsJSON != null) {
+					JSONArray crewArray = creditsJSON.getJSONArray("crew");
+					if (crewArray != null) {
+						for (int i = 0; i < crewArray.length(); i++) {
+							String personName = crewArray.getJSONObject(i).getString("name");
+							String job = crewArray.getJSONObject(i).getString("job");
+							if (job != null && job.equals("Director"))
+								directorList.add(new Director(personName, null));
 						}
 					}
-				} catch (JSONException e) {
-					e.printStackTrace();
 				}
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
 		}
 		return directorList;
 	}
@@ -419,17 +382,14 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 	@Override
 	public Studio scrapeStudio() {
 		JSONObject pageJSON = getMovieJSON();
-		if(pageJSON != null)
-		{
+		if (pageJSON != null) {
 			try {
 				JSONArray productionCompaniesJSON = pageJSON.getJSONArray("production_companies");
-				if(productionCompaniesJSON != null)
-				{
-					for(int i = 0; i < productionCompaniesJSON.length(); i++)
-					{
+				if (productionCompaniesJSON != null) {
+					for (int i = 0; i < productionCompaniesJSON.length(); i++) {
 						//Just return the first studio for now if we find multiple studios
 						String studioName = productionCompaniesJSON.getJSONObject(i).getString("name");
-						if(studioName != null)
+						if (studioName != null)
 							return new Studio(studioName);
 					}
 				}
@@ -444,51 +404,47 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 	public String createSearchString(File file) {
 		scrapedMovieFile = file;
 		URLCodec codec = new URLCodec();
-			try {
-				String movieName = getMovieNameFromFileWithYear(file);
-				String year = getYearFromFileWithYear(file);
-				String fileNameURLEncoded = codec.encode(movieName);
-				String includeAdultParameter = "";
-				if(includeAdult)
-					includeAdultParameter = "&include_adult=true";
-				if(year != null && year.length() == 4)
-				{
-					return "http://api.themoviedb.org/3/search/movie?api_key=" + tmdbKey + includeAdultParameter + "&query=" + fileNameURLEncoded + "&year="+year;
-				}
-				else return "http://api.themoviedb.org/3/search/movie?api_key=" + tmdbKey + includeAdultParameter + "&query=" + fileNameURLEncoded;
-			} catch (EncoderException e) {
-				e.printStackTrace();
-			}
+		try {
+			String movieName = getMovieNameFromFileWithYear(file);
+			String year = getYearFromFileWithYear(file);
+			String fileNameURLEncoded = codec.encode(movieName);
+			String includeAdultParameter = "";
+			if (includeAdult)
+				includeAdultParameter = "&include_adult=true";
+			if (year != null && year.length() == 4) {
+				return "http://api.themoviedb.org/3/search/movie?api_key=" + tmdbKey + includeAdultParameter + "&query=" + fileNameURLEncoded + "&year=" + year;
+			} else
+				return "http://api.themoviedb.org/3/search/movie?api_key=" + tmdbKey + includeAdultParameter + "&query=" + fileNameURLEncoded;
+		} catch (EncoderException e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 
 	@Override
-	public SearchResult[] getSearchResults(String searchString)
-			throws IOException {
-		if(searchString == null)
+	public SearchResult[] getSearchResults(String searchString) throws IOException {
+		if (searchString == null)
 			return new SearchResult[0];
 		try {
 			JSONObject searchResultPageJSON = getJSONObjectFromURL(searchString);
 			JSONArray resultsArray = searchResultPageJSON.getJSONArray("results");
 			ArrayList<SearchResult> searchResults = new ArrayList<>();
-			for(int i = 0; i < resultsArray.length(); i++)
-			{
+			for (int i = 0; i < resultsArray.length(); i++) {
 				JSONObject currentSearchResult = resultsArray.getJSONObject(i);
 				int movieID = currentSearchResult.getInt("id");
 				String movieTitle = currentSearchResult.getString("title");
 				String posterPath = movieImageThumbnailPathPrefix + currentSearchResult.get("poster_path");
 				boolean isAdultMovie = currentSearchResult.getBoolean("adult");
-				if(isAdultMovie || !onlyReturnAdultResults)
-				{
+				if (isAdultMovie || !onlyReturnAdultResults) {
 					SearchResult searchResultToAdd;
-					if(posterPath.length() > 0)
+					if (posterPath.length() > 0)
 						searchResultToAdd = new SearchResult(getAPIURLPathFromMovieID(movieID), movieTitle, new Thumb(posterPath));
 					else
 						searchResultToAdd = new SearchResult(getAPIURLPathFromMovieID(movieID), movieTitle);
 					searchResultToAdd.setJSONSearchResult(true);
 					searchResults.add(searchResultToAdd);
 				}
-				
+
 			}
 			return searchResults.toArray(new SearchResult[searchResults.size()]);
 		} catch (JSONException e) {
@@ -496,10 +452,9 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 		}
 		return new SearchResult[0];
 	}
-	
-	private String getAPIURLPathFromMovieID(int movieID){
-		return "http://api.themoviedb.org/3/movie/" + movieID + 
-				"?api_key=" + tmdbKey + "&append_to_response=images,credits,keywords";
+
+	private String getAPIURLPathFromMovieID(int movieID) {
+		return "http://api.themoviedb.org/3/movie/" + movieID + "?api_key=" + tmdbKey + "&append_to_response=images,credits,keywords";
 	}
 
 	@Override
