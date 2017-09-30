@@ -27,30 +27,37 @@ public class WindowBlocker extends JComponent implements MouseInputListener {
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
+		// You must beave this empty
 	}
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
+		// You must beave this empty
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
+		// You must beave this empty
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
+		// You must beave this empty
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
+		// You must beave this empty
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
+		// You must beave this empty
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
+		// You must beave this empty
 	}
 
 	public void block() {

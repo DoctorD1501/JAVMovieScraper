@@ -9,7 +9,9 @@ import java.net.URISyntaxException;
 
 public class BrowseUriAction implements ActionListener {
 
-	String uri;
+	public static final String MainWebsiteUri = "https://github.com/DoctorD1501/JAVMovieScraper";
+	public static final String ReportBugUri = "https://github.com/DoctorD1501/JAVMovieScraper/issues?q=label%3Abug";
+	private String uri;
 
 	public BrowseUriAction(String uri) {
 		this.uri = uri;
@@ -24,6 +26,4 @@ public class BrowseUriAction implements ActionListener {
 		}
 	}
 
-	public static final String MainWebsiteUri = "https://github.com/DoctorD1501/JAVMovieScraper";
-	public static final String ReportBugUri = "https://github.com/DoctorD1501/JAVMovieScraper/issues?q=label%3Abug";
 }
