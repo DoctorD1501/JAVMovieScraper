@@ -336,8 +336,8 @@ public class OnePondoParsingProfile extends SiteParsingProfile implements Specif
 		fileID = fileID.toLowerCase();
 
 		if (fileID != null) {
-			englishPage = "http://en.1pondo.tv/eng/moviepages/" + fileID + "/index.htm";
-			japanesePage = "http://www.1pondo.tv/moviepages/" + fileID + "/index.html";
+			englishPage = "http://en.1pondo.tv/movies/" + fileID + "/";
+			japanesePage = "http://www.1pondo.tv/movies/" + fileID + "/";
 			if (scrapingLanguage == Language.ENGLISH) {
 				return englishPage;
 			} else {
