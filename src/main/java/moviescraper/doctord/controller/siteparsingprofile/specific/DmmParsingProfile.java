@@ -288,7 +288,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 
 		// the movie poster, on this site it usually has both front and back
 		// cover joined in one image
-		Element postersElement = document.select("a[href^=http://pics.dmm.co.jp][name=package-image], div#sample-video img[src*=/pics.dmm.co.jp]").first();
+		Element postersElement = document.select("a[name=package-image], div#sample-video img[src*=/pics.dmm.co.jp]").first();
 		// the extra screenshots for this movie. It's just the thumbnail as the
 		// actual url requires javascript to find.
 		// We can do some string manipulation on the thumbnail URL to get the
