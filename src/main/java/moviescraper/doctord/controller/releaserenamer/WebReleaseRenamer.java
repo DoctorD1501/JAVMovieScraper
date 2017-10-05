@@ -70,11 +70,11 @@ public class WebReleaseRenamer extends ReleaseRenamer {
 	}
 
 	public List<CSVRecord> readWordsToRemoveFromCSV() throws IOException {
-		return readFromCSVFile("/moviescraper/doctord/controller/releaserenamer/WordsToRemove.csv");
+		return readFromCSVFile("/res/releaserenamer/WordsToRemove.csv");
 	}
 
 	public List<CSVRecord> readSiteNamesToReplaceFromCSV() throws IOException {
-		return readFromCSVFile("/moviescraper/doctord/controller/releaserenamer/SiteNameAbbreviations.csv");
+		return readFromCSVFile("/res/releaserenamer/SiteNameAbbreviations.csv");
 	}
 
 	public List<CSVRecord> readFromCSVFile(String filePath) throws IOException {
