@@ -109,6 +109,8 @@ public class ScrapeAmalgamatedMovieWorker extends SwingWorker<Void, Map<SitePars
 
 	@Override
 	protected Void doInBackground() {
+		int numberOfScrapes = 0;
+		int progressAmountPerWorker;
 
 		setProgress(0);
 		//failIfInterrupted();
@@ -121,13 +123,17 @@ public class ScrapeAmalgamatedMovieWorker extends SwingWorker<Void, Map<SitePars
 
 		LinkedList<DataItemSource> scraperList = scraperGroupAmalgamationPreference.getOverallAmalgamationPreference().getAmalgamationPreferenceOrder();
 		//calculate progress amount per worker
-		int numberOfScrapes = 0;
+
 		for (DataItemSource currentScraper : scraperList) {
 			if (shouldScrapeThread(currentScraper) && currentScraper instanceof SiteParsingProfile)
 				numberOfScrapes++;
 		}
 
-		int progressAmountPerWorker = 100 / numberOfScrapes;
+		if (numberOfScrapes == 0) {
+			progressAmountPerWorker = 100;
+		} else {
+			progressAmountPerWorker = 100 / numberOfScrapes;
+		}
 
 		for (DataItemSource currentScraper : scraperList) {
 			//We don't want to read any leftover properties from our JSON - we want to start fresh so things like scraping language do not get set in our scraper
