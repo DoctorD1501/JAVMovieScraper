@@ -37,6 +37,64 @@ public class Thumb extends MovieDataItem {
 	private boolean needToReloadThumbImage = false;
 	private boolean needToReloadPreviewImage = false;
 
+	public Thumb(URL thumbURL) {
+		//Delay the call to actually reading in the thumbImage until it is needed
+		this.thumbURL = thumbURL;
+		isImageModified = false;
+		needToReloadThumbImage = true;
+	}
+
+	public Thumb(String url, boolean useJavCoverCropRoutine) throws IOException {
+
+		thumbURL = new URL(url);
+		BufferedImage tempImage = (BufferedImage) ImageCache.getImageFromCache(thumbURL, false, referrerURL); //get the unmodified, uncropped image
+		//just get the jpg from the url
+		String filename = fileNameFromURL(url);
+		//routine adapted from pythoncovercrop.py
+		if (useJavCoverCropRoutine) {
+			tempImage = doJavCoverCropRoutine(tempImage, filename);
+			this.isImageModified = true;
+			ImageCache.putImageInCache(thumbURL, tempImage, true); //cache cropped image so we don't need to do this again
+		} else {
+			this.isImageModified = false;
+		}
+		thumbImage = new SoftReference<>(tempImage);
+		imageIconThumbImage = new SoftReference<>(new ImageIcon(tempImage));
+		needToReloadThumbImage = false;
+	}
+
+	/**
+	 * Thumb constructor which joins the leftImage to the rightImage in one new thumb
+	 */
+	public Thumb(String leftImage, String rightImage) throws IOException {
+		setThumbURL(new URL(leftImage));
+		this.isImageModified = true;
+		BufferedImage leftBufferedImage = (BufferedImage) ImageCache.getImageFromCache(new URL(leftImage), isImageModified, new URL(leftImage));
+		BufferedImage rightBufferedImage = (BufferedImage) ImageCache.getImageFromCache(new URL(rightImage), isImageModified, new URL(rightImage));
+		BufferedImage joinedImage = joinBufferedImage(leftBufferedImage, rightBufferedImage);
+		setImage(joinedImage);
+
+	}
+
+	public Thumb(String url) throws MalformedURLException {
+		setThumbURL(url);
+		//Delay the call to actually reading in the thumbImage until it is needed
+		this.isImageModified = false;
+	}
+
+	//TODO: Generate an empty thumbnail that points to nowhere
+	public Thumb() {
+		this.isImageModified = false;
+		needToReloadThumbImage = false;
+	}
+
+	public Thumb(File file) throws IOException {
+		this.setImage(ImageIO.read(file));
+		this.isImageModified = false;
+		loadedFromDisk = true;
+		thumbURL = file.toURI().toURL();
+	}
+
 	public String getThumbLabel() {
 		return thumbLabel;
 	}
@@ -75,35 +133,14 @@ public class Thumb extends MovieDataItem {
 		needToReloadThumbImage = true;
 	}
 
-	public void setThumbImage(Image thumbImage) {
-		this.thumbImage = new SoftReference<>(thumbImage);
-		this.imageIconThumbImage = new SoftReference<>(new ImageIcon(this.thumbImage.get()));
-		needToReloadThumbImage = false;
-	}
-
-	public Thumb(URL thumbURL) {
-		//Delay the call to actually reading in the thumbImage until it is needed
-		this.thumbURL = thumbURL;
-		isImageModified = false;
+	public void setThumbURL(String thumbURL) throws MalformedURLException {
+		this.thumbURL = new URL(thumbURL);
 		needToReloadThumbImage = true;
 	}
 
-	public Thumb(String url, boolean useJavCoverCropRoutine) throws IOException {
-
-		thumbURL = new URL(url);
-		BufferedImage tempImage = (BufferedImage) ImageCache.getImageFromCache(thumbURL, false, referrerURL); //get the unmodified, uncropped image
-		//just get the jpg from the url
-		String filename = fileNameFromURL(url);
-		//routine adapted from pythoncovercrop.py
-		if (useJavCoverCropRoutine) {
-			tempImage = doJavCoverCropRoutine(tempImage, filename);
-			this.isImageModified = true;
-			ImageCache.putImageInCache(thumbURL, tempImage, true); //cache cropped image so we don't need to do this again
-		} else {
-			this.isImageModified = false;
-		}
-		thumbImage = new SoftReference<>(tempImage);
-		imageIconThumbImage = new SoftReference<>(new ImageIcon(tempImage));
+	public void setThumbImage(Image thumbImage) {
+		this.thumbImage = new SoftReference<>(thumbImage);
+		this.imageIconThumbImage = new SoftReference<>(new ImageIcon(this.thumbImage.get()));
 		needToReloadThumbImage = false;
 	}
 
@@ -199,19 +236,6 @@ public class Thumb extends MovieDataItem {
 		return tempImage;
 	}
 
-	/**
-	 * Thumb constructor which joins the leftImage to the rightImage in one new thumb
-	 */
-	public Thumb(String leftImage, String rightImage) throws IOException {
-		setThumbURL(new URL(leftImage));
-		this.isImageModified = true;
-		BufferedImage leftBufferedImage = (BufferedImage) ImageCache.getImageFromCache(new URL(leftImage), isImageModified, new URL(leftImage));
-		BufferedImage rightBufferedImage = (BufferedImage) ImageCache.getImageFromCache(new URL(rightImage), isImageModified, new URL(rightImage));
-		BufferedImage joinedImage = joinBufferedImage(leftBufferedImage, rightBufferedImage);
-		setImage(joinedImage);
-
-	}
-
 	private static BufferedImage joinBufferedImage(BufferedImage img1, BufferedImage img2) {
 
 		int wid = img1.getWidth() + img2.getWidth();
@@ -229,29 +253,6 @@ public class Thumb extends MovieDataItem {
 		g2.drawImage(img2, null, img1.getWidth(), 0);
 		g2.dispose();
 		return newImage;
-	}
-
-	public Thumb(String url) throws MalformedURLException {
-		if (url != null && url.length() > 1)
-			thumbURL = new URL(url);
-		else
-			thumbURL = null;
-		//Delay the call to actually reading in the thumbImage until it is needed
-		this.isImageModified = false;
-		needToReloadThumbImage = true;
-	}
-
-	//TODO: Generate an empty thumbnail that points to nowhere
-	public Thumb() {
-		this.isImageModified = false;
-		needToReloadThumbImage = false;
-	}
-
-	public Thumb(File file) throws IOException {
-		this.setImage(ImageIO.read(file));
-		this.isImageModified = false;
-		loadedFromDisk = true;
-		thumbURL = file.toURI().toURL();
 	}
 
 	public URL getThumbURL() {
