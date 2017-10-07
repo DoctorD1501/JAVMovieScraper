@@ -107,25 +107,25 @@ public class SpecificProfileFactory {
 
 			if (thisJarFile.exists()) {
 				List<Class> classNames = new ArrayList<>();
-				ZipInputStream zip = new ZipInputStream(new FileInputStream(thisJarFile.getPath()));
-				for (ZipEntry entry = zip.getNextEntry(); entry != null; entry = zip.getNextEntry())
-					if (entry.getName().endsWith(".class") && !entry.isDirectory()) {
-						// This ZipEntry represents a class. Now, what class does it represent?
-						StringBuilder className = new StringBuilder();
-						for (String part : entry.getName().split("/")) {
-							if (className.length() != 0)
-								className.append(".");
-							className.append(part);
-							if (part.endsWith(".class"))
-								className.setLength(className.length() - ".class".length());
-						}
+				try (ZipInputStream zip = new ZipInputStream(new FileInputStream(thisJarFile.getPath()))) {
+					for (ZipEntry entry = zip.getNextEntry(); entry != null; entry = zip.getNextEntry())
+						if (entry.getName().endsWith(".class") && !entry.isDirectory()) {
+							// This ZipEntry represents a class. Now, what class does it represent?
+							StringBuilder className = new StringBuilder();
+							for (String part : entry.getName().split("/")) {
+								if (className.length() != 0)
+									className.append(".");
+								className.append(part);
+								if (part.endsWith(".class"))
+									className.setLength(className.length() - ".class".length());
+							}
 
-						if (className.toString().contains(packageName)) {
-							classNames.add(Class.forName(className.toString()));
+							if (className.toString().contains(packageName)) {
+								classNames.add(Class.forName(className.toString()));
+							}
+							zip.closeEntry();
 						}
-						zip.closeEntry();
-					}
-				zip.close();
+				}
 				return classNames;
 			} else
 				return classes;
