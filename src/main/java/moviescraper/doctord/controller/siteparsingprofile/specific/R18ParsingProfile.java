@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import moviescraper.doctord.controller.UtilityFunctions;
 
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
@@ -47,6 +48,7 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 
 	private static final SimpleDateFormat r18ReleaseDateFormat = new SimpleDateFormat("MMM. dd,yyyy", Locale.ENGLISH);
 	private static final SimpleDateFormat r18ReleaseDateFormatAlternate = new SimpleDateFormat("MMM dd,yyyy", Locale.ENGLISH);
+	private static final String[] TrailerAttrsOrder = { "data-video-high", "data-video-med", "data-video-low" };
 
 	@Override
 	public String getParserName() {
@@ -149,25 +151,14 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 
 	@Override
 	public Trailer scrapeTrailer() {
-		Element element = document.select("object#FreeViewPlayer>param[name=flashvars]").first();
+		Element element = document.select(".js-view-sample").first();
 		if (element != null) {
-			String flashvars = element.attr("value");
-			Pattern pattern = Pattern.compile("^.*&fid=(.+)&.*&bid=(\\d)(w|s)&.*$");
-			Matcher matcher = pattern.matcher(flashvars);
-			if (matcher.matches()) {
-				String cid = matcher.group(1);
-				int bitrates = Integer.parseInt(matcher.group(2));
-				String ratio = matcher.group(3);
-				String quality = (bitrates & 0b100) != 0 ? "dmb" : (bitrates & 0b010) != 0 ? "dm" : "sm";
-				String firstLetterOfCid = cid.substring(0, 1);
-				String threeLetterCidCode = cid.substring(0, 3);
-
-				String trailerURL = String.format("http://cc3001.r18.com/litevideo/freepv/%1$s/%2$s/%3$s/%3$s_%4$s_%5$s.mp4", firstLetterOfCid, threeLetterCidCode, cid, quality,
-						ratio);
-
-				return new Trailer(trailerURL);
+			String trailerURL = UtilityFunctions.HtmlElementPreferredAttributeGet(element, TrailerAttrsOrder);
+			if (trailerURL == null) {
+				return Trailer.BLANK_TRAILER;
 			}
 
+			return new Trailer(trailerURL);
 		}
 		return Trailer.BLANK_TRAILER;
 	}

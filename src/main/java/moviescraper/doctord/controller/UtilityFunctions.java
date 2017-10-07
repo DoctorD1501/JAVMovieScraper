@@ -2,6 +2,7 @@ package moviescraper.doctord.controller;
 
 import com.cedarsoftware.util.io.JsonReader;
 import com.cedarsoftware.util.io.JsonWriter;
+import org.jsoup.nodes.Element;
 
 public class UtilityFunctions {
 
@@ -12,6 +13,15 @@ public class UtilityFunctions {
 	 */
 	public static Object cloneObject(Object root) {
 		return JsonReader.jsonToJava(JsonWriter.objectToJson(root));
+	}
+
+	public static String HtmlElementPreferredAttributeGet(Element element, String[] attributes) {
+		for (String attribute : attributes) {
+			if (element.hasAttr(attribute)) {
+				return element.attr(attribute);
+			}
+		}
+		return null;
 	}
 
 }
