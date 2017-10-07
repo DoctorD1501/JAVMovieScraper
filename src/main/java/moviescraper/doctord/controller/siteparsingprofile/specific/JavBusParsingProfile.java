@@ -3,6 +3,7 @@ package moviescraper.doctord.controller.siteparsingprofile.specific;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -273,21 +274,21 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 		Elements actorElements = document.select("div.star-box li a img");
 		if (actorElements != null) {
 			for (Element currentActor : actorElements) {
+				Thumb thumbnail = null;
 				String actorName = currentActor.attr("title");
 				//Sometimes for whatever reason the english page still has the name in japanaese, so I will translate it myself
 				if (scrapingLanguage == Language.ENGLISH && JapaneseCharacter.containsJapaneseLetter(actorName))
 					actorName = TranslateString.translateJapanesePersonNameToRomaji(actorName);
 				String actorImage = currentActor.attr("src");
 				if (actorImage != null && !actorImage.contains("printing.gif") && fileExistsAtURL(actorImage)) {
+
 					try {
-						actorList.add(new Actor(actorName, null, new Thumb(actorImage)));
+						thumbnail = new Thumb(new URL(actorImage));
 					} catch (MalformedURLException e) {
 						e.printStackTrace();
-						actorList.add(new Actor(actorName, null, null));
 					}
-				} else {
-					actorList.add(new Actor(actorName, null, null));
 				}
+				actorList.add(new Actor(actorName, null, thumbnail));
 			}
 		}
 		return actorList;

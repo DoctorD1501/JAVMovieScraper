@@ -2,6 +2,7 @@ package moviescraper.doctord.model.dataitem;
 
 import java.io.File;
 import java.io.IOException;
+import moviescraper.doctord.controller.UtilityFunctions;
 
 import org.apache.commons.io.FileUtils;
 
@@ -35,7 +36,7 @@ public class Actor extends Person {
 
 	public void writeImageToFile(File fileNameToWrite) throws IOException {
 		if (getThumb() != null && getThumb().getThumbURL() != null && getThumb().getThumbURL().getPath().length() > 0)
-			FileUtils.copyURLToFile(getThumb().getThumbURL(), fileNameToWrite, connectionTimeout, readTimeout);
+			UtilityFunctions.saveFile(getThumb().getThumbURL(), fileNameToWrite);
 
 	}
 
