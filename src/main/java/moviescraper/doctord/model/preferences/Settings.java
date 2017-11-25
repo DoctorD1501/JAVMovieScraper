@@ -93,6 +93,25 @@ public class Settings {
 		return defaultValue;
 	}
 
+	protected <K extends Key> void setIntegerValue(K preferenceName, Integer preferenceValue) {
+		programPreferences.setProperty(preferenceName.getKey(), preferenceValue.toString());
+		savePreferences();
+	}
+
+	protected static <K extends Key> Integer getIntegerValue(K preferenceName, Integer defaultValue) {
+		String fieldValue = preferenceName.getKey();
+		String preferenceValue = programPreferences.getProperty(fieldValue);
+		if (preferenceValue == null) {
+			return defaultValue;
+		}
+		try {
+			return Integer.parseInt(preferenceValue);
+		} catch(NumberFormatException e) {
+			return defaultValue;
+		}
+
+	}
+
 	@Override
 	public String toString() {
 		return programPreferences.toString();

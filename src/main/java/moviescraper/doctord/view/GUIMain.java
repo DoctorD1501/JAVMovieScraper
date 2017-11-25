@@ -30,6 +30,8 @@ import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.SystemColor;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 
 import javax.swing.UIManager;
 
@@ -43,6 +45,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.beans.PropertyChangeEvent;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -98,8 +101,8 @@ public class GUIMain {
 	private String originalJavLibraryMovieTitleBeforeAmalgamate;
 
 	//Dimensions of various elements
-	private static final int defaultMainFrameX = 1045;
-	private static final int defaultMainFrameY = 850;
+	private static final int minimumHeight = 500;
+	private static final int minimumWidth = 300;
 
 	private final static boolean debugMessages = false;
 	private GUIMainButtonPanel buttonPanel;
@@ -179,11 +182,31 @@ public class GUIMain {
 		//set up the window that sits above the frame and can block input to this frame if needed while a dialog is open
 		frmMoviescraper.setGlassPane(frmMovieScraperBlocker);
 		frmMoviescraper.setBackground(SystemColor.window);
-		frmMoviescraper.setPreferredSize(new Dimension(defaultMainFrameX, defaultMainFrameY));
+		frmMoviescraper.setMinimumSize(new Dimension(minimumWidth, minimumHeight));
+		frmMoviescraper.setPreferredSize(new Dimension(guiSettings.getWidth(), guiSettings.getHeight()));
 		frmMoviescraper.setTitle("JAVMovieScraper");
-		frmMoviescraper.setBounds(100, 100, defaultMainFrameX, defaultMainFrameY);
 		frmMoviescraper.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+		// Add listener
+		frmMoviescraper.addComponentListener(new ComponentListener(){
+				@Override
+				public void componentResized(ComponentEvent arg0) {
+					guiSettings.setHeight(frmMoviescraper.getHeight());
+					guiSettings.setWidth(	frmMoviescraper.getWidth());
+				}
+
+			@Override
+			public void componentMoved(ComponentEvent e) {
+			}
+
+			@Override
+			public void componentShown(ComponentEvent e) {
+			}
+
+			@Override
+			public void componentHidden(ComponentEvent e) {
+			}
+			});
 		//create tree view icon provider
 		IconCache.setIconProvider(getGuiSettings().getUseContentBasedTypeIcons() ? IconCache.IconProviderType.CONTENT : IconCache.IconProviderType.SYSTEM);
 
@@ -203,10 +226,17 @@ public class GUIMain {
 		//add in the menu bar
 		menuBar = new GUIMainMenuBar(this);
 		frmMoviescraper.setJMenuBar(menuBar);
-
+		frmMoviescraper.pack();
+		frmMoviescraper.setLocationRelativeTo(null);
 		int gap = 7;
 		fileListFileDetailSplitPane.setBorder(BorderFactory.createEmptyBorder());
 		fileListFileDetailSplitPane.setDividerSize(gap);
+		fileListFileDetailSplitPane.setDividerLocation(guiSettings.getFileListDividerLocation());
+		fileListFileDetailSplitPane.addPropertyChangeListener((PropertyChangeEvent evt) -> {
+			if("dividerLocation".equals(evt.getPropertyName())) {
+				guiSettings.setFileListDividerLocation((Integer)evt.getNewValue());
+			}
+		});
 		messageConsolePanel.setBorder(BorderFactory.createEmptyBorder(gap, 0, 0, 0));
 
 		// restore gui state

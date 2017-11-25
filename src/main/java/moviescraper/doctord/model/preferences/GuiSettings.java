@@ -9,7 +9,15 @@ public class GuiSettings extends Settings {
 	protected final static GuiSettings INSTANCE = new GuiSettings();
 
 	enum Key implements Settings.Key {
-		lastUsedDirectory, lastUsedScraper, showOutputPanel, showToolbar, useContentBasedTypeIcons, pathToExternalMediaPlayer;
+		lastUsedDirectory,
+		lastUsedScraper,
+		showOutputPanel,
+		showToolbar,
+		useContentBasedTypeIcons,
+		pathToExternalMediaPlayer,
+		fileListDividerLocation,
+		width,
+		height;
 
 		@Override
 		public String getKey() {
@@ -91,5 +99,29 @@ public class GuiSettings extends Settings {
 
 	public void setPathToExternalMediaPlayer(String externalMediaPlayer) {
 		setStringValue(Key.pathToExternalMediaPlayer, externalMediaPlayer);
+	}
+
+	public Integer getWidth() {
+		return getIntegerValue(Key.width, 1045);
+	}
+
+	public void setWidth(Integer value) {
+		setIntegerValue(Key.width, value);
+	}
+
+	public Integer getHeight() {
+		return getIntegerValue(Key.height, 850);
+	}
+
+	public void setHeight(Integer value) {
+		setIntegerValue(Key.height, value);
+	}
+
+	public Integer getFileListDividerLocation() {
+		return getIntegerValue(Key.fileListDividerLocation, 850);
+	}
+
+	public void setFileListDividerLocation(Integer value) {
+		setIntegerValue(Key.fileListDividerLocation, value);
 	}
 }
