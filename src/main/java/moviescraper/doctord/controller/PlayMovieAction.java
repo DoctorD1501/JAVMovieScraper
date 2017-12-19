@@ -3,10 +3,7 @@ package moviescraper.doctord.controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import javax.swing.JOptionPane;
 
@@ -88,7 +85,7 @@ public class PlayMovieAction implements ActionListener {
 			int optionPicked = JOptionPane.showOptionDialog(guiMain.getFrmMoviescraper(), "No external media player set. Would you like to set one now?",
 					"Configure External Media Player", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
 			if (optionPicked == 0) {
-				ChooseExternalMediaPlayerAction chooseExternalMediaPlayerAction = new ChooseExternalMediaPlayerAction(guiMain);
+				ChooseExternalMediaPlayerAction chooseExternalMediaPlayerAction = new ChooseExternalMediaPlayerAction();
 				chooseExternalMediaPlayerAction.actionPerformed(arg0);
 				pathToExternalMediaPlayer = GuiSettings.getInstance().getPathToExternalMediaPlayer();
 				//now that the user has successfully set a path to the media player, let's play it
@@ -128,14 +125,25 @@ public class PlayMovieAction implements ActionListener {
 		}
 		try {
 			System.out.println("Running command to open External Media Player: \"" + pathToPlayerProgram + "\"" + args);
-			Runtime.getRuntime().exec(cmdarray);
-
+			if (usingMac()) {
+				//On a mac, we are pointing to the folder and we need the actual executable inside the folder, so we can use the open command to get that
+				ArrayList<String> cmdArrayForMac = new ArrayList<String>(Arrays.asList(cmdarray));
+				cmdArrayForMac.add(0, "open");
+				Runtime.getRuntime().exec(cmdArrayForMac.toArray(new String[cmdArrayForMac.size()]));
+			}
+			else {
+				Runtime.getRuntime().exec(cmdarray);
+			}
 		} catch (Exception e1) {
 			e1.printStackTrace();
 			System.err.println("Error while opening external media player: " + e1.getMessage());
 			JOptionPane.showMessageDialog(guiMain.getFrmMoviescraper(), e1.getMessage(), "Error opening external media player", JOptionPane.ERROR_MESSAGE);
 
 		}
+	}
+
+	private boolean usingMac() {
+		return System.getProperty("os.name").startsWith("Mac");
 	}
 
 }

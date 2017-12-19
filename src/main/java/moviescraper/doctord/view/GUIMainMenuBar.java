@@ -273,7 +273,7 @@ public class GUIMainMenuBar extends JMenuBar {
 		settingsMenu.add(favoriteTagsMenuItem);
 
 		JMenuItem externalMediaPlayerPickerMenu = new JMenuItem("Pick External Media Player...");
-		externalMediaPlayerPickerMenu.addActionListener(new ChooseExternalMediaPlayerAction(guiMain));
+		externalMediaPlayerPickerMenu.addActionListener(new ChooseExternalMediaPlayerAction());
 		settingsMenu.add(externalMediaPlayerPickerMenu);
 
 		add(settingsMenu);

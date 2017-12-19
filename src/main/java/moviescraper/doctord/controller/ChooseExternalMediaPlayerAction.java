@@ -2,30 +2,35 @@ package moviescraper.doctord.controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
-import javax.swing.JFileChooser;
-
+import javafx.application.Platform;
+import javafx.stage.FileChooser;
 import moviescraper.doctord.model.preferences.GuiSettings;
 import moviescraper.doctord.view.GUIMain;
 
 public class ChooseExternalMediaPlayerAction implements ActionListener {
 
-	private final GUIMain guiMain;
+	public ChooseExternalMediaPlayerAction() {}
 
-	public ChooseExternalMediaPlayerAction(GUIMain guiMain) {
-		this.guiMain = guiMain;
+	public void actionPerformed(ActionEvent arg0) {
+
+		FileChooser chooser = createFileChooser();
+
+		// run on javafx thread - required since our file chooser is javafx and the rest of our app is swing
+		Platform.runLater(() -> {
+            File returnVal = chooser.showOpenDialog(null);
+            if (returnVal != null && returnVal.exists()) {
+                GuiSettings.getInstance().setPathToExternalMediaPlayer(returnVal.toString());
+            }
+        });
+
 	}
 
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		System.out.println("Choosing External Media Player");
-		JFileChooser chooser = new JFileChooser();
-		int returnVal = chooser.showOpenDialog(guiMain.getFrmMoviescraper());
-		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			if (chooser.getSelectedFile() != null)
-				GuiSettings.getInstance().setPathToExternalMediaPlayer(chooser.getSelectedFile().toString());
-		}
-
+	private static FileChooser createFileChooser() {
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setTitle("Choosing External Media Player");
+		return fileChooser;
 	}
 
 }
