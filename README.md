@@ -1,28 +1,44 @@
 JAVMovieScraper
 ===============
+[![Build Status](https://travis-ci.org/Wizell/JAVMovieScraper.svg?branch=master)](https://travis-ci.org/Wizell/JAVMovieScraper)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/c4c66ac391234156b9796d9a6e286843)](https://www.codacy.com/app/Wizell/JAVMovieScraper?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Wizell/JAVMovieScraper&amp;utm_campaign=Badge_Grade)
 
-JAVMovieScraper is a Java Swing program to scrape English [Kodi](http://kodi.tv/) metadata for Japanese Adult Videos (JAV) found on JavLibrary.com, R18.com, DMM.co.jp, 1000Giri, Caribbeancompr.com (Carribeancom Premium), AV Entertainment, Kin8Tengoku, Tokyo Hot, 1pondo, HEYZO, American adult DVDs and web content found on Data18.com and and adult dvds on The Movie Database (TMDb) and Excalibur Films.
+JAVMovieScraper is a Java Swing program to scrape English [Kodi](http://kodi.tv/) metadata for Japanese Adult Videos (JAV) are searched on:
+* JavLibrary.com
+* R18.com
+* DMM.co.jp
+* Caribbeancompr.com (Carribeancom Premium)
+* AV Entertainment
+* Kin8Tengoku
+* Tokyo Hot
+* 1pondo
+* HEYZO
+* American adult DVDs
+* Data18.com
+
+Adult dvds informations are searched on:
+* The Movie Database (TMDb)
+* Excalibur Films
 
 As no one site has a complete set of English metadata, the program amalgamates metadeta info from a variety of sources, including dmm.co.jp, javlibrary.com, javbus.com, squareplus.co.jp, and actionjav.com.
 The data is then fed through a machine translation (if original data is in Japanese) and then quality checked to sanitize it and poster elements are cropped so only the cover is shown.
 
 
+This program is in alpha. Please submit bugs and feature requests here on github on the [issues page](https://github.com/Wizell/JAVMovieScraper/issues).
 
-This program is in alpha. Please submit bugs and feature requests here on github on the [issues page](https://github.com/DoctorD1501/JAVMovieScraper/issues).
-
-### [Download the latest JAVMovieScraper.jar release here to get started! ](https://github.com/DoctorD1501/JAVMovieScraper/releases)
+### [Download the latest JAVMovieScraper.jar release here to get started! ](https://github.com/Wizell/JAVMovieScraper/releases)
 
 ## Screenshots
 Main Window
-![alt text](https://github.com/DoctorD1501/JAVMovieScraper/blob/gh-pages/images/JAVMovieScraperScreenShot1%20-%20Main%20Window.jpg "Main Window")
+![alt text](https://github.com/Wizell/JAVMovieScraper/blob/master/docs/images/JAVMovieScraperScreenShot1%20-%20Main%20Window.jpg "Main Window")
 
 Renamer Window
-![alt text](https://github.com/DoctorD1501/JAVMovieScraper/blob/gh-pages/images/JAVMovieScraperScreenShot1%20-%20Renamer%20Window.jpg "Renamer")
+![alt text](https://github.com/Wizell/JAVMovieScraper/blob/master/docs/images/JAVMovieScraperScreenShot1%20-%20Renamer%20Window.jpg "Renamer")
 
 ## Usage
 
 1. Make sure you have the Java JRE installed. You will need at least Java version 8. Java can be downloaded here: https://www.java.com/en/download/index.jsp
-2. Either download the newest development build JAR from here: [http://www.mediafire.com/download/pm3d2yl49qa99fe/JAVMovieScraper.jar](http://www.mediafire.com/download/pm3d2yl49qa99fe/JAVMovieScraper.jar) or grab one of the stabler releases from the [release page](https://github.com/DoctorD1501/JAVMovieScraper/releases).
+2. Download the newest development build JAR from github releases releases from the [release page](https://github.com/Wizell/JAVMovieScraper/releases).
 3. Double click the jar file - or to run from program from the commandline, see the section below. Initially, the program will load your home directory in the file pane on the left. Click the "Browse" button below this file list and point it to the directory where your movie file you wish to scrape is.
 4. Select the movie file or folder the movie is in (if the folder is named the same as the movie) in the list of files. You can select multiple files by holding the control or shift keys to do batch scraping. Your movie file MUST have the JAV ID as the last word within the filename, not including stacked file indicators such as DISC1 or CD1. The JAV ID (or Caribbeancom Release ID) can be optionally surrounded by brackets or parenthesis and can contain a dash before the numerical part. Examples of OK file names for JAV DVD Movies: My Movie - ABC-123, My Movie - [ABC123] CD1, ABC-123, (ABC-123), For American movies, the filename must be the name of the movie, optionally followed by the year in parenthesis e.g. MovieName (2014). For web releases, a google search is done on the entire file name, so it's more flexible, but it works best if you include the name of the episode and at least one of the actors in your file name. See the section below for more file naming conventions for the site specific scraper.
 5. Using either the Scrape menu or the scrape button, select the appropriate amalgamated or specific scraper for the type of content you are scraping. Note that for American web content (or split scenes from DVDs), you should pick "Data18 WebContent". Regular American DVDs should use the Amalgamated American Adult DVD scraper or one of the specific scrapers. If you get the wrong result when scraping, try enabling the "Select Search Results Manually When Scraping" option, or as a last resort, the "Provide the URL yourself when scraping" option.
@@ -36,10 +52,10 @@ Renamer Window
 This program now supports command line options. Starting the program without any command line option will load the graphical user interface version of the program. I'm still actively working on the command line options to make sure all scrapers are accounted for and any settings.xml values are taken into account.
 <p>
 Usage:
-<br>                                                                                                                                                                                                       
-<b> -filenamecleanup &#60;FilePath&#62; </b>   Use given file argument(s) for file name cleanup process which will rename the file by expanding abbreviations and removing words which cause google scrapes to fail 
 <br>
-<b> -help</b>                               display list of command line options                                                                                                                                  
+<b> -filenamecleanup &#60;FilePath&#62; </b>   Use given file argument(s) for file name cleanup process which will rename the file by expanding abbreviations and removing words which cause google scrapes to fail
+<br>
+<b> -help</b>                               display list of command line options
 <br>
 <b> -rename &#60;FilePath&#62; </b> renames the file argument(s) and any associated metadata files if the file argument has a valid movie nfo using the file name format from settings.xml
 <br>
@@ -70,11 +86,10 @@ If you're having trouble getting matches with -scrape data18webcontent, try to f
 </p>
 
 ## Site Specific File Name Conventions
-When using the site specific scraper feature, your file name must contain an ID number which conforms to the release ID conventions set by that site. 
-* 1000Giri: ID follows a YYMMDDactorname structure. You can also see the ID from the URL (right after /moviepages/ and before /index.html). Example: 150206name
+When using the site specific scraper feature, your file name must contain an ID number which conforms to the release ID conventions set by that site.
 * Aventertainments: This follows the usual JAV id naming structure like ABC-123. It does a search on the site using this ID.<br>
 * Kin8tengoku: The ID is in the URL. It is the numeric part before /pht/ and is usually 4 numeric digits. Example: 1147.<br>
-* Tokyohot: The ID follows the format of n123 or n1234 k123/k1234. In other words, a lowercase n or k followed by a 3 or 4 digit number.<br> 
+* Tokyohot: The ID follows the format of n123 or n1234 k123/k1234. In other words, a lowercase n or k followed by a 3 or 4 digit number.<br>
 * 1pondo: The ID is in the URL of the movie, right before /index.html. The first part of the ID is a 6 digit number corresponding to the release date, followed by an underscore, followed by a 3 digit number. Example: 061314_826<br>
 * Caribbeancom Premium: The ID is in the URL of the movie, right before /index.html. The first part of the ID is a 6 digit number corresponding to the release date, followed by an underscore, followed by a 3 digit number. Example: 061314_826<br>
 * Heyzo: The ID is a 4 digit number in the url right after /moviepages/. Example: 0123<br>
