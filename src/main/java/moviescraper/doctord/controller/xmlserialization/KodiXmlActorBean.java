@@ -1,6 +1,7 @@
 package moviescraper.doctord.controller.xmlserialization;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 
 import moviescraper.doctord.model.dataitem.Actor;
 import moviescraper.doctord.model.dataitem.Thumb;
@@ -46,7 +47,14 @@ public class KodiXmlActorBean {
 	}
 
 	public Actor toActor() throws IOException {
-		return new Actor(name, role, new Thumb(thumb));
+		Thumb tryToMakeAThumb;
+		try {
+			tryToMakeAThumb = new Thumb(thumb);
+		}
+		catch (MalformedURLException e) {
+			tryToMakeAThumb = null;
+		}
+		return new Actor(name, role, tryToMakeAThumb);
 	}
 
 }
