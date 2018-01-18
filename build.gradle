@@ -65,9 +65,16 @@ jar {
 	}
 }
 
+
+
 task dist(type: FatCapsule) {
-applicationClass mainClass
-archiveName project.name + ".jar"
+	applicationClass mainClass
+	archiveName project.name + ".jar"
+	capsuleManifest {
+		systemProperties['log4j.configuration'] = 'log4j.xml'
+		jvmArgs = ['-Xms768m', '-Xmx1g']
+		minJavaVersion = '1.6.0'
+	}
 }
 
 spotless {
