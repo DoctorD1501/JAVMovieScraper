@@ -49,6 +49,7 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 	private static final SimpleDateFormat r18ReleaseDateFormat = new SimpleDateFormat("MMM. dd,yyyy", Locale.ENGLISH);
 	private static final SimpleDateFormat r18ReleaseDateFormatAlternate = new SimpleDateFormat("MMM dd,yyyy", Locale.ENGLISH);
 	private static final String[] TrailerAttrsOrder = { "data-video-high", "data-video-med", "data-video-low" };
+	private static final Pattern RuntimePattern = Pattern.compile("^([0-9]+)[^0-9].*");
 
 	@Override
 	public String getParserName() {
@@ -191,7 +192,10 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 		Element runtimeElement = document.select("div.product-details dl dt:contains(Runtime:) ~ dd").first();
 		if (runtimeElement != null && runtimeElement.text().length() > 0) {
 			String runtimeText = runtimeElement.text();
-			runtimeText = runtimeText.replace(" min.", "");
+			Matcher runtimeMatcher = RuntimePattern.matcher(runtimeText);
+			if (runtimeMatcher.find()) {
+				runtimeText = runtimeMatcher.group(1);
+			}
 			return new Runtime(runtimeText);
 		}
 		return Runtime.BLANK_RUNTIME;
