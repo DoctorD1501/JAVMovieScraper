@@ -241,15 +241,9 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 	public ArrayList<Genre> scrapeGenres() {
 		ArrayList<Genre> genreList = new ArrayList<>();
 		Elements genreElements = null;
-		if (getScrapingLanguage() == Language.ENGLISH)
-			genreElements = document.select("dl.info dt:contains(Category) + dd a, dl.info dt:contains(カテゴリ) + dd a");
-		else if (getScrapingLanguage() == Language.JAPANESE) {
-			initializeJapaneseDocument();
-			genreElements = japaneseDocument.select("dl.info dt:contains(Category) + dd a, dl.info dt:contains(カテゴリ) + dd a");
-		}
-		if (genreElements != null) {
-			for (Element currentGenre : genreElements) {
-				genreList.add(new Genre(WordUtils.capitalize(currentGenre.text().trim())));
+		for (Element element : document.select("#main .info a")) {
+			if (element.attr("href").contains("type=play")) {
+				genreList.add(new Genre(WordUtils.capitalize(element.text().trim())));
 			}
 		}
 		return genreList;
@@ -258,31 +252,18 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 	@Override
 	public ArrayList<Actor> scrapeActors() {
 		ArrayList<Actor> actorList = new ArrayList<>();
-		Elements actressElements = null;
-		if (getScrapingLanguage() == Language.ENGLISH)
-			actressElements = document.select("dl.info dt:contains(Actress) + dd a, dl.info dt:contains(出演者) + dd a");
-		else if (getScrapingLanguage() == Language.JAPANESE) {
-			initializeJapaneseDocument();
-			actressElements = japaneseDocument.select("dl.info dt:contains(Actress) + dd a, dl.info dt:contains(出演者) + dd a");
-		}
-		if (actressElements != null) {
-			for (Element currentActress : actressElements) {
-				String name = currentActress.text();
-				String href = currentActress.attr("href");
-				href = href.replaceAll(Pattern.quote("/cast/"), "");
-				href = href.replaceAll("/", "");
-				//now href is just the numerical number of this actor
-				String thumbnailLink = "http://my.cdn.tokyo-hot.com/media/cast/" + href + "/thumbnail.jpg";
-				if (SiteParsingProfile.fileExistsAtURL(thumbnailLink)) {
-					try {
-						actorList.add(new Actor(name, "", new Thumb(thumbnailLink)));
-					} catch (MalformedURLException e) {
-						e.printStackTrace();
-						actorList.add(new Actor(name, "", null));
-					}
-				} else {
+		for (Element element : document.select("#main .info a")) {
+			String name = element.text();
+			String thumbnailLink = "http://my.cdn.tokyo-hot.com/media" + element.attr("href") + "thumbnail.jpg";
+			if (SiteParsingProfile.fileExistsAtURL(thumbnailLink)) {
+				try {
+					actorList.add(new Actor(name, "", new Thumb(thumbnailLink)));
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
 					actorList.add(new Actor(name, "", null));
 				}
+			} else {
+				actorList.add(new Actor(name, "", null));
 			}
 		}
 		return actorList;

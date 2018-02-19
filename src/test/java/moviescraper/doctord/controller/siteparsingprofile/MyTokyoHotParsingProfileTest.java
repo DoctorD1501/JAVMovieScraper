@@ -106,7 +106,7 @@ public class MyTokyoHotParsingProfileTest {
 	@Test
 	public void testScrapeGenre() {
 		ArrayList<Genre> genres = parser.scrapeGenres();
-		assertEquals("Genre not correct", "Toys", genres.get(3).getGenre());
+		assertEquals("Genre not correct", "Creampie", genres.get(3).getGenre());
 	}
 
 	@Test
