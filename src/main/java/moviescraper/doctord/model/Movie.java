@@ -536,7 +536,7 @@ public class Movie {
 				}
 				//download the url and save it out to disk
 				else
-					FileDownloaderUtilities.writeURLToFile(fanartToSaveToDisk.getThumbURL(), fanartFile, posterToSaveToDisk.getReferrerURL());
+					FileDownloaderUtilities.writeURLToFile(fanartToSaveToDisk.getThumbURL(), fanartFile, fanartToSaveToDisk.getReferrerURL());
 			}
 		}
 
