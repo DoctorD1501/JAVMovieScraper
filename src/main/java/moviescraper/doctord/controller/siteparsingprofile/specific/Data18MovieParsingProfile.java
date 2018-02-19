@@ -224,6 +224,7 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 			Thumb[] posterThumbs = new Thumb[1];
 			try {
 				posterThumbs[0] = new Thumb(fixIPAddressOfData18(posterElement.attr("href")));
+				posterThumbs[0].setViewerURL(new URL("http://www.data18.com/movies"));
 				return ArrayUtils.addAll(scrapedExtraFanart, posterThumbs);
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
@@ -369,13 +370,15 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 		if (actorElements != null) {
 			for (Element currentActorElement : actorElements) {
 				String actorName = currentActorElement.attr("alt");
-				String actorThumbnail = currentActorElement.attr("src");
+				String actorThumbnailURL = currentActorElement.attr("src");
 
 				//case with actor with thumbnail
-				if (actorThumbnail != null && !actorThumbnail.equals("http://img.data18.com/images/no_prev_60.gif")) {
+				if (actorThumbnailURL != null && !actorThumbnailURL.equals("http://img.data18.com/images/no_prev_60.gif")) {
 					try {
-						actorThumbnail = actorThumbnail.replaceFirst(Pattern.quote("/60/"), "/120/");
-						actorList.add(new Actor(actorName, null, new Thumb(actorThumbnail)));
+						actorThumbnailURL = actorThumbnailURL.replaceFirst(Pattern.quote("/60/"), "/120/");
+						Thumb actorThumbnail = new Thumb(actorThumbnailURL);
+						actorThumbnail.setViewerURL(new URL("http://data18.com"));
+						actorList.add(new Actor(actorName, null, actorThumbnail));
 					} catch (MalformedURLException e) {
 						actorList.add(new Actor(actorName, null, null));
 						e.printStackTrace();
@@ -474,6 +477,7 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 					if (releaseDateText != null && releaseDateText.length() > 0)
 						currentMovieTitle = currentMovieTitle + " (" + releaseDateText + ")";
 					Thumb currentMovieThumb = new Thumb(currentMovie.select("img").attr("src"));
+					currentMovieThumb.setViewerURL(new URL(currentMovieURL));
 					linksList.add(new SearchResult(currentMovieURL, currentMovieTitle, currentMovieThumb));
 					if (releaseDateMap == null)
 						releaseDateMap = new HashMap<>();
