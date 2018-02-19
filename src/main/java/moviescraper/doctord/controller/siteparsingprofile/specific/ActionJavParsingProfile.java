@@ -323,7 +323,7 @@ public class ActionJavParsingProfile extends SiteParsingProfile implements Speci
 			if (actress != null)
 				title = title + " - " + actress.ownText();
 
-			String url = "http://www.actionjav.com/" + link.attr("href") + "&console=cover";
+			String url = "http://www.actionjav.com/" + link.attr("href");
 			SearchResult result = new SearchResult(url, title);
 
 			if (id.equals(searchId))
