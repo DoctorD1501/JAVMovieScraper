@@ -9,6 +9,8 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
@@ -250,7 +252,10 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 		for (Element currentActor : actorListElements) {
 			String actorName = currentActor.text();
 			String pageName = currentActor.attr("href");
-			Thumb actorThumb = getThumbForPersonPageUrl(pageName);
+			Thumb actorThumb = null;
+			if (pageName.contains("/starpgs/") || pageName.contains("/malepgs/")) {
+				actorThumb = getThumbForPersonPageUrl(pageName);
+			}
 			if (actorThumb != null) {
 				Actor currentActorToAdd = new Actor(actorName, "", actorThumb);
 				actorList.add(currentActorToAdd);
@@ -348,7 +353,8 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 
 	@Override
 	public SearchResult[] getSearchResults(String searchString) throws IOException {
-		Document doc = Jsoup.connect(searchString).timeout(CONNECTION_TIMEOUT_VALUE).get();
+		System.out.println(searchString);
+		Document doc = Jsoup.connect(searchString).timeout(CONNECTION_TIMEOUT_VALUE).referrer("https://www.excaliburfilms.com").get();
 		boolean onSearchResultsPage = doc.location().contains("adultSearch.htm");
 		//found the movie without a search results page
 		if (doc.location() != null && !onSearchResultsPage) {
@@ -366,16 +372,20 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 			SearchResult[] directResultArray = { result };
 			return directResultArray;
 		}
+		System.out.println("On result page");
 		//This selector in particular tends to break when they update their site. 
 		//Unfortunately, they don't use things like ids or classes much which makes it hard to get the right element without resorting to 
 		//hackery like width=600 stuff
-		Elements foundMovies = doc.select("table[width=600]:contains(Wish List) tr tbody:has(img)");
+		Elements foundMovies = doc.select(".searchTitle13");
 		LinkedList<SearchResult> searchList = new LinkedList<>();
 
+		System.out.println("Found" + foundMovies.size());
 		for (Element movie : foundMovies) {
+			Element parent = movie.parent().parent().parent();
 			String urlPath = movie.select("a").first().attr("href");
-			String thumb = movie.select("img").first().attr("src");
-			String label = movie.select("img").first().attr("alt");
+			String thumb = parent.select("img").first().attr("src");
+			String label = parent.select("img").first().attr("alt");
+			System.out.println("Found" + urlPath);
 			SearchResult searchResult = new SearchResult(urlPath, label, new Thumb(thumb));
 			if (!searchList.contains(searchResult))
 				searchList.add(searchResult);
