@@ -130,8 +130,7 @@ public class PlayMovieAction implements ActionListener {
 				ArrayList<String> cmdArrayForMac = new ArrayList<String>(Arrays.asList(cmdarray));
 				cmdArrayForMac.add(0, "open");
 				Runtime.getRuntime().exec(cmdArrayForMac.toArray(new String[cmdArrayForMac.size()]));
-			}
-			else {
+			} else {
 				Runtime.getRuntime().exec(cmdarray);
 			}
 		} catch (Exception e1) {

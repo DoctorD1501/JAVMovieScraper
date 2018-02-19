@@ -50,8 +50,7 @@ public class KodiXmlActorBean {
 		Thumb tryToMakeAThumb;
 		try {
 			tryToMakeAThumb = new Thumb(thumb);
-		}
-		catch (MalformedURLException e) {
+		} catch (MalformedURLException e) {
 			tryToMakeAThumb = null;
 		}
 		return new Actor(name, role, tryToMakeAThumb);

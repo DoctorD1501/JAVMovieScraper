@@ -106,7 +106,7 @@ public class Settings {
 		}
 		try {
 			return Integer.parseInt(preferenceValue);
-		} catch(NumberFormatException e) {
+		} catch (NumberFormatException e) {
 			return defaultValue;
 		}
 

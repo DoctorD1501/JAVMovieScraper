@@ -188,12 +188,12 @@ public class GUIMain {
 		frmMoviescraper.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		// Add listener
-		frmMoviescraper.addComponentListener(new ComponentListener(){
-				@Override
-				public void componentResized(ComponentEvent arg0) {
-					guiSettings.setHeight(frmMoviescraper.getHeight());
-					guiSettings.setWidth(	frmMoviescraper.getWidth());
-				}
+		frmMoviescraper.addComponentListener(new ComponentListener() {
+			@Override
+			public void componentResized(ComponentEvent arg0) {
+				guiSettings.setHeight(frmMoviescraper.getHeight());
+				guiSettings.setWidth(frmMoviescraper.getWidth());
+			}
 
 			@Override
 			public void componentMoved(ComponentEvent e) {
@@ -206,7 +206,7 @@ public class GUIMain {
 			@Override
 			public void componentHidden(ComponentEvent e) {
 			}
-			});
+		});
 		//create tree view icon provider
 		IconCache.setIconProvider(getGuiSettings().getUseContentBasedTypeIcons() ? IconCache.IconProviderType.CONTENT : IconCache.IconProviderType.SYSTEM);
 
@@ -233,8 +233,8 @@ public class GUIMain {
 		fileListFileDetailSplitPane.setDividerSize(gap);
 		fileListFileDetailSplitPane.setDividerLocation(guiSettings.getFileListDividerLocation());
 		fileListFileDetailSplitPane.addPropertyChangeListener((PropertyChangeEvent evt) -> {
-			if("dividerLocation".equals(evt.getPropertyName())) {
-				guiSettings.setFileListDividerLocation((Integer)evt.getNewValue());
+			if ("dividerLocation".equals(evt.getPropertyName())) {
+				guiSettings.setFileListDividerLocation((Integer) evt.getNewValue());
 			}
 		});
 		messageConsolePanel.setBorder(BorderFactory.createEmptyBorder(gap, 0, 0, 0));

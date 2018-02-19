@@ -11,7 +11,8 @@ import moviescraper.doctord.view.GUIMain;
 
 public class ChooseExternalMediaPlayerAction implements ActionListener {
 
-	public ChooseExternalMediaPlayerAction() {}
+	public ChooseExternalMediaPlayerAction() {
+	}
 
 	public void actionPerformed(ActionEvent arg0) {
 
@@ -19,12 +20,11 @@ public class ChooseExternalMediaPlayerAction implements ActionListener {
 
 		// run on javafx thread - required since our file chooser is javafx and the rest of our app is swing
 		Platform.runLater(() -> {
-            File returnVal = chooser.showOpenDialog(null);
-            if (returnVal != null && returnVal.exists()) {
-                GuiSettings.getInstance().setPathToExternalMediaPlayer(returnVal.toString());
-            }
-        });
-
+			File returnVal = chooser.showOpenDialog(null);
+			if (returnVal != null && returnVal.exists()) {
+				GuiSettings.getInstance().setPathToExternalMediaPlayer(returnVal.toString());
+			}
+		});
 	}
 
 	private static FileChooser createFileChooser() {

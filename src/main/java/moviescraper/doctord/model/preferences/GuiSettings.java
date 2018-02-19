@@ -9,15 +9,7 @@ public class GuiSettings extends Settings {
 	protected final static GuiSettings INSTANCE = new GuiSettings();
 
 	enum Key implements Settings.Key {
-		lastUsedDirectory,
-		lastUsedScraper,
-		showOutputPanel,
-		showToolbar,
-		useContentBasedTypeIcons,
-		pathToExternalMediaPlayer,
-		fileListDividerLocation,
-		width,
-		height;
+		lastUsedDirectory, lastUsedScraper, showOutputPanel, showToolbar, useContentBasedTypeIcons, pathToExternalMediaPlayer, fileListDividerLocation, width, height;
 
 		@Override
 		public String getKey() {
