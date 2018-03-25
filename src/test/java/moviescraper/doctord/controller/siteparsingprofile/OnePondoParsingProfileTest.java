@@ -3,6 +3,9 @@ package moviescraper.doctord.controller.siteparsingprofile;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import moviescraper.doctord.controller.siteparsingprofile.specific.OnePondoParsingProfile;
 import moviescraper.doctord.model.dataitem.ID;
@@ -26,8 +29,14 @@ public class OnePondoParsingProfileTest {
 		profile = new OnePondoParsingProfile();
 		String searchString = profile.createSearchString(file);
 		System.out.println(searchString);
-		Document document = SiteParsingProfile.downloadDocumentFromURLString(searchString);
-		profile.setDocument(document);
+		Document document;
+		try {
+			document = profile.getDocument(searchString);
+			profile.setDocument(document);
+		} catch (IOException ex) {
+			Logger.getLogger(OnePondoParsingProfileTest.class.getName()).log(Level.SEVERE, null, ex);
+		}
+
 	}
 
 	@SuppressWarnings("static-access")

@@ -52,25 +52,12 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 	private final String movieImageThumbnailPathPrefix = "https://image.tmdb.org/t/p/w130";
 	private final String movieImageFanartThumbnailPathPrefix = "https://image.tmdb.org/t/p/w300";
 	private final String movieImagePosterThumbnailPathPrefix = "https://image.tmdb.org/t/p/w185";
-	private JSONObject movieJSON;
 
 	@Override
 	public List<ScraperGroupName> getScraperGroupNames() {
 		if (groupNames == null)
 			groupNames = Arrays.asList(ScraperGroupName.AMERICAN_ADULT_DVD_SCRAPER_GROUP);
 		return groupNames;
-	}
-
-	private JSONObject getMovieJSON() {
-		if (movieJSON == null && document != null) {
-			try {
-				movieJSON = getJSONObjectFromURL(document.location());
-				return movieJSON;
-			} catch (JSONException | IOException e) {
-				e.printStackTrace();
-			}
-		}
-		return movieJSON;
 	}
 
 	@Override

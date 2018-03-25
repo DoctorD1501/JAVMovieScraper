@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,6 +16,7 @@ import org.jsoup.nodes.Element;
 
 import moviescraper.doctord.controller.languagetranslation.Language;
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
+import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfileJSON;
 import moviescraper.doctord.model.SearchResult;
 import moviescraper.doctord.model.dataitem.Actor;
 import moviescraper.doctord.model.dataitem.Director;
@@ -36,8 +39,10 @@ import moviescraper.doctord.model.dataitem.Top250;
 import moviescraper.doctord.model.dataitem.Trailer;
 import moviescraper.doctord.model.dataitem.Votes;
 import moviescraper.doctord.model.dataitem.Year;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
-public class OnePondoParsingProfile extends SiteParsingProfile implements SpecificProfile {
+public class OnePondoParsingProfile extends SiteParsingProfileJSON implements SpecificProfile {
 
 	//private boolean scrapeInEnglish;
 	private String englishPage;
@@ -50,41 +55,14 @@ public class OnePondoParsingProfile extends SiteParsingProfile implements Specif
 
 	@Override
 	public Title scrapeTitle() {
-		Element titleElement = document.select("title").first();
-		if (titleElement != null) {
-			String id = scrapeID().getId();
-			String title = titleElement.text().trim();
-			//replace used for english title
-			title = title.replaceAll(Pattern.quote("::"), "-");
-			//replace used for japanese title
-			title = title.replaceAll(Pattern.quote(":"), "-");
-			//old scenes on the site that do no contain the actor name in the title
-			if (title.equals("1pondo.tv -"))
-				title = title + " " + id;
-			else
-				title = title + " - " + id;
-			return new Title(title);
-		}
-		return new Title("");
+		JSONObject pageJSON = getMovieJSON();
+		return new Title(pageJSON.getString("Title"));
 	}
 
 	@Override
 	public OriginalTitle scrapeOriginalTitle() {
-		//the original title is the japanese title
-		if (scrapingLanguage == Language.JAPANESE)
-			return new OriginalTitle(scrapeTitle().getTitle());
-		else {
-			Document originalDocument = document;
-			try {
-				document = Jsoup.connect(japanesePage).get();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			OriginalTitle originalTitle = new OriginalTitle(scrapeTitle().getTitle());
-			document = originalDocument;
-			return originalTitle;
-		}
+		JSONObject pageJSON = getMovieJSON();
+		return new OriginalTitle(pageJSON.getString("Title"));
 	}
 
 	@Override
@@ -107,32 +85,16 @@ public class OnePondoParsingProfile extends SiteParsingProfile implements Specif
 
 	@Override
 	public Year scrapeYear() {
-		return scrapeReleaseDate().getYear();
+		JSONObject pageJSON = getMovieJSON();
+		String releaseYear = pageJSON.getString("Year");
+		return new Year(releaseYear);
 	}
 
 	@Override
 	public ReleaseDate scrapeReleaseDate() {
-
-		//Still having problems with this due to release-date element not loading on japanese site
-
-		//new method after site redesign
-		Element releaseDate = document.select("dl.release-date dd.ng-binding").first();
-		if (releaseDate != null && releaseDate.text().length() == 10) {
-			String releaseDateText = releaseDate.text().replaceAll("/", "-");
-			return new ReleaseDate(releaseDateText);
-		}
-
-		//Old method of site before redesign: Get year from last 2 digits before the underscore in the ID of the movie
-		//Add "20" to these digits, so "14" becomes 2014, for example
-		//(this is ok because there are no scenes on 1pondo from 1999 or earlier)
-		ID movieID = scrapeID();
-		if (movieID != null && movieID.getId().contains("_")) {
-			String year = "20" + movieID.getId().substring(4, 6);
-			String month = movieID.getId().substring(0, 2);
-			String day = movieID.getId().substring(2, 4);
-			return new ReleaseDate(year + "-" + month + "-" + day);
-		}
-		return ReleaseDate.BLANK_RELEASEDATE;
+		JSONObject pageJSON = getMovieJSON();
+		String releaseDate = pageJSON.getString("Release");
+		return new ReleaseDate(releaseDate);
 	}
 
 	@Override
@@ -167,37 +129,23 @@ public class OnePondoParsingProfile extends SiteParsingProfile implements Specif
 
 	@Override
 	public Runtime scrapeRuntime() {
-		// TODO Auto-generated method stub
-		return Runtime.BLANK_RUNTIME;
+		JSONObject pageJSON = getMovieJSON();
+		String duration = String.valueOf(pageJSON.getInt("Duration"));
+		return new Runtime(duration);
 	}
 
 	@Override
 	public Thumb[] scrapePosters() {
+		ArrayList<Thumb> thumbList = new ArrayList<>();
+		JSONObject pageJSON = getMovieJSON();
 		try {
-			ArrayList<Thumb> thumbList = new ArrayList<>();
-			String bannerURL = "http://www.1pondo.tv/assets/sample/" + scrapeID().getId() + "/str.jpg";
-			System.out.println("bannerURL = " + bannerURL);
-			String backgroundURLTwo = "http://www.1pondo.tv/assets/sample/" + scrapeID().getId() + "/2.jpg";
-			String popupOneURL = "http://www.1pondo.tv/assets/sample/" + scrapeID().getId() + "/popu/1.jpg";
-			String popupTwoURL = "http://www.1pondo.tv/assets/sample/" + scrapeID().getId() + "/popu/2.jpg";
-			String popupThreeURL = "http://www.1pondo.tv/assets/sample/" + scrapeID().getId() + "/popu/3.jpg";
-			String popupFourURL = "http://www.1pondo.tv/assets/sample/" + scrapeID().getId() + "/popu.jpg";
-			if (SiteParsingProfile.fileExistsAtURL(popupOneURL))
-				thumbList.add(new Thumb(popupOneURL));
-			if (SiteParsingProfile.fileExistsAtURL(popupTwoURL))
-				thumbList.add(new Thumb(popupTwoURL));
-			if (SiteParsingProfile.fileExistsAtURL(popupThreeURL))
-				thumbList.add(new Thumb(popupThreeURL));
-			if (SiteParsingProfile.fileExistsAtURL(bannerURL))
-				thumbList.add(new Thumb(bannerURL));
-			if (SiteParsingProfile.fileExistsAtURL(backgroundURLTwo))
-				thumbList.add(new Thumb(backgroundURLTwo));
-			if (SiteParsingProfile.fileExistsAtURL(popupFourURL))
-				thumbList.add(new Thumb(popupFourURL));
+			thumbList.add(new Thumb(pageJSON.getString("ThumbHigh")));
+			thumbList.add(new Thumb(pageJSON.getString("MovieThumb")));
+			thumbList.add(new Thumb(pageJSON.getString("ThumbUltra")));
+			thumbList.add(new Thumb(pageJSON.getString("ThumbMed")));
 			return thumbList.toArray(new Thumb[thumbList.size()]);
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (MalformedURLException ex) {
+			Logger.getLogger(OnePondoParsingProfile.class.getName()).log(Level.SEVERE, null, ex);
 		}
 		return new Thumb[0];
 	}
@@ -264,17 +212,9 @@ public class OnePondoParsingProfile extends SiteParsingProfile implements Specif
 
 	@Override
 	public ID scrapeID() {
-		//Just get the ID from the page URL by doing some string manipulation
-		String documentURL = document.location();
-		if (documentURL.length() > 0 && documentURL.contains("1pondo.tv")) {
-			documentURL = documentURL.replaceFirst("/index.html", "");
-			documentURL = documentURL.replaceFirst("/index.htm", "");
-			if (documentURL.endsWith("/"))
-				documentURL = documentURL.substring(0, documentURL.length() - 1);
-			String idFromBaseUri = documentURL.substring(documentURL.lastIndexOf('/') + 1);
-			return new ID(idFromBaseUri);
-		}
-		return ID.BLANK_ID;
+		JSONObject pageJSON = getMovieJSON();
+		String movieID = pageJSON.getString("MovieID");
+		return new ID(movieID);
 	}
 
 	@Override
@@ -287,21 +227,12 @@ public class OnePondoParsingProfile extends SiteParsingProfile implements Specif
 	@Override
 	public ArrayList<Actor> scrapeActors() {
 		ArrayList<Actor> actorList = new ArrayList<>(1);
-		Element profileArea = document.select("div#profile-area").first();
-		if (profileArea != null) {
-			String actressThumbURL = profileArea.select("img").attr("src");
-			//Fix for redirect 1pondo is doing for actor images due to new site layout
-			if (actressThumbURL.contains("/moviepages/"))
-				actressThumbURL = actressThumbURL.replace("/moviepages/", "/assets/sample/").replace("/images/", "/");
-			String actressName = profileArea.select(".bgoose h2, .bgg1").first().text();
-			try {
-				actorList.add(new Actor(actressName, "", new Thumb(actressThumbURL)));
-			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				actorList.add(new Actor(actressName, "", null));
-			}
+		JSONObject pageJSON = getMovieJSON();
+		JSONArray actors = pageJSON.getJSONArray("ActressesEn");
+		for (Object actor : actors) {
+			actorList.add(new Actor((String) actor, "", null));
 		}
+
 		return actorList;
 	}
 
@@ -336,13 +267,7 @@ public class OnePondoParsingProfile extends SiteParsingProfile implements Specif
 		fileID = fileID.toLowerCase();
 
 		if (fileID != null) {
-			englishPage = "http://en.1pondo.tv/movies/" + fileID + "/";
-			japanesePage = "http://www.1pondo.tv/movies/" + fileID + "/";
-			if (scrapingLanguage == Language.ENGLISH) {
-				return englishPage;
-			} else {
-				return japanesePage;
-			}
+			return "https://www.1pondo.tv/dyn/phpauto/movie_details/movie_id/" + fileID + ".json";
 		}
 
 		return null;
@@ -351,6 +276,7 @@ public class OnePondoParsingProfile extends SiteParsingProfile implements Specif
 	@Override
 	public SearchResult[] getSearchResults(String searchString) throws IOException {
 		SearchResult searchResult = new SearchResult(searchString);
+		searchResult.setJSONSearchResult(true);
 		SearchResult[] searchResultArray = { searchResult };
 		return searchResultArray;
 	}
