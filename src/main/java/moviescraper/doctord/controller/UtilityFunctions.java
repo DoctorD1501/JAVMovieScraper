@@ -61,12 +61,12 @@ public class UtilityFunctions {
 
 	public static boolean saveFile(URL url, String outputPath) {
 
-		return saveFile(url, new File(outputPath), null);
+		return saveFile(url, new File(outputPath), url.toString());
 	}
 
 	public static boolean saveFile(URL url, File outputFile) {
 
-		return saveFile(url, outputFile, null);
+		return saveFile(url, outputFile, url.toString());
 	}
 
 }
