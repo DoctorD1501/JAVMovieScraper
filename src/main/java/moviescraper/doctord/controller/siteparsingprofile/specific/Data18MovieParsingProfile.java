@@ -188,6 +188,7 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 			Thumb[] posterThumbs = new Thumb[1];
 			try {
 				posterThumbs[0] = new Thumb(fixIPAddressOfData18(posterElement.attr("src")));
+				posterThumbs[0].setViewerURL(posterThumbs[0].getThumbURL());
 				return posterThumbs;
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
@@ -373,11 +374,11 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 				String actorThumbnailURL = currentActorElement.attr("src");
 
 				//case with actor with thumbnail
-				if (actorThumbnailURL != null && !actorThumbnailURL.equals("http://img.data18.com/images/no_prev_60.gif")) {
+				if (actorThumbnailURL != null && !actorThumbnailURL.endsWith("no_prev_60.gif")) {
 					try {
 						actorThumbnailURL = actorThumbnailURL.replaceFirst(Pattern.quote("/60/"), "/120/");
 						Thumb actorThumbnail = new Thumb(actorThumbnailURL);
-						actorThumbnail.setViewerURL(new URL("http://data18.com"));
+						actorThumbnail.setViewerURL(new URL(actorThumbnailURL));
 						actorList.add(new Actor(actorName, null, actorThumbnail));
 					} catch (MalformedURLException e) {
 						actorList.add(new Actor(actorName, null, null));
