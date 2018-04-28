@@ -2,6 +2,8 @@ package moviescraper.doctord;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
@@ -80,12 +82,19 @@ public class Main {
 			        .create("scrape");
 
 			@SuppressWarnings("static-access")
+			Option scrapeUrl = OptionBuilder.withArgName("ScrapeUrl").hasArgs(1)
+					.withDescription(
+							"Scrape from the given url.")
+					.create("scrapeurl");
+
+			@SuppressWarnings("static-access")
 			Option rename = OptionBuilder.withArgName("FilePath").hasArgs(Option.UNLIMITED_VALUES)
 			        .withDescription("renames the file argument(s) and any associated metadata files if the file argument has a valid movie nfo using the file name format from settings.xml")
 			        .create("rename");
 
 			options.addOption(filenamecleanup);
 			options.addOption(scrape);
+			options.addOption(scrapeUrl);
 			options.addOption(rename);
 
 			CommandLineParser parser = new BasicParser();
@@ -102,7 +111,12 @@ public class Main {
 				}
 				//-scrape
 				else if (line.hasOption("scrape")) {
-					runScrape(line.getOptionValues("scrape"));
+					if (line.hasOption("scrapeurl")) {
+						runScrape(line.getOptionValues("scrape"), line.getOptionValue("scrapeurl"));
+					}
+					else {
+						runScrape(line.getOptionValues("scrape"), null);
+					}
 				} else if (line.hasOption("rename")) {
 					runRename(line.getOptionValues("rename"));
 				}
@@ -164,7 +178,7 @@ public class Main {
 		}
 	}
 
-	private static void runScrape(String[] optionValues) {
+	private static void runScrape(String[] optionValues, String userProvidedURL) {
 		boolean useFileNameCleanup = false;
 		if (optionValues != null && optionValues.length == 2) {
 			String scraperName = optionValues[0];
@@ -187,7 +201,22 @@ public class Main {
 							scrapeTargetToUse = renamer.newFileName(scrapeTarget);
 							System.out.println("passing in " + scrapeTargetToUse + " as the name");
 						}
-						Movie scrapedMovie = Movie.scrapeMovie(scrapeTargetToUse, parsingProfile, "", false);
+						
+						boolean wasCustomURLSet = false;
+						if (userProvidedURL != null && userProvidedURL.length() > 0) {
+							//TODO: validate this is a actually a URL and display an error message if it is not
+							//also maybe don't let them click OK if isn't a valid URL?
+							try {
+								URL isAValidURL = new URL(userProvidedURL);
+								parsingProfile.setOverridenSearchResult(isAValidURL.toString());
+								wasCustomURLSet = true;
+							} catch (MalformedURLException e) {
+								e.printStackTrace();
+							}
+
+						}
+						
+						Movie scrapedMovie = Movie.scrapeMovie(scrapeTargetToUse, parsingProfile, "", wasCustomURLSet);
 						//write out the metadata to disk if we got a hit
 						if (scrapedMovie != null) {
 							System.out.println("Movie scraped as" + scrapedMovie);
