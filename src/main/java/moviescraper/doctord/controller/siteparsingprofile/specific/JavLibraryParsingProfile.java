@@ -391,8 +391,13 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 				//the page does not have the small version on it, but by replacing the last character of the string with an t, we will get the tiny preview
 				if (posterElement != null) {
 					String posterURLSmall = "https:" + posterElement.attr("src");
-					posterURLSmall = posterURLSmall.substring(0, posterURLSmall.lastIndexOf('l')) + "t.jpg";
-					linksList.add(new SearchResult(doc.baseUri(), linkTitle, new Thumb(posterURLSmall)));
+					try {
+						posterURLSmall = posterURLSmall.substring(0, posterURLSmall.lastIndexOf('l')) + "t.jpg";
+						linksList.add(new SearchResult(doc.baseUri(), linkTitle, new Thumb(posterURLSmall)));
+					}
+					catch (StringIndexOutOfBoundsException e) {
+						linksList.add(new SearchResult(doc.baseUri(), linkTitle));
+					}
 				} else {
 					linksList.add(new SearchResult(doc.baseUri(), linkTitle));
 				}
