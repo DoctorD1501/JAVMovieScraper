@@ -64,6 +64,11 @@ public class WriteFileDataAction implements ActionListener {
 								String newMovieFilename = renamer.getNewFileName(oldMovieFile.isDirectory());
 								System.out.println("New Filename : " + newMovieFilename);
 								File newMovieFile = new File(newMovieFilename);
+
+								File newMovieDirectoryFile = newMovieFile;
+								if (!oldMovieFile.isDirectory()) {
+									newMovieDirectoryFile = newMovieFile.getParentFile().getCanonicalFile();
+								}
 								/*
 								 * old method
 								boolean renameStatus = oldMovieFile.renameTo(newMovieFile);
@@ -77,9 +82,15 @@ public class WriteFileDataAction implements ActionListener {
 									} else if (oldMovieFile.isFile()) {
 										/* Faster on network shares to move to directory then rename */
 										File oldMovieDirectoryFile = oldMovieFile.getParentFile().getCanonicalFile();
-										File newMovieDirectoryFile = newMovieFile.getParentFile().getCanonicalFile();
 										File oldMovieNameFile = new File(oldMovieFile.getName());
 										File newMovieNameFile = new File(newMovieFile.getName());
+
+										System.out.println("==============\n Moving file:");
+										System.out.println("   - oldMovieDirectoryFile: " + oldMovieDirectoryFile.getPath());
+										System.out.println("   - newMovieDirectoryFile: " + newMovieDirectoryFile.getPath());
+										System.out.println("   - oldMovieNameFile: " + oldMovieNameFile.getPath());
+										System.out.println("   - newMovieNameFile: " + newMovieNameFile.getPath());
+										System.out.println("==============");
 
 										if (!newMovieDirectoryFile.equals(oldMovieDirectoryFile)) {
 											// Move to new directory
@@ -97,11 +108,11 @@ public class WriteFileDataAction implements ActionListener {
 								}
 
 								guiMain.movieToWriteToDiskList.get(movieNumberInList).writeToFile(
-										new File(Movie.getFileNameOfNfo(newMovieFile, guiMain.getPreferences().getNfoNamedMovieDotNfo())),
-										new File(Movie.getFileNameOfPoster(newMovieFile, guiMain.getPreferences().getNoMovieNameInImageFiles())),
-										new File(Movie.getFileNameOfFanart(newMovieFile, guiMain.getPreferences().getNoMovieNameInImageFiles())),
-										new File(Movie.getFileNameOfFolderJpg(newMovieFile)), new File(Movie.getFileNameOfExtraFanartFolderName(newMovieFile)),
-										new File(Movie.getFileNameOfTrailer(newMovieFile)), guiMain.getPreferences());
+										new File(Movie.getFileNameOfNfo(newMovieDirectoryFile, guiMain.getPreferences().getNfoNamedMovieDotNfo())),
+										new File(Movie.getFileNameOfPoster(newMovieDirectoryFile, guiMain.getPreferences().getNoMovieNameInImageFiles())),
+										new File(Movie.getFileNameOfFanart(newMovieDirectoryFile, guiMain.getPreferences().getNoMovieNameInImageFiles())),
+										new File(Movie.getFileNameOfFolderJpg(newMovieDirectoryFile)), new File(Movie.getFileNameOfExtraFanartFolderName(newMovieDirectoryFile)),
+										new File(Movie.getFileNameOfTrailer(newMovieDirectoryFile)), guiMain.getPreferences());
 							} else {
 								//save without renaming movie
 								guiMain.movieToWriteToDiskList.get(movieNumberInList).writeToFile(guiMain.getCurrentlySelectedNfoFileList().get(movieNumberInList),
