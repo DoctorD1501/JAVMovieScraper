@@ -101,7 +101,13 @@ public class WriteFileDataAction implements ActionListener {
 										File newDirOldNameFile = new File(newMovieDirectoryFile, oldMovieNameFile.toString());
 										File newDirNewNameFile = new File(newMovieDirectoryFile, newMovieNameFile.toString());
 
-										FileUtils.moveFile(newDirOldNameFile, newDirNewNameFile);
+										if(!newDirOldNameFile.equals(newDirNewNameFile)) {
+											System.out.println("-----\n Renaming movie file:");
+											System.out.println("   - newDirOldNameFile: " + newDirOldNameFile.getPath());
+											System.out.println("   - newDirNewNameFile: " + newDirNewNameFile.getPath());
+											System.out.println("==============");
+											FileUtils.moveFile(newDirOldNameFile, newDirNewNameFile);
+										}
 									}
 								} catch (FileExistsException e) {
 									System.out.println("A file or directory already exists at " + newMovieFile + " - skipping overwrite or creation of new folder.");
