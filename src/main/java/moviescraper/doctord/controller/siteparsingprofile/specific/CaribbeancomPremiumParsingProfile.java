@@ -176,14 +176,30 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 	@Override
 	public Thumb[] scrapePosters() {
 
+		ID id = scrapeID();
+
 		List<Thumb> posters = new LinkedList<>();
-		Element posterElement = document.select("td.detail_main a[href*=/images/").first();
+
+		// try default path from old site
+		String currentImagePath = "http://www.caribbeancompr.com/moviepages/" + id.getId() + "/images/main_b.jpg";
+		if (fileExistsAtURL(currentImagePath)) {
+			try {
+				Thumb currentImage = new Thumb(currentImagePath);
+				currentImage.setPreviewURL(new URL(currentImagePath));
+				posters.add(currentImage);
+			} catch (MalformedURLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		Element posterElement = document.select("#player>img").first();
 		if (posterElement != null) {
-			String posterPath = posterElement.attr("abs:href");
-			String previewPath = posterElement.select("img").first().attr("abs:src");
+			String posterPath = posterElement.attr("abs:src");
+//			String previewPath = posterElement.select("img").first().attr("abs:src");
 			try {
 				Thumb posterThumb = new Thumb(posterPath);
-				posterThumb.setPreviewURL(new URL(previewPath));
+				posterThumb.setPreviewURL(new URL(posterPath));
 				posters.add(posterThumb);
 			} catch (MalformedURLException e) {
 				// TODO Auto-generated catch block
@@ -192,10 +208,9 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 		}
 
 		//get the extra 3 free images they give
-		ID id = scrapeID();
 		if (id != null) {
 			for (int i = 1; i <= 3; i++) {
-				String currentImagePath = "http://www.caribbeancompr.com/moviepages/" + id.getId() + "/images/l/00" + i + ".jpg";
+				currentImagePath = "http://www.caribbeancompr.com/moviepages/" + id.getId() + "/images/l/00" + i + ".jpg";
 				String currentImagePathPreview = "http://www.caribbeancompr.com/moviepages/" + id.getId() + "/images/s/00" + i + ".jpg";
 				if (fileExistsAtURL(currentImagePath)) {
 					try {
