@@ -65,7 +65,12 @@ jar {
 	}
 }
 
-
+test {
+	testLogging {
+		outputs.upToDateWhen {false}
+		showStandardStreams = true
+	}
+}
 
 task dist(type: FatCapsule) {
 	applicationClass mainClass
