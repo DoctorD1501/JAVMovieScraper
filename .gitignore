@@ -4,3 +4,4 @@ build
 AmalgamationSettings.json
 settings.xml
 JAVMovieScraper.iml
+/.*-gradle/
