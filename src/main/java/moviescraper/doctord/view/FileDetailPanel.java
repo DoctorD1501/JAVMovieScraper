@@ -748,6 +748,38 @@ public class FileDetailPanel extends JPanel {
 		return artWorkPanel;
 	}
 
+	public JList<Actor> getActorList() {
+		return actorList;
+	}
+
+	public void setActorList(JList<Actor> actorList) {
+		this.actorList = actorList;
+	}
+
+	public JTextField getGenreList() {
+		return genreList;
+	}
+
+	public void setGenreList(JTextField genreList) {
+		this.genreList = genreList;
+	}
+
+	public JTextField getTagList() {
+		return tagList;
+	}
+
+	public void setTagList(JTextField tagList) {
+		this.tagList = tagList;
+	}
+
+	public void setCurrentMovie(Movie currentMovie) {
+		this.currentMovie = currentMovie;
+	}
+
+	public void hideArtworkPanel() {
+		artWorkPanel.setVisible(false);
+	}
+
 	private final class KeyListenerIgnoreTyping implements KeyListener {
 		@Override
 		public void keyTyped(KeyEvent e) {
@@ -798,38 +830,10 @@ public class FileDetailPanel extends JPanel {
 			return currentMovie.getActors().size();
 		}
 
-	}
 
-	public JList<Actor> getActorList() {
-		return actorList;
-	}
 
-	public void setActorList(JList<Actor> actorList) {
-		this.actorList = actorList;
-	}
 
-	public JTextField getGenreList() {
-		return genreList;
-	}
 
-	public void setGenreList(JTextField genreList) {
-		this.genreList = genreList;
-	}
-
-	public JTextField getTagList() {
-		return tagList;
-	}
-
-	public void setTagList(JTextField tagList) {
-		this.tagList = tagList;
-	}
-
-	public void setCurrentMovie(Movie currentMovie) {
-		this.currentMovie = currentMovie;
-	}
-
-	public void hideArtworkPanel() {
-		artWorkPanel.setVisible(false);
 	}
 
 	public static String toGenreListFormat(ArrayList<Genre> genres) {
