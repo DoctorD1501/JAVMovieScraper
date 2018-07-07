@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
+import java.net.MalformedURLException;
 
 import moviescraper.doctord.model.Movie;
 import moviescraper.doctord.model.dataitem.*;
@@ -143,7 +144,11 @@ public class KodiXmlMovieBean {
 		if (thumb != null) {
 			posterThumbs = new Thumb[thumb.length];
 			for (int i = 0; i < posterThumbs.length; i++) {
-				posterThumbs[i] = new Thumb(thumb[i]);
+				try {
+					posterThumbs[i] = new Thumb(thumb[i]);
+				} catch (MalformedURLException e) {
+					System.out.println("Ignoring Thumb url: " + thumb[i]);
+				}
 			}
 		} else {
 			posterThumbs = new Thumb[0];
@@ -153,7 +158,11 @@ public class KodiXmlMovieBean {
 		if (fanart != null && fanart.getThumb() != null) {
 			fanartThumbs = new Thumb[fanart.getThumb().length];
 			for (int i = 0; i < fanartThumbs.length; i++) {
-				fanartThumbs[i] = new Thumb(fanart.getThumb()[i]);
+				try {
+					fanartThumbs[i] = new Thumb(fanart.getThumb()[i]);
+				} catch (MalformedURLException e) {
+					System.out.println("Ignoring Fanart url: " + fanart.getThumb()[i]);
+				}
 			}
 		} else {
 			fanartThumbs = new Thumb[0];

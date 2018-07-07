@@ -31,6 +31,7 @@ import org.jsoup.select.Elements;
 import moviescraper.doctord.controller.AbstractMovieScraper;
 import moviescraper.doctord.controller.GenericMovieScraper;
 import moviescraper.doctord.controller.languagetranslation.Language;
+import moviescraper.doctord.model.Movie;
 import moviescraper.doctord.model.SearchResult;
 import moviescraper.doctord.model.dataitem.Actor;
 import moviescraper.doctord.model.dataitem.DataItemSource;
@@ -201,6 +202,15 @@ public abstract class SiteParsingProfile implements DataItemSource {
 			fileNameNoExtension = file.getName();
 		} else
 			fileNameNoExtension = FilenameUtils.removeExtension(file.getName());
+		if (file.getPath().endsWith(".nfo")) {
+			try {
+				Movie movie = Movie.createMovieFromNfo(file);
+				return movie.getId().getId();
+			} catch (IOException ex) {
+				System.out.println("Cannot load this file as nfo. Try from filename");
+			}
+
+		}
 		String fileNameNoExtensionNoDiscNumber = stripDiscNumber(fileNameNoExtension);
 		String[] splitFileName = fileNameNoExtensionNoDiscNumber.split(" ");
 		String lastWord = "";
