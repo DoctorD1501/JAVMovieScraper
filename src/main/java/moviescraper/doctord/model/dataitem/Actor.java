@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import moviescraper.doctord.controller.UtilityFunctions;
 
-import org.apache.commons.io.FileUtils;
-
 public class Actor extends Person {
 	private String role;
 

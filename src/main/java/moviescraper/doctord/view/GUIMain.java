@@ -5,7 +5,6 @@ import java.awt.EventQueue;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
-import javax.swing.JMenu;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;

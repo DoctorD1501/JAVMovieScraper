@@ -10,11 +10,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.FilenameUtils;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-
-import moviescraper.doctord.controller.languagetranslation.Language;
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfileJSON;
 import moviescraper.doctord.model.SearchResult;
