@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -49,6 +52,7 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 	private Document japaneseDocument;
 	private Thumb[] scrapedPosters;
 	private static final SimpleDateFormat caribbeanReleaseDateFormat = new SimpleDateFormat("yyyy-mm-dd", Locale.ENGLISH);
+	private static final Pattern videojsPoster = Pattern.compile("vgsPlayer\\.poster\\('([^']+)'");
 
 	@Override
 	public Title scrapeTitle() {
@@ -188,6 +192,23 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 			} catch (MalformedURLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			}
+		}
+
+		// Look for jsplayer
+		for (Element scriptElement : document.select("script")) {
+			Matcher matcher = videojsPoster.matcher(scriptElement.data());
+
+			if (matcher.find()) {
+				try {
+					String fullPosterURL = "https://en.caribbeancompr.com" + matcher.group(1);
+					Thumb posterThumb = new Thumb(fullPosterURL);
+					posterThumb.setPreviewURL(new URL(fullPosterURL));
+					posters.add(posterThumb);
+				} catch (MalformedURLException ex) {
+					Logger.getLogger(CaribbeancomPremiumParsingProfile.class.getName()).log(Level.SEVERE, null, ex);
+				}
+
 			}
 		}
 
