@@ -41,6 +41,13 @@ public class Main {
 	public static void main(String[] args) throws Exception {
 		long freeMem = Runtime.getRuntime().freeMemory();
 		long heapSize = Runtime.getRuntime().maxMemory();
+		String jvmSpecVersion = System.getProperty("java.specification.version");
+		String jvmSpecVendor = System.getProperty("java.specification.vendor");
+		String jvmVendor = System.getProperty("java.vendor");
+		String jvmVersion = System.getProperty("java.runtime.version");
+		String jvmName = System.getProperty("java.runtime.name");
+
+		System.out.println(jvmName + " " + jvmVersion + "(" + jvmVendor + ") -- " + jvmSpecVersion + "(" + jvmSpecVendor + ")");
 		System.out.println("Heap: " + FileUtils.byteCountToDisplaySize(heapSize));
 		System.out.println("Free mem: " + FileUtils.byteCountToDisplaySize(freeMem));
 
