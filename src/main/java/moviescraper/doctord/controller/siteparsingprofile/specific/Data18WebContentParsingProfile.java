@@ -220,7 +220,9 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 			//add the trailer image
 			try {
 				for (Element currentTrailerElement : trailerImgElements) {
-					trailerImages.add(new Thumb(fixIPAddressOfData18(currentTrailerElement.attr("src"))));
+					Thumb trailerImage = new Thumb(fixIPAddressOfData18(currentTrailerElement.attr("src")));
+					trailerImage.setViewerURL(new URL(document.location()));
+					trailerImages.add(trailerImage);
 				}
 			} catch (MalformedURLException e) {
 				// TODO Auto-generated catch block
@@ -231,8 +233,12 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 
 			if (videoStills != null && videoStills.size() > 0) {
 				try {
-					for (Element currentVideoStill : videoStills)
-						posters.add(new Thumb(fixIPAddressOfData18(currentVideoStill.attr("src"))));
+					Thumb videoStill = null;
+					for (Element currentVideoStill : videoStills) {
+						videoStill = new Thumb(fixIPAddressOfData18(currentVideoStill.attr("src")));
+						videoStill.setViewerURL(new URL(document.location()));
+						posters.add(videoStill);
+					}
 				} catch (MalformedURLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -311,6 +317,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 			try {
 				Thumb officialPosterThumb = new Thumb(fixIPAddressOfData18(officialPosterElement.attr("content")));
 				System.out.println("Official Poster: " + officialPosterThumb);
+				officialPosterThumb.setViewerURL(new URL(document.location()));
 				posters.add(officialPosterThumb);
 
 				//get the trailer images too, since items with an official poster tend to not have much else in them
