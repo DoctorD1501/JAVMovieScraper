@@ -50,7 +50,7 @@ public class AvEntertainmentParsingProfileTest {
 		ArrayList<Actor> scrapeActors = profile.scrapeActors();
 		assertTrue("There should be 1 Actor", scrapeActors.size() == 1);
 		assertEquals("Wrong actor name", "Yume Mizuki", scrapeActors.get(0).getName());
-		assertEquals("Wrong actor picture", "http://imgs.aventertainments.com/ActressImage/LargeImage/mizuki_yume.jpg", scrapeActors.get(0).getThumb().getThumbURL().toString());
+		assertEquals("Wrong actor picture", "https://imgs.aventertainments.com/ActressImage/LargeImage/mizuki_yume.jpg", scrapeActors.get(0).getThumb().getThumbURL().toString());
 	}
 
 	@Test
@@ -95,7 +95,7 @@ public class AvEntertainmentParsingProfileTest {
 	public void testPosters() throws IOException {
 		Thumb[] posters = profile.scrapePosters();
 		assertTrue("Wrong count of posters", posters.length == 1);
-		assertEquals("Wrong poster", "http://imgs.aventertainments.com/new/bigcover/dvd1pt-154.jpg", posters[0].getThumbURL().toString());
+		assertEquals("Wrong poster", "https://imgs.aventertainments.com/new/bigcover/dvd1pt-154.jpg", posters[0].getThumbURL().toString());
 		//TestingHelper.showImage("posters", posters[0].getThumbImage());
 	}
 
@@ -104,7 +104,7 @@ public class AvEntertainmentParsingProfileTest {
 		Thumb[] fanart = profile.scrapeFanart();
 		assertTrue("There should be 1 Fanart.", fanart.length == 1);
 
-		assertEquals("Wrong Fanart", "http://imgs.aventertainments.com/new/bigcover/dvd1pt-154.jpg", fanart[0].getThumbURL().toString());
+		assertEquals("Wrong Fanart", "https://imgs.aventertainments.com/new/bigcover/dvd1pt-154.jpg", fanart[0].getThumbURL().toString());
 		//TestingHelper.showImage("Fanart", fanart[0].getThumbImage());
 	}
 
