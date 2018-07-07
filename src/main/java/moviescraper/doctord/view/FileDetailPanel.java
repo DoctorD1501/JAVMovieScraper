@@ -42,6 +42,14 @@ import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.IOException;
+import javax.swing.DropMode;
+import javax.swing.JComponent;
+import javax.swing.ListSelectionModel;
+import javax.swing.TransferHandler;
 
 public class FileDetailPanel extends JPanel {
 
@@ -473,6 +481,11 @@ public class FileDetailPanel extends JPanel {
 		fileDetailsPanel.add(lblActors, getLayoutPositionString(COLUMN_LABEL, ROW_ACTORS));
 
 		actorList = new JList<>(new ActorItemListModel());
+		actorList.setDragEnabled(true);
+		actorList.setDropMode(DropMode.INSERT);
+		actorList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		actorList.setTransferHandler(new ActorTransferHandler(actorList));
+
 		List<File> currentlySelectedActorsFolderList = new ArrayList<>();
 		if (gui != null)
 			currentlySelectedActorsFolderList = gui.getCurrentlySelectedActorsFolderList();
@@ -825,14 +838,26 @@ public class FileDetailPanel extends JPanel {
 			return currentMovie.getActors().get(index);
 		}
 
+		public Actor remove(int index) {
+			return currentMovie.getActors().remove(index);
+		}
+
+		public void add(int index, Actor actor) {
+			currentMovie.getActors().add(index, actor);
+		}
+
+		public int indexOf(Actor actor) {
+			return currentMovie.getActors().indexOf(actor);
+		}
+
+		public boolean removeElement(Actor actor) {
+			return currentMovie.getActors().remove(actor);
+		}
+
 		@Override
 		public int getSize() {
 			return currentMovie.getActors().size();
 		}
-
-
-
-
 
 	}
 
@@ -862,6 +887,95 @@ public class FileDetailPanel extends JPanel {
 
 	private String getLayoutPositionString(int columnNumber, int rowNumber) {
 		return columnNumber + ", " + rowNumber;
+	}
+
+	static class ActorTransferHandler extends TransferHandler {
+
+		private static final DataFlavor DATA_FLAVOUR = new DataFlavor(Actor.class, "Actor");
+
+		private final JList actorList;
+		private boolean inDrag;
+
+		ActorTransferHandler(JList actorList) {
+			this.actorList = actorList;
+		}
+
+		@Override
+		public int getSourceActions(JComponent c) {
+			return TransferHandler.MOVE;
+		}
+
+		@Override
+		protected Transferable createTransferable(JComponent c) {
+			inDrag = true;
+			return new Transferable() {
+				@Override
+				public DataFlavor[] getTransferDataFlavors() {
+					return new DataFlavor[] { DATA_FLAVOUR };
+				}
+
+				@Override
+				public boolean isDataFlavorSupported(DataFlavor flavor) {
+					return flavor.equals(DATA_FLAVOUR);
+				}
+
+				@Override
+				public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
+					if (flavor != DATA_FLAVOUR) {
+						return new UnsupportedFlavorException(flavor);
+					}
+					return actorList.getSelectedValue();
+				}
+			};
+		}
+
+		@Override
+		public boolean canImport(TransferSupport support) {
+			if (!inDrag || !support.isDataFlavorSupported(DATA_FLAVOUR)) {
+				return false;
+			}
+
+			JList.DropLocation dl = (JList.DropLocation) support.getDropLocation();
+			if (dl.getIndex() == -1) {
+				return false;
+			} else {
+				return true;
+			}
+		}
+
+		@Override
+		public boolean importData(TransferSupport support) {
+			if (!canImport(support)) {
+				return false;
+			}
+
+			Transferable transferable = support.getTransferable();
+			try {
+				Actor draggedActor = (Actor) transferable.getTransferData(DATA_FLAVOUR);
+
+				JList.DropLocation dl = (JList.DropLocation) support.getDropLocation();
+				ActorItemListModel model = (ActorItemListModel) actorList.getModel();
+				int dropIndex = dl.getIndex();
+				if (model.indexOf(draggedActor) < dropIndex) {
+					dropIndex--;
+				}
+				model.removeElement(draggedActor);
+				model.add(dropIndex, draggedActor);
+				return true;
+			} catch (UnsupportedFlavorException e) {
+				return false;
+			} catch (IOException e) {
+				e.printStackTrace();
+				return false;
+			}
+		}
+
+		@Override
+		protected void exportDone(JComponent source, Transferable data, int action) {
+			super.exportDone(source, data, action);
+			inDrag = false;
+			this.actorList.repaint();
+		}
 	}
 
 }

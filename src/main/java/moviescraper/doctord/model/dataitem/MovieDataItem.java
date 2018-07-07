@@ -1,6 +1,8 @@
 package moviescraper.doctord.model.dataitem;
 
-public abstract class MovieDataItem {
+import java.io.Serializable;
+
+public abstract class MovieDataItem implements Serializable {
 
 	protected final static int connectionTimeout = 10000; //10 seconds
 	protected final static int readTimeout = 10000; //10 seconds
