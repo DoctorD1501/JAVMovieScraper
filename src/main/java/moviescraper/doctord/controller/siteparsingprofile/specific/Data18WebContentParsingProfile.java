@@ -432,7 +432,10 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 								&& (!actorThumbnail.equals("http://img.data18.com/images/no_prev_star.jpg"))) {
 							try {
 								actorThumbnail = actorThumbnail.replaceFirst(Pattern.quote("/60/"), "/120/");
-								Actor actorToAdd = new Actor(actorName, null, new Thumb(actorThumbnail));
+								Thumb actorThumb = new Thumb(actorThumbnail);
+								actorThumb.setViewerURL(new URL(document.location()));
+								actorThumb.setPreviewURL(new URL(actorThumbnail));
+								Actor actorToAdd = new Actor(actorName, null, actorThumb);
 								if (!actorList.contains(actorToAdd))
 									actorList.add(actorToAdd);
 							} catch (MalformedURLException e) {
