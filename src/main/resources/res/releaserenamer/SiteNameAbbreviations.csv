@@ -1,5 +1,5 @@
 #How to read this file:
-#This is a comment and will be ignored since it starts with "#"
+#This is a comment and will be ignored since it starts with a #
 #A comment above a list of entries is the network name
 #On a given line the first entry is the text that will be returned if any comma separated entries after that entry on that line are found at the start of the file name
 #a lowercase abbreviation (typically the second entry on each line, if it's known) is the same used as the release name on usenet alt.binaries.erotica
@@ -77,7 +77,7 @@
 "Mr Happys Glory Hole", "MrHappysGloryHole", "Mr.HappysGloryHole"
 "My Girlfriends Revenge", "MyGirlfriendsRevenge", "MyGirlfriend'sRevenge"
 "Natural Bush Girls", NaturalBushGirls
-"Panties And Fannies", "PantiesAndFannies" 
+"Panties And Fannies", "PantiesAndFannies"
 "Pimp My Black Teen", "PimpMyBlackTeen"
 "Please Bang My Wife", "PleaseBangMyWife"
 "Round Mound Of Ass", "RoundMoundOfAss"
@@ -87,6 +87,14 @@
 "Tinys Black Adventures", "TinysBlackAdventures", "Tiny'sBlackAdventures"
 "Tits Ass And Ammo", "TitsAssAndAmmo"
 "XXX Proposal", "XXXProposal"
+
+#Bang
+"Bang Casting", bcasting, "BangCasting"
+"Bang Confessions", bconfessions, "BangConfessions"
+"Bang Glamkore", bglamkore "BangGlamkore"
+"Bang Gonzo", bgonzo, "BangGonzo"
+"Bang Real Teens", brealteens, "BangRealTeens"
+"Screw The Cops", "ScrewTheCops"
 
 #Bang Bros
 "Assparade", ap, "Ass Parade"
@@ -140,7 +148,6 @@
 #Brand Danger
 "Forever Vamp", "ForeverVamp", "ForeverVamp.com"
 "Holly Randall", "HollyRandall", "HollyRandall.com"
-
 
 #Brazzers
 "Asses In Public", AssesInPublic
@@ -219,6 +226,10 @@
 "Only Blowjob", obj, "OnlyBlowjob"
 "Sex Video Casting", svc, "SexVideoCasting"
 
+# Kelly Madison
+"Kelly Madison", "KellyMadison"
+"Porn Fidelity", pf, "PornFidelity"
+"Teen Fidelity", tf, "TeenFidelity"
 
 #Killergram
 "Killergram", kg
@@ -229,6 +240,7 @@
 "Divine Bitches", "DivineBitches"
 "Electrosluts", el
 "Everything Butt", eb, "EverythingButt"
+"Families Tied", "FamiliesTied"
 "Foot Worship", fw, "FootWorship"
 "Fucking Machines", fum, "FuckingMachines"
 "Hardcore Gangbang", hgb, "Hardcore Gangbang"
@@ -294,7 +306,6 @@
 "Stuffed Petite", "StuffedPetite"
 "Throated", ted
 "XXX Pillow Talk", "XXXPillowTalk"
-
 
 #Naughty America
 "2 Chicks Same Time", 2cst, 2ChicksSameTime
@@ -375,10 +386,20 @@
 "Stretched Out Snatch", "StretchedOutSnatch"
 "Unlimited Milfs", "UnlimitedMilfs"
 
+#Nubiles
+"Bad Teens Punished", badteenspunished, "BadTeensPunished"
+"Moms Teach Sex", momsteachsex, "MomsTeachSex"
+"Nubiles", nubiles
+"Nubiles Casting", nubc, "NubilesCasting"
+"Nubiles Films", nubilesfilms, "NubilesFilms"
+"Nubiles Porn", nubilesporn, "NubilesPorn"
+"Petite HD Porn", petitehdporn, "PetiteHDPorn"
+"Step Siblings Caught", stepsiblingscaught, "StepSiblingsCaught"
+"Teacher Fucks Teens", teacherfucksteens, "TeacherFucksTeens"
 
 #Nuru
 "All Girl Massage", agm, "AllGirlMassage"
-"Massage Parlor", mp, "MassageParlor" 
+"Massage Parlor", mp, "MassageParlor"
 "Milking Table", milkingtable, "MilkingTable"
 "Nuru Massage", num, "NuruMassage"
 "Soapy Massage", "SoapyMassage"
@@ -421,7 +442,6 @@
 "Teen Bff", tbff, "TeenBff"
 "Webcam Hackers", "WebcamHackers"
 
-
 #Reality Kings
 "40inchplus", "40 Inch Plus"
 "8th Street Latinas", 8thsl, "8thStreetLatinas"
@@ -452,20 +472,34 @@
 "Vipcrew", "VIP Crew", "Vip Crew"
 "We Live Together", wlt, "WeLiveTogether"
 
+#SEXYHub
+"Dane Jones", dnj, "DaneJones"
+"Lesbea", lsb
+"Massage Rooms", mrs, "MassageRooms"
+"Mom XXX", mom, "MomXXX"
+
 #Team Skeet - Missing some usenet abbreviations
+"Bad MILFs", badmilfs, "BadMILFs"
+"Brace Faced", bracefaced, "BraceFaced"
+"CFNM Teens", cfnmt, "CFNMTeens"
+"Dyked", dyked
 "Exxxtra Small", ext, "ExxxtraSmall"
+"Ginger Patch", gingerpatch, "GingerPatch"
 "Her Freshman Year", "HerFreshmanYear"
 "Innocent High", inh, innocenthigh, "InnocentHigh"
+"My Babysitters Club", bsc, "MyBabysittersClub"
 "Oye Loca", oyeloca, "OyeLoca"
 "Pov Life", povl, "PovLife"
 "Rub A Teen", "RubATeen"
 "Self Desire", "SelfDesire"
 "She's New", "She'sNew", "ShesNew"
+"Sis Loves Me", "SisLovesMe"
 "Solo Interviews", "SoloInterviews"
 "Step Siblings", steps, "StepSiblings"
 "Teen Curves", tc, "TeenCurves"
 "Teen Pies", teenpies, "TeenPies"
 "Teens Do Porn", tdp, "TeensDoPorn"
+"Teens Love Anal", tla, teensloveanal, "TeensLoveAnal"
 "Teens Love Money", tlm, "TeensLoveMoney"
 "Teeny Black", teenyblack, "TeenyBlack"
 "The Real Workout", therealworkout, "TheRealWorkout"
@@ -474,21 +508,27 @@
 
 #Other Sites Not Part of a Network
 "Amateur Allure", aa, "AmateurAllure"
-"Bootylicious Mag", blm, "BootyliciousMag"
 "Babes", babes
+"Backroom Casting Couch", bcc, "BackroomCastingCouch"
+"Big Gulp Girls", biggulpgirls, "BigGulpGirls"
+"Bootylicious Mag", blm, "BootyliciousMag"
+"Box Truck Sex", boxtrucksex, "BoxTruckSex"
 "Burning Angel", burna, "BurningAngel"
 "Casting Couch X", ccx, "CastingCouchX"
+"Dad Crush", dadcrush, "DadCrush"
 "Digital Playground", dpg, "DigitalPlayground"
+"Digital Desire", dde, "DigitalDesire"
 "Divine Bitches", xxx-db, "DivineBitches"
+"Exploited College Girls", ecg, "ExploitedCollegeGirls"
 "Fucked Hard 18", fh18, "FuckedHard18"
+"Jesh By Jesh", jbyj, "JeshByJesh"
 "Jessica Jaymes XXX", jjxxx, "JessicaJaymesXXX"
-"Porn Fidelity", pf, "PornFidelity"
 "Manojob", maj
-"Nubiles", nubiles
+"Pure Mature", pm, ktr.pm, "PureMature"
+"Scoreland", shd, "ScoreHD", "Score HD"
+"Taboo POV", taboopov, "TabooPOV"
 "The Dick Suckers", tds, "TheDickSuckers"
 "Tonight's Girlfriend", tog, "Tonight'sGirlfriend", "TonightsGirlfriend"
-"Scoreland", shd. "ScoreHD", "Score HD"
-"Pure Mature", pm, ktr.pm, "PureMature"
 "Web Young", webyoung
 "Wake Up'n Fuck", wunf, "WakeUp'nFuck", "WakeUpnFuck"
 "Wow Girls", wowg, "WowGirls"
