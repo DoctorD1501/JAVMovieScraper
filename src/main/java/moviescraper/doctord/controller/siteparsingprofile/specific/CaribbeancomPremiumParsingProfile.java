@@ -6,6 +6,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.IllegalFormatException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -56,26 +57,12 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 
 	@Override
 	public Title scrapeTitle() {
-		String japaneseTitle = getJapaneseTitleText();
-		if (getScrapingLanguage() == Language.ENGLISH && japaneseTitle.length() > 0)
-			return new Title(WordUtils.capitalize(TranslateString.translateStringJapaneseToEnglish(japaneseTitle)));
-		else
-			return new Title(japaneseTitle);
-	}
-
-	private String getJapaneseTitleText() {
-		initializeJapaneseDocument();
-		Element titleElement = japaneseDocument.select("div.video-detail h1").first();
-
-		if (titleElement != null) {
-			return titleElement.text();
-		}
-		return "";
+		return new Title(document.select("#innerwrapper .detail").first().text());
 	}
 
 	@Override
 	public OriginalTitle scrapeOriginalTitle() {
-		return new OriginalTitle(getJapaneseTitleText());
+		return new OriginalTitle(document.select("#innerwrapper .detail").first().text());
 	}
 
 	@Override
@@ -142,36 +129,29 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 
 	@Override
 	public Plot scrapePlot() {
-		initializeJapaneseDocument();
-		Element plotElement = japaneseDocument.select("div.movie-comment p").first();
-		if (plotElement != null && plotElement.text().length() > 0) {
-			if (getScrapingLanguage() == Language.ENGLISH)
-				return new Plot(TranslateString.translateStringJapaneseToEnglish(plotElement.text()));
-			else
-				return new Plot(plotElement.text());
-		}
 		return Plot.BLANK_PLOT;
 	}
 
 	@Override
 	public Tagline scrapeTagline() {
-		//This type of info doesn't exist on this site
+		// This type of info doesn't exist on this site
 		return Tagline.BLANK_TAGLINE;
 	}
 
 	@Override
 	public Runtime scrapeRuntime() {
-		initializeJapaneseDocument();
-		Element durationElement = japaneseDocument.select("div.movie-info dl dt:contains(再生時間:) + dd").first();
-		if (durationElement != null && durationElement.text().trim().length() > 0) {
-			String[] durationSplitByTimeUnit = durationElement.text().split(":");
-			if (durationSplitByTimeUnit.length == 3) {
-				int hours = Integer.parseInt(durationSplitByTimeUnit[0]);
-				int minutes = Integer.parseInt(durationSplitByTimeUnit[1]);
-				//we don't care about seconds
+		Elements lines = document.select("#innerwrapper .detail").first().parent().select("table table").first().select("tr");
+		for (Element lineElement : lines) {
+			if (lineElement.child(0).text().equals("Length:")) {
+				String[] durationSplitByTimeUnit = lineElement.child(1).text().split(":");
+				if (durationSplitByTimeUnit.length == 3) {
+					int hours = Integer.parseInt(durationSplitByTimeUnit[0]);
+					int minutes = Integer.parseInt(durationSplitByTimeUnit[1]);
+					// we don't care about seconds
 
-				int totalMinutes = (hours * 60) + minutes;
-				return new Runtime(new Integer(totalMinutes).toString());
+					int totalMinutes = (hours * 60) + minutes;
+					return new Runtime(Integer.toString(totalMinutes));
+				}
 			}
 		}
 		return Runtime.BLANK_RUNTIME;
@@ -306,25 +286,6 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 	@Override
 	public ArrayList<Genre> scrapeGenres() {
 		ArrayList<Genre> genresReturned = new ArrayList<>();
-		initializeJapaneseDocument();
-
-		Elements genreElementsInJapanese = japaneseDocument.select("dl.movie-info-cat dd a");
-		for (Element currentGenre : genreElementsInJapanese) {
-			if (getScrapingLanguage() == Language.ENGLISH) {
-				//the genre is coded as a specific webpage number. we can call our helper function to translate a number
-				//like 1_1.html into the actual english genre this represents
-				String currentGenreCode = currentGenre.attr("href");
-				if (currentGenreCode.contains("/")) {
-					//currentGenreCode will just be the numerical part after this function call (e.g. 1_1)
-					currentGenreCode = currentGenreCode.substring(currentGenreCode.lastIndexOf('/')).replaceFirst(Pattern.quote(".html"), "").replaceFirst(Pattern.quote("/"), "");
-					String englishGenreName = convertGenreCodeToDescription(currentGenreCode);
-					if (englishGenreName != null && !genresReturned.contains(englishGenreName))
-						genresReturned.add(new Genre(englishGenreName));
-				}
-			} else if (getScrapingLanguage() == Language.JAPANESE) {
-				genresReturned.add(new Genre(currentGenre.text().trim()));
-			}
-		}
 		return genresReturned;
 	}
 
@@ -526,14 +487,16 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 
 	@Override
 	public Trailer scrapeTrailer() {
-		initializeJapaneseDocument();
-		Element trailerElement = japaneseDocument.select("div.movie-download div.sb-btn a").first();
-		if (trailerElement != null) {
-			String trailerLink = trailerElement.attr("href");
-			if (trailerLink != null && trailerLink.length() > 0)
-				return new Trailer(trailerLink);
+		try {
+			String script_content = document.select(".video-js").first().parent().select("script").html();
+			String trailerUrl = script_content.substring(script_content.indexOf("src: \"") + 6).split("\"")[0];
+			if (trailerUrl.length() == 0) {
+				throw new IllegalArgumentException("trailer url is empty");
+			}
+			return new Trailer("https://en.caribbeancompr.com" + trailerUrl);
+		} catch (Exception e) {
+			return Trailer.BLANK_TRAILER;
 		}
-		return Trailer.BLANK_TRAILER;
 	}
 
 	@Override
