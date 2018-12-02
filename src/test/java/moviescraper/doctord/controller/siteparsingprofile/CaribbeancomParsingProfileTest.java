@@ -54,26 +54,19 @@ public class CaribbeancomParsingProfileTest {
 	@Test
 	public void testScrapeTitle() {
 		Title title = parser.scrapeTitle();
-		//this assumes translation is done. if this test fails, it could be because translation is not done or the web
-		//based translation service has changed how they do translation, so try to just see if the title is close to
-		//this one and adjust as needed to fix the test case
-		if (parser.getScrapingLanguage() == Language.JAPANESE) {
-			assertEquals("Wrong title", "CA乱交パーティ 〜快適な性交空間〜", title.getTitle());
-		} else {
-			assertEquals("Wrong title", "CA Orgy Party ~ Comfortable Sexual Intercourse ~", title.getTitle());
-		}
+		assertEquals("Wrong title", "Ruka Ichinose", title.getTitle());
 	}
 
 	@Test
 	public void testScrapeOriginalTitle() {
 		OriginalTitle originalTitle = parser.scrapeOriginalTitle();
-		assertEquals("Wrong original title", "CA乱交パーティ 〜快適な性交空間〜", originalTitle.getOriginalTitle());
+		assertEquals("Wrong original title", OriginalTitle.BLANK_ORIGINALTITLE, originalTitle);
 	}
 
 	@Test
 	public void testScrapeRating() {
 		Rating rating = parser.scrapeRating();
-		assertEquals("Wrong rating", "8.0", rating.getRatingOutOfTen());
+		assertEquals("Wrong rating", Rating.BLANK_RATING, rating);
 	}
 
 	@Test
@@ -111,21 +104,13 @@ public class CaribbeancomParsingProfileTest {
 	@Test
 	public void testScrapeActors() {
 		ArrayList<Actor> actorList = parser.scrapeActors();
-		if (parser.getScrapingLanguage() == Language.JAPANESE) {
-			assertEquals("Wrong actor name", "一ノ瀬ルカ", actorList.get(0).getName());
-		} else {
-			assertEquals("Wrong actor name", "Ichinose Ruka", actorList.get(0).getName());
-		}
+		assertEquals("Wrong actor name", "Ruka Ichinose", actorList.get(0).getName());
 	}
 
 	@Test
 	public void testScrapeGenre() {
 		ArrayList<Genre> genreList = parser.scrapeGenres();
-		if (parser.getScrapingLanguage() == Language.JAPANESE) {
-			assertEquals("Wrong genre", "オリジナル動画", genreList.get(0).getGenre());
-		} else {
-			assertEquals("Wrong genre", "Original video", genreList.get(0).getGenre());
-		}
+		assertEquals("Wrong genre", "creampie", genreList.get(0).getGenre());
 	}
 
 	@Test

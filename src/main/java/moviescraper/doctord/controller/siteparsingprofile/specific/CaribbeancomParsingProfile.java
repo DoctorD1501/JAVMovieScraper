@@ -70,32 +70,16 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements Sp
 
 	@Override
 	public Title scrapeTitle() {
-		Document documentToUse = document;
-		Element titleElement = documentToUse.select("title").first();
-		//for now, we're always going to use the japanese page, as the below variable is always true
-		if (useTranslationOfJapanesePageForEnglishMetadata) {
-			initializeJapaneseDocument();
-			documentToUse = japaneseDocument;
-			titleElement = documentToUse.select("div.video-detail h1[itemprop=name]").first();
+		try {
+			Element titleElement = document.select(".movie-info .heading [itemprop=name]").first();
+			return new Title(titleElement.text());
+		} catch (Exception e) {
+			return new Title("");
 		}
-
-		if (titleElement != null) {
-			//We only sometimes do the translation of the japanese page, however
-
-			if (getScrapingLanguage() == Language.ENGLISH) {
-				return new Title(WordUtils.capitalize(TranslateString.translateStringJapaneseToEnglish(titleElement.text())));
-			} else
-				return new Title(titleElement.text());
-		}
-		return new Title("");
 	}
 
 	@Override
 	public OriginalTitle scrapeOriginalTitle() {
-		initializeJapaneseDocument();
-		Element titleElement = japaneseDocument.select("div.video-detail h1[itemprop=name]").first();
-		if (titleElement != null)
-			return new OriginalTitle(titleElement.text());
 		return OriginalTitle.BLANK_ORIGINALTITLE;
 	}
 
@@ -111,13 +95,7 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements Sp
 
 	@Override
 	public Rating scrapeRating() {
-		initializeJapaneseDocument();
-		Element stars = japaneseDocument.select("div.movie-info dl dt:contains(ユーザー評価:) ~ dd ").first();
-		if (stars != null && stars.text().contains("★")) {
-			//count the number of ★ characters, max number of stars is 5 and half stars not supported
-			return new Rating(5.0, String.valueOf(stars.text().length()));
-		}
-		return new Rating(0, "");
+		return Rating.BLANK_RATING;
 	}
 
 	@Override
@@ -127,12 +105,12 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements Sp
 
 	@Override
 	public ReleaseDate scrapeReleaseDate() {
-		initializeJapaneseDocument();
-		Element releaseDate = japaneseDocument.select("div.movie-info dl dt:contains(配信日:) ~ dd ").first();
-		if (releaseDate != null && releaseDate.text().length() > 4) {
+		try {
+			Element releaseDate = document.select(".movie-info [itemprop=datePublished]").first();
 			return new ReleaseDate(releaseDate.text(), caribbeanReleaseDateFormat);
+		} catch (NullPointerException e) {
+			return ReleaseDate.BLANK_RELEASEDATE;
 		}
-		return ReleaseDate.BLANK_RELEASEDATE;
 	}
 
 	@Override
@@ -153,15 +131,12 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements Sp
 
 	@Override
 	public Plot scrapePlot() {
-		initializeJapaneseDocument();
-		Element plotElement = japaneseDocument.select("div.movie-comment p").first();
-		if (plotElement != null && plotElement.text().length() > 0) {
-			if (getScrapingLanguage() == Language.ENGLISH)
-				return new Plot(TranslateString.translateStringJapaneseToEnglish(plotElement.text()));
-			else
-				return new Plot(plotElement.text());
+		try {
+			Element plotElement = document.select(".movie-info p[itemprop=description]").first();
+			return new Plot(plotElement.text());
+		} catch (NullPointerException e) {
+			return Plot.BLANK_PLOT;
 		}
-		return Plot.BLANK_PLOT;
 	}
 
 	@Override
@@ -171,20 +146,24 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements Sp
 
 	@Override
 	public Runtime scrapeRuntime() {
-		initializeJapaneseDocument();
-		Element durationElement = japaneseDocument.select("div.movie-info dl dt:contains(生時間:) ~ dd ").first();
-		if (durationElement != null && durationElement.text().trim().length() > 0) {
-			String[] durationSplitByTimeUnit = durationElement.text().split(":");
-			if (durationSplitByTimeUnit.length == 3) {
-				int hours = Integer.parseInt(durationSplitByTimeUnit[0]);
-				int minutes = Integer.parseInt(durationSplitByTimeUnit[1]);
-				//we don't care about seconds
-
-				int totalMinutes = (hours * 60) + minutes;
-				return new Runtime(new Integer(totalMinutes).toString());
+		try {
+			Element durationElement = document.select(".movie-info span[itemprop=duration]").first();
+			if (durationElement.text().trim().length() == 0) {
+				throw new IllegalArgumentException("Duration text is empty");
 			}
+			String[] durationSplitByTimeUnit = durationElement.text().split(":");
+			if (durationSplitByTimeUnit.length != 3) {
+				throw new IllegalArgumentException("Invalid number of parts");
+			}
+			int hours = Integer.parseInt(durationSplitByTimeUnit[0]);
+			int minutes = Integer.parseInt(durationSplitByTimeUnit[1]);
+			// we don't care about seconds
+
+			int totalMinutes = (hours * 60) + minutes;
+			return new Runtime(Integer.toString(totalMinutes));
+		} catch (Exception e) {
+			return Runtime.BLANK_RUNTIME;
 		}
-		return Runtime.BLANK_RUNTIME;
 	}
 
 	@Override
@@ -240,7 +219,7 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements Sp
 	@Override
 	public ID scrapeID() {
 		initializeJapaneseDocument();
-		//Just get the ID from the page URL by doing some string manipulation
+		// Just get the ID from the page URL by doing some string manipulation
 		String baseUri = japaneseDocument.baseUri();
 		if (baseUri.length() > 0 && baseUri.contains("caribbeancom.com")) {
 			baseUri = baseUri.replaceFirst("/index.html", "");
@@ -252,18 +231,19 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements Sp
 
 	@Override
 	public ArrayList<Genre> scrapeGenres() {
-		initializeJapaneseDocument();
 		ArrayList<Genre> genreList = new ArrayList<>();
-		Elements genres = japaneseDocument.select("div.movie-info dl.movie-info-cat:contains(カテゴリー:) dd ");
-		if (genres != null) {
+		try {
+			// Elements genres = document.select(".movie-info
+			// [itemtype=http://data-vocabulary.org/Breadcrumb][itemprop=url]");
+			Elements genres = document.select(".movie-info [itemprop=genre]");
+
 			for (Element currentGenre : genres) {
 				if (currentGenre.text().trim().length() > 0) {
-					String genreText = currentGenre.text(); //right now it's in Japanese since only the Japanese page has info on the genres
-					if (getScrapingLanguage() == Language.ENGLISH)
-						genreText = TranslateString.translateStringJapaneseToEnglish(currentGenre.text().trim());
+					String genreText = currentGenre.text();
 					genreList.add(new Genre(genreText));
 				}
 			}
+		} catch (Exception e) {
 		}
 		return genreList;
 	}
@@ -271,38 +251,14 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements Sp
 	@Override
 	public ArrayList<Actor> scrapeActors() {
 		ArrayList<Actor> actorList = new ArrayList<>();
-		initializeJapaneseDocument();
-		//Element actorEnglishSearchElement = document.select("table.info_table tbody tr td.property:contains(Starring:) ~ td a").first();
-		Elements japaneseActors = japaneseDocument.select("div.movie-info dl dt:contains(出演:) ~ dd a");
-		//Disabling the english actor scraping and just going to use the japanese ones for now - the data for english actors
-		//doesn't comma seperate each person
-		/*if(actorEnglishSearchElement != null && getScrapingLanguage() == Language.ENGLISH)
-		{
-			
-			String hrefText = actorEnglishSearchElement.attr("href");
-			hrefText = hrefText.replaceFirst(Pattern.quote("/eng/search/"),"");
-			hrefText = hrefText.replaceFirst("/[0-9].html", "");
-			try {
-				hrefText = URLDecoder.decode( hrefText, "UTF-8" );
-				String[] actorNames = hrefText.split(",");
-				for(int i = 0; i < actorNames.length; i++)
-				{
-					actorList.add(new Actor(actorNames[i],"",null));
-				}
-			} catch (UnsupportedEncodingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-		}*/
-		//Scrape actors from Japanese page for now and do a name translate if we are scraping in English
-		if (japaneseActors != null) {
-			for (Element japaneseActor : japaneseActors) {
-				String actorName = japaneseActor.text();
-				if (scrapingLanguage == Language.ENGLISH)
-					actorName = TranslateString.translateJapanesePersonNameToRomaji(actorName);
+		Elements actorElements = document.select(".movie-info [itemprop=actor]");
+		try {
+			for (Element actorElement : actorElements) {
+				String actorName = actorElement.text();
 				actorList.add(new Actor(actorName, "", null));
 			}
+		} catch (Exception e) {
+			// Do nothing. Just skip this actor
 		}
 		return actorList;
 	}
