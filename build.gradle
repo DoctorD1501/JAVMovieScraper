@@ -70,8 +70,6 @@ jar {
 
 shadowJar {
 	baseName = project.name
-	classifier = null
-	version = null
 }
 
 spotless {
