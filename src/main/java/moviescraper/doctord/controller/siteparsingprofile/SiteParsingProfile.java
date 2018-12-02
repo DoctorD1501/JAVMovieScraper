@@ -316,9 +316,10 @@ public abstract class SiteParsingProfile implements DataItemSource {
 
 			Elements links = doc.select("div.g");
 			for (Element link : links) {
-				Elements hrefs = link.select("h3.r a");
+				Elements hrefs = link.select(".r a");
 				String href = hrefs.attr("href");
 				href = URLDecoder.decode(href, encodingScheme);
+				href = href.replaceFirst(Pattern.quote("/url?url="), "");
 				href = href.replaceFirst(Pattern.quote("/url?q="), "");
 				href = href.replaceFirst(Pattern.quote("http://www.google.com/url?url="), "");
 				//remove some junk referrer stuff
