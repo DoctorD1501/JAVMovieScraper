@@ -288,7 +288,7 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 		fileID = fileID.toLowerCase();
 		if (fileID == null)
 			return null;
-		String searchURL = "http://my.tokyo-hot.com/product/?q=" + fileID + "&x=0&y=0";
+		String searchURL = "https://my.tokyo-hot.com/product/?q=" + fileID + "&x=0&y=0";
 		return searchURL;
 	}
 

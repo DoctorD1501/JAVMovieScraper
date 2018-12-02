@@ -78,7 +78,7 @@ public class MyTokyoHotParsingProfileTest {
 	@Test
 	public void testScrapeRuntime() {
 		moviescraper.doctord.model.dataitem.Runtime runtime = parser.scrapeRuntime();
-		assertEquals("Runtime not correct", "95", runtime.getRuntime());
+		assertEquals("Runtime not correct", "0", runtime.getRuntime());
 	}
 
 	@Test
@@ -90,7 +90,7 @@ public class MyTokyoHotParsingProfileTest {
 	@Test
 	public void testScrapePoster() {
 		Thumb[] posters = parser.scrapePosters();
-		assertEquals("Poster not correct", "http://my.cdn.tokyo-hot.com/media/20876/list_image/n0754/820x462_default.jpg", posters[0].getThumbURL().toString());
+		assertEquals("Poster not correct", "https://my.cdn.tokyo-hot.com/media/20876/list_image/n0754/820x462_default.jpg", posters[0].getThumbURL().toString());
 	}
 
 	@Test
@@ -112,7 +112,7 @@ public class MyTokyoHotParsingProfileTest {
 	@Test
 	public void testScrapeTrailer() {
 		Trailer trailer = parser.scrapeTrailer();
-		assertEquals("Trailer not correct", "http://my.cdn.tokyo-hot.com/media/samples/20876.mp4", trailer.getTrailer());
+		assertEquals("Trailer not correct", "https://my.cdn.tokyo-hot.com/media/samples/20876.mp4", trailer.getTrailer());
 	}
 
 	@Test
