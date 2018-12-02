@@ -75,15 +75,17 @@ public class HeyzoParsingProfileTest {
 
 	//Not testing rating for now due to this site no longer supporting rating scraping. This used to be doable without using js
 	//but now the rating requires js to on the parser to get the rating
-	/*@Test public void testRating(){
-		Rating rating = profile.scrapeRating();
-		System.out.println("rating = " + rating);
-		assertEquals(
-				"Not a rating",
-				(new Double(rating.getRatingOutOfTen()).doubleValue() > 0.1)
-						&& (new Double(rating.getRatingOutOfTen())
-								.doubleValue() < 10.0), true);
-	}*/
+	/*
+	 * @Test public void testRating(){
+	 * Rating rating = profile.scrapeRating();
+	 * System.out.println("rating = " + rating);
+	 * assertEquals(
+	 * "Not a rating",
+	 * (new Double(rating.getRatingOutOfTen()).doubleValue() > 0.1)
+	 * && (new Double(rating.getRatingOutOfTen())
+	 * .doubleValue() < 10.0), true);
+	 * }
+	 */
 
 	@Test
 	public void testYear() {

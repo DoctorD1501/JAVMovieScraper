@@ -8,9 +8,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * 
  * JUnit test class to test the equalsJavID() method in ID
- *
  */
 public class EqualsJavIDTester {
 

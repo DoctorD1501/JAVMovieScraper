@@ -15,7 +15,6 @@ import moviescraper.doctord.model.dataitem.DataItemSource;
 /**
  * A ScraperGroupAmalgamtionPreference is the preferred order of scrapers to use when amalgamating data
  * plus an optional list of fields that have their own ordering of scrapers to use just for that field
- *
  */
 public class ScraperGroupAmalgamationPreference {
 
@@ -30,6 +29,7 @@ public class ScraperGroupAmalgamationPreference {
 
 	/**
 	 * Get the specific ordering for this field, or the overall ordering if there wasn't a specific ordering found
+	 * 
 	 * @param field
 	 * @return
 	 */
@@ -42,7 +42,6 @@ public class ScraperGroupAmalgamationPreference {
 	}
 
 	/**
-	 * 
 	 * @return the list of scrapers this scraper group should scrape when doing amalgamating
 	 */
 	public LinkedList<DataItemSource> getActiveScrapersUsedInOverallPreference() {
@@ -61,6 +60,7 @@ public class ScraperGroupAmalgamationPreference {
 
 	/**
 	 * Get the specific ordering for this field, or null if there isn't one set
+	 * 
 	 * @param field - field to look up the ordering on
 	 */
 	public DataItemSourceAmalgamationPreference getSpecificAmalgamationPreference(Field field) {
@@ -107,8 +107,8 @@ public class ScraperGroupAmalgamationPreference {
 
 	@Override
 	public String toString() {
-		return "ScraperGroupAmalgamationPreference [scraperGroupName = " + scraperGroupName.toString() + " overallOrdering = " + overallOrdering.toString()
-				+ " customAmalgamationPerField " + customAmalgamationOrderPerField + "]";
+		return "ScraperGroupAmalgamationPreference [scraperGroupName = " + scraperGroupName.toString() + " overallOrdering = " + overallOrdering.toString() + " customAmalgamationPerField "
+		        + customAmalgamationOrderPerField + "]";
 	}
 
 	public String toFriendlyString() {

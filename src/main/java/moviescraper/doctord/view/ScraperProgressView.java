@@ -21,8 +21,7 @@ import moviescraper.doctord.model.dataitem.DataItemSource;
 
 /**
  * Shows progress of an individual scraper during an amalgamated scrape and has
- *  controls to cancel the scrape
- *
+ * controls to cancel the scrape
  */
 public class ScraperProgressView extends JPanel {
 
@@ -118,11 +117,13 @@ public class ScraperProgressView extends JPanel {
 	public void updateProgressViewWithScrapeFinished(Movie movieThatScraped) {
 		progressButton.setText("Done");
 		progressButton.setEnabled(false);
-		/*if (movieThatScraped != null && movieThatScraped.hasValidTitle()) {
-			//Commented this out because it is causing text not to fit
-			//I will revist this in a later release because while nice to have it is not mandatory to see the movie name that has been scraped
-			//scrapedMovieTitle.setText(movieThatScraped.getTitle().getTitle());
-		}*/
+		/*
+		 * if (movieThatScraped != null && movieThatScraped.hasValidTitle()) {
+		 * //Commented this out because it is causing text not to fit
+		 * //I will revist this in a later release because while nice to have it is not mandatory to see the movie name that has been scraped
+		 * //scrapedMovieTitle.setText(movieThatScraped.getTitle().getTitle());
+		 * }
+		 */
 
 	}
 

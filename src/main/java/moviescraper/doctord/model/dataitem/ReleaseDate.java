@@ -9,7 +9,6 @@ import java.util.Locale;
 
 /**
  * The full date on which a movie is released.
- * 
  * The correct format for this variable is YYYY-MM-DD Where YYYY is the year, MM
  * is the month, and DD is the day.
  */
@@ -20,7 +19,6 @@ public class ReleaseDate extends MovieDataItem {
 	private String releaseDate;
 
 	/**
-	 * 
 	 * @param releaseDate - the releaseDate must be a string in the YYYY-MM-DD format (include the separators when using this constructor)
 	 */
 	public ReleaseDate(String releaseDate) {
@@ -39,7 +37,7 @@ public class ReleaseDate extends MovieDataItem {
 				dateValue = format.parse(releaseDate);
 				gregorianCalendar.setTime(dateValue);
 				this.releaseDate = String.valueOf(gregorianCalendar.get(Calendar.YEAR)) + "-" + String.format("%02d", gregorianCalendar.get(Calendar.MONTH) + 1) + "-"
-						+ String.format("%02d", gregorianCalendar.get(Calendar.DATE));
+				        + String.format("%02d", gregorianCalendar.get(Calendar.DATE));
 			} catch (ParseException e) {
 				e.printStackTrace();
 				this.releaseDate = "";
@@ -49,7 +47,6 @@ public class ReleaseDate extends MovieDataItem {
 	}
 
 	/**
-	 * 
 	 * @param year - passed in as a 4 digit string representing the year number (e.g. 2015)
 	 * @param month - passed in as a 2 digit string representing the month number (e.g. 12)
 	 * @param day - passed in as a 2 digit string represneting the day number (e.g. 25)

@@ -316,8 +316,8 @@ public class IAFDParsingProfile extends SiteParsingProfile implements SpecificPr
 	public SearchResult[] getSearchResults(String searchString) throws IOException {
 		if (useSiteSearch) {
 			ArrayList<SearchResult> linksList = new ArrayList<>();
-			Document doc = Jsoup.connect(searchString).userAgent(getRandomUserAgent()).referrer("http://www.iafd.com").ignoreHttpErrors(true)
-					.timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
+			Document doc = Jsoup.connect(searchString).userAgent(getRandomUserAgent()).referrer("http://www.iafd.com").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE)
+			        .get();
 			//check to see if we directly found the title
 			if (doc != null && doc.location().contains("title.asp?title=")) {
 				String title = doc.select(getTitleElementSelector()).first().text();

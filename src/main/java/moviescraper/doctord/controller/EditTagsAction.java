@@ -15,16 +15,18 @@ public class EditTagsAction extends AbstractAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		TagEditorPanel tagEditorPanel = new TagEditorPanel(fileDetailPanel.getCurrentMovie().getTags());
-		int result = JOptionPane.showOptionDialog(fileDetailPanel.guiMain.getFrmMoviescraper(), tagEditorPanel, "Edit tags...", JOptionPane.OK_CANCEL_OPTION,
-				JOptionPane.PLAIN_MESSAGE, null, null, null);
+		int result = JOptionPane.showOptionDialog(fileDetailPanel.guiMain.getFrmMoviescraper(), tagEditorPanel, "Edit tags...", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null,
+		        null);
 		if (result == JOptionPane.OK_OPTION) {
 			tagEditorPanel.save();
-			/*tagItemListModel listModel = (tagItemListModel) fileDetailPanel.gettagList().getModel();
-			listModel.clear();
-			for(tag currenttag : fileDetailPanel.getCurrentMovie().gettags())
-			{
-				listModel.addElement(currenttag);
-			}*/
+			/*
+			 * tagItemListModel listModel = (tagItemListModel) fileDetailPanel.gettagList().getModel();
+			 * listModel.clear();
+			 * for(tag currenttag : fileDetailPanel.getCurrentMovie().gettags())
+			 * {
+			 * listModel.addElement(currenttag);
+			 * }
+			 */
 			fileDetailPanel.getTagList().setText(FileDetailPanel.toTagListFormat(fileDetailPanel.getCurrentMovie().getTags()));
 			//listModel
 			fileDetailPanel.updateUI();

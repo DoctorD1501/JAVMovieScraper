@@ -29,8 +29,7 @@ public class SpecificProfileFactory {
 	}
 
 	@SuppressWarnings("rawtypes")
-	private static Vector<SiteParsingProfileItem> getSiteParsingProfileItems()
-			throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException, URISyntaxException {
+	private static Vector<SiteParsingProfileItem> getSiteParsingProfileItems() throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException, URISyntaxException {
 
 		Vector<SiteParsingProfileItem> items = new Vector<>();
 
@@ -63,13 +62,13 @@ public class SpecificProfileFactory {
 	}
 
 	/**
-	* Scans all classes accessible from the context class loader which belong to the given package and subpackages.
-	*
-	* @param packageName The base package
-	* @return The classes
-	* @throws ClassNotFoundException
-	* @throws IOException
-	*/
+	 * Scans all classes accessible from the context class loader which belong to the given package and subpackages.
+	 *
+	 * @param packageName The base package
+	 * @return The classes
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 */
 	@SuppressWarnings("rawtypes")
 	private static List<Class> getClasses(String packageName) throws ClassNotFoundException, IOException, URISyntaxException {
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
@@ -91,11 +90,11 @@ public class SpecificProfileFactory {
 	/**
 	 * Recursive method used to find all classes in a given directory and subdirs.
 	 *
-	 * @param directory   The base directory
+	 * @param directory The base directory
 	 * @param packageName The package name for classes found inside the base directory
 	 * @return The classes
 	 * @throws ClassNotFoundException
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	@SuppressWarnings("rawtypes")
 	private static List<Class> findClasses(File directory, String packageName) throws ClassNotFoundException, IOException, URISyntaxException {

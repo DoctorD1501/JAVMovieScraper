@@ -11,7 +11,6 @@ package moviescraper.doctord.controller.languagetranslation;
  * @author Duane J. May <djmay@mayhoo.com>
  * @version $Id: JapaneseCharacter.java,v 1.2 2002/04/20 18:10:24 djmay Exp $
  * @since 10:37 AM - 6/3/14
- *
  * @see <a href="http://sourceforge.net/projects/kanjixml/">http://sourceforge.net/projects/kanjixml/</a>
  */
 public class JapaneseCharacter {
@@ -140,25 +139,25 @@ public class JapaneseCharacter {
 	 */
 	protected static String romaji[] = { "a", "a", "i", "i", "u", "u", "e", "e", "o", "o",
 
-			"ka", "ga", "ki", "gi", "ku", "gu", "ke", "ge", "ko", "go",
+	        "ka", "ga", "ki", "gi", "ku", "gu", "ke", "ge", "ko", "go",
 
-			"sa", "za", "shi", "ji", "su", "zu", "se", "ze", "so", "zo",
+	        "sa", "za", "shi", "ji", "su", "zu", "se", "ze", "so", "zo",
 
-			"ta", "da", "chi", "ji", "tsu", "tsu", "zu", "te", "de", "to", "do",
+	        "ta", "da", "chi", "ji", "tsu", "tsu", "zu", "te", "de", "to", "do",
 
-			"na", "ni", "nu", "ne", "no",
+	        "na", "ni", "nu", "ne", "no",
 
-			"ha", "ba", "pa", "hi", "bi", "pi", "fu", "bu", "pu", "he", "be", "pe", "ho", "bo", "po",
+	        "ha", "ba", "pa", "hi", "bi", "pi", "fu", "bu", "pu", "he", "be", "pe", "ho", "bo", "po",
 
-			"ma", "mi", "mu", "me", "mo",
+	        "ma", "mi", "mu", "me", "mo",
 
-			"a", "ya", "u", "yu", "o", "yo",
+	        "a", "ya", "u", "yu", "o", "yo",
 
-			"ra", "ri", "ru", "re", "ro",
+	        "ra", "ri", "ru", "re", "ro",
 
-			"wa", "wa", "wi", "we", "o", "n",
+	        "wa", "wa", "wi", "we", "o", "n",
 
-			"v", "ka", "ke"
+	        "v", "ka", "ke"
 
 	};
 

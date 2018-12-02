@@ -167,14 +167,16 @@ public class OnePondoParsingProfile extends SiteParsingProfileJSON implements Sp
 			//combine the two background images together to make the fanart if we are on a page that has split things into two images
 			if (SiteParsingProfile.fileExistsAtURL(backgroundURLOne) && SiteParsingProfile.fileExistsAtURL(backgroundURLTwo)) {
 				try {
-					/*BufferedImage img1 = ImageIO.read(new URL(backgroundURLOne));
-					BufferedImage img2 = ImageIO.read(new URL(backgroundURLTwo));
-					BufferedImage joinedImage = joinBufferedImage(img1, img2);
-					Thumb joinedImageThumb = new Thumb(backgroundURLTwo);
-					joinedImageThumb.setImage(joinedImage);
-					//we did an operation to join the images, so we'll need to re-encode the jpgs. set the modified flag to true
-					//so we know to do this
-					joinedImageThumb.setIsModified(true);*/
+					/*
+					 * BufferedImage img1 = ImageIO.read(new URL(backgroundURLOne));
+					 * BufferedImage img2 = ImageIO.read(new URL(backgroundURLTwo));
+					 * BufferedImage joinedImage = joinBufferedImage(img1, img2);
+					 * Thumb joinedImageThumb = new Thumb(backgroundURLTwo);
+					 * joinedImageThumb.setImage(joinedImage);
+					 * //we did an operation to join the images, so we'll need to re-encode the jpgs. set the modified flag to true
+					 * //so we know to do this
+					 * joinedImageThumb.setIsModified(true);
+					 */
 
 					Thumb joinedImageThumb = new Thumb(backgroundURLOne, backgroundURLTwo);
 					thumbList.add(joinedImageThumb);

@@ -34,9 +34,8 @@ import moviescraper.doctord.model.dataitem.Votes;
 import moviescraper.doctord.model.dataitem.Year;
 
 /**
- * Collection of all the {@link Movie} objects for a given file that have been scraped along with the 
+ * Collection of all the {@link Movie} objects for a given file that have been scraped along with the
  * ranked preferences of what sites we prefer to use data from when amalgamating
- *
  */
 public class MovieScrapeResultGroup {
 
@@ -47,6 +46,7 @@ public class MovieScrapeResultGroup {
 
 	/**
 	 * Constructor
+	 * 
 	 * @param scrapedMovieObjectsForFile - all the movies you wish to amalgamate
 	 * @param amalgamationPreferenceOrder - the preference of which field you prefer. Items earlier in the list have a higher preference to being picked when amalgamating,
 	 */
@@ -63,7 +63,7 @@ public class MovieScrapeResultGroup {
 	}
 
 	private MovieDataItem getPreferredMovieDataItemAsMovieDataItem(Class<?> classOfMovieDataItem)
-			throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	        throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		MovieDataItem result = getPreferredMovieDataItem(classOfMovieDataItem).length > 0 ? (MovieDataItem) getPreferredMovieDataItem(classOfMovieDataItem)[0] : null;
 		if (result == null) {
 			//call the default constructor
@@ -93,8 +93,7 @@ public class MovieScrapeResultGroup {
 			}
 			return amalgamatedMovie;
 		}
-		System.out.println("Amalgamating a movie between " + scrapedMovieObjectsForFile.size() + " Movie objects with preference order = "
-				+ amalgamationPreferenceOrderForEntireMovieGroup.toString());
+		System.out.println("Amalgamating a movie between " + scrapedMovieObjectsForFile.size() + " Movie objects with preference order = " + amalgamationPreferenceOrderForEntireMovieGroup.toString());
 		try {
 			callAmalgamateActorOnAllTuples(scrapedMovieObjectsForFile);
 			ArrayList<Actor> actors = (ArrayList<Actor>) getPreferredMovieDataItemAsArrayList(Actor.class);
@@ -124,16 +123,15 @@ public class MovieScrapeResultGroup {
 			Votes votes = (Votes) getPreferredMovieDataItemAsMovieDataItem(Votes.class);
 			Year year = (Year) getPreferredMovieDataItemAsMovieDataItem(Year.class);
 
-			Movie amalgamatedMovie = new Movie(actors, directors, fanart, extraFanart, genres, tags, id, mpaa, originalTitle, outline, plot, posters, rating, releaseDate, runtime,
-					set, sortTitle, studio, tagline, title, top250, trailer, votes, year);
+			Movie amalgamatedMovie = new Movie(actors, directors, fanart, extraFanart, genres, tags, id, mpaa, originalTitle, outline, plot, posters, rating, releaseDate, runtime, set, sortTitle,
+			        studio, tagline, title, top250, trailer, votes, year);
 			//The all titles at this point is just the file name, which is the same for all so we can just use the first one
 			if (scrapedMovieObjectsForFile != null && scrapedMovieObjectsForFile.size() > 0) {
 				amalgamatedMovie.setFileName(scrapedMovieObjectsForFile.get(0).getFileName());
 			}
 
 			return amalgamatedMovie;
-		} catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-				| NoSuchFieldException e) {
+		} catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchFieldException e) {
 			e.printStackTrace();
 		}
 		return null;
@@ -141,6 +139,7 @@ public class MovieScrapeResultGroup {
 
 	/**
 	 * Helper method to call amalgamateActor on all possible tuples (where order matters) of our scraped movie list
+	 * 
 	 * @param allScrapedMovies - the scraped movie list
 	 */
 	private void callAmalgamateActorOnAllTuples(List<Movie> allScrapedMovies) {
@@ -158,6 +157,7 @@ public class MovieScrapeResultGroup {
 
 	/**
 	 * try to fill in any holes in thumbnails from the sourceMovie by looking through movieToGetExtraInfoFrom and see if it has them
+	 * 
 	 * @param sourceMovie - movie that has missing actor images
 	 * @param movieToGetExtraInfoFrom - other movie to try to get the missing actor images from
 	 * @return
@@ -171,8 +171,7 @@ public class MovieScrapeResultGroup {
 					//Found an actor with no thumbnail in sourceMovie
 					for (Actor extraMovieActor : movieToGetExtraInfoFrom.getActors()) {
 						//scan through other movie and find actor with same name as the one we are currently on
-						if (currentActor.getName().equals(extraMovieActor.getName()) && (extraMovieActor.getThumb() != null)
-								&& extraMovieActor.getThumb().getThumbURL().getPath().length() > 1) {
+						if (currentActor.getName().equals(extraMovieActor.getName()) && (extraMovieActor.getThumb() != null) && extraMovieActor.getThumb().getThumbURL().getPath().length() > 1) {
 							currentActor.setThumb(extraMovieActor.getThumb());
 							changeMade = true;
 						}
@@ -187,8 +186,7 @@ public class MovieScrapeResultGroup {
 			return sourceMovie.getActors(); // we didn't find any changes needed so just return the source movie's actor list
 	}
 
-	private Object[] getPreferredMovieDataItem(@SuppressWarnings("rawtypes") Class classOfMovieDataItem)
-			throws SecurityException, IllegalAccessException, IllegalArgumentException {
+	private Object[] getPreferredMovieDataItem(@SuppressWarnings("rawtypes") Class classOfMovieDataItem) throws SecurityException, IllegalAccessException, IllegalArgumentException {
 
 		Object[] preferredValueOrder = new Object[amalgamationPreferenceOrderForEntireMovieGroup.getOverallAmalgamationPreference().getAmalgamationPreferenceOrder().size()];
 		boolean fieldIsArray = false;
@@ -211,7 +209,7 @@ public class MovieScrapeResultGroup {
 
 						for (int i = 0; i < amalgamationPrefToUse.getAmalgamationPreferenceOrder().size(); i++) {
 							if (((MovieDataItem) item).getDataItemSource().toString().equals(amalgamationPrefToUse.getAmalgamationPreferenceOrder().get(i).toString())
-									&& ((MovieDataItem) item).isStringValueEmpty()) {
+							        && ((MovieDataItem) item).isStringValueEmpty()) {
 								preferredValueOrder[i] = item;
 								fieldIsMovieDataItem = true;
 							}
@@ -271,10 +269,12 @@ public class MovieScrapeResultGroup {
 			}
 		}
 
-		/*else if (fieldIsArray) {
-			//do nothing for now - this is handled in another method
-			//System.out.println("need to return that array...");
-		}*/
+		/*
+		 * else if (fieldIsArray) {
+		 * //do nothing for now - this is handled in another method
+		 * //System.out.println("need to return that array...");
+		 * }
+		 */
 
 		//nothing found otherwise
 		return new Object[0];
@@ -282,8 +282,7 @@ public class MovieScrapeResultGroup {
 
 	//used for thumb arrays and such
 	private Thumb[] getPreferredArrayMovieDataItem(String fieldName) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-		ArrayList<Thumb[]> preferredValueOrder = new ArrayList<>(
-				amalgamationPreferenceOrderForEntireMovieGroup.getOverallAmalgamationPreference().getAmalgamationPreferenceOrder().size());
+		ArrayList<Thumb[]> preferredValueOrder = new ArrayList<>(amalgamationPreferenceOrderForEntireMovieGroup.getOverallAmalgamationPreference().getAmalgamationPreferenceOrder().size());
 		for (int i = 0; i < amalgamationPreferenceOrderForEntireMovieGroup.getAmalgamationPreference(null).getAmalgamationPreferenceOrder().size(); i++) {
 			preferredValueOrder.add(null);
 		}

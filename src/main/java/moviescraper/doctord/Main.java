@@ -66,23 +66,21 @@ public class Main {
 			@SuppressWarnings("static-access") //Needed until apache commons cli v1.3 which fixes this design flaw
 
 			Option filenamecleanup = OptionBuilder.withArgName("FilePath").hasArgs(Option.UNLIMITED_VALUES)
-					.withDescription(
-							"Use given file argument(s) for file name cleanup process which will rename the file by expanding abbreviations and removing words which cause google scrapes to fail")
-					.create("filenamecleanup");
+			        .withDescription(
+			                "Use given file argument(s) for file name cleanup process which will rename the file by expanding abbreviations and removing words which cause google scrapes to fail")
+			        .create("filenamecleanup");
 
 			@SuppressWarnings("static-access")
 			Option scrape = OptionBuilder.withArgName("ScraperName FilePath").hasArgs(2)
-					.withDescription(
-							"Scrapes and writes metadata of the file located at <FilePath> with type of scraper specified by <ScraperName>.\n" + "Valid ScraperNames are: \n"
-									+ "data18webcontent, data18, excaliburfilms, themoviedatabase, iafd, dmm, 1000giri, 1pondo, aventertainment, caribbeancom, caribbeancompremium, heyzo, kin8tengoku, mytokyohot, tokyohot, javbus, javlibrary .\n"
-									+ "Any settings.xml file preference values will be taken into account when scraping.")
-					.create("scrape");
+			        .withDescription("Scrapes and writes metadata of the file located at <FilePath> with type of scraper specified by <ScraperName>.\n" + "Valid ScraperNames are: \n"
+			                + "data18webcontent, data18, excaliburfilms, themoviedatabase, iafd, dmm, 1000giri, 1pondo, aventertainment, caribbeancom, caribbeancompremium, heyzo, kin8tengoku, mytokyohot, tokyohot, javbus, javlibrary .\n"
+			                + "Any settings.xml file preference values will be taken into account when scraping.")
+			        .create("scrape");
 
 			@SuppressWarnings("static-access")
 			Option rename = OptionBuilder.withArgName("FilePath").hasArgs(Option.UNLIMITED_VALUES)
-					.withDescription(
-							"renames the file argument(s) and any associated metadata files if the file argument has a valid movie nfo using the file name format from settings.xml")
-					.create("rename");
+			        .withDescription("renames the file argument(s) and any associated metadata files if the file argument has a valid movie nfo using the file name format from settings.xml")
+			        .create("rename");
 
 			options.addOption(filenamecleanup);
 			options.addOption(scrape);

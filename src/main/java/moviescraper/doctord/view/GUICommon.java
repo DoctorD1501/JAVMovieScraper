@@ -7,9 +7,7 @@ import java.net.URL;
 import javax.imageio.ImageIO;
 
 /**
- * 
  * Common utility methods used in the various GUI classes. Methods should be static.
- *
  */
 public class GUICommon {
 

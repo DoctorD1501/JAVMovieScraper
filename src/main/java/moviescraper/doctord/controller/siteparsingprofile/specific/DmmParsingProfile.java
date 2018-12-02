@@ -153,8 +153,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 
 	@Override
 	public ReleaseDate scrapeReleaseDate() {
-		Element releaseDateElement = document.select("table.mg-b20 tr td:contains(貸出開始日：) + td, table.mg-b20 tr td:contains(発売日：) + td, table.mg-b20 tr td:contains(商品発売日：) + td")
-				.first();
+		Element releaseDateElement = document.select("table.mg-b20 tr td:contains(貸出開始日：) + td, table.mg-b20 tr td:contains(発売日：) + td, table.mg-b20 tr td:contains(商品発売日：) + td").first();
 		if (releaseDateElement != null) {
 			String releaseDate = releaseDateElement.text();
 			//we want to convert something like 2015/04/25 to 2015-04-25 
@@ -247,8 +246,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 					String firstLetterOfCid = cid.substring(0, 1);
 					String threeLetterCidCode = cid.substring(0, 3);
 
-					String potentialTrailerURL = String.format("http://cc3001.dmm.co.jp/litevideo/freepv/%1$s/%2$s/%3$s/%3$s_%4$s_%5$s.mp4", firstLetterOfCid, threeLetterCidCode,
-							cid, quality, ratio);
+					String potentialTrailerURL = String.format("http://cc3001.dmm.co.jp/litevideo/freepv/%1$s/%2$s/%3$s/%3$s_%4$s_%5$s.mp4", firstLetterOfCid, threeLetterCidCode, cid, quality, ratio);
 
 					if (SiteParsingProfile.fileExistsAtURL(potentialTrailerURL)) {
 						System.out.println("Trailer existed at: " + potentialTrailerURL);
@@ -279,10 +277,10 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 	 * virtually identical
 	 * 
 	 * @param doCrop
-	 *            - if true, will only get the front cover as the initial poster
-	 *            element; otherwise it uses the entire dvd case from DMM.co.jp
+	 * - if true, will only get the front cover as the initial poster
+	 * element; otherwise it uses the entire dvd case from DMM.co.jp
 	 * @return Thumb[] containing all the scraped poster and extraart (if doCrop
-	 *         is true) or the cover and back in extraart (if doCrop is false)
+	 * is true) or the cover and back in extraart (if doCrop is false)
 	 */
 	private Thumb[] scrapePostersAndFanart(boolean doCrop, boolean scrapingExtraFanart) {
 

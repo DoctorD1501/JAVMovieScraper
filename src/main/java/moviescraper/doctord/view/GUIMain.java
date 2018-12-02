@@ -483,8 +483,8 @@ public class GUIMain {
 
 			SelectionDialog selectionDialog = new SelectionDialog(searchResults, siteName);
 
-			int optionPicked = JOptionPane.showOptionDialog(null, selectionDialog, "Select Movie to Scrape From " + siteName, JOptionPane.OK_CANCEL_OPTION,
-					JOptionPane.PLAIN_MESSAGE, null, null, null);
+			int optionPicked = JOptionPane.showOptionDialog(null, selectionDialog, "Select Movie to Scrape From " + siteName, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null,
+			        null);
 			if (optionPicked == JOptionPane.CANCEL_OPTION)
 				return null;
 			return selectionDialog.getSelectedValue();
@@ -534,8 +534,8 @@ public class GUIMain {
 
 	public File[] actorFolderFiles(int movieNumberInList) {
 		ArrayList<File> actorFiles = new ArrayList<>();
-		if (movieToWriteToDiskList != null && movieToWriteToDiskList.size() > 0 && movieToWriteToDiskList.size() > movieNumberInList
-				&& movieToWriteToDiskList.get(movieNumberInList) != null && movieToWriteToDiskList.get(movieNumberInList).getActors() != null) {
+		if (movieToWriteToDiskList != null && movieToWriteToDiskList.size() > 0 && movieToWriteToDiskList.size() > movieNumberInList && movieToWriteToDiskList.get(movieNumberInList) != null
+		        && movieToWriteToDiskList.get(movieNumberInList).getActors() != null) {
 			if (currentlySelectedActorsFolderList != null && currentlySelectedActorsFolderList.get(movieNumberInList).isDirectory()) {
 				for (Actor currentActor : movieToWriteToDiskList.get(movieNumberInList).getActors()) {
 					String currentActorNameAsPotentialFileName = currentActor.getName().replace(' ', '_');

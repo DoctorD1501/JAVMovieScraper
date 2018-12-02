@@ -305,8 +305,7 @@ public class RenamerGUI extends JFrame {
 	}
 
 	protected void updateExample() {
-		Renamer renamer = new Renamer(textFieldRenameString.getText(), textFieldFolderRenameString.getText(), textFieldSanitizerString.getText(), fileDetailPanel.currentMovie,
-				sampleFile);
+		Renamer renamer = new Renamer(textFieldRenameString.getText(), textFieldFolderRenameString.getText(), textFieldSanitizerString.getText(), fileDetailPanel.currentMovie, sampleFile);
 		textFieldExample.setText(renamer.getNewFileName(sampleFile.isDirectory()));
 	}
 
@@ -362,7 +361,7 @@ public class RenamerGUI extends JFrame {
 		Votes votes = new Votes("Votes");
 		Year year = new Year("1999");
 
-		return new Movie(actors, directors, fanart, extraFanart, genres, tags, id, mpaa, originalTitle, outline, plot, posters, rating, releaseDate, runtime, set, sortTitle,
-				studio, tagline, title, top250, trailer, votes, year);
+		return new Movie(actors, directors, fanart, extraFanart, genres, tags, id, mpaa, originalTitle, outline, plot, posters, rating, releaseDate, runtime, set, sortTitle, studio, tagline, title,
+		        top250, trailer, votes, year);
 	}
 }

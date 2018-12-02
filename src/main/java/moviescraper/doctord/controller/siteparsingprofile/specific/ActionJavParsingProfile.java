@@ -48,8 +48,7 @@ public class ActionJavParsingProfile extends SiteParsingProfile implements Speci
 	@Override
 	public Title scrapeTitle() {
 
-		Element titleElement = document.select("body table tbody tr td table tbody tr td div table tbody tr td table tbody tr td table tbody tr:contains(Video Title) td ~ td p")
-				.first();
+		Element titleElement = document.select("body table tbody tr td table tbody tr td div table tbody tr td table tbody tr td table tbody tr:contains(Video Title) td ~ td p").first();
 		return new Title(titleElement.text());
 	}
 
@@ -76,8 +75,7 @@ public class ActionJavParsingProfile extends SiteParsingProfile implements Speci
 
 	@Override
 	public Rating scrapeRating() {
-		Element ratingElement = document.select("body table tbody tr td table tbody tr td div table tbody tr td table tbody tr td table tbody tr:contains(Rated) td ~ td p img")
-				.first();
+		Element ratingElement = document.select("body table tbody tr td table tbody tr td div table tbody tr td table tbody tr td table tbody tr:contains(Rated) td ~ td p img").first();
 		if (ratingElement != null) {
 			String ratingImgUrl = ratingElement.attr("src");
 			String ratingIntegerIntegerPart = ratingImgUrl.substring(ratingImgUrl.length() - 7, ratingImgUrl.length() - 6);
@@ -94,8 +92,7 @@ public class ActionJavParsingProfile extends SiteParsingProfile implements Speci
 
 	@Override
 	public ReleaseDate scrapeReleaseDate() {
-		Element releaseDateElement = document
-				.select("body table tbody tr td table tbody tr td div table tbody tr td table tbody tr td table tbody tr:contains(Date Added) td ~ td p").first();
+		Element releaseDateElement = document.select("body table tbody tr td table tbody tr td div table tbody tr td table tbody tr td table tbody tr:contains(Date Added) td ~ td p").first();
 		if (releaseDateElement != null && releaseDateElement.text().length() > 4) {
 			String releaseDateText = releaseDateElement.text().trim();
 			if (!Character.isAlphabetic(releaseDateText.charAt(0))) //fix for weird white space trim() is not getting rid of
@@ -114,8 +111,7 @@ public class ActionJavParsingProfile extends SiteParsingProfile implements Speci
 
 	@Override
 	public Votes scrapeVotes() {
-		Element votesElement = document.select("body table tbody tr td table tbody tr td div table tbody tr td table tbody tr td table tbody tr:contains(Rated) td ~ td p font")
-				.first();
+		Element votesElement = document.select("body table tbody tr td table tbody tr td div table tbody tr td table tbody tr td table tbody tr:contains(Rated) td ~ td p font").first();
 		if (votesElement != null) {
 			String votes = votesElement.text();
 			votes = votes.substring(2, votes.indexOf('v') - 1);
@@ -133,8 +129,7 @@ public class ActionJavParsingProfile extends SiteParsingProfile implements Speci
 	public Plot scrapePlot() {
 
 		Element plotElement = document
-				.select("body table tbody tr td table tbody tr td div table tbody tr td table tbody tr td table[width=372] tbody tr td table tbody tr td p[align=left] font[color=696981]")
-				.first();
+		        .select("body table tbody tr td table tbody tr td div table tbody tr td table tbody tr td table[width=372] tbody tr td table tbody tr td p[align=left] font[color=696981]").first();
 		if (plotElement != null)
 			return new Plot(plotElement.text().toString());
 		else
@@ -154,7 +149,7 @@ public class ActionJavParsingProfile extends SiteParsingProfile implements Speci
 		// but we can do some filtering later on to fix things by using a
 		// HashTable to take care of the duplicate format problems
 		Elements movieDownloadParts = document
-				.select("html body table tbody tr td table tbody tr td div table tbody tr td table tbody tr td table tbody tr td table tbody tr td p:has(font:containsOwn(min, ))");
+		        .select("html body table tbody tr td table tbody tr td div table tbody tr td table tbody tr td table tbody tr td table tbody tr td p:has(font:containsOwn(min, ))");
 		ArrayList<String> movieFileName = new ArrayList<>(movieDownloadParts.size());
 		Hashtable<String, Integer> runtimesByPart = new Hashtable<>(movieDownloadParts.size());
 		// we got to do some processing to get the unique runtime per part,
@@ -232,8 +227,7 @@ public class ActionJavParsingProfile extends SiteParsingProfile implements Speci
 
 	@Override
 	public ID scrapeID() {
-		Element idElement = document.select("body table tbody tr td table tbody tr td div table tbody tr td table tbody tr td table tbody tr:contains(Publisher ID) td ~ td p")
-				.first();
+		Element idElement = document.select("body table tbody tr td table tbody tr td div table tbody tr td table tbody tr td table tbody tr:contains(Publisher ID) td ~ td p").first();
 
 		if (idElement != null) {
 			String idElementText = idElement.text();
@@ -290,8 +284,7 @@ public class ActionJavParsingProfile extends SiteParsingProfile implements Speci
 
 	@Override
 	public Studio scrapeStudio() {
-		Element studioElement = document.select("body table tbody tr td table tbody tr td div table tbody tr td table tbody tr td table tbody tr:contains(Publisher) td ~ td p")
-				.first();
+		Element studioElement = document.select("body table tbody tr td table tbody tr td div table tbody tr td table tbody tr td table tbody tr:contains(Publisher) td ~ td p").first();
 		return new Studio(studioElement.text());
 	}
 

@@ -24,8 +24,7 @@ public class AboutDialog extends JDialog {
 
 	//FIXME: is there a way to extract from project??
 	private static final String nameString = "JAVMovieScraper";
-	private static final String aboutString = "Scrape Kodi movie metadata and automatically rename " + "files for Japanese Adult Videos (JAV), American Adult DVDs, "
-			+ "and American Adult Webcontent";
+	private static final String aboutString = "Scrape Kodi movie metadata and automatically rename " + "files for Japanese Adult Videos (JAV), American Adult DVDs, " + "and American Adult Webcontent";
 
 	public AboutDialog(JFrame parent) {
 

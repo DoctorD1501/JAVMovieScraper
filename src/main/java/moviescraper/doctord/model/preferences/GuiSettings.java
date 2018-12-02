@@ -60,8 +60,8 @@ public class GuiSettings extends Settings {
 	}
 
 	public boolean getUseContentBasedTypeIcons() {
-		/*    
-		 * Use icons in res/mime instead of system icons. 
+		/*
+		 * Use icons in res/mime instead of system icons.
 		 * Needed for linux as system icons only show two types of icons otherwise (files and folders)
 		 * There's no menu option for this preference, but you can manually modify the settings file yourself to enable it
 		 * this option is also automatically enabled on linux

@@ -146,6 +146,7 @@ public class Thumb extends MovieDataItem {
 
 	/**
 	 * Utility function to get the last part of a URL formatted string (the filename) and return it. Usually used in conjunction with {@link Thumb.doJavCoverCropRoutine}
+	 * 
 	 * @param url
 	 * @return
 	 */
@@ -155,6 +156,7 @@ public class Thumb extends MovieDataItem {
 
 	/**
 	 * Crops a JAV DVD jacket image so that only the cover is returned. This usually means the left half of the jacket image is cropped out.
+	 * 
 	 * @param originalImage - Image you wish to crop
 	 * @param filename - filename of the image. If you have a URL, you can get this from {@link Thumb.fileNameFromURL}
 	 * @return A new BufferedImage object with the back part of the jacket cover cropped out
@@ -289,7 +291,6 @@ public class Thumb extends MovieDataItem {
 	}
 
 	/**
-	 *
 	 * @return true if this thumb already exist in the cache and doesn't need to be downloaded again, false otherwise
 	 */
 	public boolean isCached() {
@@ -419,6 +420,7 @@ public class Thumb extends MovieDataItem {
 
 	/**
 	 * Utility method to convert a Image type object to a BufferedImage type object
+	 * 
 	 * @param image - the image to convert
 	 * @return the same image, but as a BufferedImage
 	 */

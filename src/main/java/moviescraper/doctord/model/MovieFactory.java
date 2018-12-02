@@ -62,8 +62,8 @@ public class MovieFactory {
 		Votes votes = Votes.BLANK_VOTES;
 		Year year = Year.BLANK_YEAR;
 
-		return new Movie(actors, directors, fanart, extraFanart, genres, tags, id, mpaa, originalTitle, outline, plot, posters, rating, releaseDate, runtime, set, sortTitle,
-				studio, tagline, title, top250, trailer, votes, year);
+		return new Movie(actors, directors, fanart, extraFanart, genres, tags, id, mpaa, originalTitle, outline, plot, posters, rating, releaseDate, runtime, set, sortTitle, studio, tagline, title,
+		        top250, trailer, votes, year);
 	}
 
 }

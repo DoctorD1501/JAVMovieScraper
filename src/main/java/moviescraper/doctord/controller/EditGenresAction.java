@@ -15,16 +15,18 @@ public class EditGenresAction extends AbstractAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		GenreEditorPanel genreEditorPanel = new GenreEditorPanel(fileDetailPanel.getCurrentMovie().getGenres());
-		int result = JOptionPane.showOptionDialog(fileDetailPanel.guiMain.getFrmMoviescraper(), genreEditorPanel, "Edit Genres...", JOptionPane.OK_CANCEL_OPTION,
-				JOptionPane.PLAIN_MESSAGE, null, null, null);
+		int result = JOptionPane.showOptionDialog(fileDetailPanel.guiMain.getFrmMoviescraper(), genreEditorPanel, "Edit Genres...", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null,
+		        null);
 		if (result == JOptionPane.OK_OPTION) {
 			genreEditorPanel.save();
-			/*GenreItemListModel listModel = (GenreItemListModel) fileDetailPanel.getGenreList().getModel();
-			listModel.clear();
-			for(Genre currentGenre : fileDetailPanel.getCurrentMovie().getGenres())
-			{
-				listModel.addElement(currentGenre);
-			}*/
+			/*
+			 * GenreItemListModel listModel = (GenreItemListModel) fileDetailPanel.getGenreList().getModel();
+			 * listModel.clear();
+			 * for(Genre currentGenre : fileDetailPanel.getCurrentMovie().getGenres())
+			 * {
+			 * listModel.addElement(currentGenre);
+			 * }
+			 */
 			fileDetailPanel.getGenreList().setText(FileDetailPanel.toGenreListFormat(fileDetailPanel.getCurrentMovie().getGenres()));
 			//listModel
 			fileDetailPanel.updateUI();

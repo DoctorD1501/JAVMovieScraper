@@ -31,14 +31,10 @@ public class TestAmalgamation {
 	@BeforeClass
 	public static void initialize() throws URISyntaxException, NoSuchFieldException, SecurityException {
 		System.out.println("Testing amalgamation");
-		DataItemSourceAmalgamationPreference overallOrdering = new DataItemSourceAmalgamationPreference(new R18ParsingProfile(), new JavLibraryParsingProfile(),
-				new DmmParsingProfile());
-		DataItemSourceAmalgamationPreference actorOdering = new DataItemSourceAmalgamationPreference(new DmmParsingProfile(), new JavLibraryParsingProfile(),
-				new R18ParsingProfile());
-		DataItemSourceAmalgamationPreference posterOrdering = new DataItemSourceAmalgamationPreference(new DmmParsingProfile(), new JavLibraryParsingProfile(),
-				new R18ParsingProfile());
-		DataItemSourceAmalgamationPreference titleOrdering = new DataItemSourceAmalgamationPreference(new JavLibraryParsingProfile(), new DmmParsingProfile(),
-				new R18ParsingProfile());
+		DataItemSourceAmalgamationPreference overallOrdering = new DataItemSourceAmalgamationPreference(new R18ParsingProfile(), new JavLibraryParsingProfile(), new DmmParsingProfile());
+		DataItemSourceAmalgamationPreference actorOdering = new DataItemSourceAmalgamationPreference(new DmmParsingProfile(), new JavLibraryParsingProfile(), new R18ParsingProfile());
+		DataItemSourceAmalgamationPreference posterOrdering = new DataItemSourceAmalgamationPreference(new DmmParsingProfile(), new JavLibraryParsingProfile(), new R18ParsingProfile());
+		DataItemSourceAmalgamationPreference titleOrdering = new DataItemSourceAmalgamationPreference(new JavLibraryParsingProfile(), new DmmParsingProfile(), new R18ParsingProfile());
 
 		ScraperGroupAmalgamationPreference orderingPreference = new ScraperGroupAmalgamationPreference(ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP, overallOrdering);
 

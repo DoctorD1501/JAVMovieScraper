@@ -59,6 +59,7 @@ public class KodiXmlMovieBean {
 	 * Constructor - handles conversion of a Movie object to a KodiXmlMovieBean object.
 	 * Program preferences are taken into account when performing the object conversion so that, for example,
 	 * certain fields will not be written to the XML
+	 * 
 	 * @param movie - Movie to create the KodiXmlMovieBean from
 	 */
 	public KodiXmlMovieBean(Movie movie) {
@@ -190,9 +191,9 @@ public class KodiXmlMovieBean {
 			}
 		}
 		Thumb[] emptyExtraFanrt = new Thumb[0];
-		Movie movie = new Movie(actors, directors, fanartThumbs, emptyExtraFanrt, genres, tags, new ID(id), new MPAARating(mpaa), new OriginalTitle(originaltitle),
-				new Outline(outline), new Plot(plot), posterThumbs, new Rating(10, rating), new ReleaseDate(releasedate), new Runtime(runtime), new Set(set),
-				new SortTitle(sorttitle), new Studio(studio), new Tagline(tagline), new Title(title), new Top250(top250), new Trailer(trailer), new Votes(votes), new Year(year));
+		Movie movie = new Movie(actors, directors, fanartThumbs, emptyExtraFanrt, genres, tags, new ID(id), new MPAARating(mpaa), new OriginalTitle(originaltitle), new Outline(outline),
+		        new Plot(plot), posterThumbs, new Rating(10, rating), new ReleaseDate(releasedate), new Runtime(runtime), new Set(set), new SortTitle(sorttitle), new Studio(studio),
+		        new Tagline(tagline), new Title(title), new Top250(top250), new Trailer(trailer), new Votes(votes), new Year(year));
 		return movie;
 	}
 

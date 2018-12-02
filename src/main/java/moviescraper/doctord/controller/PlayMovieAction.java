@@ -26,8 +26,8 @@ public class PlayMovieAction implements ActionListener {
 	}
 
 	/**
-	 * Play the selected movie (and any associated movies that are stacked in case the movie file is split into multiple pieces) 
-	 * in the user's preferred external media player. If no external media player is known, the program 
+	 * Play the selected movie (and any associated movies that are stacked in case the movie file is split into multiple pieces)
+	 * in the user's preferred external media player. If no external media player is known, the program
 	 * will prompt the user to set one before playing the file.
 	 */
 	@Override
@@ -54,7 +54,7 @@ public class PlayMovieAction implements ActionListener {
 
 						File currentDirectory = this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList).getParentFile();
 						String currentlySelectedMovieFileWihoutStackSuffix = SiteParsingProfile
-								.stripDiscNumber(FilenameUtils.removeExtension(this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList).getName()));
+						        .stripDiscNumber(FilenameUtils.removeExtension(this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList).getName()));
 						if (currentDirectory != null) {
 
 							for (File currentFile : currentDirectory.listFiles(new MovieFilenameFilter())) {
@@ -82,8 +82,8 @@ public class PlayMovieAction implements ActionListener {
 		//We don't know what program to play the movies in, so let's ask the user for a program
 		else {
 			Object[] options = { "Yes", "No" };
-			int optionPicked = JOptionPane.showOptionDialog(guiMain.getFrmMoviescraper(), "No external media player set. Would you like to set one now?",
-					"Configure External Media Player", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+			int optionPicked = JOptionPane.showOptionDialog(guiMain.getFrmMoviescraper(), "No external media player set. Would you like to set one now?", "Configure External Media Player",
+			        JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
 			if (optionPicked == 0) {
 				ChooseExternalMediaPlayerAction chooseExternalMediaPlayerAction = new ChooseExternalMediaPlayerAction();
 				chooseExternalMediaPlayerAction.actionPerformed(arg0);
@@ -97,7 +97,7 @@ public class PlayMovieAction implements ActionListener {
 
 	/**
 	 * Removes the trailer files from a fileList so that we don't enqueue them in our playlist
-	**/
+	 **/
 	private List<File> filterFiles(List<File> fileList) {
 		int listSize = fileList.size();
 		for (int i = listSize - 1; i >= 0; i--) {
@@ -111,6 +111,7 @@ public class PlayMovieAction implements ActionListener {
 
 	/**
 	 * Opens the files passed in by fileList using the program specified at the path pathToPlayerProgram
+	 * 
 	 * @param fileList - list of files to play (multiple files may be passed in so that we can play multipart movie files)
 	 * @param pathToPlayerProgram - full system path of the program to use to open the movie files
 	 */

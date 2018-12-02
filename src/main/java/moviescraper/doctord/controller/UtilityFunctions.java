@@ -17,6 +17,7 @@ public class UtilityFunctions {
 
 	/**
 	 * Returns a deep copy of the object by serializing it and then deserializing it
+	 * 
 	 * @param root - the object to clone
 	 * @return a deep copy of the object
 	 */

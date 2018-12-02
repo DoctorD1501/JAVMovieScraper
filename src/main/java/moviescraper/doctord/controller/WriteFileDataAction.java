@@ -66,11 +66,12 @@ public class WriteFileDataAction implements ActionListener {
 								File newMovieFile = new File(newMovieFilename);
 								/*
 								 * old method
-								boolean renameStatus = oldMovieFile.renameTo(newMovieFile);
-								if(!renameStatus)
-								{
-									System.err.println("There was a problem renaming " + oldMovieFile + " to "+ newMovieFile);
-								}*/
+								 * boolean renameStatus = oldMovieFile.renameTo(newMovieFile);
+								 * if(!renameStatus)
+								 * {
+								 * System.err.println("There was a problem renaming " + oldMovieFile + " to "+ newMovieFile);
+								 * }
+								 */
 								try {
 									if (oldMovieFile.isDirectory()) {
 										FileUtils.moveDirectory(oldMovieFile, newMovieFile);
@@ -96,30 +97,27 @@ public class WriteFileDataAction implements ActionListener {
 									System.out.println("A file or directory already exists at " + newMovieFile + " - skipping overwrite or creation of new folder.");
 								}
 
-								guiMain.movieToWriteToDiskList.get(movieNumberInList).writeToFile(
-										new File(Movie.getFileNameOfNfo(newMovieFile, guiMain.getPreferences().getNfoNamedMovieDotNfo())),
-										new File(Movie.getFileNameOfPoster(newMovieFile, guiMain.getPreferences().getNoMovieNameInImageFiles())),
-										new File(Movie.getFileNameOfFanart(newMovieFile, guiMain.getPreferences().getNoMovieNameInImageFiles())),
-										new File(Movie.getFileNameOfFolderJpg(newMovieFile)), new File(Movie.getFileNameOfExtraFanartFolderName(newMovieFile)),
-										new File(Movie.getFileNameOfTrailer(newMovieFile)), guiMain.getPreferences());
+								guiMain.movieToWriteToDiskList.get(movieNumberInList).writeToFile(new File(Movie.getFileNameOfNfo(newMovieFile, guiMain.getPreferences().getNfoNamedMovieDotNfo())),
+								        new File(Movie.getFileNameOfPoster(newMovieFile, guiMain.getPreferences().getNoMovieNameInImageFiles())),
+								        new File(Movie.getFileNameOfFanart(newMovieFile, guiMain.getPreferences().getNoMovieNameInImageFiles())), new File(Movie.getFileNameOfFolderJpg(newMovieFile)),
+								        new File(Movie.getFileNameOfExtraFanartFolderName(newMovieFile)), new File(Movie.getFileNameOfTrailer(newMovieFile)), guiMain.getPreferences());
 							} else {
 								//save without renaming movie
 								guiMain.movieToWriteToDiskList.get(movieNumberInList).writeToFile(guiMain.getCurrentlySelectedNfoFileList().get(movieNumberInList),
-										guiMain.getCurrentlySelectedPosterFileList().get(movieNumberInList), guiMain.getCurrentlySelectedFanartFileList().get(movieNumberInList),
-										guiMain.getCurrentlySelectedFolderJpgFileList().get(movieNumberInList),
-										new File(Movie.getFileNameOfExtraFanartFolderName(guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList))),
-										new File(Movie.getFileNameOfTrailer(guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList))), guiMain.getPreferences());
+								        guiMain.getCurrentlySelectedPosterFileList().get(movieNumberInList), guiMain.getCurrentlySelectedFanartFileList().get(movieNumberInList),
+								        guiMain.getCurrentlySelectedFolderJpgFileList().get(movieNumberInList),
+								        new File(Movie.getFileNameOfExtraFanartFolderName(guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList))),
+								        new File(Movie.getFileNameOfTrailer(guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList))), guiMain.getPreferences());
 							}
 
 							//we can only output extra fanart if we're scraping a folder, because otherwise the extra fanart will get mixed in with other files
-							if (guiMain.getPreferences().getExtraFanartScrapingEnabledPreference()
-									&& guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList).isDirectory()) {
+							if (guiMain.getPreferences().getExtraFanartScrapingEnabledPreference() && guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList).isDirectory()) {
 								guiMain.movieToWriteToDiskList.get(movieNumberInList).writeExtraFanart(guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList));
 							}
 						}
 						//now write out the actor images if the user preference is set
 						if (guiMain.getPreferences().getDownloadActorImagesToActorFolderPreference() && guiMain.getCurrentlySelectedMovieFileList() != null
-								&& guiMain.getCurrentlySelectedDirectoryList() != null) {
+						        && guiMain.getCurrentlySelectedDirectoryList() != null) {
 							guiMain.movieToWriteToDiskList.get(movieNumberInList).writeActorImagesToFolder(guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList));
 						}
 

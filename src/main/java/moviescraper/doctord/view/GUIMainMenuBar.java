@@ -55,8 +55,9 @@ public class GUIMainMenuBar extends JMenuBar {
 	}
 
 	/**
-	 * Allows you to create a new JCheckBoxMenuItem using Lambda expressions. The preferenceSetterFunction function will be called to change the value when the 
+	 * Allows you to create a new JCheckBoxMenuItem using Lambda expressions. The preferenceSetterFunction function will be called to change the value when the
 	 * menu item is checked and the initial value will be determined by the value returned by preferenceGetterFunction.
+	 * 
 	 * @param checkboxTitle - Text of menu item to create
 	 * @param preferenceSetterFunction - setter function called when checkbox item clicked
 	 * @param preferenceGetterFunction - function to return initial value of the checkbox
@@ -105,7 +106,7 @@ public class GUIMainMenuBar extends JMenuBar {
 
 		//Checkbox for whether the user needs to manually confirm the results of each clean up file operation	
 		JCheckBoxMenuItem confirmNameForFileNameCleanup = createCheckBoxMenuItem("Confirm New Name Each Time for \"Clean Up File Name\"",
-				b -> getPreferences().setConfirmCleanUpFileNameNameBeforeRenaming(b), () -> getPreferences().getConfirmCleanUpFileNameNameBeforeRenaming());
+		        b -> getPreferences().setConfirmCleanUpFileNameNameBeforeRenaming(b), () -> getPreferences().getConfirmCleanUpFileNameNameBeforeRenaming());
 		submenu.add(confirmNameForFileNameCleanup);
 
 		return submenu;
@@ -115,8 +116,7 @@ public class GUIMainMenuBar extends JMenuBar {
 		JMenu submenu = new JMenu("Renaming");
 
 		//Checkbox for renaming Movie file
-		JCheckBoxMenuItem renameMovieFile = createCheckBoxMenuItem("Enable Renaming When Writing File Data", b -> getPreferences().setRenameMovieFile(b),
-				() -> getPreferences().getRenameMovieFile());
+		JCheckBoxMenuItem renameMovieFile = createCheckBoxMenuItem("Enable Renaming When Writing File Data", b -> getPreferences().setRenameMovieFile(b), () -> getPreferences().getRenameMovieFile());
 		submenu.add(renameMovieFile);
 
 		return submenu;
@@ -127,12 +127,12 @@ public class GUIMainMenuBar extends JMenuBar {
 
 		//Checkbox for option to append the ID to start of the title field
 		JCheckBoxMenuItem appendIDToStartOfTitle = createCheckBoxMenuItem("Appending ID to Start of Title Field When Scraping", b -> getPreferences().setAppendIDToStartOfTitle(b),
-				() -> getPreferences().getAppendIDToStartOfTitle());
+		        () -> getPreferences().getAppendIDToStartOfTitle());
 		submenu.add(appendIDToStartOfTitle);
 
 		//Checkbox for option to use file name as the scraped title every time
 		JCheckBoxMenuItem useFilenameAsScrapedMovieTitle = createCheckBoxMenuItem("Title Field is Always Set as Filename", b -> getPreferences().setUseFileNameAsTitle(b),
-				() -> getPreferences().getUseFileNameAsTitle());
+		        () -> getPreferences().getUseFileNameAsTitle());
 		submenu.add(useFilenameAsScrapedMovieTitle);
 
 		return submenu;
@@ -143,22 +143,22 @@ public class GUIMainMenuBar extends JMenuBar {
 
 		//Checkbox for scraping dialog box allowing the user to override the URL used when scraping
 		JCheckBoxMenuItem promptForUserProvidedURL = createCheckBoxMenuItem("Provide URL Manually", b -> getPreferences().setPromptForUserProvidedURLWhenScraping(b),
-				() -> getPreferences().getPromptForUserProvidedURLWhenScraping());
+		        () -> getPreferences().getPromptForUserProvidedURLWhenScraping());
 		submenu.add(promptForUserProvidedURL);
 
 		//Checkbox for scraping dialog box allowing the user to override the URL used when scraping
-		JCheckBoxMenuItem considerUserSelectionOneURL = createCheckBoxMenuItem("Consider All Selections one Item",
-				b -> getPreferences().setConsiderUserSelectionOneURLWhenScraping(b), () -> getPreferences().getConsiderUserSelectionOneURLWhenScraping());
+		JCheckBoxMenuItem considerUserSelectionOneURL = createCheckBoxMenuItem("Consider All Selections one Item", b -> getPreferences().setConsiderUserSelectionOneURLWhenScraping(b),
+		        () -> getPreferences().getConsiderUserSelectionOneURLWhenScraping());
 		submenu.add(considerUserSelectionOneURL);
 
 		//Checkbox for whether the user needs to manually select the art while scraping
 		JCheckBoxMenuItem selectArtManuallyWhenScraping = createCheckBoxMenuItem("Select Art Manually", b -> getPreferences().setSelectArtManuallyWhenScraping(b),
-				() -> getPreferences().getSelectArtManuallyWhenScraping());
+		        () -> getPreferences().getSelectArtManuallyWhenScraping());
 		submenu.add(selectArtManuallyWhenScraping);
 
 		//Checkbox for whether the user needs to manually select the search result when scraping	
-		JCheckBoxMenuItem selectSearchResultManuallyWhenScraping = createCheckBoxMenuItem("Select Search Results Manually",
-				b -> getPreferences().setSelectSearchResultManuallyWhenScraping(b), () -> getPreferences().getSelectSearchResultManuallyWhenScraping());
+		JCheckBoxMenuItem selectSearchResultManuallyWhenScraping = createCheckBoxMenuItem("Select Search Results Manually", b -> getPreferences().setSelectSearchResultManuallyWhenScraping(b),
+		        () -> getPreferences().getSelectSearchResultManuallyWhenScraping());
 		submenu.add(selectSearchResultManuallyWhenScraping);
 
 		return submenu;
@@ -169,7 +169,7 @@ public class GUIMainMenuBar extends JMenuBar {
 
 		//Checkbox for option if the ID is just considered the first word in the file
 		JCheckBoxMenuItem isFirstWordOfFileID = createCheckBoxMenuItem("Use First Word of File for ID Instead of Last", b -> getPreferences().setIsFirstWordOfFileID(b),
-				() -> getPreferences().getIsFirstWordOfFileID());
+		        () -> getPreferences().getIsFirstWordOfFileID());
 		submenu.add(isFirstWordOfFileID);
 
 		return submenu;
@@ -180,7 +180,7 @@ public class GUIMainMenuBar extends JMenuBar {
 
 		//Checkbox for scraping JAV files in japanese instead of english when clicking scrape jav
 		JCheckBoxMenuItem scrapeInJapanese = createCheckBoxMenuItem("Scrape JAV Movies in Japanese Instead of English", b -> getPreferences().setScrapeInJapanese(b),
-				() -> getPreferences().getScrapeInJapanese());
+		        () -> getPreferences().getScrapeInJapanese());
 		submenu.add(scrapeInJapanese);
 
 		return submenu;
@@ -191,48 +191,47 @@ public class GUIMainMenuBar extends JMenuBar {
 
 		//Checkbox for writing fanart and poster
 		JCheckBoxMenuItem writeFanartAndPosters = createCheckBoxMenuItem("Write Fanart and Poster Images", b -> getPreferences().setWriteFanartAndPostersPreference(b),
-				() -> getPreferences().getWriteFanartAndPostersPreference());
+		        () -> getPreferences().getWriteFanartAndPostersPreference());
 		submenu.add(writeFanartAndPosters);
 
 		//Checkbox for overwriting writing actors to .actor folder	
 		JCheckBoxMenuItem writeActorImages = createCheckBoxMenuItem("Write Actor Images", b -> getPreferences().setDownloadActorImagesToActorFolderPreference(b),
-				() -> getPreferences().getDownloadActorImagesToActorFolderPreference());
+		        () -> getPreferences().getDownloadActorImagesToActorFolderPreference());
 		submenu.add(writeActorImages);
 
 		//Checkbox for scraping extrafanart		
 		JCheckBoxMenuItem scrapeExtraFanart = createCheckBoxMenuItem("Write Extrafanart When Writing Data to a Directory or Moving File to a Directory",
-				b -> getPreferences().setExtraFanartScrapingEnabledPreference(b), () -> getPreferences().getExtraFanartScrapingEnabledPreference());
+		        b -> getPreferences().setExtraFanartScrapingEnabledPreference(b), () -> getPreferences().getExtraFanartScrapingEnabledPreference());
 		submenu.add(scrapeExtraFanart);
 
 		//Checkbox for also creating folder.jpg	in addition to the poster file jpg	
 		JCheckBoxMenuItem createFolderJpg = createCheckBoxMenuItem("Create folder.jpg for Each Folder", b -> getPreferences().setCreateFolderJpgEnabledPreference(b),
-				() -> getPreferences().getCreateFolderJpgEnabledPreference());
+		        () -> getPreferences().getCreateFolderJpgEnabledPreference());
 		submenu.add(createFolderJpg);
 
 		//Checkbox for writing the trailer to file
 		JCheckBoxMenuItem writeTrailerToFile = createCheckBoxMenuItem("Download and Write Trailer To File (Warning: Slow)", b -> getPreferences().setWriteTrailerToFile(b),
-				() -> getPreferences().getWriteTrailerToFile());
+		        () -> getPreferences().getWriteTrailerToFile());
 		submenu.add(writeTrailerToFile);
 
 		//Checkbox for overwriting fanart and poster
-		JCheckBoxMenuItem overwriteFanartAndPosters = createCheckBoxMenuItem("Overwrite Fanart, Poster, and folder.jpg Files",
-				b -> getPreferences().setOverWriteFanartAndPostersPreference(b), () -> getPreferences().getOverWriteFanartAndPostersPreference());
+		JCheckBoxMenuItem overwriteFanartAndPosters = createCheckBoxMenuItem("Overwrite Fanart, Poster, and folder.jpg Files", b -> getPreferences().setOverWriteFanartAndPostersPreference(b),
+		        () -> getPreferences().getOverWriteFanartAndPostersPreference());
 		submenu.add(overwriteFanartAndPosters);
 
 		//Checkbox for using fanart.jpg and poster.jpg, not moviename-fanart.jpg and moviename-poster.jpg
-		JCheckBoxMenuItem noMovieNameInImageFiles = createCheckBoxMenuItem(
-				"Save poster and fanart as fanart.jpg and poster.jpg instead of moviename-fanart.jpg and moviename-poster.jpg", b -> getPreferences().setNoMovieNameInImageFiles(b),
-				() -> getPreferences().getNoMovieNameInImageFiles());
+		JCheckBoxMenuItem noMovieNameInImageFiles = createCheckBoxMenuItem("Save poster and fanart as fanart.jpg and poster.jpg instead of moviename-fanart.jpg and moviename-poster.jpg",
+		        b -> getPreferences().setNoMovieNameInImageFiles(b), () -> getPreferences().getNoMovieNameInImageFiles());
 		submenu.add(noMovieNameInImageFiles);
 
 		//Checkbox for naming .nfo file movie.nfo instead of using movie name in file
 		JCheckBoxMenuItem nfoNamedMovieDotNfo = createCheckBoxMenuItem(".nfo file named movie.nfo instead of using movie name", b -> getPreferences().setNfoNamedMovieDotNfo(b),
-				() -> getPreferences().getNfoNamedMovieDotNfo());
+		        () -> getPreferences().getNfoNamedMovieDotNfo());
 		submenu.add(nfoNamedMovieDotNfo);
 
 		//Checkbox for whether to write the <thumb> tags into the nfo file
 		JCheckBoxMenuItem writeThumbTagsForPosterAndFanartToNfo = createCheckBoxMenuItem("Write <thumb> tags for poster and fanart into .nfo file",
-				b -> getPreferences().setWriteThumbTagsForPosterAndFanartToNfo(b), () -> getPreferences().getWriteThumbTagsForPosterAndFanartToNfo());
+		        b -> getPreferences().setWriteThumbTagsForPosterAndFanartToNfo(b), () -> getPreferences().getWriteThumbTagsForPosterAndFanartToNfo());
 		submenu.add(writeThumbTagsForPosterAndFanartToNfo);
 
 		return submenu;
@@ -405,13 +404,13 @@ public class GUIMainMenuBar extends JMenuBar {
 		JMenu scrapeMenu = new JMenu("Scrape");
 		scrapeMenu.setMnemonic(KeyEvent.VK_S);
 
-		JMenuItem scrapeAdultDVDAmalgamated = new JMenuItem(new ScrapeAmalgamatedAction(guiMain,
-				guiMain.getAllAmalgamationOrderingPreferences().getScraperGroupAmalgamationPreference(ScraperGroupName.AMERICAN_ADULT_DVD_SCRAPER_GROUP)));
+		JMenuItem scrapeAdultDVDAmalgamated = new JMenuItem(
+		        new ScrapeAmalgamatedAction(guiMain, guiMain.getAllAmalgamationOrderingPreferences().getScraperGroupAmalgamationPreference(ScraperGroupName.AMERICAN_ADULT_DVD_SCRAPER_GROUP)));
 		scrapeAdultDVDAmalgamated.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, Event.CTRL_MASK | Event.SHIFT_MASK));
 		scrapeAdultDVDAmalgamated.setIcon(GUIMainButtonPanel.initializeImageIcon("App"));
 
-		JMenuItem scrapeJAVAmalgamated = new JMenuItem(new ScrapeAmalgamatedAction(guiMain,
-				guiMain.getAllAmalgamationOrderingPreferences().getScraperGroupAmalgamationPreference(ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP)));
+		JMenuItem scrapeJAVAmalgamated = new JMenuItem(
+		        new ScrapeAmalgamatedAction(guiMain, guiMain.getAllAmalgamationOrderingPreferences().getScraperGroupAmalgamationPreference(ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP)));
 		scrapeJAVAmalgamated.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, Event.CTRL_MASK));
 		scrapeJAVAmalgamated.setIcon(GUIMainButtonPanel.initializeImageIcon("Japan"));
 

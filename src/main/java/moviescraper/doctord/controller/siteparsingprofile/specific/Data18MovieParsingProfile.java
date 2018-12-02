@@ -272,7 +272,7 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 			try {
 
 				Document galleryDocument = Jsoup.connect(currentGalleryURL).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE)
-						.userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:5.0) Gecko/20100101 Firefox/5.0").get();
+				        .userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:5.0) Gecko/20100101 Firefox/5.0").get();
 				if (galleryDocument != null) {
 					Elements galleryElement = galleryDocument.select("div a[href*=/viewer/]");
 					Element linkElement = galleryElement.select("a[href*=/viewer/").first();
@@ -309,14 +309,13 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 				String currentViewerPageURL = "http://www.data18.com/viewer/" + contentID + "/" + String.format("%02d", viewerPageNumber);
 				try {
 					Document viewerDocument = Jsoup.connect(currentViewerPageURL).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE)
-							.userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:5.0) Gecko/20100101 Firefox/5.0").get();
+					        .userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:5.0) Gecko/20100101 Firefox/5.0").get();
 					if (viewerDocument != null) {
 						Element imgElement = viewerDocument.select("div#post_view a[href*=/viewer/] img").first();
 						if (imgElement != null) {
 							String mainImageUrl = imgElement.attr("src");
 							Thumb thumbToAdd = new Thumb(fixIPAddressOfData18(mainImageUrl));
-							String previewURL = mainImageUrl.substring(0, mainImageUrl.length() - 6) + "th8/"
-									+ mainImageUrl.substring(mainImageUrl.length() - 6, mainImageUrl.length());
+							String previewURL = mainImageUrl.substring(0, mainImageUrl.length() - 6) + "th8/" + mainImageUrl.substring(mainImageUrl.length() - 6, mainImageUrl.length());
 							if (fileExistsAtURL(previewURL))
 								thumbToAdd.setPreviewURL(new URL(fixIPAddressOfData18(previewURL)));
 							//System.out.println("Scraped Viewer: " + currentViewerPageURL);
@@ -465,7 +464,7 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 		if (useSiteSearch) {
 			ArrayList<SearchResult> linksList = new ArrayList<>();
 			Document doc = Jsoup.connect(searchString).userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:5.0) Gecko/20100101 Firefox/5.0").ignoreHttpErrors(true)
-					.timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
+			        .timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
 			Elements movieSearchResultElements = doc.select("div[style=float: left; padding: 6px; width: 130px;]");
 			if (movieSearchResultElements == null || movieSearchResultElements.size() == 0) {
 				this.useSiteSearch = false;

@@ -25,6 +25,7 @@ import moviescraper.doctord.view.renderer.SearchResultsRenderer;
 
 /**
  * Generating a dialog for selecting a specific element.
+ * 
  * @author sansibar
  */
 public class SelectionDialog extends JPanel {

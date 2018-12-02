@@ -33,8 +33,7 @@ public class FileDownloaderUtilities {
 
 	public static Image getImageFromUrl(URL url, URL viewerURL) throws IOException {
 		URLConnection urlConnectionToUse = FileDownloaderUtilities.getDefaultUrlConnection(url);
-		urlConnectionToUse.setRequestProperty("User-Agent",
-				"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_5) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.65 Safari/537.31");
+		urlConnectionToUse.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_5) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.65 Safari/537.31");
 		if (viewerURL != null) {
 			urlConnectionToUse.setRequestProperty("Referer", viewerURL.toString());
 		}
@@ -63,8 +62,7 @@ public class FileDownloaderUtilities {
 	public static void writeURLToFile(URL url, File file, URL viewerUrl) throws IOException {
 		try {
 			URLConnection imageConnection = url.openConnection();
-			imageConnection.setRequestProperty("User-Agent",
-					"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_5) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.65 Safari/537.31");
+			imageConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_5) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.65 Safari/537.31");
 			if (viewerUrl != null) {
 				imageConnection.setRequestProperty("Referer", viewerUrl.toString());
 			}

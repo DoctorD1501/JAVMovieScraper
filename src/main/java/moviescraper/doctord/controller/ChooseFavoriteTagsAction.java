@@ -20,8 +20,7 @@ public class ChooseFavoriteTagsAction implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 
 		FavoriteTagPickerPanel tagPickerPanel = new FavoriteTagPickerPanel();
-		int result = JOptionPane.showOptionDialog(guiMain.getFrmMoviescraper(), tagPickerPanel, "Favorite Tags...", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null,
-				null, null);
+		int result = JOptionPane.showOptionDialog(guiMain.getFrmMoviescraper(), tagPickerPanel, "Favorite Tags...", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
 		if (result == JOptionPane.OK_OPTION) {
 			tagPickerPanel.storeSettingValues();
 		}

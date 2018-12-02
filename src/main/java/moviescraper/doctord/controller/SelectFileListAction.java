@@ -61,11 +61,9 @@ public class SelectFileListAction implements ListSelectionListener {
 
 		for (File currentSelectedFile : this.guiMain.getFileList().getSelectedValuesList()) {
 			this.guiMain.getCurrentlySelectedNfoFileList().add(new File(Movie.getFileNameOfNfo(currentSelectedFile, this.guiMain.getPreferences().getNfoNamedMovieDotNfo())));
-			this.guiMain.getCurrentlySelectedPosterFileList()
-					.add(new File(Movie.getFileNameOfPoster(currentSelectedFile, this.guiMain.getPreferences().getNoMovieNameInImageFiles())));
+			this.guiMain.getCurrentlySelectedPosterFileList().add(new File(Movie.getFileNameOfPoster(currentSelectedFile, this.guiMain.getPreferences().getNoMovieNameInImageFiles())));
 			this.guiMain.getCurrentlySelectedFolderJpgFileList().add(new File(Movie.getFileNameOfFolderJpg(currentSelectedFile)));
-			this.guiMain.getCurrentlySelectedFanartFileList()
-					.add(new File(Movie.getFileNameOfFanart(currentSelectedFile, this.guiMain.getPreferences().getNoMovieNameInImageFiles())));
+			this.guiMain.getCurrentlySelectedFanartFileList().add(new File(Movie.getFileNameOfFanart(currentSelectedFile, this.guiMain.getPreferences().getNoMovieNameInImageFiles())));
 			this.guiMain.getCurrentlySelectedTrailerFileList().add(new File(Movie.getFileNameOfTrailer(currentSelectedFile)));
 		}
 
@@ -115,7 +113,6 @@ public class SelectFileListAction implements ListSelectionListener {
 	}
 
 	/**
-	 *
 	 * @return true if any movie in the movie list has a title at least one letter long
 	 */
 	private boolean shouldFileWritingBeEnabled() {

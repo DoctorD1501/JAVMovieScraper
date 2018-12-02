@@ -96,7 +96,7 @@ public class AmalgamationSettingsDialog {
 		northPanelLayoutManager.setVgap(layoutVerticalGap);
 		JPanel northPanel = new JPanel(northPanelLayoutManager);
 		JLabel helpMessage = new JLabel(
-				"<html>Select the scrapers you wish to use and the preferred order of each item to use when amalgamating data from the same scraping group.<br>Higher numbered items have precedence over lower numbered items.<br> Any scrapers disabled under \"Default Ordering\" will not scrape at all, even if enabled in the specific ordering section.</html>");
+		        "<html>Select the scrapers you wish to use and the preferred order of each item to use when amalgamating data from the same scraping group.<br>Higher numbered items have precedence over lower numbered items.<br> Any scrapers disabled under \"Default Ordering\" will not scrape at all, even if enabled in the specific ordering section.</html>");
 		northPanel.add(helpMessage, BorderLayout.SOUTH);
 		JPanel scraperGroupNameComboPanel = new JPanel();
 		scraperGroupNameComboPanel.add(new JLabel("Scraper Group:"));
@@ -132,8 +132,7 @@ public class AmalgamationSettingsDialog {
 		upDownDisablePanel.add(downButtonOverall);
 
 		overallAmalgamationPreferencePanel.add(upDownDisablePanel, BorderLayout.EAST);
-		overallAmalgamationPreferencePanel
-				.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black), "Default Ordering", TitledBorder.CENTER, TitledBorder.TOP));
+		overallAmalgamationPreferencePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black), "Default Ordering", TitledBorder.CENTER, TitledBorder.TOP));
 		panel.add(overallAmalgamationPreferencePanel, BorderLayout.WEST);
 
 		//Scraper Panel End
@@ -176,12 +175,14 @@ public class AmalgamationSettingsDialog {
 		//JLabel helpLabel = new JLabel("<html>Any scrapers selected here will be used to amalgamate data when using either the<br> \"Scrape JAV\" or \"Scrape JAV (Automatic)\" scrapers</html>");
 		//panel.add(helpLabel);
 
-		/*for (String option : options) {
-			boolean isSelected = selected.contains(option);
-			JCheckBox cb = new JCheckBox(option, isSelected);
-			checkboxes.add(cb);
-			panel.add(cb);
-		}*/
+		/*
+		 * for (String option : options) {
+		 * boolean isSelected = selected.contains(option);
+		 * JCheckBox cb = new JCheckBox(option, isSelected);
+		 * checkboxes.add(cb);
+		 * panel.add(cb);
+		 * }
+		 */
 
 	}
 
@@ -191,8 +192,7 @@ public class AmalgamationSettingsDialog {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				amalgamationPreferences.getScraperGroupAmalgamationPreference((ScraperGroupName) scraperGroupNameComboBox.getSelectedItem())
-						.removeCustomOrderingForField(selectedMovieField);
+				amalgamationPreferences.getScraperGroupAmalgamationPreference((ScraperGroupName) scraperGroupNameComboBox.getSelectedItem()).removeCustomOrderingForField(selectedMovieField);
 				createSpecificFieldAmalgamationPreferenceList();
 			}
 		});
@@ -213,8 +213,7 @@ public class AmalgamationSettingsDialog {
 		return resetToDefaultSettings;
 	}
 
-	private void synchronizeAmalgamationPreferenceListToDataItemSourceAmalgamationPreference(final DefaultListModel<DataItemSource> amalgamationPreferenceListModel,
-			boolean isOverallPrefSync) {
+	private void synchronizeAmalgamationPreferenceListToDataItemSourceAmalgamationPreference(final DefaultListModel<DataItemSource> amalgamationPreferenceListModel, boolean isOverallPrefSync) {
 		if (amalgamationPreferenceListModel != null) {
 			LinkedList<DataItemSource> sppiAllValues = new LinkedList<>();
 			for (int i = 0; i < amalgamationPreferenceListModel.getSize(); i++) {
@@ -222,27 +221,26 @@ public class AmalgamationSettingsDialog {
 			}
 			if (isOverallPrefSync) {
 				DataItemSourceAmalgamationPreference overallAmalgamationPreference = amalgamationPreferences
-						.getScraperGroupAmalgamationPreference((ScraperGroupName) scraperGroupNameComboBox.getSelectedItem()).getOverallAmalgamationPreference();
+				        .getScraperGroupAmalgamationPreference((ScraperGroupName) scraperGroupNameComboBox.getSelectedItem()).getOverallAmalgamationPreference();
 				overallAmalgamationPreference.setAmalgamationPreferenceOrder(sppiAllValues);
 			} else {
 				DataItemSourceAmalgamationPreference preferenceToSet = new DataItemSourceAmalgamationPreference(sppiAllValues);
-				amalgamationPreferences.getScraperGroupAmalgamationPreference((ScraperGroupName) scraperGroupNameComboBox.getSelectedItem())
-						.setCustomOrderingForField(selectedMovieField, preferenceToSet);
+				amalgamationPreferences.getScraperGroupAmalgamationPreference((ScraperGroupName) scraperGroupNameComboBox.getSelectedItem()).setCustomOrderingForField(selectedMovieField,
+				        preferenceToSet);
 				panelHeaderSpecificFieldAmalgamationPreference.setText("<html> Using <b>Specific</b> Ordering for " + getNameOfCurrentMovieFieldSelected() + "</html>");
 			}
 		}
 	}
 
-	private void swapElements(final JList<DataItemSource> amalgamationPreferenceList, final DefaultListModel<DataItemSource> amalgamationPreferenceListModel,
-			boolean isOverallPrefSync, int pos1, int pos2) {
+	private void swapElements(final JList<DataItemSource> amalgamationPreferenceList, final DefaultListModel<DataItemSource> amalgamationPreferenceListModel, boolean isOverallPrefSync, int pos1,
+	        int pos2) {
 		DataItemSource tmp = (DataItemSource) amalgamationPreferenceListModel.get(pos1);
 		amalgamationPreferenceListModel.set(pos1, amalgamationPreferenceListModel.get(pos2));
 		amalgamationPreferenceListModel.set(pos2, tmp);
 		synchronizeAmalgamationPreferenceListToDataItemSourceAmalgamationPreference(amalgamationPreferenceListModel, isOverallPrefSync);
 	}
 
-	private JButton createUpButton(final JList<DataItemSource> amalgamationPreferenceList, final DefaultListModel<DataItemSource> amalgamationPreferenceListModel,
-			final boolean isOverallPrefSync) {
+	private JButton createUpButton(final JList<DataItemSource> amalgamationPreferenceList, final DefaultListModel<DataItemSource> amalgamationPreferenceListModel, final boolean isOverallPrefSync) {
 
 		JButton upButton = new JButton("↑");
 		upButton.addActionListener(new ActionListener() {
@@ -261,8 +259,7 @@ public class AmalgamationSettingsDialog {
 		return upButton;
 	}
 
-	private JButton createDownButton(final JList<DataItemSource> amalgamationPreferenceList, final DefaultListModel<DataItemSource> amalgamationPreferenceListModel,
-			final boolean isOverallPrefSync) {
+	private JButton createDownButton(final JList<DataItemSource> amalgamationPreferenceList, final DefaultListModel<DataItemSource> amalgamationPreferenceListModel, final boolean isOverallPrefSync) {
 		JButton downButton = new JButton("↓");
 		downButton.addActionListener(new ActionListener() {
 
@@ -283,7 +280,7 @@ public class AmalgamationSettingsDialog {
 	}
 
 	private JButton createDisableButton(final JList<DataItemSource> amalgamationPreferenceList, final DefaultListModel<DataItemSource> amalgamationPreferenceListModel,
-			final boolean isOverallPrefSync) {
+	        final boolean isOverallPrefSync) {
 		JButton disableButton = new JButton("<html><font color='green'>Enable</font> / <font color='red'><strike>Disable</strike></font></html>");
 		disableButton.addActionListener(new ActionListener() {
 
@@ -331,7 +328,7 @@ public class AmalgamationSettingsDialog {
 			overallAmalgamationPreferenceList.setCellRenderer(new DataItemSourceRenderer());
 		}
 		Collection<DataItemSource> listData = amalgamationPreferences.getScraperGroupAmalgamationPreference((ScraperGroupName) scraperGroupNameComboBox.getSelectedItem())
-				.getOverallAmalgamationPreference().getAmalgamationPreferenceOrder();
+		        .getOverallAmalgamationPreference().getAmalgamationPreferenceOrder();
 		for (DataItemSource currentItem : listData) {
 			overallAmalgamationPreferenceListModel.addElement(currentItem);
 		}
@@ -365,8 +362,8 @@ public class AmalgamationSettingsDialog {
 		}
 
 		Collection<DataItemSource> listData;
-		DataItemSourceAmalgamationPreference orderingForField = amalgamationPreferences
-				.getScraperGroupAmalgamationPreference((ScraperGroupName) scraperGroupNameComboBox.getSelectedItem()).getSpecificAmalgamationPreference(selectedMovieField);
+		DataItemSourceAmalgamationPreference orderingForField = amalgamationPreferences.getScraperGroupAmalgamationPreference((ScraperGroupName) scraperGroupNameComboBox.getSelectedItem())
+		        .getSpecificAmalgamationPreference(selectedMovieField);
 
 		if (orderingForField != null) {
 			panelHeaderSpecificFieldAmalgamationPreference.setText("<html> Using <b>Specific</b> Ordering for " + getNameOfCurrentMovieFieldSelected() + "</html>");
@@ -375,8 +372,8 @@ public class AmalgamationSettingsDialog {
 			panelHeaderSpecificFieldAmalgamationPreference.setText("<html>Using <b>Default</b> Ordering for " + getNameOfCurrentMovieFieldSelected() + "</html>");
 			//we need to create a new object for this field copied from the overall ordering using the same type as the original items
 			listData = new LinkedList<>();
-			DataItemSourceAmalgamationPreference overallPrefs = amalgamationPreferences
-					.getScraperGroupAmalgamationPreference((ScraperGroupName) scraperGroupNameComboBox.getSelectedItem()).getOverallAmalgamationPreference();
+			DataItemSourceAmalgamationPreference overallPrefs = amalgamationPreferences.getScraperGroupAmalgamationPreference((ScraperGroupName) scraperGroupNameComboBox.getSelectedItem())
+			        .getOverallAmalgamationPreference();
 			LinkedList<DataItemSource> overallPrefsDataItems = overallPrefs.getAmalgamationPreferenceOrder();
 			for (DataItemSource currentItem : overallPrefsDataItems) {
 				listData.add(currentItem.createInstanceOfSameType());

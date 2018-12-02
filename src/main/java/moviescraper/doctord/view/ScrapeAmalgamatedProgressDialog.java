@@ -94,8 +94,7 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
 			File currentFile = filesWeAreScraping.get(currentFileIndexToScrape);
 			if (currentFile != null) {
 				String truncatedName = StringUtils.abbreviate(currentFile.getName(), maxLettersToDisplayOfFileName);
-				fileBeingScrapedLabel
-						.setText("<html>Scraping: <b>" + truncatedName + "</b> (" + (currentFileIndexToScrape + 1) + "/" + filesWeAreScraping.size() + ")" + "</html>");
+				fileBeingScrapedLabel.setText("<html>Scraping: <b>" + truncatedName + "</b> (" + (currentFileIndexToScrape + 1) + "/" + filesWeAreScraping.size() + ")" + "</html>");
 			}
 		} else {
 			fileBeingScrapedLabel.setText("No files selected.");
@@ -119,7 +118,7 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
 	}
 
 	public ScrapeAmalgamatedProgressDialog(GUIMain guiMain, AllAmalgamationOrderingPreferences allAmalgamationOrderingPreferences,
-			ScraperGroupAmalgamationPreference scraperGroupAmalgamationPreference) {
+	        ScraperGroupAmalgamationPreference scraperGroupAmalgamationPreference) {
 		super(guiMain.getFrmMoviescraper());
 		setTitle("Scraping...");
 		this.guiMain = guiMain;
@@ -224,8 +223,8 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
 			if (propertyListener != null)
 				worker.removePropertyChangeListener(propertyListener);
 		}
-		worker = new ScrapeAmalgamatedMovieWorker(allAmalgamationOrderingPreferences, scraperGroupAmalgamationPreference,
-				guiMain.getCurrentlySelectedMovieFileList().get(currentFileIndexToScrape), this);
+		worker = new ScrapeAmalgamatedMovieWorker(allAmalgamationOrderingPreferences, scraperGroupAmalgamationPreference, guiMain.getCurrentlySelectedMovieFileList().get(currentFileIndexToScrape),
+		        this);
 		propertyListener = new AmalgamationPropertyChangeListener();
 		worker.addPropertyChangeListener(propertyListener);
 		worker.execute();
@@ -233,6 +232,7 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
 
 	/**
 	 * Scrapes the next item (returns true) or returns false if there is no next item to scrape
+	 * 
 	 * @return true if we scraped an item, false if we didn't
 	 */
 	public boolean scrapeNextItemIfNeeded() {
@@ -318,7 +318,7 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
 		if (currentMovieList != null && currentMovieList.size() > 0) {
 			//we construct a new one instead of using our local variable to get around bug where changes to amalgamation settings were not getting picked up until program restart
 			ScraperGroupAmalgamationPreference prefToUse = guiMain.getAllAmalgamationOrderingPreferences()
-					.getScraperGroupAmalgamationPreference(scraperGroupAmalgamationPreference.getScraperGroupName());
+			        .getScraperGroupAmalgamationPreference(scraperGroupAmalgamationPreference.getScraperGroupName());
 			MovieScrapeResultGroup scrapedResultGroup = new MovieScrapeResultGroup(currentMovieList, prefToUse);
 
 			currentAmalgamatedMovie = scrapedResultGroup.amalgamateMovie();
@@ -401,8 +401,8 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
 		boolean wasCustomURLSet = false;
 		if (promptUserForURLWhenScraping) {
 			System.out.println("Prompting the user for a url for " + siteScraper);
-			String userProvidedURL = (String) JOptionPane.showInputDialog(null, "Enter URL of " + siteScraper.toString() + " to scrape from:", "Scrape from this URL...",
-					JOptionPane.PLAIN_MESSAGE, null, null, null);
+			String userProvidedURL = (String) JOptionPane.showInputDialog(null, "Enter URL of " + siteScraper.toString() + " to scrape from:", "Scrape from this URL...", JOptionPane.PLAIN_MESSAGE,
+			        null, null, null);
 
 			if (userProvidedURL != null && userProvidedURL.length() > 0) {
 				//TODO: validate this is a actually a URL and display an error message if it is not
@@ -446,6 +446,7 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
 
 	/**
 	 * Display a list of option dialog where the user can choose between various search results
+	 * 
 	 * @param searchResults - search results to display
 	 * @param siteName - Title to show in window
 	 * @return - the search result the user picks or null if the user picks the cancel option
@@ -456,8 +457,8 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
 			SelectionDialog selectionDialog = new SelectionDialog(searchResults, siteName);
 			Object[] choices = { "OK", "Skip Scraping From This Site" };
 			Object defaultChoice = choices[0];
-			int optionPicked = JOptionPane.showOptionDialog(null, selectionDialog, "Select Search Result for " + siteName, JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,
-					null, choices, defaultChoice);
+			int optionPicked = JOptionPane.showOptionDialog(null, selectionDialog, "Select Search Result for " + siteName, JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, choices,
+			        defaultChoice);
 			if (optionPicked == JOptionPane.CANCEL_OPTION)
 				return null;
 			return selectionDialog.getSelectedValue();

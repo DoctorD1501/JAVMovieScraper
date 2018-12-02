@@ -24,6 +24,7 @@ public class Rating extends MovieDataItem {
 
 	/**
 	 * Uses the maxRating and rating score to convert the rating to a score out of 10 with one decimal place
+	 * 
 	 * @return
 	 */
 	public String getRatingOutOfTen() {

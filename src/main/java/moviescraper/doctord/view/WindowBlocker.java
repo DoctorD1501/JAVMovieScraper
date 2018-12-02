@@ -7,7 +7,6 @@ import javax.swing.JComponent;
 import javax.swing.event.MouseInputListener;
 
 /**
- * 
  * Class to block input to frame below.
  * 
  * @see <a href="http://book.javanb.com/swing-hacks/swinghacks-chp-8-sect-4.html">Source of code</a>

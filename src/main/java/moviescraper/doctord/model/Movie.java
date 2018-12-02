@@ -41,10 +41,11 @@ import moviescraper.doctord.model.preferences.MoviescraperPreferences;
 
 public class Movie {
 
-	/* Be careful if you decide you want to change the field names in this class (especially the arrays) 
-	 * because reflection is used in the movie amalgamation routine to get these fields by name, so you will need to 
+	/*
+	 * Be careful if you decide you want to change the field names in this class (especially the arrays)
+	 * because reflection is used in the movie amalgamation routine to get these fields by name, so you will need to
 	 * update the references in the reflective call with the new name as well.
-	*/
+	 */
 	private ArrayList<Actor> actors;
 	private ArrayList<Director> directors;
 	private Thumb[] fanart;
@@ -82,8 +83,8 @@ public class Movie {
 	private String fileName;
 
 	public Movie(ArrayList<Actor> actors, ArrayList<Director> directors, Thumb[] fanart, Thumb[] extraFanart, ArrayList<Genre> genres, ArrayList<Tag> tags, ID id, MPAARating mpaa,
-			OriginalTitle originalTitle, Outline outline, Plot plot, Thumb[] posters, Rating rating, ReleaseDate releaseDate, Runtime runtime, Set set, SortTitle sortTitle,
-			Studio studio, Tagline tagline, Title title, Top250 top250, Trailer trailer, Votes votes, Year year) {
+	        OriginalTitle originalTitle, Outline outline, Plot plot, Thumb[] posters, Rating rating, ReleaseDate releaseDate, Runtime runtime, Set set, SortTitle sortTitle, Studio studio,
+	        Tagline tagline, Title title, Top250 top250, Trailer trailer, Votes votes, Year year) {
 		super();
 		this.actors = actors;
 		this.directors = directors;
@@ -211,8 +212,9 @@ public class Movie {
 
 	/**
 	 * Create a movie by reading in a values from a nfo file created by previously scraping the movie and then writing the metadata out to the file
+	 * 
 	 * @param nfoFile
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	public static Movie createMovieFromNfo(File nfoFile) throws IOException {
 		Movie movieFromNfo = null;
@@ -409,11 +411,10 @@ public class Movie {
 
 	@Override
 	public String toString() {
-		return "Movie [title=" + title + ", originalTitle=" + originalTitle + ", sortTitle=" + sortTitle + ", set=" + set + ", rating=" + rating + ", year=" + year + ", top250="
-				+ top250 + ", trailer = " + trailer + ", votes=" + votes + ", outline=" + outline + ", plot=" + plot + ", tagline=" + tagline + ", studio=" + studio
-				+ "releaseDate=" + releaseDate + ", runtime=" + runtime + ", posters=" + Arrays.toString(posters) + ", fanart=" + Arrays.toString(fanart) + ", extrafanart = "
-				+ Arrays.toString(extraFanart) + ", mpaa=" + mpaa + ", id=" + id + ", genres=" + genres + ", tags=" + tags + ", actors=" + actors + ", directors=" + directors
-				+ "]";
+		return "Movie [title=" + title + ", originalTitle=" + originalTitle + ", sortTitle=" + sortTitle + ", set=" + set + ", rating=" + rating + ", year=" + year + ", top250=" + top250
+		        + ", trailer = " + trailer + ", votes=" + votes + ", outline=" + outline + ", plot=" + plot + ", tagline=" + tagline + ", studio=" + studio + "releaseDate=" + releaseDate
+		        + ", runtime=" + runtime + ", posters=" + Arrays.toString(posters) + ", fanart=" + Arrays.toString(fanart) + ", extrafanart = " + Arrays.toString(extraFanart) + ", mpaa=" + mpaa
+		        + ", id=" + id + ", genres=" + genres + ", tags=" + tags + ", actors=" + actors + ", directors=" + directors + "]";
 	}
 
 	public String toXML() {
@@ -438,8 +439,8 @@ public class Movie {
 		}
 	}
 
-	public void writeToFile(File nfoFile, File posterFile, File fanartFile, File currentlySelectedFolderJpgFile, File targetFolderForExtraFanartFolderAndActorFolder,
-			File trailerFile, MoviescraperPreferences preferences) throws IOException {
+	public void writeToFile(File nfoFile, File posterFile, File fanartFile, File currentlySelectedFolderJpgFile, File targetFolderForExtraFanartFolderAndActorFolder, File trailerFile,
+	        MoviescraperPreferences preferences) throws IOException {
 		// Output the movie to XML using XStream and a proxy class to
 		// translate things to a format that Kodi expects
 
@@ -470,7 +471,7 @@ public class Movie {
 		// save the first poster out
 		// maybe we did some clipping, so we're going to have to reencode it
 		if (this.getPosters().length > 0 && (writePoster || createFolderJpgEnabledPreference)
-				&& ((posterFile.exists() == writePosterIfAlreadyExists) || (!posterFile.exists() || (createFolderJpgEnabledPreference)))) {
+		        && ((posterFile.exists() == writePosterIfAlreadyExists) || (!posterFile.exists() || (createFolderJpgEnabledPreference)))) {
 			if (posterToSaveToDisk != null && (posterToSaveToDisk.isModified() || createFolderJpgEnabledPreference || !posterFile.exists() || writePosterIfAlreadyExists)) {
 				//reencode the jpg since we probably did a resize
 				Iterator<ImageWriter> iter = ImageIO.getImageWritersByFormatName("jpeg");
@@ -668,6 +669,7 @@ public class Movie {
 
 	/**
 	 * Checks for the given file a trailer file exists for it for the given file name extension
+	 * 
 	 * @param selectedValue - base file name of movie or nfo
 	 * @param extension - the file name extension we are checking
 	 * @return - the path to the file if it found the trailer, otherwise null
@@ -728,32 +730,34 @@ public class Movie {
 		}
 	}
 
-	/*private String [] searchResultsHelperForScrapeMovie(File movieFile, SiteParsingProfile siteToParseFrom)
-	{
-		String [] searchResults = siteToParseFrom.getSearchResults(searchString);
-		int levDistanceOfCurrentMatch = 999999; // just some super high number
-		String idFromMovieFile = SiteParsingProfile.findIDTagFromFile(movieFile);
-		
-		//loop through search results and see if URL happens to contain ID number in the URL. This will improve accuracy!
-		for (int i = 0; i < searchResults.length; i++)
-		{
-			String urltoMatch = searchResults[i].toLowerCase();
-			String idFromMovieFileToMatch = idFromMovieFile.toLowerCase().replaceAll("-", "");
-			//System.out.println("Comparing " + searchResults[i].toLowerCase() + " to " + idFromMovieFile.toLowerCase().replaceAll("-", ""));
-			if (urltoMatch.contains(idFromMovieFileToMatch))
-			{
-				//let's do some fuzzy logic searching to try to get the "best" match in case we got some that are pretty close
-				//and update the variables accordingly so we know what our best match so far is
-				int candidateLevDistanceOfCurrentMatch = StringUtils.getLevenshteinDistance(urltoMatch.toLowerCase(), idFromMovieFileToMatch);
-				if (candidateLevDistanceOfCurrentMatch < levDistanceOfCurrentMatch)
-				{
-					levDistanceOfCurrentMatch = candidateLevDistanceOfCurrentMatch;
-					searchResultNumberToUse = i;
-				}
-			}
-		}
-		return searchResults;
-	}*/
+	/*
+	 * private String [] searchResultsHelperForScrapeMovie(File movieFile, SiteParsingProfile siteToParseFrom)
+	 * {
+	 * String [] searchResults = siteToParseFrom.getSearchResults(searchString);
+	 * int levDistanceOfCurrentMatch = 999999; // just some super high number
+	 * String idFromMovieFile = SiteParsingProfile.findIDTagFromFile(movieFile);
+	 * 
+	 * //loop through search results and see if URL happens to contain ID number in the URL. This will improve accuracy!
+	 * for (int i = 0; i < searchResults.length; i++)
+	 * {
+	 * String urltoMatch = searchResults[i].toLowerCase();
+	 * String idFromMovieFileToMatch = idFromMovieFile.toLowerCase().replaceAll("-", "");
+	 * //System.out.println("Comparing " + searchResults[i].toLowerCase() + " to " + idFromMovieFile.toLowerCase().replaceAll("-", ""));
+	 * if (urltoMatch.contains(idFromMovieFileToMatch))
+	 * {
+	 * //let's do some fuzzy logic searching to try to get the "best" match in case we got some that are pretty close
+	 * //and update the variables accordingly so we know what our best match so far is
+	 * int candidateLevDistanceOfCurrentMatch = StringUtils.getLevenshteinDistance(urltoMatch.toLowerCase(), idFromMovieFileToMatch);
+	 * if (candidateLevDistanceOfCurrentMatch < levDistanceOfCurrentMatch)
+	 * {
+	 * levDistanceOfCurrentMatch = candidateLevDistanceOfCurrentMatch;
+	 * searchResultNumberToUse = i;
+	 * }
+	 * }
+	 * }
+	 * return searchResults;
+	 * }
+	 */
 
 	//Version that allows us to update the GUI while scraping
 	public static Movie scrapeMovie(File movieFile, SiteParsingProfile siteToParseFrom, String urlToScrapeFromDMM, boolean useURLtoScrapeFrom) throws IOException {
@@ -897,8 +901,8 @@ public class Movie {
 		Votes votes = Votes.BLANK_VOTES;
 		Year year = Year.BLANK_YEAR;
 
-		return new Movie(actors, directors, fanart, extraFanart, genres, tags, id, mpaa, originalTitle, outline, plot, posters, rating, releaseDate, runtime, set, sortTitle,
-				studio, tagline, title, top250, trailer, votes, year);
+		return new Movie(actors, directors, fanart, extraFanart, genres, tags, id, mpaa, originalTitle, outline, plot, posters, rating, releaseDate, runtime, set, sortTitle, studio, tagline, title,
+		        top250, trailer, votes, year);
 	}
 
 	public String getFileName() {
@@ -920,6 +924,7 @@ public class Movie {
 	/**
 	 * remove the item from the picked from the existing poster list and put it at
 	 * the front of the list. if the movie does not contain the poster, no change will be made
+	 * 
 	 * @param posterToGoToFront - poster to put in front
 	 */
 	public void moveExistingPosterToFront(Thumb posterToGoToFront) {
@@ -938,6 +943,7 @@ public class Movie {
 	/**
 	 * remove the item from the picked from the existing fanart list and put it at
 	 * the front of the list. if the movie does not contain the fanart, no change will be made
+	 * 
 	 * @param fanartToGoToFront - fanart to put in front
 	 */
 	public void moveExistingFanartToFront(Thumb fanartToGoToFront) {

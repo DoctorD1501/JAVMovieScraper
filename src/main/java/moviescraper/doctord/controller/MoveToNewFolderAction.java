@@ -48,39 +48,41 @@ public class MoveToNewFolderAction extends AbstractAction {
 				boolean isFileDirectory = false;
 				Movie currentMovie = MovieFactory.createEmptyMovie();
 				if (this.guiMain.getCurrentlySelectedMovieFileList() != null && this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList).exists()
-						&& this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList).isFile()) {
+				        && this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList).isFile()) {
 					// we can append the movie title to resulting folder name if
 					// the movie is scraped, has an ID and generally matches the
 					// ID in the filename (assuming the file is only named the
 					// ID of the movie)
 					String destinationDirectoryPrefix = "";
 
-					if (this.guiMain.movieToWriteToDiskList != null && this.guiMain.movieToWriteToDiskList.size() > 0
-							&& this.guiMain.movieToWriteToDiskList.size() > movieNumberInList && this.guiMain.movieToWriteToDiskList.get(movieNumberInList) != null) {
+					if (this.guiMain.movieToWriteToDiskList != null && this.guiMain.movieToWriteToDiskList.size() > 0 && this.guiMain.movieToWriteToDiskList.size() > movieNumberInList
+					        && this.guiMain.movieToWriteToDiskList.get(movieNumberInList) != null) {
 						File fileToRename = this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList);
 						currentMovie = this.guiMain.movieToWriteToDiskList.get(movieNumberInList);
 
-						/*String possibleID = this.guiMain.movieToWriteToDiskList.get(movieNumberInList).getId().getId()
-								.toUpperCase();
-						String possibleIDWithoutDash = possibleID.replaceFirst(
-								"-", "");
-						String fileNameComparingTo = FilenameUtils
-								.getBaseName(this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList)
-										.getName().toUpperCase());
-						if (possibleID.endsWith(SiteParsingProfile.stripDiscNumber(fileNameComparingTo))
-								|| possibleIDWithoutDash
-								.endsWith(SiteParsingProfile.stripDiscNumber(fileNameComparingTo))) {
-							destinationDirectoryPrefix = this.guiMain.movieToWriteToDiskList.get(movieNumberInList)
-									.getTitle().getTitle() + " - ";
-							// replace illegal characters in the movie filename
-							// prefix that the OS doesn't allow with blank space
-							destinationDirectoryPrefix = destinationDirectoryPrefix
-									.replace("^\\.+", "").replaceAll(
-											"[\\\\/:*?\"<>|]", "");
-						}*/
+						/*
+						 * String possibleID = this.guiMain.movieToWriteToDiskList.get(movieNumberInList).getId().getId()
+						 * .toUpperCase();
+						 * String possibleIDWithoutDash = possibleID.replaceFirst(
+						 * "-", "");
+						 * String fileNameComparingTo = FilenameUtils
+						 * .getBaseName(this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList)
+						 * .getName().toUpperCase());
+						 * if (possibleID.endsWith(SiteParsingProfile.stripDiscNumber(fileNameComparingTo))
+						 * || possibleIDWithoutDash
+						 * .endsWith(SiteParsingProfile.stripDiscNumber(fileNameComparingTo))) {
+						 * destinationDirectoryPrefix = this.guiMain.movieToWriteToDiskList.get(movieNumberInList)
+						 * .getTitle().getTitle() + " - ";
+						 * // replace illegal characters in the movie filename
+						 * // prefix that the OS doesn't allow with blank space
+						 * destinationDirectoryPrefix = destinationDirectoryPrefix
+						 * .replace("^\\.+", "").replaceAll(
+						 * "[\\\\/:*?\"<>|]", "");
+						 * }
+						 */
 
-						Renamer renamer = new Renamer(MoviescraperPreferences.getRenamerString(), MoviescraperPreferences.getFolderRenamerString(),
-								MoviescraperPreferences.getSanitizerForFilename(), currentMovie, fileToRename);
+						Renamer renamer = new Renamer(MoviescraperPreferences.getRenamerString(), MoviescraperPreferences.getFolderRenamerString(), MoviescraperPreferences.getSanitizerForFilename(),
+						        currentMovie, fileToRename);
 
 						//Figure out all the new names
 						destinationDirectoryPrefix = renamer.getNewFileName(true);
@@ -93,13 +95,12 @@ public class MoveToNewFolderAction extends AbstractAction {
 						destDir = new File(destinationDirectoryPrefix);
 					} else {
 						destDir = new File(this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList).getParentFile().getCanonicalPath() + pathSeperator
-								+ SiteParsingProfile.stripDiscNumber(FilenameUtils.getBaseName(this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList).getName())));
+						        + SiteParsingProfile.stripDiscNumber(FilenameUtils.getBaseName(this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList).getName())));
 					}
 					this.guiMain.clearAllFieldsOfFileDetailPanel();
 					//copy over the .actor folder items to the destination folder, but only if the preference is set and the usual sanity checking is done
 					if (this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList).isFile() && this.guiMain.getCurrentlySelectedActorsFolderList() != null
-							&& this.guiMain.getCurrentlySelectedActorsFolderList().size() > movieNumberInList
-							&& this.guiMain.getPreferences().getDownloadActorImagesToActorFolderPreference()) {
+					        && this.guiMain.getCurrentlySelectedActorsFolderList().size() > movieNumberInList && this.guiMain.getPreferences().getDownloadActorImagesToActorFolderPreference()) {
 						File[] actorFilesToCopy = this.guiMain.actorFolderFiles(movieNumberInList);
 						File actorsFolderDestDir = new File(destDir.getPath() + File.separator + ".actors");
 						for (File currentFile : actorFilesToCopy) {
@@ -111,7 +112,7 @@ public class MoveToNewFolderAction extends AbstractAction {
 						//which are part of this movie's stack
 						File currentDirectory = this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList).getParentFile();
 						String currentlySelectedMovieFileWihoutStackSuffix = SiteParsingProfile
-								.stripDiscNumber(FilenameUtils.removeExtension(this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList).getName()));
+						        .stripDiscNumber(FilenameUtils.removeExtension(this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList).getName()));
 						if (currentDirectory != null) {
 
 							for (File currentFile : currentDirectory.listFiles()) {

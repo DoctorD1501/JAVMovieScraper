@@ -34,14 +34,13 @@ public class ScrapeAmalgamatedMovieWorker extends SwingWorker<Void, Map<SitePars
 	private ScrapeAmalgamatedProgressDialog parent;
 
 	/**
-	 *
 	 * @param allAmalgamationOrderingPreferences
 	 * @param guiMain
 	 * @param scraperGroupAmalgamationPreference
 	 * @param fileToScrape - file scraped if no gui (if there is a gui we use the state variable from there wich is the file to scrape)
 	 */
-	public ScrapeAmalgamatedMovieWorker(AllAmalgamationOrderingPreferences allAmalgamationOrderingPreferences,
-			ScraperGroupAmalgamationPreference scraperGroupAmalgamationPreference, File fileToScrape, ScrapeAmalgamatedProgressDialog parent) {
+	public ScrapeAmalgamatedMovieWorker(AllAmalgamationOrderingPreferences allAmalgamationOrderingPreferences, ScraperGroupAmalgamationPreference scraperGroupAmalgamationPreference, File fileToScrape,
+	        ScrapeAmalgamatedProgressDialog parent) {
 		runningWorkers = new HashMap<>();
 		progress = 0;
 		amountOfProgressPerSubtask = 0;
@@ -77,14 +76,15 @@ public class ScrapeAmalgamatedMovieWorker extends SwingWorker<Void, Map<SitePars
 		}
 	}
 
-	/*private static void failIfInterrupted() throws InterruptedException {
-		if (Thread.currentThread().isInterrupted()) {
-		  throw new InterruptedException("Interrupted while searching files");
-		}
-	  }*/
+	/*
+	 * private static void failIfInterrupted() throws InterruptedException {
+	 * if (Thread.currentThread().isInterrupted()) {
+	 * throw new InterruptedException("Interrupted while searching files");
+	 * }
+	 * }
+	 */
 
 	/**
-	 *
 	 * @param parsingProfile - item to check if scraping is enabled for this parsing profile
 	 * @return true if scraper should scrape for parsingProfile, false otherwise
 	 */
@@ -117,7 +117,7 @@ public class ScrapeAmalgamatedMovieWorker extends SwingWorker<Void, Map<SitePars
 
 		//get the latest version of the sraper group preference - if it's not there for whatever reason (usually from a specific scrape), just leave it alone
 		ScraperGroupAmalgamationPreference scraperGroupAmalgamationPreferenceNew = allAmalgamationOrderingPreferences
-				.getScraperGroupAmalgamationPreference(scraperGroupAmalgamationPreference.getScraperGroupName());
+		        .getScraperGroupAmalgamationPreference(scraperGroupAmalgamationPreference.getScraperGroupName());
 		if (scraperGroupAmalgamationPreferenceNew != null)
 			scraperGroupAmalgamationPreference = scraperGroupAmalgamationPreferenceNew;
 

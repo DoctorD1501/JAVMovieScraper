@@ -74,17 +74,21 @@ public class FileDetailPanelGenreEditor extends AbstractFileDetailPanelEditGUI {
 
 	@Override
 	public void deleteAction() {
-		/*Genre genreToRemove = fileDetailPanel.getGenreList().getSelectedText();
-		fileDetailPanel.getCurrentMovie().getGenres().remove(genreToRemove);
-		fileDetailPanel.updateView(false, false);*/
+		/*
+		 * Genre genreToRemove = fileDetailPanel.getGenreList().getSelectedText();
+		 * fileDetailPanel.getCurrentMovie().getGenres().remove(genreToRemove);
+		 * fileDetailPanel.updateView(false, false);
+		 */
 
 	}
 
 	@Override
 	public void editAction() {
-		/*Genre genreToEdit = fileDetailPanel.getGenreList().getSelectedText();
-		genreToEdit.setGenre(textFieldGenre.getText());
-		fileDetailPanel.updateView(false, false);*/
+		/*
+		 * Genre genreToEdit = fileDetailPanel.getGenreList().getSelectedText();
+		 * genreToEdit.setGenre(textFieldGenre.getText());
+		 * fileDetailPanel.updateView(false, false);
+		 */
 
 	}
 

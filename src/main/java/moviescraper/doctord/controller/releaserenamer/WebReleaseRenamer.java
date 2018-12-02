@@ -25,8 +25,8 @@ public class WebReleaseRenamer extends ReleaseRenamer {
 	public String getCleanName(String filename) {
 		String cleanFileName = filename.toLowerCase();
 		cleanFileName = replaceSeperatorsWithSpaces(cleanFileName);
-		/* 
-		 * remove things from the filename which are usually not part of the 
+		/*
+		 * remove things from the filename which are usually not part of the
 		 * scene / movie name such as par2, xvid, divx, etc
 		 */
 		cleanFileName += " "; //add a space at the end so we our regex works in the next step for the last word
@@ -36,8 +36,8 @@ public class WebReleaseRenamer extends ReleaseRenamer {
 			cleanFileName = cleanFileName.replaceFirst("\\b" + wordToRemove + "\\b", "");
 		}
 		cleanFileName = cleanFileName.trim();
-		/* 
-		 * often times files are released with abbreviations in their name which 
+		/*
+		 * often times files are released with abbreviations in their name which
 		 * messes up doing google searches on them, so we'll do a substitution to get the full name
 		 */
 		boolean doneReplacingabbreviation = false;

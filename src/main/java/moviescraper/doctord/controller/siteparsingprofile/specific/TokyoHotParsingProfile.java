@@ -243,8 +243,7 @@ public class TokyoHotParsingProfile extends SiteParsingProfile implements Specif
 
 		if (fileID != null) {
 			try {
-				Document doc = Jsoup.connect("http://cdn.www.tokyo-hot.com/igs/").userAgent("Mozilla").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE)
-						.get();
+				Document doc = Jsoup.connect("http://cdn.www.tokyo-hot.com/igs/").userAgent("Mozilla").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
 				Elements select = doc.select("tr td a");
 				String foundLink = null;
 				for (Element element : select) {

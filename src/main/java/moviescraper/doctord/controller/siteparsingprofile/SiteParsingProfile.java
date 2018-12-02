@@ -60,7 +60,8 @@ import moviescraper.doctord.view.GUIMain;
 
 public abstract class SiteParsingProfile implements DataItemSource {
 
-	/* Any group of SiteParsingProfiles which return the same type of information for a given file and which
+	/*
+	 * Any group of SiteParsingProfiles which return the same type of information for a given file and which
 	 * will be compatible for amalgamation should return the same ScraperGroupName by implementing getScraperGroupName()
 	 */
 	public enum ScraperGroupName {
@@ -169,6 +170,7 @@ public abstract class SiteParsingProfile implements DataItemSource {
 	/**
 	 * Sets the {@link SiteParsingProfile#overridenSearchResult} to the URL defined by @param urlPath
 	 * This will cause the scraper to ignore the file name of the file when scraping
+	 * 
 	 * @param urlPath
 	 */
 	public void setOverridenSearchResult(String urlPath) {
@@ -191,6 +193,7 @@ public abstract class SiteParsingProfile implements DataItemSource {
 	 * ends with something like CD1 or Disc 1
 	 * So this filename "My Movie ABC-123 CD1" would return the id as ABC-123
 	 * This filename "My Movie ABC-123" would return the id as ABC-123
+	 * 
 	 * @param file - file to find the ID tag from
 	 * @param firstWordOfFileIsID - if true, just uses the first word in the file (seperated by space) as the ID number
 	 * otherwise use the method described above
@@ -299,8 +302,8 @@ public abstract class SiteParsingProfile implements DataItemSource {
 			String encodingScheme = "UTF-8";
 			String queryToEncode = "site:" + site + " " + searchQuery;
 			String encodedSearchQuery = URLEncoder.encode(queryToEncode, encodingScheme);
-			Document doc = Jsoup.connect("https://www.google.com/search?q=" + encodedSearchQuery).userAgent(getRandomUserAgent()).referrer("http://www.google.com")
-					.ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
+			Document doc = Jsoup.connect("https://www.google.com/search?q=" + encodedSearchQuery).userAgent(getRandomUserAgent()).referrer("http://www.google.com").ignoreHttpErrors(true)
+			        .timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
 			Elements sorryLink = doc.select("form[action=CaptchaRedirect] input");
 			Map<String, String> captchaData = new HashMap<>();
 			for (Element element : sorryLink) {
@@ -349,8 +352,8 @@ public abstract class SiteParsingProfile implements DataItemSource {
 		String encodedSearchQuery;
 		try {
 			encodedSearchQuery = URLEncoder.encode(queryToEncode, encodingScheme);
-			Document bingResultDocument = Jsoup.connect("https://www.bing.com/search?q=" + encodedSearchQuery).userAgent(getRandomUserAgent()).referrer("http://www.bing.com")
-					.ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
+			Document bingResultDocument = Jsoup.connect("https://www.bing.com/search?q=" + encodedSearchQuery).userAgent(getRandomUserAgent()).referrer("http://www.bing.com").ignoreHttpErrors(true)
+			        .timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
 			Elements links = bingResultDocument.select("a[href*=" + site);
 			for (Element link : links) {
 				linksToReturn.add(new SearchResult(link.attr("href")));
@@ -397,7 +400,6 @@ public abstract class SiteParsingProfile implements DataItemSource {
 	}
 
 	/**
-	 *
 	 * @return a new copy of the parser by calling the parser's constructor.
 	 * used to instantiate a parser when the type of the object is not known
 	 */
@@ -420,6 +422,7 @@ public abstract class SiteParsingProfile implements DataItemSource {
 
 	/**
 	 * If your file is called "Movie Name Here (2001)" this method returns "Movie Name Here"
+	 * 
 	 * @param file the file to process
 	 * @return The movie name without the year in parenthesis next to it
 	 */
@@ -430,7 +433,6 @@ public abstract class SiteParsingProfile implements DataItemSource {
 	}
 
 	/**
-	 *
 	 * @return - null if no file has been scraped yet or the file name of the scraped movie used in {@link #createSearchString(File)} method
 	 */
 	public String getFileNameOfScrapedMovie() {
@@ -441,6 +443,7 @@ public abstract class SiteParsingProfile implements DataItemSource {
 
 	/**
 	 * If your file is called "Movie Name Here (2001)" this method returns "2001"
+	 * 
 	 * @param file the file to process
 	 * @return A length 4 string representing the year, if it exists. Otherwise an empty String
 	 */
@@ -456,7 +459,6 @@ public abstract class SiteParsingProfile implements DataItemSource {
 	}
 
 	/**
-	 *
 	 * @return The name of the parser used when displaying the parser in drop down menus or console output.
 	 * For example if the parser parses a site called, "MySite.com"
 	 * this function may return "My Site".
@@ -471,16 +473,16 @@ public abstract class SiteParsingProfile implements DataItemSource {
 	/**
 	 * Maybe we are less likely to get blocked on google if we don't always use the same user agent when searching,
 	 * so this method is designed to pick a random one from a list of valid user agent strings
+	 * 
 	 * @return a random user agent string that can be passed to .userAgent() when calling Jsoup.connect
 	 */
 	public static String getRandomUserAgent() {
-		String[] userAgent = { "Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6",
-				"Mozilla/5.0 (Windows NT 6.3; rv:36.0) Gecko/20100101 Firefox/36.0",
-				"Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36", "Opera/9.80 (Windows NT 6.0) Presto/2.12.388 Version/12.14",
-				"Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.0) Opera 12.14",
-				"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.75.14 (KHTML, like Gecko) Version/7.0.3 Safari/7046A194A",
-				"Mozilla/5.0 (Windows; U; Windows NT 6.1; tr-TR) AppleWebKit/533.20.25 (KHTML, like Gecko) Version/5.0.4 Safari/533.20.27",
-				"Mozilla/5.0 (Windows; U; Windows NT 5.0; en-en) AppleWebKit/533.16 (KHTML, like Gecko) Version/4.1 Safari/533.16" };
+		String[] userAgent = { "Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6", "Mozilla/5.0 (Windows NT 6.3; rv:36.0) Gecko/20100101 Firefox/36.0",
+		        "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36", "Opera/9.80 (Windows NT 6.0) Presto/2.12.388 Version/12.14",
+		        "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.0) Opera 12.14",
+		        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.75.14 (KHTML, like Gecko) Version/7.0.3 Safari/7046A194A",
+		        "Mozilla/5.0 (Windows; U; Windows NT 6.1; tr-TR) AppleWebKit/533.20.25 (KHTML, like Gecko) Version/5.0.4 Safari/533.20.27",
+		        "Mozilla/5.0 (Windows; U; Windows NT 5.0; en-en) AppleWebKit/533.16 (KHTML, like Gecko) Version/4.1 Safari/533.16" };
 		return userAgent[new Random().nextInt(userAgent.length)];
 	}
 

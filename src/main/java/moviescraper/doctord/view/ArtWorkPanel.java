@@ -103,6 +103,7 @@ public class ArtWorkPanel extends JPanel implements ComponentListener {
 	/**
 	 * Calculate the max size we can resize an image while fitting within maxWidth and maxHeight
 	 * and still maintaining the aspect ratio
+	 * 
 	 * @param imageWidth - the width of the image to resize
 	 * @param imageHeight - the height of the image to resize
 	 * @param maxWidth - the maximum width the image can be
@@ -197,7 +198,7 @@ public class ArtWorkPanel extends JPanel implements ComponentListener {
 		}
 		// otherwise read it from the URL specified by the object since we couldn't find any local file
 		if (gui.movieToWriteToDiskList.size() > 0 && gui.movieToWriteToDiskList.get(indexOfShownMovie) != null && gui.movieToWriteToDiskList.get(indexOfShownMovie).hasPoster()
-				&& !posterFileUpdateOccured) {
+		        && !posterFileUpdateOccured) {
 			try {
 				if (gui.getFileDetailPanel().currentMovie.getPosters().length > 0) {
 					lblPosterIcon.setIcon(gui.getFileDetailPanel().currentMovie.getPosters()[0], new Dimension(maximumPosterSizeX, maximumPosterSizeY));
@@ -211,7 +212,7 @@ public class ArtWorkPanel extends JPanel implements ComponentListener {
 
 		//try to read the fanart from the url since we couldn't find any local file
 		if (gui.movieToWriteToDiskList.size() > 0 && gui.movieToWriteToDiskList.get(indexOfShownMovie) != null && gui.movieToWriteToDiskList.get(indexOfShownMovie).hasFanart()
-				&& !fanartFileUpdateOccured) {
+		        && !fanartFileUpdateOccured) {
 			if (gui.getFileDetailPanel().currentMovie.getFanart().length > 0) {
 				lblFanartIcon.setIcon(gui.getFileDetailPanel().currentMovie.getFanart()[0], new Dimension(maximumFanartSizeX, maximumFanartSizeY));
 				fanartFileUpdateOccured = true;
@@ -251,7 +252,7 @@ public class ArtWorkPanel extends JPanel implements ComponentListener {
 	private final class MouseListenerShowArtPicker implements MouseListener {
 
 		/**
-		 * Set this to true in the constructor if this is supposed to be used for fanart picker. 
+		 * Set this to true in the constructor if this is supposed to be used for fanart picker.
 		 * Could have done some kind of subclass thing, but this was just easier.
 		 */
 		boolean forFanartInsteadOfPosters;

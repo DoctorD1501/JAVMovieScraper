@@ -34,8 +34,8 @@ public class FileNameCleanupAction implements ActionListener {
 				if (currentFile.getName().equals(newFileName.getName())) {
 					System.out.println("New file and old file are the same. No rename necessary.");
 				} else if (guiMain != null && MoviescraperPreferences.getInstance().getConfirmCleanUpFileNameNameBeforeRenaming()) {
-					int optionPicked = JOptionPane.showConfirmDialog(guiMain.getFrmMoviescraper(),
-							"<html>Rename <b>" + currentFile + "</b><br> to <b>" + newFileName + "</b> ?</html>", "Confirm Rename", JOptionPane.YES_NO_OPTION);
+					int optionPicked = JOptionPane.showConfirmDialog(guiMain.getFrmMoviescraper(), "<html>Rename <b>" + currentFile + "</b><br> to <b>" + newFileName + "</b> ?</html>",
+					        "Confirm Rename", JOptionPane.YES_NO_OPTION);
 
 					if (optionPicked == JOptionPane.YES_OPTION) {
 						boolean renameStatus = currentFile.renameTo(newFileName);

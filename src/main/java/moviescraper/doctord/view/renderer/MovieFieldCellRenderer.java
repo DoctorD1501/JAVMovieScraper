@@ -25,7 +25,7 @@ public class MovieFieldCellRenderer implements ListCellRenderer<Field> {
 	}
 
 	/**
-	 * Transform a "aStringLikeThis" to "A String Like This" 
+	 * Transform a "aStringLikeThis" to "A String Like This"
 	 */
 	public static String formatFieldText(String fieldNameInCamelCase) {
 		String formattedText = StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(WordUtils.capitalize(fieldNameInCamelCase)), " ");

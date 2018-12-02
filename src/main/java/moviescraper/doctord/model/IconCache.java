@@ -82,6 +82,7 @@ public class IconCache {
 
 	/**
 	 * Sets the icon provider for the file list view
+	 * 
 	 * @param type The icon provider type
 	 */
 	public static void setIconProvider(IconProviderType type) {

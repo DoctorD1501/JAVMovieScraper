@@ -180,7 +180,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 						parser.setOverridenSearchResult(urlOfMovie);
 						try {
 							Document doc = Jsoup.connect(urlOfMovie).userAgent(getRandomUserAgent()).referrer("http://www.google.com").ignoreHttpErrors(true)
-									.timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
+							        .timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
 							parser.setDocument(doc);
 							Plot data18FullMoviePlot = parser.scrapePlot();
 							System.out.println("Using full movie's plot instead of scene's plot (which wasn't found): " + data18FullMoviePlot.getPlot());
@@ -213,7 +213,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 		ArrayList<Thumb> trailerImages = new ArrayList<>();
 
 		Elements trailerImgElements = document.select(
-				"img.noborder[title=Scene Preview], div#moviewrap img[src*=/big.jpg], img.noborder[alt=Play this video]:not(img.noborder[src*=play.png]), div#pretrailer a[href*=/trailer] img.noborder:not(img.noborder[src*=play.png])");
+		        "img.noborder[title=Scene Preview], div#moviewrap img[src*=/big.jpg], img.noborder[alt=Play this video]:not(img.noborder[src*=play.png]), div#pretrailer a[href*=/trailer] img.noborder:not(img.noborder[src*=play.png])");
 		Elements videoStills = document.select("div:containsOwn(Video Stills:) ~ div img");
 		//System.out.println("Video stills = " + videoStills);
 		if (trailerImgElements != null && trailerImgElements.size() > 0 && (videoStills == null || videoStills.size() == 0)) {
@@ -279,7 +279,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 				try {
 
 					Document viewerDocument = Jsoup.connect(currentViewerPageURL).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE)
-							.userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:5.0) Gecko/20100101 Firefox/5.0").get();
+					        .userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:5.0) Gecko/20100101 Firefox/5.0").get();
 					if (viewerDocument != null) {
 						Element imgElement = viewerDocument.select("div#post_view a[href*=/viewer/] img").first();
 						if (imgElement != null) {
@@ -288,12 +288,10 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 							//if(fileExistsAtURL(mainImageUrl))
 							{
 								Thumb thumbToAdd = new Thumb(mainImageUrl);
-								String previewURL = mainImageUrl.substring(0, mainImageUrl.length() - 6) + "th8/"
-										+ mainImageUrl.substring(mainImageUrl.length() - 6, mainImageUrl.length());
+								String previewURL = mainImageUrl.substring(0, mainImageUrl.length() - 6) + "th8/" + mainImageUrl.substring(mainImageUrl.length() - 6, mainImageUrl.length());
 								previewURL = fixIPAddressOfData18(previewURL);
 								if (!fileExistsAtURL(previewURL))
-									previewURL = mainImageUrl.substring(0, mainImageUrl.length() - 6) + "thumb2/"
-											+ mainImageUrl.substring(mainImageUrl.length() - 6, mainImageUrl.length());
+									previewURL = mainImageUrl.substring(0, mainImageUrl.length() - 6) + "thumb2/" + mainImageUrl.substring(mainImageUrl.length() - 6, mainImageUrl.length());
 								if (fileExistsAtURL(previewURL))
 									thumbToAdd.setPreviewURL(new URL(previewURL));
 								//System.out.println("previewURL : " + previewURL);
@@ -429,7 +427,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 
 						//case with actor with thumbnail
 						if (actorThumbnail != null && !actorThumbnail.equals("http://img.data18.com/images/no_prev_60.gif")
-								&& (!actorThumbnail.equals("http://img.data18.com/images/no_prev_star.jpg"))) {
+						        && (!actorThumbnail.equals("http://img.data18.com/images/no_prev_star.jpg"))) {
 							try {
 								actorThumbnail = actorThumbnail.replaceFirst(Pattern.quote("/60/"), "/120/");
 								Thumb actorThumb = new Thumb(actorThumbnail);
@@ -503,17 +501,19 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 			fileBaseName = file.getName();
 		System.out.println("fileBaseName = " + fileBaseName);
 		fileName = fileBaseName;
-		/*String [] splitBySpace = fileBaseName.split(" ");
-		if(splitBySpace.length > 1)
-		{
-			//check if last word in filename contains a year like (2012) or [2012]
-			if(splitBySpace[splitBySpace.length-1].matches("[\\(\\[]\\d{4}[\\)\\]]"))
-			{
-				yearFromFilename = splitBySpace[splitBySpace.length-1].replaceAll("[\\(\\[\\)\\]]", "");
-				fileBaseName = fileBaseName.replaceFirst("[\\(\\[]\\d{4}[\\)\\]]","").trim();
-		
-			}
-		}*/
+		/*
+		 * String [] splitBySpace = fileBaseName.split(" ");
+		 * if(splitBySpace.length > 1)
+		 * {
+		 * //check if last word in filename contains a year like (2012) or [2012]
+		 * if(splitBySpace[splitBySpace.length-1].matches("[\\(\\[]\\d{4}[\\)\\]]"))
+		 * {
+		 * yearFromFilename = splitBySpace[splitBySpace.length-1].replaceAll("[\\(\\[\\)\\]]", "");
+		 * fileBaseName = fileBaseName.replaceFirst("[\\(\\[]\\d{4}[\\)\\]]","").trim();
+		 * 
+		 * }
+		 * }
+		 */
 		if (useSiteSearch) {
 			URLCodec codec = new URLCodec();
 			try {
@@ -583,6 +583,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 	 * However, most file releases have the date in numerical format (i.e. 2014-05-26 or 14.05.26)
 	 * which causes problems with the google search. this function will convert the month to the english month name
 	 * and the year to the 4 digit year if it was in 2 digit format (it's assumed the year is 20XX)
+	 * 
 	 * @param fileName
 	 * @return the fileName with the year and month replaced
 	 */
@@ -625,6 +626,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 
 	/**
 	 * Removes links from google that do not point to actual web content
+	 * 
 	 * @param googleResults
 	 * @return
 	 */

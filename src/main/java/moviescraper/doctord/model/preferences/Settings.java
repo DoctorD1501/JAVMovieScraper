@@ -61,7 +61,6 @@ public class Settings {
 	}
 
 	/**
-	 * 
 	 * @param preferenceName the preference field to set
 	 * @param defaultValue the value to return if the preference has not been set
 	 * @return

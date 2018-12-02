@@ -61,8 +61,8 @@ public class ID extends MovieDataItem {
 	/**
 	 * More lenient version of equal which tries to do some fuzzy logic to see if two scraped JAV DVD release movies
 	 * have the same IDs
-	 * @return true if the two movies essentially have the same ID, with small differences in formatting 
-	 *  
+	 * 
+	 * @return true if the two movies essentially have the same ID, with small differences in formatting
 	 */
 	public boolean equalsJavID(ID otherID) {
 		if (this.id == null || otherID == null || otherID.getId() == null || id.length() == 0 || otherID.getId().length() == 0)
@@ -70,8 +70,10 @@ public class ID extends MovieDataItem {
 		else {
 			String thisIDString = id.replaceAll("-", "");
 			String otherIDString = otherID.getId().replaceAll("-", "");
-			/*if(!thisIDString.endsWith(otherIDString) && !otherIDString.startsWith(thisIDString))
-				return false;*/
+			/*
+			 * if(!thisIDString.endsWith(otherIDString) && !otherIDString.startsWith(thisIDString))
+			 * return false;
+			 */
 			Pattern patternID = Pattern.compile("([0-9]*)(\\D+)(\\d+)(\\D)*");
 			Matcher matcherThisIDString = patternID.matcher(thisIDString);
 			Matcher matcherOtherIDString = patternID.matcher(otherIDString);

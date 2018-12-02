@@ -116,39 +116,39 @@ public class FileDetailPanel extends JPanel {
 		JPanel fileDetailsPanel = this;
 
 		FormLayout formLayout = new FormLayout(new ColumnSpec[] { FormFactory.RELATED_GAP_COLSPEC, // 1 - empty space
-				FormFactory.DEFAULT_COLSPEC, //2 - label for each of the form items
-				FormFactory.RELATED_GAP_COLSPEC, //3 - empty space
-				ColumnSpec.decode("fill:pref:grow"), // 4 - Form text items
-				FormFactory.RELATED_GAP_COLSPEC, //5 - empty space
-				FormFactory.DEFAULT_COLSPEC, // 6 - artwork panel
-				FormFactory.RELATED_GAP_COLSPEC,//7 - empty space
+		        FormFactory.DEFAULT_COLSPEC, //2 - label for each of the form items
+		        FormFactory.RELATED_GAP_COLSPEC, //3 - empty space
+		        ColumnSpec.decode("fill:pref:grow"), // 4 - Form text items
+		        FormFactory.RELATED_GAP_COLSPEC, //5 - empty space
+		        FormFactory.DEFAULT_COLSPEC, // 6 - artwork panel
+		        FormFactory.RELATED_GAP_COLSPEC,//7 - empty space
 		}, new RowSpec[] { FormFactory.RELATED_GAP_ROWSPEC, //1 - empty space
-				FormFactory.DEFAULT_ROWSPEC, //2 - navigation buttons and artwork panel
-				FormFactory.RELATED_GAP_ROWSPEC, //3  - empty space
-				FormFactory.DEFAULT_ROWSPEC, //4 - File Path
-				FormFactory.RELATED_GAP_ROWSPEC, //5 - empty space
-				FormFactory.DEFAULT_ROWSPEC, //6 - Title
-				FormFactory.RELATED_GAP_ROWSPEC, //7 - empty space
-				FormFactory.DEFAULT_ROWSPEC, //8 - original title
-				FormFactory.RELATED_GAP_ROWSPEC, //9 - empty space
-				FormFactory.DEFAULT_ROWSPEC, //10 - Year
-				FormFactory.RELATED_GAP_ROWSPEC, //11 - empty space
-				FormFactory.DEFAULT_ROWSPEC, //12 - Release Date
-				FormFactory.RELATED_GAP_ROWSPEC, //13 - empty space
-				FormFactory.DEFAULT_ROWSPEC, //14 - ID
-				FormFactory.RELATED_GAP_ROWSPEC, //15 - empty space
-				FormFactory.DEFAULT_ROWSPEC, //16 - Studio
-				FormFactory.RELATED_GAP_ROWSPEC, //17 - empty space
-				FormFactory.DEFAULT_ROWSPEC, //18 - Movie set
-				FormFactory.RELATED_GAP_ROWSPEC, //19 - empty space
-				FormFactory.DEFAULT_ROWSPEC, //20 - Plot
-				FormFactory.RELATED_GAP_ROWSPEC, //21 - empty space
-				FormFactory.DEFAULT_ROWSPEC, //22 - genres
-				FormFactory.RELATED_GAP_ROWSPEC, //23 - empty space
-				FormFactory.DEFAULT_ROWSPEC, //24 - tags
-				FormFactory.RELATED_GAP_ROWSPEC, //25 - empty space
-				RowSpec.decode("fill:pref:grow"), //26 - actors
-				FormFactory.RELATED_GAP_ROWSPEC//27 - empty space
+		        FormFactory.DEFAULT_ROWSPEC, //2 - navigation buttons and artwork panel
+		        FormFactory.RELATED_GAP_ROWSPEC, //3  - empty space
+		        FormFactory.DEFAULT_ROWSPEC, //4 - File Path
+		        FormFactory.RELATED_GAP_ROWSPEC, //5 - empty space
+		        FormFactory.DEFAULT_ROWSPEC, //6 - Title
+		        FormFactory.RELATED_GAP_ROWSPEC, //7 - empty space
+		        FormFactory.DEFAULT_ROWSPEC, //8 - original title
+		        FormFactory.RELATED_GAP_ROWSPEC, //9 - empty space
+		        FormFactory.DEFAULT_ROWSPEC, //10 - Year
+		        FormFactory.RELATED_GAP_ROWSPEC, //11 - empty space
+		        FormFactory.DEFAULT_ROWSPEC, //12 - Release Date
+		        FormFactory.RELATED_GAP_ROWSPEC, //13 - empty space
+		        FormFactory.DEFAULT_ROWSPEC, //14 - ID
+		        FormFactory.RELATED_GAP_ROWSPEC, //15 - empty space
+		        FormFactory.DEFAULT_ROWSPEC, //16 - Studio
+		        FormFactory.RELATED_GAP_ROWSPEC, //17 - empty space
+		        FormFactory.DEFAULT_ROWSPEC, //18 - Movie set
+		        FormFactory.RELATED_GAP_ROWSPEC, //19 - empty space
+		        FormFactory.DEFAULT_ROWSPEC, //20 - Plot
+		        FormFactory.RELATED_GAP_ROWSPEC, //21 - empty space
+		        FormFactory.DEFAULT_ROWSPEC, //22 - genres
+		        FormFactory.RELATED_GAP_ROWSPEC, //23 - empty space
+		        FormFactory.DEFAULT_ROWSPEC, //24 - tags
+		        FormFactory.RELATED_GAP_ROWSPEC, //25 - empty space
+		        RowSpec.decode("fill:pref:grow"), //26 - actors
+		        FormFactory.RELATED_GAP_ROWSPEC//27 - empty space
 		});
 
 		fileDetailsPanel.setLayout(formLayout);
@@ -615,6 +615,7 @@ public class FileDetailPanel extends JPanel {
 
 	/**
 	 * Sets a new movie and updates a view
+	 * 
 	 * @param newMovie the movie this fileDetailPanel will show
 	 * @param forcePosterUpdate whether to force a redownload from the poster defined in the Thumb url
 	 */
@@ -625,6 +626,7 @@ public class FileDetailPanel extends JPanel {
 
 	/**
 	 * Sets a new movie and updates a view
+	 * 
 	 * @param newMovie the movie this fileDetailPanel will show
 	 * @param forcePosterUpdate whether to force a redownload from the poster defined in the Thumb url
 	 * @param modifyWriteToDiskList - whether to modify the gui object's disk list by adding the currently viewed item if the disk list is empty
@@ -651,6 +653,7 @@ public class FileDetailPanel extends JPanel {
 
 	/**
 	 * Updates the view for the current movie
+	 * 
 	 * @param forcePosterUpdate - if force a refresh of the poster from the URL by downloading the file. If false, tries to
 	 * read from the local file first
 	 * @param newMovieWasSet - true if you are setting a new movie. clears the old one and refreshes all fields

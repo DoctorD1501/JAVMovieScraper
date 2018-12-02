@@ -146,12 +146,14 @@ public class JavBusParsingProfileTest {
 		assertEquals("Found wrong actor", "木下あずみ", testActor.get(0).getName());
 	}
 
-	/*@Test
-	public void testExtraFanart() throws IOException
-	{
-		Thumb  [] extraFanart = profile.scrapeExtraFanart();
-		GenericProfileTest.showImage("Extrafanart", extraFanart[0].getThumbImage());
-	}*/
+	/*
+	 * @Test
+	 * public void testExtraFanart() throws IOException
+	 * {
+	 * Thumb [] extraFanart = profile.scrapeExtraFanart();
+	 * GenericProfileTest.showImage("Extrafanart", extraFanart[0].getThumbImage());
+	 * }
+	 */
 
 	@Test
 	public void testPoster() throws IOException {

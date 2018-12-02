@@ -232,13 +232,13 @@ public class GUIMainButtonPanel extends JPanel {
 		JButton playCurrentlySelectedMovieButton = new JButton("Play Movie");
 		playCurrentlySelectedMovieButton.addActionListener(new PlayMovieAction(guiMain));
 		playCurrentlySelectedMovieButton.setToolTipText(
-				"<html>Play the currently selected movie file using the external movie player defined in the settings menu.<br>If the movie contains stacked files, all files will be added to the external movie player's playlist in alphabetical order.<br>Trailer files will be automatically excluded from the playlist.</html>");
+		        "<html>Play the currently selected movie file using the external movie player defined in the settings menu.<br>If the movie contains stacked files, all files will be added to the external movie player's playlist in alphabetical order.<br>Trailer files will be automatically excluded from the playlist.</html>");
 		playCurrentlySelectedMovieButton.setIcon(initializeImageIcon("Play"));
 
 		JButton fileNameCleanupButton = new JButton("Clean Up File Name");
 		fileNameCleanupButton.addActionListener(new FileNameCleanupAction(guiMain));
 		fileNameCleanupButton.setToolTipText(
-				"Attempts to rename a file of a web content release before scraping so that it is more likely to find a match. I'm still working on adding more site abbreviations, so this feature is experimental for now.");
+		        "Attempts to rename a file of a web content release before scraping so that it is more likely to find a match. I'm still working on adding more site abbreviations, so this feature is experimental for now.");
 		fileNameCleanupButton.setIcon(initializeImageIcon("FixFileName"));
 
 		fileOperationsButtons.add(openCurrentlySelectedFileButton);
@@ -280,9 +280,9 @@ public class GUIMainButtonPanel extends JPanel {
 		};
 
 		Action scrapeAdultDVDAmalgamatedAction = new ScrapeAmalgamatedAction(guiMain,
-				guiMain.getAllAmalgamationOrderingPreferences().getScraperGroupAmalgamationPreference(ScraperGroupName.AMERICAN_ADULT_DVD_SCRAPER_GROUP));
+		        guiMain.getAllAmalgamationOrderingPreferences().getScraperGroupAmalgamationPreference(ScraperGroupName.AMERICAN_ADULT_DVD_SCRAPER_GROUP));
 		Action scrapeJAVAmalgamatedAction = new ScrapeAmalgamatedAction(guiMain,
-				guiMain.getAllAmalgamationOrderingPreferences().getScraperGroupAmalgamationPreference(ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP));
+		        guiMain.getAllAmalgamationOrderingPreferences().getScraperGroupAmalgamationPreference(ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP));
 
 		scrapeAdultDVDAmalgamatedAction.putValue(Action.SMALL_ICON, appIcon);
 		scrapeJAVAmalgamatedAction.putValue(Action.SMALL_ICON, japanIcon);

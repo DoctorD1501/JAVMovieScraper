@@ -82,8 +82,8 @@ public class TranslateString {
 				}
 
 				String translationServicePostURL = translateBaseURL + URLEncoder.encode(japaneseString, encodingType) + postURLString;
-				Document doc = Jsoup.connect(translationServicePostURL).referrer("http://translate.google.com")
-						.userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:5.0) Gecko/20100101 Firefox/5.0").timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
+				Document doc = Jsoup.connect(translationServicePostURL).referrer("http://translate.google.com").userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:5.0) Gecko/20100101 Firefox/5.0")
+				        .timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
 				Element translatedTextElement = doc.select(".short_text").first();
 				if (translatedTextElement == null)
 					translatedTextElement = doc.select(".long_text").first();

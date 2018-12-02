@@ -8,14 +8,12 @@ import moviescraper.doctord.model.dataitem.DefaultDataItemSource;
 
 /**
  * Ranked list of what DataItemSources I would prefer to pick from when doing an amalgamation
- *
  */
 public class DataItemSourceAmalgamationPreference {
 
 	private LinkedList<DataItemSource> amalgamationPreferenceOrder;
 
 	/**
-	 * 
 	 * @param dataItemSources - the list of preferred items to use to amalgamate. the first parameter passed
 	 * in is the most preferred item, the second the second most preferred, and so on
 	 */

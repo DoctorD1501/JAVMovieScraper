@@ -45,7 +45,6 @@ public class AsyncImageComponent extends JPanel implements ImageConsumer, MouseL
 	private boolean useBorder;
 
 	/**
-	 *
 	 * @param thumb - image to show
 	 * @param showPreviewImage - use the thumb's preview image, if possible, instead of the full resolution image
 	 * @param siblings - any siblings of this image. used for selecting things in a list - siblings become unselected
@@ -87,26 +86,26 @@ public class AsyncImageComponent extends JPanel implements ImageConsumer, MouseL
 	}
 
 	/*
-	public void setIcon(BufferedImage image)
-	{
-		//this.resizedImage = null;
-		this.thumb = null;
-		this.img = image;
-		this.setPreferredSize(new Dimension(image.getWidth(), image.getHeight()));
-		setURLFromThumb();
-		repaint();
-	}
-	
-	public void setIcon(BufferedImage image, Dimension preferredSize)
-	{
-		//this.resizedImage = null;
-		this.thumb = null;
-		this.img = image;
-		this.setPreferredSize(preferredSize);
-		setURLFromThumb();
-		repaint();
-	}
-	*/
+	 * public void setIcon(BufferedImage image)
+	 * {
+	 * //this.resizedImage = null;
+	 * this.thumb = null;
+	 * this.img = image;
+	 * this.setPreferredSize(new Dimension(image.getWidth(), image.getHeight()));
+	 * setURLFromThumb();
+	 * repaint();
+	 * }
+	 * 
+	 * public void setIcon(BufferedImage image, Dimension preferredSize)
+	 * {
+	 * //this.resizedImage = null;
+	 * this.thumb = null;
+	 * this.img = image;
+	 * this.setPreferredSize(preferredSize);
+	 * setURLFromThumb();
+	 * repaint();
+	 * }
+	 */
 
 	private void setURLFromThumb() {
 		if (thumb != null) {
@@ -149,6 +148,7 @@ public class AsyncImageComponent extends JPanel implements ImageConsumer, MouseL
 	/**
 	 * Calculate the max size we can resize an image while fitting within maxWidth and maxHeight
 	 * and still maintaining the aspect ratio
+	 * 
 	 * @param imageWidth - the width of the image to resize
 	 * @param imageHeight - the height of the image to resize
 	 * @param maxWidth - the maximum width the image can be
@@ -239,8 +239,7 @@ public class AsyncImageComponent extends JPanel implements ImageConsumer, MouseL
 
 				try {
 					URLConnection imageConnection = url.openConnection();
-					imageConnection.setRequestProperty("User-Agent",
-							"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_5) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.65 Safari/537.31");
+					imageConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_5) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.65 Safari/537.31");
 					if (referrerURL != null) {
 						imageConnection.setRequestProperty("Referer", referrerURL.toString());
 					}
@@ -343,7 +342,7 @@ public class AsyncImageComponent extends JPanel implements ImageConsumer, MouseL
 		return true;
 	}
 
-	/*MouseListener methods*/
+	/* MouseListener methods */
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		userMadeSelection = true;

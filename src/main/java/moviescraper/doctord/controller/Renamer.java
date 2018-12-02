@@ -60,6 +60,7 @@ public class Renamer {
 
 	/**
 	 * Returns the new name given by the constructed renamer string used from the movie scraper preferences and arguments passed into the renamer object
+	 * 
 	 * @param isFolderName - if true will remove the extension and enders such as -poster and -trailer from the filename. otherwise leaves them on
 	 */
 	public String getNewFileName(boolean isFolderName) {
@@ -146,8 +147,7 @@ public class Renamer {
 		//we need to watch out when renaming a file that a large number of actors doesn't create
 		//a movie name that is too long
 		String potentialNameWithActors = renameReplaceAll(newName, ACTORS, movieActors);
-		if (potentialNameWithActors.length() + path.length() + getAppendix().length() + getPosterFanartTrailerEnder().length() + period.length()
-				+ extension.length() < maxFileNameLength)
+		if (potentialNameWithActors.length() + path.length() + getAppendix().length() + getPosterFanartTrailerEnder().length() + period.length() + extension.length() < maxFileNameLength)
 			newName = potentialNameWithActors;
 		else
 			newName = renameReplaceAll(newName, ACTORS, "");
@@ -190,8 +190,8 @@ public class Renamer {
 		if (nfoFile.exists() && fileToRename.exists()) {
 			Movie movieReadFromNfo = Movie.createMovieFromNfo(nfoFile);
 			if (movieReadFromNfo != null && movieReadFromNfo.getTitle() != null) {
-				Renamer renamer = new Renamer(MoviescraperPreferences.getRenamerString(), MoviescraperPreferences.getRenamerString(),
-						MoviescraperPreferences.getSanitizerForFilename(), movieReadFromNfo, fileToRename);
+				Renamer renamer = new Renamer(MoviescraperPreferences.getRenamerString(), MoviescraperPreferences.getRenamerString(), MoviescraperPreferences.getSanitizerForFilename(),
+				        movieReadFromNfo, fileToRename);
 
 				//Figure out all the new names
 				File newMovieFilename = new File(renamer.getNewFileName(fileToRename.isDirectory()));

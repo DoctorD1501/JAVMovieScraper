@@ -314,7 +314,7 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 			for (Element thumbElement : selectThumb) {
 				String attr = thumbElement.attr("src");
 				if (attr.startsWith("http://imgs.aventertainments.com/product_images") || attr.startsWith("http://imgs.aventertainments.com/new/jacket_images/")
-						|| attr.startsWith("http://imgs.aventertainments.com/archive/jacket_images/")) {
+				        || attr.startsWith("http://imgs.aventertainments.com/archive/jacket_images/")) {
 					thumb = new Thumb(attr);
 				}
 			}

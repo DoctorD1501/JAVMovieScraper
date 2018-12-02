@@ -40,8 +40,7 @@ public class ScrapeAmalgamatedAction extends AbstractAction {
 		ScraperGroupAmalgamationPreference preferences = new ScraperGroupAmalgamationPreference(ScraperGroupName.DEFAULT_SCRAPER_GROUP, overallOrdering);
 		this.scraperGroupAmalgamationPreference = preferences;
 		if (this.guiMain != null)
-			this.guiMain.getAllAmalgamationOrderingPreferences().allAmalgamationOrderingPreferences.put(ScraperGroupName.DEFAULT_SCRAPER_GROUP,
-					this.scraperGroupAmalgamationPreference);
+			this.guiMain.getAllAmalgamationOrderingPreferences().allAmalgamationOrderingPreferences.put(ScraperGroupName.DEFAULT_SCRAPER_GROUP, this.scraperGroupAmalgamationPreference);
 		initializeDefaultValues("Scrape " + siteParsingProfile.getDataItemSourceName());
 		putValue(SCRAPE_KEY, siteParsingProfile.getDataItemSourceName());
 	}
@@ -62,8 +61,7 @@ public class ScrapeAmalgamatedAction extends AbstractAction {
 			guiMain.removeOldScrapedMovieReferences();
 		}
 
-		ScrapeAmalgamatedProgressDialog scraperWindow = new ScrapeAmalgamatedProgressDialog(guiMain, guiMain.getAllAmalgamationOrderingPreferences(),
-				scraperGroupAmalgamationPreference);
+		ScrapeAmalgamatedProgressDialog scraperWindow = new ScrapeAmalgamatedProgressDialog(guiMain, guiMain.getAllAmalgamationOrderingPreferences(), scraperGroupAmalgamationPreference);
 		scraperWindow.setVisible(true);
 	}
 
