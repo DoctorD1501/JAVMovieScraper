@@ -124,7 +124,7 @@ public class JavBusParsingProfileTest {
 	@Test
 	public void testReleaseDate() {
 		ReleaseDate scrapeReleaseDate = profile.scrapeReleaseDate();
-		assertEquals("Found wrong releaseDate", "2014-01-13", scrapeReleaseDate.getReleaseDate());
+		assertEquals("Found wrong releaseDate", "2014-01-09", scrapeReleaseDate.getReleaseDate());
 	}
 
 	@Test
