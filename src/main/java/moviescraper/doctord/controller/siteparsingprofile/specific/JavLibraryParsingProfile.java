@@ -2,6 +2,8 @@ package moviescraper.doctord.controller.siteparsingprofile.specific;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,6 +43,8 @@ import moviescraper.doctord.model.dataitem.Top250;
 import moviescraper.doctord.model.dataitem.Votes;
 import moviescraper.doctord.model.dataitem.Year;
 import moviescraper.doctord.model.preferences.MoviescraperPreferences;
+import moviescraper.doctord.scraper.DitzyHeadlessBrowser;
+import moviescraper.doctord.scraper.DitzyHeadlessBrowserSingle;
 
 public class JavLibraryParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
@@ -52,6 +56,7 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 	public static final String chineseLanguageCode = "cn";
 	private static final boolean reverseAsianNameInEnglish = true;
 	private String overrideURLJavLibrary;
+	private DitzyHeadlessBrowser browser;
 
 	private static final SimpleDateFormat javLibraryReleaseDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
 
@@ -66,17 +71,32 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 		return overrideURLJavLibrary;
 	}
 
+	@Override
+	public Document downloadDocument(SearchResult searchResult) {
+		try {
+			return browser.get(new URL(searchResult.getUrlPath()));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	public void setOverrideURLJavLibrary(String overrideURLJavLibrary) {
 		this.overrideURLJavLibrary = overrideURLJavLibrary;
 	}
 
 	public JavLibraryParsingProfile(Document document) {
 		super(document);
-		siteLanguageToScrape = determineLanguageToUse();
 	}
 
 	public JavLibraryParsingProfile() {
+		browserConfigure();
 		siteLanguageToScrape = determineLanguageToUse();
+	}
+
+	private void browserConfigure() {
+		browser = DitzyHeadlessBrowserSingle.getBrowser();
+		browser.addCookie("", "over18", "18");
 	}
 
 	private String determineLanguageToUse() {
@@ -113,20 +133,6 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 
 	@Override
 	public OriginalTitle scrapeOriginalTitle() {
-
-		if (siteLanguageToScrape.equals(japaneseLanguageCode))
-			return new OriginalTitle(scrapeTitle().getTitle());
-
-		try {
-			String japaneseUrl = document.location().replace("javlibrary.com/" + siteLanguageToScrape + "/", "javlibrary.com/" + japaneseLanguageCode + "/");
-			Document japaneseDoc = Jsoup.connect(japaneseUrl).userAgent(getRandomUserAgent()).timeout(CONNECTION_TIMEOUT_VALUE).get();
-			JavLibraryParsingProfile profile = new JavLibraryParsingProfile(japaneseDoc, japaneseLanguageCode);
-			return profile.scrapeOriginalTitle();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
 		return OriginalTitle.BLANK_ORIGINALTITLE;
 	}
 
@@ -374,9 +380,10 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 	public SearchResult[] getSearchResults(String searchString) throws IOException {
 
 		ArrayList<SearchResult> linksList = new ArrayList<>();
-		String websiteURLBegin = "http://www.javlibrary.com/" + siteLanguageToScrape;
+		URL websiteURLBegin = new URL("http://www.javlibrary.com/" + siteLanguageToScrape);
+
 		try {
-			Document doc = Jsoup.connect(searchString).userAgent("Mozilla").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
+			Document doc = browser.get(new URL(searchString));
 			//The search found the page directly
 			if (doc.baseUri().contains("/?v=")) {
 				String linkTitle = doc.title().replaceAll(Pattern.quote(" - JAVLibrary"), "");
