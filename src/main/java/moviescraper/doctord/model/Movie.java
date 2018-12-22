@@ -814,7 +814,7 @@ public class Movie {
 			System.out.println("Scraping this webpage for movie: " + searchResults[searchResultNumberToUse].getUrlPath());
 			//for now just set the movie to the first thing found unless we found a link which had something close to the ID
 			SearchResult searchResultToUse = searchResults[searchResultNumberToUse];
-			Document searchMatch = SiteParsingProfile.downloadDocument(searchResultToUse);
+			Document searchMatch = siteToParseFrom.downloadDocument(searchResultToUse);
 			//Handle any captchas etc that prevent us from getting our result
 			if (searchMatch != null && SecurityPassthrough.class.isAssignableFrom(siteToParseFrom.getClass())) {
 				SecurityPassthrough siteParsingProfileSecurityPassthrough = (SecurityPassthrough) siteToParseFrom;

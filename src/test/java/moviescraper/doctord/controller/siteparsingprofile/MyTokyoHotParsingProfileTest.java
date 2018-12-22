@@ -35,7 +35,7 @@ public class MyTokyoHotParsingProfileTest {
 		String searchString = parser.createSearchString(file);
 		try {
 			SearchResult[] searchResults = parser.getSearchResults(searchString);
-			Document document = SiteParsingProfile.downloadDocument(searchResults[0]);
+			Document document = SiteParsingProfile.getDocument(searchResults[0]);
 			parser.setDocument(document);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

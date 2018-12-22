@@ -53,9 +53,9 @@ public class Data18SharedMethods {
 		if (document != null) {
 			Element firstLink = document.select("a").first();
 			if (firstLink != null && firstLink.attr("href") != null) {
-				Document captchaSolved = SiteParsingProfile.downloadDocument(new SearchResult(firstLink.attr("href")));
+				Document captchaSolved = SiteParsingProfile.getDocument(new SearchResult(firstLink.attr("href")));
 				if (captchaSolved != null) {
-					return SiteParsingProfile.downloadDocument(originalSearchResult);
+					return SiteParsingProfile.getDocument(originalSearchResult);
 				}
 			}
 		}

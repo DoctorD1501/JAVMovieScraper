@@ -525,7 +525,19 @@ public abstract class SiteParsingProfile implements DataItemSource {
 		return null;
 	}
 
-	public static Document downloadDocument(SearchResult searchResult) {
+	public static Document getDocument(SearchResult searchResult) {
+		try {
+			if (searchResult.isJSONSearchResult())
+				return SiteParsingProfileJSON.getDocument(searchResult.getUrlPath());
+			else
+				return Jsoup.connect(searchResult.getUrlPath()).userAgent("Mozilla").ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).get();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public Document downloadDocument(SearchResult searchResult) {
 		try {
 			if (searchResult.isJSONSearchResult())
 				return SiteParsingProfileJSON.getDocument(searchResult.getUrlPath());
