@@ -116,6 +116,24 @@ public class DitzyHeadlessBrowser {
 			addCookies(url.getHost(), response.cookies());
 		}
 
+		if (response.statusCode() == 503 && response.hasHeader("Server")) {
+			if (response.header("Server").compareTo("cloudflare") == 0) {
+				try {
+					LOGGER.log(Level.INFO, "Detected cloudflare protected request. Try to resolve the challenge");
+					URL cloudflareUrl = CloudflareHandler.handleCloudflare(url, response.parse());
+					response = connect(cloudflareUrl, false).execute();
+					if (response.statusCode() != 302) {
+						return null;
+					}
+					addCookies(url.getHost(), response.cookies());
+					connection = connect(url, true);
+					response = connection.execute();
+				} catch (Exception e) {
+					LOGGER.log(Level.SEVERE, "Cannot register on cloudflare protection", e);
+				}
+			}
+		}
+
 		return response.parse();
 	}
 
