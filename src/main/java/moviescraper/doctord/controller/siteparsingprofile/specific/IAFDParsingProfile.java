@@ -339,7 +339,10 @@ public class IAFDParsingProfile extends SiteParsingProfile implements SpecificPr
 					String releaseDateText = currentMovieURL.substring(index, index + 4);
 					if (releaseDateText != null && releaseDateText.length() > 0)
 						currentMovieTitle = currentMovieTitle + " (" + releaseDateText + ")";
-					Thumb currentMovieThumb = new Thumb(currentMovie.select("img").attr("src"));
+					Thumb currentMovieThumb = null;
+					if (currentMovie.select("img").attr("src") != "") {
+						currentMovieThumb = new Thumb(currentMovie.select("img").attr("src"));
+					}
 					linksList.add(new SearchResult(currentMovieURL, currentMovieTitle, currentMovieThumb));
 				}
 				return linksList.toArray(new SearchResult[linksList.size()]);
