@@ -38,7 +38,7 @@ public class AvEntertainmentParsingProfileTest {
 
 	@Test
 	public void testSearchResult() throws IOException {
-		SearchResult[] results = profile.getSearchResults("http://www.aventertainments.com/ppv/ppv_studioproducts.aspx?StudioID=45&languageID=1&VODTypeID=1");
+		SearchResult[] results = profile.getSearchResults("http://www.aventertainments.com/ppv/ppv_studioproducts.aspx?StudioID=185&languageID=1&VODTypeID=1");
 		//		for (SearchResult sr : results) {
 		//			TestTokyoHotParsingProfile.showImage(sr.getLabel(), sr.getPreviewImage().getThumbImage());
 		//		}
