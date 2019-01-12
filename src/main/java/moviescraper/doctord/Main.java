@@ -82,10 +82,7 @@ public class Main {
 			        .create("scrape");
 
 			@SuppressWarnings("static-access")
-			Option scrapeUrl = OptionBuilder.withArgName("ScrapeUrl").hasArgs(1)
-					.withDescription(
-							"Scrape from the given url.")
-					.create("scrapeurl");
+			Option scrapeUrl = OptionBuilder.withArgName("ScrapeUrl").hasArgs(1).withDescription("Scrape from the given url.").create("scrapeurl");
 
 			@SuppressWarnings("static-access")
 			Option rename = OptionBuilder.withArgName("FilePath").hasArgs(Option.UNLIMITED_VALUES)
@@ -113,8 +110,7 @@ public class Main {
 				else if (line.hasOption("scrape")) {
 					if (line.hasOption("scrapeurl")) {
 						runScrape(line.getOptionValues("scrape"), line.getOptionValue("scrapeurl"));
-					}
-					else {
+					} else {
 						runScrape(line.getOptionValues("scrape"), null);
 					}
 				} else if (line.hasOption("rename")) {
@@ -201,7 +197,7 @@ public class Main {
 							scrapeTargetToUse = renamer.newFileName(scrapeTarget);
 							System.out.println("passing in " + scrapeTargetToUse + " as the name");
 						}
-						
+
 						boolean wasCustomURLSet = false;
 						if (userProvidedURL != null && userProvidedURL.length() > 0) {
 							//TODO: validate this is a actually a URL and display an error message if it is not
@@ -215,7 +211,7 @@ public class Main {
 							}
 
 						}
-						
+
 						Movie scrapedMovie = Movie.scrapeMovie(scrapeTargetToUse, parsingProfile, "", wasCustomURLSet);
 						//write out the metadata to disk if we got a hit
 						if (scrapedMovie != null) {

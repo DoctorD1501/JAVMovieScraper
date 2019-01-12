@@ -394,8 +394,7 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 					try {
 						posterURLSmall = posterURLSmall.substring(0, posterURLSmall.lastIndexOf('l')) + "t.jpg";
 						linksList.add(new SearchResult(doc.baseUri(), linkTitle, new Thumb(posterURLSmall)));
-					}
-					catch (StringIndexOutOfBoundsException e) {
+					} catch (StringIndexOutOfBoundsException e) {
 						linksList.add(new SearchResult(doc.baseUri(), linkTitle));
 					}
 				} else {
