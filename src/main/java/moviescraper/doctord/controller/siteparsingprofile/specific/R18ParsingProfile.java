@@ -155,6 +155,9 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 		Element element = document.select(".js-view-sample").first();
 		if (element != null) {
 			String trailerURL = UtilityFunctions.HtmlElementPreferredAttributeGet(element, TrailerAttrsOrder);
+			if (trailerURL.startsWith("//")) {
+				trailerURL = "http:" + trailerURL;
+			}
 			if (trailerURL == null) {
 				return Trailer.BLANK_TRAILER;
 			}
