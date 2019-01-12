@@ -56,7 +56,7 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 	public static final String chineseLanguageCode = "cn";
 	private static final boolean reverseAsianNameInEnglish = true;
 	private String overrideURLJavLibrary;
-	private DitzyHeadlessBrowser browser;
+	private static DitzyHeadlessBrowser browser;
 
 	private static final SimpleDateFormat javLibraryReleaseDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
 
