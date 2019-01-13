@@ -170,45 +170,35 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements Sp
 	public Thumb[] scrapePosters() {
 		ID id = scrapeID();
 		ArrayList<Thumb> posters = new ArrayList<>();
-		if (id != null && id.getId().length() > 0) {
-			String trailerPoster = "http://www.caribbeancom.com/moviepages/" + id.getId() + "/images/" + "l_l.jpg";
-			if (SiteParsingProfile.fileExistsAtURL(trailerPoster, true)) {
-				try {
-					posters.add(new Thumb(trailerPoster));
-				} catch (MalformedURLException e) {
-					e.printStackTrace();
-				}
-			}
-			for (int imageNum = 1; imageNum <= 5; imageNum++) {
-				String additionalImageURLTemplate = "http://www.caribbeancom.com/moviepages/" + id.getId() + "/images/l/00" + imageNum + ".jpg";
-				String additionalImageURLTemplatePreview = "http://www.caribbeancom.com/moviepages/" + id.getId() + "/images/s/00" + imageNum + ".jpg";
-				if (SiteParsingProfile.fileExistsAtURL(additionalImageURLTemplate)) {
-					try {
-						Thumb additionalThumb = new Thumb(additionalImageURLTemplate);
-						additionalThumb.setPreviewURL(new URL(additionalImageURLTemplatePreview));
-						posters.add(additionalThumb);
-					} catch (MalformedURLException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-
+		try {
+			Thumb additionalThumb = new Thumb("https://en.caribbeancom.com/moviepages/" + id.getId() + "/images/poster_en.jpg");
+			posters.add(additionalThumb);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
 		}
 		return posters.toArray(new Thumb[posters.size()]);
 	}
 
 	@Override
 	public Thumb[] scrapeFanart() {
-		return scrapePosters();
+		ID id = scrapeID();
+		ArrayList<Thumb> posters = new ArrayList<>();
+		for(Element anchor: document.select("a.fancy-gallery")) {
+			if(anchor.attr("data-is_sample").compareTo("1") == 0) {
+				try {
+					Thumb additionalThumb = new Thumb("https://en.caribbeancom.com" + anchor.attr("href"));
+					posters.add(additionalThumb);
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return posters.toArray(new Thumb[posters.size()]);
 	}
 
 	@Override
 	public Thumb[] scrapeExtraFanart() {
-		Thumb[] posters = scrapePosters();
-		List<Thumb> posterList = new LinkedList<>(Arrays.asList(posters));
-		if (posterList.size() > 0)
-			posterList.remove(0);
-		return posterList.toArray(new Thumb[posterList.size()]);
+		return new Thumb[0];
 	}
 
 	@Override
