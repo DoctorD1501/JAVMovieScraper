@@ -183,8 +183,8 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements Sp
 	public Thumb[] scrapeFanart() {
 		ID id = scrapeID();
 		ArrayList<Thumb> posters = new ArrayList<>();
-		for(Element anchor: document.select("a.fancy-gallery")) {
-			if(anchor.attr("data-is_sample").compareTo("1") == 0) {
+		for (Element anchor : document.select("a.fancy-gallery")) {
+			if (anchor.attr("data-is_sample").compareTo("1") == 0) {
 				try {
 					Thumb additionalThumb = new Thumb("https://en.caribbeancom.com" + anchor.attr("href"));
 					posters.add(additionalThumb);
