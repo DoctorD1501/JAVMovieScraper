@@ -1,8 +1,8 @@
 package moviescraper.doctord.controller.siteparsingprofile;
 
 public class SiteParsingProfileItem {
-	String title;
-	SiteParsingProfile parser;
+	private final String title;
+	private final SiteParsingProfile parser;
 	private boolean disabled;
 
 	public SiteParsingProfileItem(String title, SiteParsingProfile parser) {

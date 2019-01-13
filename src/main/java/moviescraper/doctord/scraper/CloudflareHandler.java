@@ -1,7 +1,5 @@
 package moviescraper.doctord.scraper;
 
-import java.io.IOException;
-import java.net.CookieManager;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Level;
@@ -10,7 +8,6 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import org.apache.http.client.utils.URIBuilder;
-import org.jsoup.Connection.Response;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import java.util.logging.Logger;
@@ -20,9 +17,7 @@ public class CloudflareHandler {
 
 	private static final Logger LOGGER = Logger.getLogger(CloudflareHandler.class.getName());
 
-	private String UA;
 	private final URL url;
-	CookieManager cm;
 	private final ScriptEngine engine;
 
 	public CloudflareHandler(URL url) {
@@ -31,7 +26,7 @@ public class CloudflareHandler {
 		engine = engineManager.getEngineByName("nashorn");
 	}
 
-	public URL handle(Document challenge) {
+	public URL handle(Document challenge) throws UnexpectedWebsiteData {
 
 		Element form = challenge.select("#challenge-form").first();
 		String jschl_vc = form.select("[name=jschl_vc]").first().val();
@@ -41,7 +36,7 @@ public class CloudflareHandler {
 			throw new RuntimeException("Javascript challenge has changed");
 		}
 		LOGGER.log(Level.FINE, "Body: {0}", challenge.html());
-		String jschl_answer = this.get_answer(form, this.url, scripts.get(0).html());
+		String jschl_answer = this.getAnswer(form, this.url, scripts.get(0).html());
 		LOGGER.log(Level.FINE, "JS Challenge response: {0}", jschl_answer);
 
 		try {
@@ -60,52 +55,49 @@ public class CloudflareHandler {
 		LOGGER.log(Level.FINE, "Cloudflare answer: {0}", builder.toString());
 		try {
 			return new URL(builder.toString());
-		} catch (MalformedURLException e) {
-			throw new RuntimeException("Challenge solver cannot build a valid URL from: " + builder.toString(), e);
+		} catch (MalformedURLException ex) {
+			throw new UnexpectedWebsiteData("Cannot generated valid URL: " + builder.toString(), ex);
 		}
 	}
 
-	public static URL handleCloudflare(URL url, Document challenge) {
+	public static URL handleCloudflare(URL url, Document challenge) throws UnexpectedWebsiteData {
 
 		CloudflareHandler cloudflare = new CloudflareHandler(url);
 		return cloudflare.handle(challenge);
 	}
 
-	private String get_answer(Element form, URL url, String script) {
+	private String getAnswer(Element form, URL url, String script) throws UnexpectedWebsiteData {
 
+		Bindings bindings = engine.createBindings();
+
+		String a = "0";
+		StringBuilder sb = new StringBuilder();
+		int challenge_start_index = script.indexOf("var s,t,o,p,b,r,e,a,k,i,n,g,f");
+		int challenge_end_index = script.indexOf("f.submit");
+		if (challenge_start_index == -1 || challenge_end_index == -1) {
+			throw new UnexpectedWebsiteData("Javascript challenge has changed.");
+		}
+		String[] lines = script.substring(challenge_start_index, challenge_end_index).split("\\r\\n|\\r|\\n");
+		if (lines.length != 10) {
+			throw new UnexpectedWebsiteData("Javascript challenge has changed");
+		}
+
+		sb.append(lines[0].replace("var s,t,o,p,b,r,e,a,k,i,n,g,f, ", "var "));
+		sb.append("t=\"");
+		sb.append(url.getHost());
+		sb.append("\";\n");
+		bindings.put("a", a);
+		bindings.put("f", form);
+		sb.append(lines[7].replace("a.value", "a"));
+		sb.append(";a;");
+
+		LOGGER.log(Level.FINE, "Rebuilt JS: {0}", sb.toString());
 		try {
-
-			Bindings bindings = engine.createBindings();
-
-			String a = "0";
-			StringBuilder sb = new StringBuilder();
-			int challenge_start_index = script.indexOf("var s,t,o,p,b,r,e,a,k,i,n,g,f");
-			int challenge_end_index = script.indexOf("f.submit");
-			if (challenge_start_index == -1 || challenge_end_index == -1) {
-				throw new RuntimeException("Javascript challenge has changed.");
-			}
-			String[] lines = script.substring(challenge_start_index, challenge_end_index).split("\\r\\n|\\r|\\n");
-			if (lines.length != 10) {
-				throw new RuntimeException("Javascript challenge has changed");
-			}
-
-			sb.append(lines[0].replace("var s,t,o,p,b,r,e,a,k,i,n,g,f, ", "var "));
-			Element answser = form.getElementById("jschl-answer");
-			sb.append("t=\"");
-			sb.append(url.getHost());
-			sb.append("\";\n");
-			bindings.put("a", a);
-			bindings.put("f", form);
-			sb.append(lines[7].replace("a.value", "a"));
-			sb.append(";a;");
-
-			LOGGER.log(Level.FINE, "Rebuilt JS: {0}", sb.toString());
 			a = engine.eval(sb.toString(), bindings).toString();
 			return a;
-
 		} catch (ScriptException e) {
 			LOGGER.log(Level.WARNING, "Cannot resolv JS challenge", e);
-			throw new RuntimeException(e);
+			throw new UnexpectedWebsiteData("Cannot resolv JS challenge", e);
 		}
 	}
 }
