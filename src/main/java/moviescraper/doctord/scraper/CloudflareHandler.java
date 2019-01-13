@@ -33,7 +33,7 @@ public class CloudflareHandler {
 		String pass = form.select("[name=pass]").first().val();
 		Elements scripts = challenge.select("script");
 		if (scripts.size() != 1) {
-			throw new RuntimeException("Javascript challenge has changed");
+			throw new UnexpectedWebsiteData("Javascript challenge has changed");
 		}
 		LOGGER.log(Level.FINE, "Body: {0}", challenge.html());
 		String jschl_answer = this.getAnswer(form, this.url, scripts.get(0).html());
