@@ -123,6 +123,13 @@ public class CaribbeancomParsingProfileTest {
 	public void testScrapePoster() {
 		Thumb[] posters = parser.scrapePosters();
 		assertEquals("Poster size not right", true, posters.length > 0);
-		assertEquals("Wrong poster url", "http://www.caribbeancom.com/moviepages/070514-637/images/l_l.jpg", posters[0].getThumbURL().toString());
+		assertEquals("Wrong poster url", "https://en.caribbeancom.com/moviepages/070514-637/images/poster_en.jpg", posters[0].getThumbURL().toString());
+	}
+
+	@Test
+	public void testScrapeFanarts() {
+		Thumb[] posters = parser.scrapeFanart();
+		assertEquals("Poster size not right", true, posters.length == 5);
+		assertEquals("Wrong fanart url", "https://en.caribbeancom.com/moviepages/070514-637/images/l/001.jpg", posters[0].getThumbURL().toString());
 	}
 }
