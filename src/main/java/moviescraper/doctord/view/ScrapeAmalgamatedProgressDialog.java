@@ -1,6 +1,7 @@
 package moviescraper.doctord.view;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -331,7 +332,7 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
 	 */
 	private void promptUserToPickPoster() {
 		if (showPosterPicker && currentAmalgamatedMovie != null && currentAmalgamatedMovie.getPosters() != null && currentAmalgamatedMovie.getPosters().length > 1) {
-			Thumb posterFromUserSelection = showArtPicker(currentAmalgamatedMovie.getPosters(), "Pick Poster", true);
+			Thumb posterFromUserSelection = showArtPicker(this, currentAmalgamatedMovie.getPosters(), "Pick Poster", true);
 			currentAmalgamatedMovie.moveExistingPosterToFront(posterFromUserSelection);
 		}
 	}
@@ -341,12 +342,12 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
 	 */
 	private void promptUserToPickFanart() {
 		if (showFanartPicker && currentAmalgamatedMovie != null && currentAmalgamatedMovie.getFanart() != null && currentAmalgamatedMovie.getFanart().length > 1) {
-			Thumb fanartFromUserSelection = showArtPicker(currentAmalgamatedMovie.getFanart(), "Pick Fanart", false);
+			Thumb fanartFromUserSelection = showArtPicker(this, currentAmalgamatedMovie.getFanart(), "Pick Fanart", false);
 			currentAmalgamatedMovie.moveExistingFanartToFront(fanartFromUserSelection);
 		}
 	}
 
-	public static Thumb showArtPicker(Thumb[] thumbArray, String windowTitle, boolean isForPoster) {
+	public static Thumb showArtPicker(Component parent, Thumb[] thumbArray, String windowTitle, boolean isForPoster) {
 		if (thumbArray.length > 0) {
 			JPanel panel = new JPanel();
 			panel.setLayout(new BorderLayout());
@@ -377,7 +378,7 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
 			bwin.add(panel);
 			bwin.pack();
 
-			int result = JOptionPane.showOptionDialog(null, panel, windowTitle, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+			int result = JOptionPane.showOptionDialog(parent, panel, windowTitle, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
 			if (result == JOptionPane.OK_OPTION) {
 				//get the selected item's thumb
 				Thumb optionPickedFromPanel = null;
@@ -395,7 +396,7 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
 		return null;
 	}
 
-	public static boolean showPromptForUserProvidedURL(SiteParsingProfile siteScraper, File fileToScrape) {
+	public boolean showPromptForUserProvidedURL(SiteParsingProfile siteScraper, File fileToScrape) {
 		boolean promptUserForURLWhenScraping = MoviescraperPreferences.getInstance().getPromptForUserProvidedURLWhenScraping();
 		boolean chooseSearchResult = MoviescraperPreferences.getInstance().getSelectSearchResultManuallyWhenScraping();
 		boolean wasCustomURLSet = false;
@@ -425,7 +426,7 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
 			try {
 				SearchResult[] searchResults = siteScraper.getSearchResults(searchString);
 				if (searchResults != null && searchResults.length > 0) {
-					SearchResult searchResultFromUser = showSearchResultPicker(searchResults, siteScraper.getDataItemSourceName());
+					SearchResult searchResultFromUser = this.showSearchResultPicker(searchResults, siteScraper.getDataItemSourceName());
 					if (searchResultFromUser != null) {
 						siteScraper.setOverridenSearchResult(searchResultFromUser.getUrlPath());
 						wasCustomURLSet = true;
@@ -451,13 +452,13 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
 	 * @param siteName - Title to show in window
 	 * @return - the search result the user picks or null if the user picks the cancel option
 	 */
-	public static SearchResult showSearchResultPicker(SearchResult[] searchResults, String siteName) {
+	public SearchResult showSearchResultPicker(SearchResult[] searchResults, String siteName) {
 		if (searchResults.length > 0) {
 
 			SelectionDialog selectionDialog = new SelectionDialog(searchResults, siteName);
 			Object[] choices = { "OK", "Skip Scraping From This Site" };
 			Object defaultChoice = choices[0];
-			int optionPicked = JOptionPane.showOptionDialog(null, selectionDialog, "Select Search Result for " + siteName, JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, choices,
+			int optionPicked = JOptionPane.showOptionDialog(this, selectionDialog, "Select Search Result for " + siteName, JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, choices,
 			        defaultChoice);
 			if (optionPicked == JOptionPane.CANCEL_OPTION)
 				return null;

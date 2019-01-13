@@ -175,7 +175,7 @@ public class ScrapeAmalgamatedMovieWorker extends SwingWorker<Void, Map<SitePars
 						//delegate back to the parent, if we have one, to override the URL we are going to scrape with a custom URL provided by the user.
 						boolean customURLSet = false;
 						if (parent != null) {
-							customURLSet = ScrapeAmalgamatedProgressDialog.showPromptForUserProvidedURL(siteScraper, fileToScrapeFinal);
+							customURLSet = parent.showPromptForUserProvidedURL(siteScraper, fileToScrapeFinal);
 						}
 						returnMovie = Movie.scrapeMovie(fileToScrapeFinal, siteScraper, "", customURLSet);
 

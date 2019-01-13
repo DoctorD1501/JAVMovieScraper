@@ -478,12 +478,12 @@ public class GUIMain {
 		fileDetailPanel.updateView(forceUpdatePoster, newMovieWasSet);
 	}
 
-	public static SearchResult showOptionPane(SearchResult[] searchResults, String siteName) {
+	public SearchResult showOptionPane(SearchResult[] searchResults, String siteName) {
 		if (searchResults.length > 0) {
 
 			SelectionDialog selectionDialog = new SelectionDialog(searchResults, siteName);
 
-			int optionPicked = JOptionPane.showOptionDialog(null, selectionDialog, "Select Movie to Scrape From " + siteName, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null,
+			int optionPicked = JOptionPane.showOptionDialog(frmMoviescraper, selectionDialog, "Select Movie to Scrape From " + siteName, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null,
 			        null);
 			if (optionPicked == JOptionPane.CANCEL_OPTION)
 				return null;
