@@ -223,6 +223,12 @@ public class OnePondoParsingProfile extends SiteParsingProfileJSON implements Sp
 	public ArrayList<Genre> scrapeGenres() {
 		//For now, I wasn't able to find any genres on the page
 		ArrayList<Genre> genreList = new ArrayList<>();
+		JSONObject pageJSON = getMovieJSON();
+		JSONArray genres = pageJSON.getJSONArray("UCNAMEEn");
+		for (Object genre : genres) {
+			genreList.add(new Genre((String) genre));
+		}
+
 		return genreList;
 	}
 
