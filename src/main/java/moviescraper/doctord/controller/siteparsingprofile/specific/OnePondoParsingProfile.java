@@ -188,8 +188,13 @@ public class OnePondoParsingProfile extends SiteParsingProfileJSON implements Sp
 				thumbList.add(new Thumb(backgroundURLTwo));
 			if (SiteParsingProfile.fileExistsAtURL(popupFourURL))
 				thumbList.add(new Thumb(popupFourURL));
-			return thumbList.toArray(new Thumb[thumbList.size()]);
 
+			// Return thumbs if posters are not found
+			if (thumbList.size() == 0) {
+				return scrapePosters();
+			}
+
+			return thumbList.toArray(new Thumb[thumbList.size()]);
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

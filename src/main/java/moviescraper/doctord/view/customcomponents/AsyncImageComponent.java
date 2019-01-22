@@ -7,6 +7,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import javax.imageio.ImageIO;
@@ -227,6 +229,39 @@ public class AsyncImageComponent extends JPanel implements ImageConsumer, MouseL
 			}
 		}
 
+		// Auto follow url - from http to https
+		protected URLConnection autoFollow(URL url) throws IOException {
+			URL resourceUrl, base, next = url;
+			URLConnection conn;
+			String location;
+
+			while (true)
+			{
+				conn = next.openConnection();
+				if (referrerURL != null) {
+					conn.setRequestProperty("Referer", referrerURL.toString());
+				}
+				conn.setConnectTimeout(15000);
+				conn.setReadTimeout(15000);
+				conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_5) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/71.0.1410.65 Safari/537.31");
+
+				if (conn instanceof HttpURLConnection) {
+					switch (((HttpURLConnection) conn).getResponseCode()) {
+						case 301:
+						case 302:
+							location = conn.getHeaderField("Location");
+							base = new URL(next.toString());
+							next = new URL(base, location);  // Deal with relative URLs
+							continue;
+					}
+				}
+
+				break;
+			}
+
+			return conn;
+		}
+
 		@Override
 		protected BufferedImage doInBackground() throws IOException {
 
@@ -235,14 +270,10 @@ public class AsyncImageComponent extends JPanel implements ImageConsumer, MouseL
 			}
 			if (ImageCache.isImageCached(url, isImageModified)) {
 				pictureLoaded = Thumb.convertToBufferedImage(ImageCache.getImageFromCache(url, isImageModified, referrerURL));
-			} else {
-
+			}
+			else {
 				try {
-					URLConnection imageConnection = url.openConnection();
-					imageConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_5) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.65 Safari/537.31");
-					if (referrerURL != null) {
-						imageConnection.setRequestProperty("Referer", referrerURL.toString());
-					}
+					URLConnection imageConnection = autoFollow(url);
 					pictureLoaded = ImageIO.read(imageConnection.getInputStream());
 
 				} catch (Throwable t) {
