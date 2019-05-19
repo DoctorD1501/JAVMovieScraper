@@ -246,7 +246,8 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 					String firstLetterOfCid = cid.substring(0, 1);
 					String threeLetterCidCode = cid.substring(0, 3);
 
-					String potentialTrailerURL = String.format("http://cc3001.dmm.co.jp/litevideo/freepv/%1$s/%2$s/%3$s/%3$s_%4$s_%5$s.mp4", firstLetterOfCid, threeLetterCidCode, cid, quality, ratio);
+					String potentialTrailerURL = String.format("https://cc3001.dmm.co.jp/litevideo/freepv/%1$s/%2$s/%3$s/%3$s_%4$s_%5$s.mp4", firstLetterOfCid, threeLetterCidCode, cid, quality,
+					        ratio);
 
 					if (SiteParsingProfile.fileExistsAtURL(potentialTrailerURL)) {
 						System.out.println("Trailer existed at: " + potentialTrailerURL);
@@ -530,7 +531,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 			String actressIDHref = actressIDLink.attr("abs:href");
 			String actressNameKanji = actressIDLink.text();
 			String actressID = actressIDHref.substring(actressIDHref.indexOf("id=") + 3, actressIDHref.length() - 1);
-			String actressPageURL = "http://actress.dmm.co.jp/-/detail/=/actress_id=" + actressID + "/";
+			String actressPageURL = "https://actress.dmm.co.jp/-/detail/=/actress_id=" + actressID + "/";
 			try {
 				Document actressPage = Jsoup.connect(actressPageURL).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
 				Element actressNameElement = actressPage.select("td.t1 h1").first();
@@ -648,7 +649,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 		try {
 			String fileNameURLEncoded = codec.encode(fileNameNoExtension);
 			//System.out.println("FileNameUrlencode = " + fileNameURLEncoded);
-			return "http://www.dmm.co.jp/search/=/searchstr=" + fileNameURLEncoded + "/";
+			return "https://www.dmm.co.jp/search/=/searchstr=" + fileNameURLEncoded + "/";
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
