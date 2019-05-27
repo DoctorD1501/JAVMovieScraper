@@ -1,5 +1,6 @@
 package moviescraper.doctord.model.preferences;
 
+import moviescraper.doctord.scraper.UserAgent;
 import moviescraper.doctord.view.FavoriteGenrePickerPanel;
 
 public class MoviescraperPreferences extends Settings {
@@ -31,7 +32,9 @@ public class MoviescraperPreferences extends Settings {
 		confirmCleanUpFileNameNameBeforeRenaming, // Show a dialog asking the user to confirm the rename of a file each time using the File Name Cleanup feature
 		frequentlyUsedGenres, //Used in genre editing to store user's list of frequently used genres to aid in quickly adding genres to a movie
 		frequentlyUsedTags, //Used in tag editing to store user's list of frequently used tags to aid in quickly adding tags to a movie
-		writeThumbTagsForPosterAndFanartToNfo //Whether to write the <thumb> tag into the nfo
+		writeThumbTagsForPosterAndFanartToNfo, //Whether to write the <thumb> tag into the nfo,
+		userAgent, //UserAgent to use
+		cookieJar //UserAgent to use
 		;
 
 		@Override
@@ -254,5 +257,21 @@ public class MoviescraperPreferences extends Settings {
 
 	public void setWriteThumbTagsForPosterAndFanartToNfo(Boolean preferenceValue) {
 		setBooleanValue(Key.writeThumbTagsForPosterAndFanartToNfo, preferenceValue);
+	}
+
+	public String getUserAgent() {
+		return getStringValue(Key.userAgent, UserAgent.getRandomUserAgent());
+	}
+
+	public void setUserAgent(String preferenceValue) {
+		setStringValue(Key.userAgent, preferenceValue);
+	}
+
+	public String getCookieJar() {
+		return getStringValue(Key.cookieJar, null);
+	}
+
+	public void setCookieJar(String preferenceValue) {
+		setStringValue(Key.cookieJar, preferenceValue);
 	}
 }
