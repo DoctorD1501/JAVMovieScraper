@@ -10,6 +10,9 @@ apply plugin: 'checkstyle'
 apply plugin: "com.diffplug.gradle.spotless"
 apply plugin: 'jacoco'
 
+compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = 'UTF-8'
+
 ext.mainClass = 'moviescraper.doctord.Main'
 version = getVersionCode()
 
