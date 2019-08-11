@@ -78,7 +78,7 @@ public class MyTokyoHotParsingProfileTest {
 	@Test
 	public void testScrapeRuntime() {
 		moviescraper.doctord.model.dataitem.Runtime runtime = parser.scrapeRuntime();
-		assertEquals("Runtime not correct", "0", runtime.getRuntime());
+		assertEquals("Runtime not correct", "95", runtime.getRuntime());
 	}
 
 	@Test

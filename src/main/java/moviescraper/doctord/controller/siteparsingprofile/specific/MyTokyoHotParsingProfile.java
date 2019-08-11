@@ -155,7 +155,7 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 
 	@Override
 	public Runtime scrapeRuntime() {
-		Element durationElement = document.select("dl.info dt:contains(Duration) + dd, dl.info dt:contains(�?�録時間) + dd").first();
+		Element durationElement = document.select("dl.info dt:contains(Duration) + dd, dl.info dt:contains(収録時間) + dd").first();
 		if (durationElement != null && durationElement.text().trim().length() > 0) {
 			String[] durationSplitByTimeUnit = durationElement.text().split(":");
 			if (durationSplitByTimeUnit.length == 3) {
