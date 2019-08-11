@@ -11,7 +11,7 @@ apply plugin: 'checkstyle'
 apply plugin: "com.diffplug.gradle.spotless"
 apply plugin: 'jacoco'
 
-sourceCompatibility = '8.0'
+sourceCompatibility = '1.8'
 compileJava.options.encoding = 'UTF-8'
 compileTestJava.options.encoding = 'UTF-8'
 
