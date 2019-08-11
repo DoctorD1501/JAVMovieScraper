@@ -1,5 +1,6 @@
 plugins {
 	id 'application'
+	id 'org.openjfx.javafxplugin' version '0.0.7'
 	id 'com.github.johnrengelman.shadow' version '5.0.0'
 	id "com.diffplug.gradle.spotless" version "3.13.0"
 	id "org.sonarqube" version "2.5"
@@ -11,7 +12,7 @@ apply plugin: 'checkstyle'
 apply plugin: "com.diffplug.gradle.spotless"
 apply plugin: 'jacoco'
 
-sourceCompatibility = '1.8'
+sourceCompatibility = '11'
 compileJava.options.encoding = 'UTF-8'
 compileTestJava.options.encoding = 'UTF-8'
 
@@ -25,6 +26,10 @@ repositories {
 
 application {
 	mainClassName = mainClass
+}
+
+javafx {
+	modules = [ 'javafx.swing' ]
 }
 
 sourceSets {
@@ -58,6 +63,9 @@ dependencies {
 		'org.apache.httpcomponents:httpclient:4.5.3',
 		'io.jsondb:jsondb-core:1.0.85'
 	)
+	runtimeOnly "org.openjfx:javafx-graphics:$javafx.version:win"
+	runtimeOnly "org.openjfx:javafx-graphics:$javafx.version:linux"
+	runtimeOnly "org.openjfx:javafx-graphics:$javafx.version:mac"
 	testCompile('junit:junit:4.+')
 }
 
