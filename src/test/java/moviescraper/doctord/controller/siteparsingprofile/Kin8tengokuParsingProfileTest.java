@@ -71,7 +71,7 @@ public class Kin8tengokuParsingProfileTest {
 	@Test
 	public void testGenre() {
 		ArrayList<Genre> genres = profile.scrapeGenres();
-		assertTrue("There should be 9 genres.", genres.size() == 9);
+		assertTrue("There should be 9 genres.", genres.size() == 10);
 
 		assertEquals("First Genre not found", true, genres.contains(new Genre("Costume Play")));
 		assertEquals("Second Genre not found", true, genres.contains(new Genre("Shower Room")));
