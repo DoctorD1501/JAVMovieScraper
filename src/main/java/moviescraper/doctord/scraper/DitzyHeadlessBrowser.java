@@ -32,7 +32,11 @@ public class DitzyHeadlessBrowser {
 	public void configure() throws IOException {
 		MoviescraperPreferences preferences = MoviescraperPreferences.getInstance();
 		setUserAgent(preferences.getUserAgent());
-		Cookies().LoadCookieJar(new File(preferences.getCookieJar()));
+		try {
+			Cookies().LoadCookieJar(new File(preferences.getCookieJar()));
+		} catch (NullPointerException e) {
+
+		}
 	}
 
 	@Override
