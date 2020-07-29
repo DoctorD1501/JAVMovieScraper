@@ -768,7 +768,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 	}
 	
 	// Check for age check on DMM.co.jp
-        @Override
+	@Override
 	public boolean requiresSecurityPassthrough(Document document) {
 		if (document != null && document.html().contains("ageCheck")) {
 			System.out.println("Found age check on DMM.co.jp; attempting to bypass");
