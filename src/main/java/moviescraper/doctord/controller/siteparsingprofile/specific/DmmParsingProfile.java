@@ -786,7 +786,6 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 			if (lastLink != null && lastLink.attr("href") != null) {
 				Document ageCheckSolved = SiteParsingProfile.getDocument(new SearchResult(lastLink.attr("href")));
 				if (ageCheckSolved != null) {
-					//return SiteParsingProfile.getDocument(originalSearchResult);
 					return ageCheckSolved;
 				}
 			}
