@@ -766,5 +766,32 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 	public String getParserName() {
 		return "DMM.co.jp";
 	}
+	
+	// Check for age check on DMM.co.jp
+        @Override
+	public boolean requiresSecurityPassthrough(Document document) {
+		if (document != null && document.html().contains("ageCheck")) {
+			System.out.println("Found age check on DMM.co.jp; attempting to bypass");
+			return true;
+		}
+		return false;
+	}
+
+	// Handle age check on DMM.co.jp
+	@Override
+	public Document runSecurityPassthrough(Document document, SearchResult originalSearchResult) {
+		//find the last link in the document, download the href, then try to download the original result again
+		if (document != null) {
+			Element lastLink = document.select("a").last();
+			if (lastLink != null && lastLink.attr("href") != null) {
+				Document ageCheckSolved = SiteParsingProfile.getDocument(new SearchResult(lastLink.attr("href")));
+				if (ageCheckSolved != null) {
+					//return SiteParsingProfile.getDocument(originalSearchResult);
+					return ageCheckSolved;
+				}
+			}
+		}
+		return document;
+	}
 
 }
