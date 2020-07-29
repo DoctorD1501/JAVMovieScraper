@@ -48,7 +48,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-public class DmmParsingProfile extends SiteParsingProfile implements SpecificProfile {
+public class DmmParsingProfile extends SiteParsingProfile implements SpecificProfile, SecurityPassthrough {
 
 	final static double dmmMaxRating = 5.00;
 	private boolean doGoogleTranslation;
