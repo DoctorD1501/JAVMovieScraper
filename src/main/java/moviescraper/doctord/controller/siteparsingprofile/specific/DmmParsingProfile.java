@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 
 import moviescraper.doctord.controller.languagetranslation.Language;
 import moviescraper.doctord.controller.languagetranslation.TranslateString;
+import moviescraper.doctord.controller.siteparsingprofile.SecurityPassthrough;
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.model.SearchResult;
 import moviescraper.doctord.model.dataitem.Actor;
