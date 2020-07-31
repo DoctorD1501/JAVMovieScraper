@@ -65,7 +65,9 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 	public DmmParsingProfile() {
 		super();
 		doGoogleTranslation = (scrapingLanguage == Language.ENGLISH);
-		scrapeTrailers = true;
+
+		// we can skip trailer scraping if user disables write trailer preference
+		scrapeTrailers = MoviescraperPreferences.getInstance().getWriteTrailerToFile();
 	}
 
 	public DmmParsingProfile(Document document) {
@@ -84,7 +86,9 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 		this.doGoogleTranslation = doGoogleTranslation;
 		if (this.doGoogleTranslation == false)
 			setScrapingLanguage(Language.JAPANESE);
-		scrapeTrailers = true;
+
+		// we can skip trailer scraping if user disables write trailer preference
+		scrapeTrailers = MoviescraperPreferences.getInstance().getWriteTrailerToFile();
 	}
 
 	public DmmParsingProfile(boolean doGoogleTranslation, boolean scrapeTrailers) {
