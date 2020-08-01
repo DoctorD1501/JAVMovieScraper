@@ -39,7 +39,7 @@ public abstract class MovieDataItem implements Serializable {
 
 	public boolean isStringValueEmpty() {
 		String toStringValue = this.toString();
-		if (toStringValue.contains("=\"\""))
+		if (toStringValue.contains("=\"\" "))
 			return false;
 		else
 			return true;
