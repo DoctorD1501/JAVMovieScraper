@@ -5,17 +5,15 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import moviescraper.doctord.controller.languagetranslation.Language;
 import moviescraper.doctord.controller.languagetranslation.TranslateString;
+import moviescraper.doctord.controller.siteparsingprofile.SecurityPassthrough;
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
+import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfileJSON;
 import moviescraper.doctord.model.SearchResult;
 import moviescraper.doctord.model.dataitem.Actor;
 import moviescraper.doctord.model.dataitem.Director;
@@ -64,7 +62,9 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 	public DmmParsingProfile() {
 		super();
 		doGoogleTranslation = (scrapingLanguage == Language.ENGLISH);
-		scrapeTrailers = true;
+
+		// we can skip trailer scraping if user disables write trailer preference
+		scrapeTrailers = MoviescraperPreferences.getInstance().getWriteTrailerToFile();
 	}
 
 	public DmmParsingProfile(Document document) {
@@ -83,7 +83,9 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 		this.doGoogleTranslation = doGoogleTranslation;
 		if (this.doGoogleTranslation == false)
 			setScrapingLanguage(Language.JAPANESE);
-		scrapeTrailers = true;
+
+		// we can skip trailer scraping if user disables write trailer preference
+		scrapeTrailers = MoviescraperPreferences.getInstance().getWriteTrailerToFile();
 	}
 
 	public DmmParsingProfile(boolean doGoogleTranslation, boolean scrapeTrailers) {
@@ -630,7 +632,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 
 	@Override
 	public Studio scrapeStudio() {
-		Element studioElement = document.select("table.mg-b20 tr td a[href*=article=label/id=]").first();
+		Element studioElement = document.select("td:containsOwn(メーカー：) ~ td").first();
 		if (studioElement != null) {
 			if (doGoogleTranslation)
 				return new Studio(TranslateString.translateStringJapaneseToEnglish(studioElement.text()));
@@ -765,6 +767,26 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 	@Override
 	public String getParserName() {
 		return "DMM.co.jp";
+	}
+
+	@Override
+	public Document downloadDocument(SearchResult searchResult) {
+		try {
+			if (searchResult.isJSONSearchResult())
+				return SiteParsingProfileJSON.getDocument(searchResult.getUrlPath());
+			else {
+
+				//setup cookie to bypass age check on DMM site
+				Map<String, String> cookies = new HashMap<String,String>();
+				cookies.put("age_check_done","1");
+
+				Document doc = Jsoup.connect(searchResult.getUrlPath()).cookies(cookies).userAgent("Mozilla").ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).get();
+				return doc;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }

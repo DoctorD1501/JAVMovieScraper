@@ -94,7 +94,7 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 				System.out.println("Visiting set page to get full text");
 				try {
 					Document setDocument = SiteParsingProfile.downloadDocumentFromURLString(setElement.attr("href"));
-					Element setElementFullText = setDocument.select("div.cmn-ttl-tabMain01 div.txt01").first();
+					Element setElementFullText = setDocument.select("div.cmn-ttl-tabMain01 h1.txt01").first();
 					if (setElementFullText != null) {
 						return new Set(setElementFullText.text());
 					}
