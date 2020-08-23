@@ -2,7 +2,7 @@ configurations { codacy }
 
 repositories {
 	maven { url "https://jitpack.io" }
-	maven { url "http://dl.bintray.com/typesafe/maven-releases" }
+	maven { url "https://dl.bintray.com/typesafe/maven-releases" }
 }
 
 dependencies {

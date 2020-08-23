@@ -21,7 +21,7 @@ version = getVersionCode()
 
 repositories {
 	mavenCentral()
-	maven { url "http://clojars.org/repo/" }
+	maven { url "https://clojars.org/repo/" }
 }
 
 application {
