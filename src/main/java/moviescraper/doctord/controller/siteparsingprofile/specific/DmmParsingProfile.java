@@ -191,7 +191,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 
 		//dvd mode
 		Element plotElement = document.select("p.mg-b20").first();
-		if (plotElement == null || document.baseUri().contains("/digital/video")) {
+		if (plotElement == null || document.baseUri().contains("/digital/video")  || document.baseUri().contains("/digital/nikkatsu")) {
 			//video rental mode if it didnt find a match using above method
 			plotElement = document.select("tbody .mg-b20.lh4").first();
 		}
@@ -682,7 +682,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 			//so for now I'm making each its own variable and looping through and adding in all the elements seperately
 			Elements dvdLinks = searchResultsPage.select("p.tmb a[href*=/mono/dvd/");
 			Elements rentalElements = searchResultsPage.select("p.tmb a[href*=/rental/ppr/");
-			Elements digitalElements = searchResultsPage.select("p.tmb a[href*=/digital/videoa/], p.tmb a[href*=/digital/videoc/]");
+			Elements digitalElements = searchResultsPage.select("p.tmb a[href*=/digital/videoa/], p.tmb a[href*=/digital/videoc/], p.tmb a[href*=/digital/nikkatsu/]");
 
 			//get /mono/dvd links
 			for (int i = 0; i < dvdLinks.size(); i++) {
