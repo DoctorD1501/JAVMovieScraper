@@ -777,8 +777,8 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 			else {
 
 				//setup cookie to bypass age check on DMM site
-				Map<String, String> cookies = new HashMap<String,String>();
-				cookies.put("age_check_done","1");
+				Map<String, String> cookies = new HashMap<String, String>();
+				cookies.put("age_check_done", "1");
 
 				Document doc = Jsoup.connect(searchResult.getUrlPath()).cookies(cookies).userAgent("Mozilla").ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).get();
 				return doc;
