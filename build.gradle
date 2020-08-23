@@ -44,24 +44,24 @@ sourceSets {
 }
 dependencies {
 	compile (
-		'commons-io:commons-io:2.4',
-		'org.apache.commons:commons-lang3:3.1',
-		'commons-cli:commons-cli:1.2',
-		'commons-codec:commons-codec:1.8',
-		'org.apache.commons:commons-csv:1.1',
-		'com.jgoodies:jgoodies-common:1.4.0',
-		'com.jgoodies:jgoodies-forms:1.6.0',
+                'commons-io:commons-io:2.7',
+		'org.apache.commons:commons-lang3:3.11',
+		'commons-cli:commons-cli:1.4',
+		'commons-codec:commons-codec:1.14',
+		'org.apache.commons:commons-csv:1.8',
+		'com.jgoodies:jgoodies-common:1.8.1',
+		'com.jgoodies:jgoodies-forms:1.9.0',
 		'org.imgscalr:imgscalr-lib:4.2',
-		'com.cedarsoftware:json-io:4.3.0',
+		'com.cedarsoftware:json-io:4.12.0',
 		'org.jsoup:jsoup:1.7.3',
-		'com.thoughtworks.xstream:xstream:1.4.7',
-		'org.json:json:20151123',
-		'org.hamcrest:hamcrest-core:1.3',
+		'com.thoughtworks.xstream:xstream:1.4.12',
+		'org.json:json:20200518',
+		'org.hamcrest:hamcrest-core:2.2',
 		'xpp3:xpp3_min:1.1.4c',
 		'xmlpull:xmlpull:1.1.3.1',
 		'com.jgoodies:forms:1.3.0',
-		'org.apache.httpcomponents:httpclient:4.5.3',
-		'io.jsondb:jsondb-core:1.0.85'
+		'org.apache.httpcomponents:httpclient:4.5.12',
+		'io.jsondb:jsondb-core:1.0.115-j11'
 	)
 	runtimeOnly "org.openjfx:javafx-graphics:$javafx.version:win"
 	runtimeOnly "org.openjfx:javafx-graphics:$javafx.version:linux"
