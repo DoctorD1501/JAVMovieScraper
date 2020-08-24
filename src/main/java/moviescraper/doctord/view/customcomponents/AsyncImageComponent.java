@@ -7,6 +7,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import javax.imageio.ImageIO;
@@ -15,6 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 import javax.swing.border.Border;
 
+import moviescraper.doctord.controller.FileDownloaderUtilities;
 import org.imgscalr.Scalr;
 import org.imgscalr.Scalr.Method;
 
@@ -229,22 +232,17 @@ public class AsyncImageComponent extends JPanel implements ImageConsumer, MouseL
 
 		@Override
 		protected BufferedImage doInBackground() throws IOException {
-
 			if (url == null) {
 				return null;
 			}
+
 			if (ImageCache.isImageCached(url, isImageModified)) {
 				pictureLoaded = Thumb.convertToBufferedImage(ImageCache.getImageFromCache(url, isImageModified, referrerURL));
-			} else {
-
+			}
+			else {
 				try {
-					URLConnection imageConnection = url.openConnection();
-					imageConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_5) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.65 Safari/537.31");
-					if (referrerURL != null) {
-						imageConnection.setRequestProperty("Referer", referrerURL.toString());
-					}
+					URLConnection imageConnection = FileDownloaderUtilities.autoFollow(url);
 					pictureLoaded = ImageIO.read(imageConnection.getInputStream());
-
 				} catch (Throwable t) {
 					System.out.println("Cannot load image: " + t.getMessage());
 				}

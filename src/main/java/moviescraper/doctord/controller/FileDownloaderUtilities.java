@@ -4,6 +4,7 @@ import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.awt.image.BufferedImage;
@@ -59,10 +60,39 @@ public class FileDownloaderUtilities {
 		FileUtils.copyInputStreamToFile(FileDownloaderUtilities.getDefaultUrlConnection(url).getInputStream(), file);
 	}
 
+	// Auto follow url - from http to https
+	public static URLConnection autoFollow(URL url) throws IOException {
+		URL resourceUrl, base, next = url;
+		URLConnection conn;
+		String location;
+
+		while (true)
+		{
+			conn = next.openConnection();
+			conn.setConnectTimeout(15000);
+			conn.setReadTimeout(15000);
+			conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_5) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/71.0.1410.65 Safari/537.31");
+
+			if (conn instanceof HttpURLConnection) {
+				switch (((HttpURLConnection) conn).getResponseCode()) {
+					case 301:
+					case 302:
+						location = conn.getHeaderField("Location");
+						base = new URL(next.toString());
+						next = new URL(base, location);  // Deal with relative URLs
+						continue;
+				}
+			}
+
+			break;
+		}
+
+		return conn;
+	}
+
 	public static void writeURLToFile(URL url, File file, URL viewerUrl) throws IOException {
 		try {
-			URLConnection imageConnection = url.openConnection();
-			imageConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_5) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.65 Safari/537.31");
+			URLConnection imageConnection = autoFollow(url);
 			if (viewerUrl != null) {
 				imageConnection.setRequestProperty("Referer", viewerUrl.toString());
 			}
@@ -72,6 +102,5 @@ public class FileDownloaderUtilities {
 		} catch (Throwable t) {
 			System.out.println("Cannot write file: " + t.getMessage());
 		}
-
 	}
 }
