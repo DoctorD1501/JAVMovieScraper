@@ -17,7 +17,7 @@ compileJava.options.encoding = 'UTF-8'
 compileTestJava.options.encoding = 'UTF-8'
 
 ext.mainClass = 'moviescraper.doctord.Main'
-version = getVersionCode()
+version = getVersionCode
 
 repositories {
 	mavenCentral()
@@ -44,7 +44,7 @@ sourceSets {
 }
 dependencies {
 	compile (
-                'commons-io:commons-io:2.7',
+		'commons-io:commons-io:2.7',
 		'org.apache.commons:commons-lang3:3.11',
 		'commons-cli:commons-cli:1.4',
 		'commons-codec:commons-codec:1.14',
@@ -76,7 +76,7 @@ jar {
 	manifest {
 		attributes(
 			"Implementation-Title": "Gradle",
-			"Implementation-Version": version,
+			"Implementation-Version": archiveVersion,
 			"Description": "JAV Movies scraper",
 			"Main-Class" : mainClass
 		)
@@ -84,7 +84,7 @@ jar {
 }
 
 shadowJar {
-	baseName = project.name
+	project.archivesBaseName = project.name
 }
 
 spotless {

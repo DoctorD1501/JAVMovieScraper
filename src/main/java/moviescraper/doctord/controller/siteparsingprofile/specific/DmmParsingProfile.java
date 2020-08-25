@@ -191,7 +191,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 
 		//dvd mode
 		Element plotElement = document.select("p.mg-b20").first();
-		if (plotElement == null || document.baseUri().contains("/digital/video")  || document.baseUri().contains("/digital/nikkatsu")) {
+		if (plotElement == null || document.baseUri().contains("/digital/video") || document.baseUri().contains("/digital/nikkatsu")) {
 			//video rental mode if it didnt find a match using above method
 			plotElement = document.select("tbody .mg-b20.lh4").first();
 		}
