@@ -6,6 +6,7 @@ import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,6 +38,7 @@ import moviescraper.doctord.model.dataitem.Votes;
 import moviescraper.doctord.model.dataitem.Year;
 import moviescraper.doctord.model.preferences.MoviescraperPreferences;
 
+import moviescraper.doctord.scraper.UserAgent;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -51,6 +53,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 	final static double dmmMaxRating = 5.00;
 	private boolean doGoogleTranslation;
 	private boolean scrapeTrailers;
+	private Document documentEnglish;
 
 	@Override
 	public List<ScraperGroupName> getScraperGroupNames() {
@@ -105,13 +108,13 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 
 	@Override
 	public Title scrapeTitle() {
-		Element titleElement = document.select("[property=og:title]").first();
-		// run a google translate on the japanese title
+		Element titleElement;
 		if (doGoogleTranslation) {
-			return new Title(TranslateString.translateStringJapaneseToEnglish(titleElement.attr("content").toString()));
+			titleElement = documentEnglish.select("[property=og:title]").first();
 		} else {
-			return new Title(titleElement.attr("content").toString());
+			titleElement = document.select("[property=og:title]").first();
 		}
+		return new Title(titleElement.attr("content").toString());
 	}
 
 	@Override
@@ -130,12 +133,16 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 
 	@Override
 	public Set scrapeSet() {
-		Element setElement = document.select("table.mg-b20 tr td a[href*=article=series/id=]").first();
+		Element setElement;
+		if (doGoogleTranslation) {
+			setElement = documentEnglish.select("table.mg-b20 tr td a[href*=article=series/id=]").first();
+		} else {
+			setElement = document.select("table.mg-b20 tr td a[href*=article=series/id=]").first();
+		}
+
 		if (setElement == null)
 			return Set.BLANK_SET;
-		else if (doGoogleTranslation) {
-			return new Set(TranslateString.translateStringJapaneseToEnglish(setElement.text()));
-		} else
+		else
 			return new Set(setElement.text());
 	}
 
@@ -191,14 +198,23 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 
 		//dvd mode
 		Element plotElement = document.select("p.mg-b20").first();
-		if (plotElement == null || document.baseUri().contains("/digital/video")  || document.baseUri().contains("/digital/nikkatsu")) {
+		Element plotElementEnglish = documentEnglish.select("p.mg-b20").first();
+		if (plotElement == null || document.baseUri().contains("/digital/video")) {
 			//video rental mode if it didnt find a match using above method
 			plotElement = document.select("tbody .mg-b20.lh4").first();
+			plotElementEnglish = documentEnglish.select("tbody .mg-b20.lh4").first();
 		}
+
+		String plot;
 		if (doGoogleTranslation) {
-			return new Plot(TranslateString.translateStringJapaneseToEnglish(plotElement.text()));
-		} else
-			return new Plot(plotElement.text());
+			plot = plotElementEnglish.text();
+		} else {
+			plot = plotElement.text();
+		}
+
+		//remove special sale messages that occur after first "star" character
+		plot = plot.split("★", 2)[0];
+		return new Plot(plot);
 	}
 
 	@Override
@@ -394,7 +410,13 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 
 	@Override
 	public ArrayList<Genre> scrapeGenres() {
-		Elements genreElements = document.select("table.mg-b12 tr td a[href*=article=keyword/id=]");
+		Elements genreElements;
+		if (doGoogleTranslation) {
+			genreElements = documentEnglish.select("table.mg-b12 tr td a[href*=article=keyword/id=]");
+		} else {
+			genreElements = document.select("table.mg-b12 tr td a[href*=article=keyword/id=]");
+		}
+
 		ArrayList<Genre> genres = new ArrayList<>(genreElements.size());
 		for (Element genreElement : genreElements) {
 			// get the link so we can examine the id and do some sanity cleanup
@@ -411,7 +433,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 					// we didn't know of anything hand picked for genres, just use
 					// google translate
 					if (potentialBetterTranslation.equals("")) {
-						genres.add(new Genre(TranslateString.translateStringJapaneseToEnglish(genreElement.text())));
+						genres.add(new Genre(genreElement.text()));
 					}
 					// Cool, we got something we want to use instead for our genre,
 					// let's use that
@@ -621,21 +643,24 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 	public ArrayList<Director> scrapeDirectors() {
 		ArrayList<Director> directors = new ArrayList<>();
 		Element directorElement = document.select("table.mg-b20 tr td a[href*=article=director/id=]").first();
+		Element directorElementEnglish = documentEnglish.select("table.mg-b20 tr td a[href*=article=director/id=]").first();
 		if (directorElement != null && directorElement.hasText()) {
 			if (doGoogleTranslation)
-				directors.add(new Director(TranslateString.translateStringJapaneseToEnglish(directorElement.text()), null));
+				directors.add(new Director(directorElementEnglish.text(), null));
 			else
 				directors.add(new Director(directorElement.text(), null));
 		}
+		System.out.println("DIRECTORS: " + directors.toString());
 		return directors;
 	}
 
 	@Override
 	public Studio scrapeStudio() {
 		Element studioElement = document.select("td:containsOwn(メーカー：) ~ td").first();
+		Element studioElementEnglish = documentEnglish.select("td:containsOwn(Studios:) ~ td").first();
 		if (studioElement != null) {
 			if (doGoogleTranslation)
-				return new Studio(TranslateString.translateStringJapaneseToEnglish(studioElement.text()));
+				return new Studio(studioElementEnglish.text());
 			else
 				return new Studio(studioElement.text());
 		} else
@@ -667,7 +692,9 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 	@Override
 	public SearchResult[] getSearchResults(String searchString) throws IOException {
 		boolean firstPageScraping = true;
-		Document searchResultsPage = Jsoup.connect(searchString).timeout(CONNECTION_TIMEOUT_VALUE).get();
+
+		Document searchResultsPage = Jsoup.connect(searchString).header("Cache-Control", "no-cache").header("Connection", "close").ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).post();
+
 		Element nextPageLink = searchResultsPage.select("div.list-capt div.list-boxcaptside.list-boxpagenation ul li:not(.terminal) a").last();
 		ArrayList<SearchResult> searchResults = new ArrayList<>();
 		ArrayList<String> pagesVisited = new ArrayList<>();
@@ -682,7 +709,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 			//so for now I'm making each its own variable and looping through and adding in all the elements seperately
 			Elements dvdLinks = searchResultsPage.select("p.tmb a[href*=/mono/dvd/");
 			Elements rentalElements = searchResultsPage.select("p.tmb a[href*=/rental/ppr/");
-			Elements digitalElements = searchResultsPage.select("p.tmb a[href*=/digital/videoa/], p.tmb a[href*=/digital/videoc/], p.tmb a[href*=/digital/nikkatsu/]");
+			Elements digitalElements = searchResultsPage.select("p.tmb a[href*=/digital/videoa/], p.tmb a[href*=/digital/videoc/]");
 
 			//get /mono/dvd links
 			for (int i = 0; i < dvdLinks.size(); i++) {
@@ -776,14 +803,64 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 				return SiteParsingProfileJSON.getDocument(searchResult.getUrlPath());
 			else {
 
+				String userAgent = UserAgent.getUserAgent(0);
+
 				//setup cookie to bypass age check on DMM site
 				Map<String, String> cookies = new HashMap<String, String>();
 				cookies.put("age_check_done", "1");
 
-				Document doc = Jsoup.connect(searchResult.getUrlPath()).cookies(cookies).userAgent("Mozilla").ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).get();
-				return doc;
+				System.out.println("DMM Scraper: getting JP version at " + searchResult.getUrlPath());
+				Document documentJapanese = Jsoup.connect(searchResult.getUrlPath()).cookies(cookies).header("Cache-Control", "no-store").header("Connection", "close").userAgent(userAgent)
+				        .ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).post();
+
+				String titleJP = documentJapanese.select("[property=og:title]").first().attr("content").toString();
+				System.out.println("DMM Scraper: JP Title --> " + titleJP);
+				//let's also get the English version in case we need English translation. we do this by setting up the proper cookies.
+				cookies.put("ckcy", "2");
+				cookies.put("cklg", "en");
+				String urlEnglish = searchResult.getUrlPath().replace("dmm.co.jp/", "dmm.co.jp/en/");
+				System.out.println("DMM Scraper: getting EN version at " + urlEnglish);
+
+				//note, the 2nd connect to get english sometimes returns japanese. this is probably due to web server cache.
+				//to reduce this happening, let's try: passing Cache-Control header, passing Connection header, and post method
+				documentEnglish = Jsoup.connect(urlEnglish + "&nc=nocache").cookies(cookies).header("Cache-Control", "no-cache").header("Connection", "close").userAgent(userAgent)
+				        .ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).post();
+
+				String titleEN = documentEnglish.select("[property=og:title]").first().attr("content").toString();
+				System.out.println("DMM Scraper: EN Title? --> " + titleEN);
+
+				if (titleJP.equals(titleEN)) {
+					//We did not get the English version. Let's pause and try again.
+					System.out.println("DMM Scraper: Fail getting EN version.");
+					System.out.println("DMM Scraper: 2nd attempt at getting EN version. (waiting 5 seconds)");
+					TimeUnit.SECONDS.sleep(5);
+					documentEnglish = Jsoup.connect(urlEnglish + "&nc2=nocache").cookies(cookies).header("Cache-Control", "no-cache").header("Connection", "close").userAgent(userAgent)
+					        .ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).post();
+					titleEN = documentEnglish.select("[property=og:title]").first().attr("content").toString();
+					System.out.println("DMM Scraper: EN Title? --> " + documentEnglish.select("[property=og:title]").first().attr("content").toString());
+				}
+
+				if (titleJP.equals(titleEN)) {
+					//We did not get the English version. Let's pause longer and try one last time.
+					System.out.println("DMM Scraper: Fail getting EN version.");
+					System.out.println("DMM Scraper: 3rd attempt at getting EN version. (waiting 10 seconds)");
+					TimeUnit.SECONDS.sleep(10);
+					documentEnglish = Jsoup.connect(urlEnglish + "&nc2=nocache").cookies(cookies).header("Cache-Control", "no-cache").header("Connection", "close").userAgent(userAgent)
+					        .ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).post();
+					titleEN = documentEnglish.select("[property=og:title]").first().attr("content").toString();
+					System.out.println("DMM Scraper: EN Title? --> " + documentEnglish.select("[property=og:title]").first().attr("content").toString());
+				}
+
+				if (titleJP.equals(titleEN)) {
+					System.out.println("DMM Scraper: Getting EN version failed.");
+				} else {
+					System.out.println("DMM Scraper: Success getting EN version!");
+					System.out.println("DMM Scraper: EN Plot --> " + documentEnglish.select("p.mg-b20").first().text());
+				}
+
+				return documentJapanese;
 			}
-		} catch (IOException e) {
+		} catch (IOException | InterruptedException e) {
 			e.printStackTrace();
 		}
 		return null;
