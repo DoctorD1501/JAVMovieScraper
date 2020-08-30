@@ -294,7 +294,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 	/**
 	 * Helper method for scrapePoster() and scapeFanart since this code is
 	 * virtually identical
-	 * 
+	 *
 	 * @param doCrop
 	 * - if true, will only get the front cover as the initial poster
 	 * element; otherwise it uses the entire dvd case from DMM.co.jp
@@ -524,7 +524,9 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 				break;
 
 		}
-
+		if (betterActressTranslatedString.equals("")) {
+			return text;
+		}
 		return betterActressTranslatedString;
 	}
 
@@ -549,74 +551,50 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 	@Override
 	public ArrayList<Actor> scrapeActors() {
 		// scrape all the actress IDs
-		Elements actressIDElements = document.select("span#performer a[href*=article=actress/id=]");
+		Elements actressIDElements;
+		String actressPageURL;
+
+		//setup cookies and user agent for Jsoup
+		Map<String, String> cookies = new HashMap<String, String>();
+		cookies.put("age_check_done", "1");
+		String userAgent = UserAgent.getUserAgent(0);
+
+		if (this.doGoogleTranslation) {
+			actressIDElements = documentEnglish.select("span#performer a[href*=article=actress/id=]");
+			actressPageURL = "https://actress.dmm.co.jp/en/-/detail/=/actress_id=";
+
+			// set cookies for EN version
+			cookies.put("ckcy", "2");
+			cookies.put("cklg", "en");
+		} else {
+			actressIDElements = document.select("span#performer a[href*=article=actress/id=]");
+			actressPageURL = "https://actress.dmm.co.jp/-/detail/=/actress_id=";
+		}
 		ArrayList<Actor> actorList = new ArrayList<>(actressIDElements.size());
+
+		//there maybe multiple actress. let's process each actress.
 		for (Element actressIDLink : actressIDElements) {
+			String actressName = actressIDLink.text();
 			String actressIDHref = actressIDLink.attr("abs:href");
-			String actressNameKanji = actressIDLink.text();
 			String actressID = actressIDHref.substring(actressIDHref.indexOf("id=") + 3, actressIDHref.length() - 1);
-			String actressPageURL = "https://actress.dmm.co.jp/-/detail/=/actress_id=" + actressID + "/";
 			try {
-				Document actressPage = Jsoup.connect(actressPageURL).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
-				Element actressNameElement = actressPage.select("td.t1 h1").first();
+				Document actressPage = Jsoup.connect(actressPageURL + actressID + "/").cookies(cookies).header("Cache-Control", "no-store").header("Connection", "close").userAgent(userAgent)
+				        .ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).post();
 				Element actressThumbnailElement = actressPage.select("tr.area-av30.top td img").first();
 				String actressThumbnailPath = actressThumbnailElement.attr("abs:src");
-				//Sometimes the translation service from google gives us weird engrish instead of a name, so let's compare it to the thumbnail file name for the image as a sanity check
-				//if the names aren't close enough, we'll use the thumbnail name
-				//many times the thumbnail name is off by a letter or two or has a number in it, which is why we just don't use this all the time...
-				String actressNameFromThumbnailPath = actressThumbnailPath.substring(actressThumbnailPath.lastIndexOf('/') + 1, actressThumbnailPath.lastIndexOf('.'));
 
-				//To do a proper comparison using Lev distance, let's fix case, make first name appear first get rid of numbers
-				actressNameFromThumbnailPath = actressNameFromThumbnailPath.replaceAll("[0-9]", "");
-				actressNameFromThumbnailPath = actressNameFromThumbnailPath.replaceAll("_", " ");
-				actressNameFromThumbnailPath = WordUtils.capitalize(actressNameFromThumbnailPath);
-				actressNameFromThumbnailPath = StringUtils.reverseDelimited(actressNameFromThumbnailPath, ' ');
-
-				// The actor's name is easier to google translate if we get the
-				// hiragana form of it.
-				// The hiragana form of it is between a '（' and a '）' (These are
-				// not parens but some japanese version of parens)
-				String actressNameHiragana = actressNameElement.text().substring(actressNameElement.text().indexOf('（') + 1, actressNameElement.text().indexOf('）'));
-				// maybe we know in advance the translation system will be junk,
-				// so we check our manual override of people we know it will get
-				// the name wrong on
-				String actressNameEnglish = betterActressTranslation(actressNameHiragana, actressID);
-				boolean didWeManuallyOverrideActress = false;
-				if (actressNameEnglish.equals("") && doGoogleTranslation) {
-					actressNameEnglish = TranslateString.translateJapanesePersonNameToRomaji(actressNameHiragana);
-				} else
-					didWeManuallyOverrideActress = true;
-
-				//use the difference between the two strings to determine which is the better one. The google translate shouldn't be that many characters away from the thumbnail name, or it's garbage
-				//unless the thumbnail name was the generic "Nowprinting" one, in which case use the google translate
-				if (!actressNameFromThumbnailPath.equals("Nowprinting")) {
-					int LevenshteinDistance = StringUtils.getLevenshteinDistance(actressNameEnglish, actressNameFromThumbnailPath);
-					if (LevenshteinDistance > 3 && !didWeManuallyOverrideActress) {
-						//System.out.println("(We found a junk result from google translate, swapping over to cleaned up thumbnail name");
-						//System.out.println("Google translate's version of our name: " + actressNameEnglish + " Thumbnail name of person: " + actressNameFromThumbnailPath + " Lev Distance: " + LevenshteinDistance + ")");
-						actressNameEnglish = actressNameFromThumbnailPath;
-					}
+				if (this.doGoogleTranslation) {
+					actressName = betterActressTranslation(actressName, actressID);
 				}
 
 				//Sometimes DMM lists a fake under the Name "Main". It's weird and it's not a real person, so just ignore it.
-				if (!actressNameEnglish.equals("Main")) {
-
-					if (doGoogleTranslation) {
-						if (!actressThumbnailPath.contains("nowprinting.gif")) {
-							actorList.add(new Actor(actressNameEnglish, "", new Thumb(actressThumbnailPath)));
-						} else {
-							actorList.add(new Actor(actressNameEnglish, "", null));
-						}
-
+				if (!actressName.equals("Main")) {
+					if (!actressThumbnailPath.contains("nowprinting.gif")) {
+						actorList.add(new Actor(actressName, "", new Thumb(actressThumbnailPath)));
 					} else {
-						if (!actressThumbnailPath.contains("nowprinting.gif")) {
-							actorList.add(new Actor(actressNameKanji, "", new Thumb(actressThumbnailPath)));
-						} else {
-							actorList.add(new Actor(actressNameKanji, "", null));
-						}
+						actorList.add(new Actor(actressName, "", null));
 					}
 				}
-
 			} catch (SocketTimeoutException e) {
 				System.err.println("Cannot download from " + actressPageURL.toString() + ": Socket timed out: " + e.getLocalizedMessage());
 			} catch (IOException e) {
@@ -626,6 +604,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 		}
 
 		//Get actors that are just a "Name" and have no page of their own (common on some web releases)
+		//TODO Z Refactor "name only actors" to *not* use English translator service. Need examples of these.
 		Elements nameOnlyActors = document.select("table.mg-b20 tr td:contains(�??�?：) + td");
 		for (Element currentNameOnlyActor : nameOnlyActors) {
 			String actorName = currentNameOnlyActor.text().trim();
@@ -686,7 +665,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 	/**
 	 * returns a String[] filled in with urls of each of the possible movies
 	 * found on the page returned from createSearchString
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	@Override
@@ -812,6 +791,12 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 				System.out.println("DMM Scraper: getting JP version at " + searchResult.getUrlPath());
 				Document documentJapanese = Jsoup.connect(searchResult.getUrlPath()).cookies(cookies).header("Cache-Control", "no-store").header("Connection", "close").userAgent(userAgent)
 				        .ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).post();
+
+				//to speed up scraping, we can skip getting the English version if user is not interested
+				if (!this.doGoogleTranslation) {
+					this.documentEnglish = documentJapanese;
+					return documentJapanese;
+				}
 
 				String titleJP = documentJapanese.select("[property=og:title]").first().attr("content").toString();
 				System.out.println("DMM Scraper: JP Title --> " + titleJP);
