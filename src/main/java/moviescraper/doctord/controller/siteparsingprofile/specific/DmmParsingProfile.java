@@ -257,7 +257,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 					String threeLetterCidCode = cid.substring(0, 3);
 
 					String potentialTrailerURL = String.format("https://cc3001.dmm.co.jp/litevideo/freepv/%1$s/%2$s/%3$s/%3$s_%4$s_%5$s.mp4", firstLetterOfCid, threeLetterCidCode, cid, quality,
-							ratio);
+					        ratio);
 
 					if (SiteParsingProfile.fileExistsAtURL(potentialTrailerURL)) {
 						System.out.println("Trailer existed at: " + potentialTrailerURL);
@@ -563,7 +563,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 			String actressID = actressIDHref.substring(actressIDHref.indexOf("id=") + 3, actressIDHref.length() - 1);
 			try {
 				Document actressPage = Jsoup.connect(actressPageURL + actressID + "/").cookies(cookies).header("Cache-Control", "no-store").header("Connection", "close").userAgent(userAgent)
-						.ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).post();
+				        .ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).post();
 
 				Element actressThumbnailElement = actressPage.select("tr.area-av30.top td img").first();
 				String actressThumbnailPath = actressThumbnailElement.attr("abs:src");
@@ -796,7 +796,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 				}
 
 				Document document = Jsoup.connect(searchUrl).cookies(cookies).header("Cache-Control", "no-store").header("Connection", "close").userAgent(UserAgent.getUserAgent(0))
-						.ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).post();
+				        .ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).post();
 
 				String title = document.select("[property=og:title]").first().attr("content").toString();
 
@@ -817,7 +817,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 						System.out.println("DMM Scraper: attempting to get EN version again.");
 						System.out.println("DMM Scraper: getting EN version at " + searchUrl);
 						document = Jsoup.connect(searchUrl).cookies(cookies).header("Cache-Control", "no-store").header("Connection", "close").userAgent(UserAgent.getUserAgent(0))
-								.ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).get();
+						        .ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).get();
 					}
 				}
 
