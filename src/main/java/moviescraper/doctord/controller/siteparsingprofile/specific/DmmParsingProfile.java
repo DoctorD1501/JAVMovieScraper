@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.net.URL;
+import java.sql.SQLOutput;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -223,7 +224,6 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 			runtime = runtimeElement.text().replaceAll("分", "");
 		}
 		return new moviescraper.doctord.model.dataitem.Runtime(runtime);
-
 	}
 
 	@Override
@@ -536,15 +536,26 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 
 	@Override
 	public ArrayList<Actor> scrapeActors() {
+
+		boolean doDmmActressScraping = MoviescraperPreferences.getInstance().getScrapeDmmActressPref();
+		if (!doDmmActressScraping) {
+			System.out.println("DMM Scraper: Skipping actress scraping. (see Scraper's Setting)");
+			return (new ArrayList<>());
+		}
+
 		// scrape all the actress IDs
 		Elements actressIDElements = document.select("span#performer a[href*=article=actress/id=]");
-		String actressPageURL;
+
+		if (actressIDElements.size() < 1) {
+			System.out.println("DMM Scraper: No actress found.");
+			return (new ArrayList<>());
+		}
 
 		//setup cookies and user agent for Jsoup
 		Map<String, String> cookies = new HashMap<String, String>();
 		cookies.put("age_check_done", "1");
-		String userAgent = UserAgent.getUserAgent(0);
 
+		String actressPageURL;
 		if (doEnglishVersion) {
 			actressPageURL = "https://actress.dmm.co.jp/en/-/detail/=/actress_id=";
 
@@ -561,9 +572,12 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 			String actressName = actressIDLink.text();
 			String actressIDHref = actressIDLink.attr("abs:href");
 			String actressID = actressIDHref.substring(actressIDHref.indexOf("id=") + 3, actressIDHref.length() - 1);
+
+			System.out.println("DMM Scraper: getting actresses from " + actressPageURL + actressID + "/");
 			try {
-				Document actressPage = Jsoup.connect(actressPageURL + actressID + "/").cookies(cookies).header("Cache-Control", "no-store").header("Connection", "close").userAgent(userAgent)
-				        .ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).post();
+				Document actressPage = Jsoup.connect(actressPageURL + actressID + "/")
+				        //.header("Cache-Control", "no-store").header("Connection", "close")
+				        .cookies(cookies).userAgent(UserAgent.getUserAgent(0)).ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).post();
 
 				Element actressThumbnailElement = actressPage.select("tr.area-av30.top td img").first();
 				String actressThumbnailPath = actressThumbnailElement.attr("abs:src");
@@ -610,8 +624,10 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 
 		if (directorElement != null && directorElement.hasText()) {
 			directors.add(new Director(directorElement.text(), null));
+			System.out.println("DMM Scraper: Directors --> " + directorElement.text());
+		} else {
+			System.out.println("DMM Scraper: No director found.");
 		}
-		System.out.println("DMM Scraper: Directors --> " + directors.toString());
 		return directors;
 	}
 
@@ -664,7 +680,9 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 	public SearchResult[] getSearchResults(String searchString) throws IOException {
 		boolean firstPageScraping = true;
 
-		Document searchResultsPage = Jsoup.connect(searchString).ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).get();
+		Document searchResultsPage = Jsoup.connect(searchString)
+		        //.header("Cache-Control", "no-store").header("Connection", "close")
+		        .userAgent(UserAgent.getUserAgent(0)).ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).post();
 
 		//did we get the no-result page?
 		Element noResult = searchResultsPage.select("div.d-rst.whole.search-noresult").first();
@@ -728,7 +746,9 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 			//TODO this is really not the cleanest way of doing this - I can probably find some way to make the selector not send me in a loop
 			//of pages, but this will work for now
 			if (nextPageLink != null && !pagesVisited.contains(nextPageURL))
-				searchResultsPage = Jsoup.connect(nextPageURL).get();
+				searchResultsPage = Jsoup.connect(nextPageURL)
+				        //.header("Cache-Control", "no-store").header("Connection", "close")
+				        .userAgent(UserAgent.getUserAgent(0)).ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).post();
 			else
 				break;
 
@@ -789,49 +809,69 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 					cookies.put("ckcy", "2");
 					cookies.put("cklg", "en");
 					searchUrl = searchResult.getUrlPath().replace("dmm.co.jp/", "dmm.co.jp/en/");
+
+					//Append a dummy URL parameter to see if it helps by pass server cache
+					//searchUrl += "&ymmud=" + System.currentTimeMillis();
+
 					System.out.println("DMM Scraper: getting EN version at " + searchUrl);
 				} else {
 					searchUrl = searchResult.getUrlPath();
 					System.out.println("DMM Scraper: getting JP version at " + searchUrl);
 				}
 
-				Document document = Jsoup.connect(searchUrl).cookies(cookies).header("Cache-Control", "no-store").header("Connection", "close").userAgent(UserAgent.getUserAgent(0))
-				        .ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).post();
+				Document document = Jsoup.connect(searchUrl).cookies(cookies)
+				        //.header("Cache-Control", "no-store").header("Connection", "close")
+				        .userAgent(UserAgent.getUserAgent(0)).ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).post();
 
 				String title = document.select("[property=og:title]").first().attr("content").toString();
-
-				if (doEnglishVersion) {
-					//Sometimes we are still getting Japanese results even though our request is for English. Not sure why.
-					//I suspect it's due to webserver caching. Our 2nd request to get movie page is too quick and activates the cache?
-
-					//Let's check if our Title is in Japanese
-					boolean isTitleInJapanese = false;
-					for (int i = 0; i < title.length(); i++) {
-						if (JapaneseCharacter.isKanji(title.charAt(i))) {
-							isTitleInJapanese = true;
-						}
-						break;
-					}
-					if (isTitleInJapanese) {
-						System.out.println("DMM Scraper: Fail. Search results are in Japanese. Title --> " + title);
-						System.out.println("DMM Scraper: attempting to get EN version again.");
-						System.out.println("DMM Scraper: getting EN version at " + searchUrl);
-						document = Jsoup.connect(searchUrl).cookies(cookies).header("Cache-Control", "no-store").header("Connection", "close").userAgent(UserAgent.getUserAgent(0))
-						        .ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).get();
-					}
-				}
-
-				title = document.select("[property=og:title]").first().attr("content").toString();
 				String plot = document.select("p.mg-b20").first().text();
 				System.out.println("DMM Scraper: Title --> " + title);
 				System.out.println("DMM Scraper: Plot  --> " + plot);
 
+				if (doEnglishVersion) {
+					//Sometimes we get Japanese results even though our request is for English.
+					//Probably due to webserver caching. Our 2nd request might be too quick.
+					if (this.hasJapanese(title)) {
+						//one more attempt to scrape EN version after a small time delay
+						System.out.println("DMM Scraper: Failed at getting EN version. Result is JP. Title --> " + title);
+						System.out.println("DMM Scraper: waiting 5 seconds before attempting to get EN version again...");
+						TimeUnit.SECONDS.sleep(5);
+
+						System.out.println("DMM Scraper: getting EN version at " + searchUrl);
+						document = Jsoup.connect(searchUrl).cookies(cookies)
+						        //.header("Cache-Control", "no-store").header("Connection", "close")
+						        .userAgent(UserAgent.getUserAgent(0)).ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).post();
+
+						title = document.select("[property=og:title]").first().attr("content").toString();
+						plot = document.select("p.mg-b20").first().text();
+						System.out.println("DMM Scraper: Title --> " + title);
+						System.out.println("DMM Scraper: Plot  --> " + plot);
+					}
+				}
+
 				return document;
 			}
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
+		} catch (IOException | InterruptedException e) {
+			e.printStackTrace();
 		}
 		return null;
+	}
+
+	/*
+	 * Check for Japanese characters
+	 */
+	private static boolean hasJapanese(CharSequence charSequence) {
+		boolean hasJapanese = false;
+		for (char c : charSequence.toString().toCharArray()) {
+			if (Character.UnicodeBlock.of(c) == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS || Character.UnicodeBlock.of(c) == Character.UnicodeBlock.HIRAGANA
+			        || Character.UnicodeBlock.of(c) == Character.UnicodeBlock.KATAKANA || Character.UnicodeBlock.of(c) == Character.UnicodeBlock.HALFWIDTH_AND_FULLWIDTH_FORMS
+			        || Character.UnicodeBlock.of(c) == Character.UnicodeBlock.HALFWIDTH_AND_FULLWIDTH_FORMS || Character.UnicodeBlock.of(c) == Character.UnicodeBlock.CJK_SYMBOLS_AND_PUNCTUATION) {
+				hasJapanese = true;
+				break;
+			}
+		}
+
+		return hasJapanese;
 	}
 
 }

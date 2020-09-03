@@ -39,7 +39,7 @@ import moviescraper.doctord.model.preferences.MoviescraperPreferences;
 public class GUIMainMenuBar extends JMenuBar {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 
@@ -57,7 +57,7 @@ public class GUIMainMenuBar extends JMenuBar {
 	/**
 	 * Allows you to create a new JCheckBoxMenuItem using Lambda expressions. The preferenceSetterFunction function will be called to change the value when the
 	 * menu item is checked and the initial value will be determined by the value returned by preferenceGetterFunction.
-	 * 
+	 *
 	 * @param checkboxTitle - Text of menu item to create
 	 * @param preferenceSetterFunction - setter function called when checkbox item clicked
 	 * @param preferenceGetterFunction - function to return initial value of the checkbox
@@ -474,6 +474,8 @@ public class GUIMainMenuBar extends JMenuBar {
 		JMenu scraperConfigurationMenu = new JMenu("Scraper's Settings");
 		scraperConfigurationMenu.setMnemonic(KeyEvent.VK_E);
 
+		scraperConfigurationMenu.add(createDmmMenu());
+
 		JMenuItem javlibrary = new JMenuItem("JAVLibrary");
 		javlibrary.addActionListener(new ActionListener() {
 
@@ -487,6 +489,16 @@ public class GUIMainMenuBar extends JMenuBar {
 		scraperConfigurationMenu.add(javlibrary);
 
 		add(scraperConfigurationMenu);
+	}
+
+	private JMenu createDmmMenu() {
+		JMenu submenu = new JMenu("DMM");
+
+		//Checkbox for option to scrape DMM actress.
+		JCheckBoxMenuItem scrapeInJapanese = createCheckBoxMenuItem("Scrape Actress on DMM.co.jp", b -> getPreferences().setScrapeDmmActressPref(b), () -> getPreferences().getScrapeDmmActressPref());
+		submenu.add(scrapeInJapanese);
+
+		return submenu;
 	}
 
 	private void initializeMenus() {
