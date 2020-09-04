@@ -495,7 +495,7 @@ public class GUIMainMenuBar extends JMenuBar {
 		JMenu submenu = new JMenu("DMM");
 
 		//Checkbox for option to scrape DMM actress.
-		JCheckBoxMenuItem scrapeInJapanese = createCheckBoxMenuItem("Scrape Actress on DMM.co.jp", b -> getPreferences().setScrapeDmmActressPref(b), () -> getPreferences().getScrapeDmmActressPref());
+		JCheckBoxMenuItem scrapeInJapanese = createCheckBoxMenuItem("Scrape Actress", b -> getPreferences().setScrapeDmmActressPref(b), () -> getPreferences().getScrapeDmmActressPref());
 		submenu.add(scrapeInJapanese);
 
 		return submenu;
