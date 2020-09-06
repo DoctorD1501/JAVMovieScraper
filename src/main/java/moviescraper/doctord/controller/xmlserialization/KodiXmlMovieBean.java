@@ -44,6 +44,9 @@ public class KodiXmlMovieBean {
 
 	public static KodiXmlMovieBean makeFromXML(String xml) {
 		XStream xstream = KodiXmlMovieBean.getXMLSerializer();
+		xstream.allowTypesByWildcard(new String[] {
+				"moviescraper.doctord.**"
+		});
 		xstream.ignoreUnknownElements();
 		try {
 			KodiXmlMovieBean beanToReturn = (KodiXmlMovieBean) xstream.fromXML(xml);
