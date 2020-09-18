@@ -43,6 +43,7 @@ import moviescraper.doctord.model.dataitem.Top250;
 import moviescraper.doctord.model.dataitem.Trailer;
 import moviescraper.doctord.model.dataitem.Votes;
 import moviescraper.doctord.model.dataitem.Year;
+import moviescraper.doctord.scraper.UserAgent;
 
 public class R18ParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
@@ -399,7 +400,7 @@ public class R18ParsingProfile extends SiteParsingProfile implements SpecificPro
 			searchWordURLEncoded = codec.encode(searchWord);
 			String searchPattern = "http://www.r18.com/common/search/floor=movies/searchword=" + searchWordURLEncoded + "/";
 			System.out.println("Searching on R18 with this URL:" + searchPattern);
-			Document searchResultsPage = Jsoup.connect(searchPattern).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
+			Document searchResultsPage = Jsoup.connect(searchPattern).userAgent(UserAgent.getUserAgent(0)).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
 			Elements moviesFound = searchResultsPage.select(".cmn-list-product01 li");
 			if (moviesFound != null && moviesFound.size() > 0) {
 				SearchResult[] foundResults = new SearchResult[moviesFound.size()];
