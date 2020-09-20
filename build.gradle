@@ -6,6 +6,7 @@ plugins {
 	id "org.sonarqube" version "3.0"
 }
 
+
 apply plugin: 'java'
 apply from: "gradle/git.gradle"
 apply plugin: 'checkstyle'
@@ -17,7 +18,7 @@ compileJava.options.encoding = 'UTF-8'
 compileTestJava.options.encoding = 'UTF-8'
 
 ext.mainClass = 'moviescraper.doctord.Main'
-version = getVersionCode()
+//version = getVersionCode()
 
 repositories {
 	mavenCentral()
