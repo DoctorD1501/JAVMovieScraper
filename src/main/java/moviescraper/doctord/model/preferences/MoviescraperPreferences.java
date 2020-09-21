@@ -34,7 +34,8 @@ public class MoviescraperPreferences extends Settings {
 		frequentlyUsedTags, //Used in tag editing to store user's list of frequently used tags to aid in quickly adding tags to a movie
 		writeThumbTagsForPosterAndFanartToNfo, //Whether to write the <thumb> tag into the nfo,
 		userAgent, //UserAgent to use
-		cookieJar //UserAgent to use
+		cookieJar, //UserAgent to use
+		scrapeDmmActressPref  //option to scrape actress when DMM scraper is used
 		;
 
 		@Override
@@ -169,6 +170,14 @@ public class MoviescraperPreferences extends Settings {
 
 	public void setScrapeInJapanese(Boolean preferenceValue) {
 		setBooleanValue(Key.scrapeInJapanese, preferenceValue);
+	}
+
+	public Boolean getScrapeDmmActressPref() {
+		return getBooleanValue(Key.scrapeDmmActressPref, Boolean.TRUE);
+	}
+
+	public void setScrapeDmmActressPref(Boolean preferenceValue) {
+		setBooleanValue(Key.scrapeDmmActressPref, preferenceValue);
 	}
 
 	public Boolean getPromptForUserProvidedURLWhenScraping() {

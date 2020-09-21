@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
@@ -83,8 +85,8 @@ public class Movie {
 	private String fileName;
 
 	public Movie(ArrayList<Actor> actors, ArrayList<Director> directors, Thumb[] fanart, Thumb[] extraFanart, ArrayList<Genre> genres, ArrayList<Tag> tags, ID id, MPAARating mpaa,
-	        OriginalTitle originalTitle, Outline outline, Plot plot, Thumb[] posters, Rating rating, ReleaseDate releaseDate, Runtime runtime, Set set, SortTitle sortTitle, Studio studio,
-	        Tagline tagline, Title title, Top250 top250, Trailer trailer, Votes votes, Year year) {
+				 OriginalTitle originalTitle, Outline outline, Plot plot, Thumb[] posters, Rating rating, ReleaseDate releaseDate, Runtime runtime, Set set, SortTitle sortTitle, Studio studio,
+				 Tagline tagline, Title title, Top250 top250, Trailer trailer, Votes votes, Year year) {
 		super();
 		this.actors = actors;
 		this.directors = directors;
@@ -212,7 +214,7 @@ public class Movie {
 
 	/**
 	 * Create a movie by reading in a values from a nfo file created by previously scraping the movie and then writing the metadata out to the file
-	 * 
+	 *
 	 * @param nfoFile
 	 * @throws IOException
 	 */
@@ -412,9 +414,9 @@ public class Movie {
 	@Override
 	public String toString() {
 		return "Movie [title=" + title + ", originalTitle=" + originalTitle + ", sortTitle=" + sortTitle + ", set=" + set + ", rating=" + rating + ", year=" + year + ", top250=" + top250
-		        + ", trailer = " + trailer + ", votes=" + votes + ", outline=" + outline + ", plot=" + plot + ", tagline=" + tagline + ", studio=" + studio + "releaseDate=" + releaseDate
-		        + ", runtime=" + runtime + ", posters=" + Arrays.toString(posters) + ", fanart=" + Arrays.toString(fanart) + ", extrafanart = " + Arrays.toString(extraFanart) + ", mpaa=" + mpaa
-		        + ", id=" + id + ", genres=" + genres + ", tags=" + tags + ", actors=" + actors + ", directors=" + directors + "]";
+				+ ", trailer = " + trailer + ", votes=" + votes + ", outline=" + outline + ", plot=" + plot + ", tagline=" + tagline + ", studio=" + studio + "releaseDate=" + releaseDate
+				+ ", runtime=" + runtime + ", posters=" + Arrays.toString(posters) + ", fanart=" + Arrays.toString(fanart) + ", extrafanart = " + Arrays.toString(extraFanart) + ", mpaa=" + mpaa
+				+ ", id=" + id + ", genres=" + genres + ", tags=" + tags + ", actors=" + actors + ", directors=" + directors + "]";
 	}
 
 	public String toXML() {
@@ -440,7 +442,7 @@ public class Movie {
 	}
 
 	public void writeToFile(File nfoFile, File posterFile, File fanartFile, File currentlySelectedFolderJpgFile, File targetFolderForExtraFanartFolderAndActorFolder, File trailerFile,
-	        MoviescraperPreferences preferences) throws IOException {
+							MoviescraperPreferences preferences) throws IOException {
 		// Output the movie to XML using XStream and a proxy class to
 		// translate things to a format that Kodi expects
 
@@ -471,7 +473,7 @@ public class Movie {
 		// save the first poster out
 		// maybe we did some clipping, so we're going to have to reencode it
 		if (this.getPosters().length > 0 && (writePoster || createFolderJpgEnabledPreference)
-		        && ((posterFile.exists() == writePosterIfAlreadyExists) || (!posterFile.exists() || (createFolderJpgEnabledPreference)))) {
+				&& ((posterFile.exists() == writePosterIfAlreadyExists) || (!posterFile.exists() || (createFolderJpgEnabledPreference)))) {
 			if (posterToSaveToDisk != null && (posterToSaveToDisk.isModified() || createFolderJpgEnabledPreference || !posterFile.exists() || writePosterIfAlreadyExists)) {
 				//reencode the jpg since we probably did a resize
 				Iterator<ImageWriter> iter = ImageIO.getImageWritersByFormatName("jpeg");
@@ -657,7 +659,7 @@ public class Movie {
 	}
 
 	public static String getFileNameOfTrailer(File selectedValue) {
-		//sometimes the trailer has a different extension 
+		//sometimes the trailer has a different extension
 		//than the movie so we will try to brute force a find by trying all movie name extensions
 		for (String extension : MovieFilenameFilter.acceptedMovieExtensions) {
 			String potentialTrailer = tryToFindActualTrailerHelper(selectedValue, "." + extension);
@@ -669,7 +671,7 @@ public class Movie {
 
 	/**
 	 * Checks for the given file a trailer file exists for it for the given file name extension
-	 * 
+	 *
 	 * @param selectedValue - base file name of movie or nfo
 	 * @param extension - the file name extension we are checking
 	 * @return - the path to the file if it found the trailer, otherwise null
@@ -730,35 +732,6 @@ public class Movie {
 		}
 	}
 
-	/*
-	 * private String [] searchResultsHelperForScrapeMovie(File movieFile, SiteParsingProfile siteToParseFrom)
-	 * {
-	 * String [] searchResults = siteToParseFrom.getSearchResults(searchString);
-	 * int levDistanceOfCurrentMatch = 999999; // just some super high number
-	 * String idFromMovieFile = SiteParsingProfile.findIDTagFromFile(movieFile);
-	 * 
-	 * //loop through search results and see if URL happens to contain ID number in the URL. This will improve accuracy!
-	 * for (int i = 0; i < searchResults.length; i++)
-	 * {
-	 * String urltoMatch = searchResults[i].toLowerCase();
-	 * String idFromMovieFileToMatch = idFromMovieFile.toLowerCase().replaceAll("-", "");
-	 * //System.out.println("Comparing " + searchResults[i].toLowerCase() + " to " + idFromMovieFile.toLowerCase().replaceAll("-", ""));
-	 * if (urltoMatch.contains(idFromMovieFileToMatch))
-	 * {
-	 * //let's do some fuzzy logic searching to try to get the "best" match in case we got some that are pretty close
-	 * //and update the variables accordingly so we know what our best match so far is
-	 * int candidateLevDistanceOfCurrentMatch = StringUtils.getLevenshteinDistance(urltoMatch.toLowerCase(), idFromMovieFileToMatch);
-	 * if (candidateLevDistanceOfCurrentMatch < levDistanceOfCurrentMatch)
-	 * {
-	 * levDistanceOfCurrentMatch = candidateLevDistanceOfCurrentMatch;
-	 * searchResultNumberToUse = i;
-	 * }
-	 * }
-	 * }
-	 * return searchResults;
-	 * }
-	 */
-
 	//Version that allows us to update the GUI while scraping
 	public static Movie scrapeMovie(File movieFile, SiteParsingProfile siteToParseFrom, String urlToScrapeFromDMM, boolean useURLtoScrapeFrom) throws IOException {
 
@@ -767,25 +740,45 @@ public class Movie {
 			return null;
 		String searchString = siteToParseFrom.createSearchString(movieFile);
 		SearchResult[] searchResults = null;
-		int searchResultNumberToUse = 0;
+		int searchResultNumberToUse = -1;
 		//no URL was passed in so we gotta figure it ourselves
 		if (!useURLtoScrapeFrom) {
 			searchResults = siteToParseFrom.getSearchResults(searchString);
 			int levDistanceOfCurrentMatch = 999999; // just some super high number
 			String idFromMovieFile = SiteParsingProfile.findIDTagFromFile(movieFile, siteToParseFrom.isFirstWordOfFileIsID());
 
-			//loop through search results and see if URL happens to contain ID number in the URL. This will improve accuracy!
+			/*
+			 * We will loop through the search results and compare the Label field for match movie ID match. If we
+			 * cannot find match, we will compare to URL and hope to find movie ID match there.
+			 */
+			//Loop through search results and compare Label field for match
+			String pattern = "(?<=_|\\b)" + idFromMovieFile.toUpperCase() + "(?=_|\\b)";
+			Pattern p = Pattern.compile(pattern);
 			for (int i = 0; i < searchResults.length; i++) {
-				String urltoMatch = searchResults[i].getUrlPath().toLowerCase();
-				String idFromMovieFileToMatch = idFromMovieFile.toLowerCase().replaceAll("-", "");
-				//System.out.println("Comparing " + searchResults[i].toLowerCase() + " to " + idFromMovieFile.toLowerCase().replaceAll("-", ""));
-				if (urltoMatch.contains(idFromMovieFileToMatch)) {
-					//let's do some fuzzy logic searching to try to get the "best" match in case we got some that are pretty close
-					//and update the variables accordingly so we know what our best match so far is
-					int candidateLevDistanceOfCurrentMatch = StringUtils.getLevenshteinDistance(urltoMatch.toLowerCase(), idFromMovieFileToMatch);
-					if (candidateLevDistanceOfCurrentMatch < levDistanceOfCurrentMatch) {
-						levDistanceOfCurrentMatch = candidateLevDistanceOfCurrentMatch;
-						searchResultNumberToUse = i;
+				Matcher match = p.matcher(searchResults[i].getLabel().toUpperCase());
+				if (match.find() == true) {
+					searchResultNumberToUse = i;
+					break;
+				}
+			}
+
+			if (searchResultNumberToUse == -1) {
+				//We did not find match using Label field so let's
+				//loop through search results again and see if URL happens to contain ID number in the URL.
+				searchResultNumberToUse = 0;
+				for (int i = 0; i < searchResults.length; i++) {
+					String urltoMatch = searchResults[i].getUrlPath().toLowerCase();
+					String idFromMovieFileToMatch = idFromMovieFile.toLowerCase().replaceAll("-", "");
+
+					//System.out.println("Comparing " + searchResults[i].toLowerCase() + " to " + idFromMovieFile.toLowerCase().replaceAll("-", ""));
+					if (urltoMatch.contains(idFromMovieFileToMatch)) {
+						//let's do some fuzzy logic searching to try to get the "best" match in case we got some that are pretty close
+						//and update the variables accordingly so we know what our best match so far is
+						int candidateLevDistanceOfCurrentMatch = StringUtils.getLevenshteinDistance(urltoMatch.toLowerCase(), idFromMovieFileToMatch);
+						if (candidateLevDistanceOfCurrentMatch < levDistanceOfCurrentMatch) {
+							levDistanceOfCurrentMatch = candidateLevDistanceOfCurrentMatch;
+							searchResultNumberToUse = i;
+						}
 					}
 				}
 			}
@@ -902,7 +895,7 @@ public class Movie {
 		Year year = Year.BLANK_YEAR;
 
 		return new Movie(actors, directors, fanart, extraFanart, genres, tags, id, mpaa, originalTitle, outline, plot, posters, rating, releaseDate, runtime, set, sortTitle, studio, tagline, title,
-		        top250, trailer, votes, year);
+				top250, trailer, votes, year);
 	}
 
 	public String getFileName() {
@@ -924,7 +917,7 @@ public class Movie {
 	/**
 	 * remove the item from the picked from the existing poster list and put it at
 	 * the front of the list. if the movie does not contain the poster, no change will be made
-	 * 
+	 *
 	 * @param posterToGoToFront - poster to put in front
 	 */
 	public void moveExistingPosterToFront(Thumb posterToGoToFront) {
@@ -943,7 +936,7 @@ public class Movie {
 	/**
 	 * remove the item from the picked from the existing fanart list and put it at
 	 * the front of the list. if the movie does not contain the fanart, no change will be made
-	 * 
+	 *
 	 * @param fanartToGoToFront - fanart to put in front
 	 */
 	public void moveExistingFanartToFront(Thumb fanartToGoToFront) {

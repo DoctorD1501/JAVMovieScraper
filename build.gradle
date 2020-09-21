@@ -6,6 +6,7 @@ plugins {
 	id "org.sonarqube" version "3.0"
 }
 
+
 apply plugin: 'java'
 apply from: "gradle/git.gradle"
 apply plugin: 'checkstyle'
@@ -17,7 +18,7 @@ compileJava.options.encoding = 'UTF-8'
 compileTestJava.options.encoding = 'UTF-8'
 
 ext.mainClass = 'moviescraper.doctord.Main'
-version = getVersionCode()
+//version = getVersionCode()
 
 repositories {
 	mavenCentral()
@@ -44,7 +45,7 @@ sourceSets {
 }
 dependencies {
 	compile (
-                'commons-io:commons-io:2.7',
+        'commons-io:commons-io:2.7',
 		'org.apache.commons:commons-lang3:3.11',
 		'commons-cli:commons-cli:1.4',
 		'commons-codec:commons-codec:1.14',
@@ -53,7 +54,7 @@ dependencies {
 		'com.jgoodies:jgoodies-forms:1.9.0',
 		'org.imgscalr:imgscalr-lib:4.2',
 		'com.cedarsoftware:json-io:4.12.0',
-		'org.jsoup:jsoup:1.7.3',
+		'org.jsoup:jsoup:1.9.2',
 		'com.thoughtworks.xstream:xstream:1.4.12',
 		'org.json:json:20200518',
 		'org.hamcrest:hamcrest-core:2.2',
@@ -76,7 +77,7 @@ jar {
 	manifest {
 		attributes(
 			"Implementation-Title": "Gradle",
-			"Implementation-Version": version,
+			"Implementation-Version": archiveVersion,
 			"Description": "JAV Movies scraper",
 			"Main-Class" : mainClass
 		)
