@@ -535,9 +535,13 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 			String actressID = actressIDHref.substring(actressIDHref.indexOf("id=") + 3, actressIDHref.length() - 1);
 			String actressPageURL = "https://actress.dmm.co.jp/-/detail/=/actress_id=" + actressID + "/";
 			try {
-				Document actressPage = Jsoup.connect(actressPageURL).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
-				Element actressNameElement = actressPage.select("td.t1 h1").first();
-				Element actressThumbnailElement = actressPage.select("tr.area-av30.top td img").first();
+				Map<String, String> cookies = new HashMap<String, String>();
+				cookies.put("age_check_done", "1");
+				Document actressPage = Jsoup.connect(actressPageURL).cookies(cookies).userAgent("Mozilla").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
+				//Element actressNameElement = actressPage.select("td.t1 h1").first();
+				Element actressNameElement = actressPage.select("span.c-tx-actressName__ruby").first();
+				//Element actressThumbnailElement = actressPage.select("tr.area-av30.top td img").first();
+				Element actressThumbnailElement = actressPage.select("span.p-section-profile__image img").first();
 				String actressThumbnailPath = actressThumbnailElement.attr("abs:src");
 				//Sometimes the translation service from google gives us weird engrish instead of a name, so let's compare it to the thumbnail file name for the image as a sanity check
 				//if the names aren't close enough, we'll use the thumbnail name
@@ -554,7 +558,8 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 				// hiragana form of it.
 				// The hiragana form of it is between a '（' and a '）' (These are
 				// not parens but some japanese version of parens)
-				String actressNameHiragana = actressNameElement.text().substring(actressNameElement.text().indexOf('（') + 1, actressNameElement.text().indexOf('）'));
+				//String actressNameHiragana = actressNameElement.text().substring(actressNameElement.text().indexOf('（') + 1, actressNameElement.text().indexOf('）'));
+				String actressNameHiragana = actressNameElement.text();
 				// maybe we know in advance the translation system will be junk,
 				// so we check our manual override of people we know it will get
 				// the name wrong on
@@ -647,6 +652,11 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 		scrapedMovieFile = file;
 		String fileNameNoExtension = findIDTagFromFile(file, isFirstWordOfFileIsID());
 		//System.out.println("fileNameNoExtension in DMM: " + fileNameNoExtension);
+		Pattern patternID = Pattern.compile("(h?_?[0-9]*[a-z]+[0-9]+)");
+		Matcher matcher = patternID.matcher(fileNameNoExtension);
+		while (matcher.find()) {
+			fileNameNoExtension = matcher.group(1);
+		}
 		URLCodec codec = new URLCodec();
 		try {
 			String fileNameURLEncoded = codec.encode(fileNameNoExtension);

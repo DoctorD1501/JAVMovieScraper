@@ -108,7 +108,7 @@ public abstract class SiteParsingProfile implements DataItemSource {
 
 	private boolean firstWordOfFileIsID = false;
 
-	public static final int CONNECTION_TIMEOUT_VALUE = 13000;
+	public static final int CONNECTION_TIMEOUT_VALUE = 900000;
 
 	protected File scrapedMovieFile;
 
