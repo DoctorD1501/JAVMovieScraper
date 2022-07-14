@@ -26,7 +26,7 @@ import org.junit.Test;
 
 public class CaribbeancomPremiumParsingProfileTest {
 
-	static File file = new File("C:/Temp/Caribbeancom Premium 062014_878.avi");
+	static File file = new File("C:/Temp/Caribbeancom Premium 122716_008.avi");
 	static CaribbeancomPremiumParsingProfile parser = new CaribbeancomPremiumParsingProfile();
 
 	@BeforeClass
@@ -37,6 +37,7 @@ public class CaribbeancomPremiumParsingProfileTest {
 		try {
 			SearchResult[] searchResults = parser.getSearchResults(searchString);
 			Document document = SiteParsingProfile.getDocument(searchResults[0]);
+			System.out.println("Scrape: " + document.location());
 			parser.setDocument(document);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -49,13 +50,13 @@ public class CaribbeancomPremiumParsingProfileTest {
 	@Test
 	public void testFindID() {
 		String findIDTagFromFile = parser.findIDTagFromFile(file, false);
-		assertEquals(findIDTagFromFile, "062014_878");
+		assertEquals(findIDTagFromFile, "122716_008");
 	}
 
 	@Test
 	public void testScrapeID() {
 		String id = parser.scrapeID().getId();
-		assertEquals("062014_878", id);
+		assertEquals("122716_008", id);
 	}
 
 	@Test
@@ -64,13 +65,13 @@ public class CaribbeancomPremiumParsingProfileTest {
 		//this assumes translation is done. if this test fails, it could be because translation is not done or the web
 		//based translation service has changed how they do translation, so try to just see if the title is close to
 		//this one and adjust as needed to fix the test case
-		assertEquals("ichiki miho", title.getTitle());
+		assertEquals("", title.getTitle());
 	}
 
 	@Test
 	public void testScrapeOriginalTitle() {
 		OriginalTitle originalTitle = parser.scrapeOriginalTitle();
-		assertEquals("Wrong original title", "ichiki miho", originalTitle.getOriginalTitle());
+		assertEquals("Wrong original title", "", originalTitle.getOriginalTitle());
 	}
 
 	@Test
@@ -82,13 +83,13 @@ public class CaribbeancomPremiumParsingProfileTest {
 	@Test
 	public void testScrapeYear() {
 		Year year = parser.scrapeYear();
-		assertEquals("Wrong year", "2014", year.getYear());
+		assertEquals("Wrong year", "2016", year.getYear());
 	}
 
 	@Test
 	public void testScrapeReleaseDate() {
 		ReleaseDate releaseDate = parser.scrapeReleaseDate();
-		assertEquals("Wrong release date", "2014-01-20", releaseDate.getReleaseDate());
+		assertEquals("Wrong release date", "2016-12-28", releaseDate.getReleaseDate());
 	}
 
 	@Test
@@ -100,32 +101,33 @@ public class CaribbeancomPremiumParsingProfileTest {
 	@Test
 	public void testScrapeRuntime() {
 		moviescraper.doctord.model.dataitem.Runtime movieRuntime = parser.scrapeRuntime();
-		assertEquals("Wrong runtime", "120", movieRuntime.getRuntime());
+		assertEquals("Wrong runtime", "189", movieRuntime.getRuntime());
 	}
 
 	@Test
 	public void testScrapeActors() {
 		ArrayList<Actor> actorList = parser.scrapeActors();
-		assertEquals("Wrong actor", "Ichiki Miho", actorList.get(0).getName());
+		assertEquals("Wrong actor", "Akari Asagiri", actorList.get(0).getName());
 	}
 
 	@Test
 	public void testScrapeGenre() {
 		ArrayList<Genre> genreList = parser.scrapeGenres();
-		assertEquals("Wrong genre", 0, genreList.size());
+		assertEquals("Wrong genre size", 14, genreList.size());
+		assertEquals("Wrong genre", "AV Idol", genreList.get(0).getGenre());
 	}
 
 	@Test
 	public void testTrailer() {
 		Trailer trailer = parser.scrapeTrailer();
-		assertEquals("Wrong trailer", "https://en.caribbeancompr.com/sample/movies/062014_878/480p.mp4", trailer.getTrailer());
+		assertEquals("Wrong trailer", "https://smovie.caribbeancompr.com/sample/movies/122716_008/480p.mp4", trailer.getTrailer());
 	}
 
 	@Test
 	public void testScrapePoster() {
 		Thumb[] posters = parser.scrapePosters();
 		assertEquals("Poster size not right", true, posters.length > 0);
-		assertEquals("Wrong poster url", "https://en.caribbeancompr.com/moviepages/062014_878/images/l_l.jpg", posters[0].getThumbURL().toString());
+		assertEquals("Wrong poster url", "https://en.caribbeancompr.com/moviepages/122716_008/images/l_l.jpg", posters[0].getThumbURL().toString());
 	}
 
 }

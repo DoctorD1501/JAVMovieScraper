@@ -2,19 +2,19 @@ package moviescraper.doctord.controller.siteparsingprofile.specific;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.lang3.StringUtils;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -95,8 +95,15 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 	}
 
 	private void browserConfigure() {
-		browser = DitzyHeadlessBrowserSingle.getBrowser();
-		browser.addCookie("", "over18", "18");
+		if (browser == null) {
+			MoviescraperPreferences preferences = MoviescraperPreferences.getInstance();
+			browser = DitzyHeadlessBrowserSingle.getBrowser();
+			try {
+				browser.configure();
+			} catch (IOException ex) {
+				Logger.getLogger(JavLibraryParsingProfile.class.getName()).log(Level.SEVERE, null, ex);
+			}
+		}
 	}
 
 	private String determineLanguageToUse() {

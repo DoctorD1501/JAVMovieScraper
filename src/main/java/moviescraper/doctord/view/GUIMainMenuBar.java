@@ -470,10 +470,30 @@ public class GUIMainMenuBar extends JMenuBar {
 		add(helpMenu);
 	}
 
+	private void initializeScraperConfigurationMenu() {
+		JMenu scraperConfigurationMenu = new JMenu("Scraper's Settings");
+		scraperConfigurationMenu.setMnemonic(KeyEvent.VK_E);
+
+		JMenuItem javlibrary = new JMenuItem("JAVLibrary");
+		javlibrary.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				new SettingsDialogJAVLibrary(guiMain.getFrmMoviescraper()).setVisible(true);
+			}
+		});
+
+		scraperConfigurationMenu.add(javlibrary);
+
+		add(scraperConfigurationMenu);
+	}
+
 	private void initializeMenus() {
 		//add the various menus together
 		initializeFileMenu();
 		initializeScrapeMenu();
+		initializeScraperConfigurationMenu();
 		initializePreferencesMenu();
 		initializeSettingsMenu();
 		initializeViewMenu();

@@ -320,7 +320,8 @@ public class JavZooParsingProfile extends SiteParsingProfile implements Specific
 		URLCodec codec = new URLCodec();
 		try {
 			String fileNameURLEncoded = codec.encode(fileNameNoExtension);
-			String searchTerm = "http://www.javdog.com/" + siteLanguageToScrape + "/search/" + fileNameURLEncoded;
+			//			String searchTerm = "http://www.javdog.com/" + siteLanguageToScrape + "/search/" + fileNameURLEncoded;
+			String searchTerm = "http://avmoo.host/" + siteLanguageToScrape + "/search/" + fileNameURLEncoded;
 
 			return searchTerm;
 
