@@ -188,8 +188,13 @@ public class OnePondoParsingProfile extends SiteParsingProfileJSON implements Sp
 				thumbList.add(new Thumb(backgroundURLTwo));
 			if (SiteParsingProfile.fileExistsAtURL(popupFourURL))
 				thumbList.add(new Thumb(popupFourURL));
-			return thumbList.toArray(new Thumb[thumbList.size()]);
 
+			// Return thumbs if posters are not found
+			if (thumbList.size() == 0) {
+				return scrapePosters();
+			}
+
+			return thumbList.toArray(new Thumb[thumbList.size()]);
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -218,6 +223,12 @@ public class OnePondoParsingProfile extends SiteParsingProfileJSON implements Sp
 	public ArrayList<Genre> scrapeGenres() {
 		//For now, I wasn't able to find any genres on the page
 		ArrayList<Genre> genreList = new ArrayList<>();
+		JSONObject pageJSON = getMovieJSON();
+		JSONArray genres = pageJSON.getJSONArray("UCNAMEEn");
+		for (Object genre : genres) {
+			genreList.add(new Genre((String) genre));
+		}
+
 		return genreList;
 	}
 
