@@ -105,20 +105,25 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 
 	@Override
 	public Title scrapeTitle() {
-		Element titleElement = document.select("[property=og:title]").first();
+		//Element titleElement = document.select("[property=og:title]").first();
+		Element titleElement = document.select("table#w tr td#mu h1#title").first();
 		// run a google translate on the japanese title
 		if (doGoogleTranslation) {
-			return new Title(TranslateString.translateStringJapaneseToEnglish(titleElement.attr("content").toString()));
+			//return new Title(TranslateString.translateStringJapaneseToEnglish(titleElement.attr("content").toString()));
+			return new Title(TranslateString.translateStringJapaneseToEnglish(titleElement.text()));
 		} else {
-			return new Title(titleElement.attr("content").toString());
+			//return new Title(titleElement.attr("content").toString());
+			return new Title(titleElement.text());
 		}
 	}
 
 	@Override
 	public OriginalTitle scrapeOriginalTitle() {
-		Element titleElement = document.select("[property=og:title]").first();
+		//Element titleElement = document.select("[property=og:title]").first();
+		Element titleElement = document.select("table#w tr td#mu h1#title").first();
 		// leave the original title as the japanese title
-		return new OriginalTitle(titleElement.attr("content").toString());
+		//return new OriginalTitle(titleElement.attr("content").toString());
+		return new OriginalTitle(titleElement.text());
 	}
 
 	@Override
@@ -193,12 +198,15 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 		Element plotElement = document.select("p.mg-b20").first();
 		if (plotElement == null || document.baseUri().contains("/digital/video")  || document.baseUri().contains("/digital/nikkatsu")) {
 			//video rental mode if it didnt find a match using above method
-			plotElement = document.select("tbody .mg-b20.lh4").first();
+			//plotElement = document.select("tbody .mg-b20.lh4").first();
+			plotElement = document.select("div.mg-b20.lh4").first();
 		}
 		if (doGoogleTranslation) {
-			return new Plot(TranslateString.translateStringJapaneseToEnglish(plotElement.text()));
+			//return new Plot(TranslateString.translateStringJapaneseToEnglish(plotElement.text()));
+			return new Plot(TranslateString.translateStringJapaneseToEnglish(plotElement.childNode(0).attr("text")));
 		} else
-			return new Plot(plotElement.text());
+			//return new Plot(plotElement.text());
+			return new Plot(plotElement.childNode(0).attr("text"));
 	}
 
 	@Override
@@ -394,7 +402,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 
 	@Override
 	public ArrayList<Genre> scrapeGenres() {
-		Elements genreElements = document.select("table.mg-b12 tr td a[href*=article=keyword/id=]");
+		Elements genreElements = document.select("table.mg-b20 tr td a[href*=list/?keyword=]");
 		ArrayList<Genre> genres = new ArrayList<>(genreElements.size());
 		for (Element genreElement : genreElements) {
 			// get the link so we can examine the id and do some sanity cleanup
@@ -527,17 +535,23 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 	@Override
 	public ArrayList<Actor> scrapeActors() {
 		// scrape all the actress IDs
-		Elements actressIDElements = document.select("span#performer a[href*=article=actress/id=]");
+		//Elements actressIDElements = document.select("span#performer a[href*=article=actress/id=]");
+		Elements actressIDElements = document.select("span#performer a[href*=list/?actress=]");
 		ArrayList<Actor> actorList = new ArrayList<>(actressIDElements.size());
 		for (Element actressIDLink : actressIDElements) {
 			String actressIDHref = actressIDLink.attr("abs:href");
 			String actressNameKanji = actressIDLink.text();
-			String actressID = actressIDHref.substring(actressIDHref.indexOf("id=") + 3, actressIDHref.length() - 1);
+			//String actressID = actressIDHref.substring(actressIDHref.indexOf("id=") + 3, actressIDHref.length() - 1);
+			String actressID = actressIDHref.substring(actressIDHref.indexOf("actress=") + 8, actressIDHref.length());
 			String actressPageURL = "https://actress.dmm.co.jp/-/detail/=/actress_id=" + actressID + "/";
 			try {
-				Document actressPage = Jsoup.connect(actressPageURL).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
-				Element actressNameElement = actressPage.select("td.t1 h1").first();
-				Element actressThumbnailElement = actressPage.select("tr.area-av30.top td img").first();
+				Map<String, String> cookies = new HashMap<String, String>();
+				cookies.put("age_check_done", "1");
+				Document actressPage = Jsoup.connect(actressPageURL).cookies(cookies).userAgent("Mozilla").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
+				//Element actressNameElement = actressPage.select("td.t1 h1").first();
+				Element actressNameElement = actressPage.select("span.c-tx-actressName__ruby").first();
+				//Element actressThumbnailElement = actressPage.select("tr.area-av30.top td img").first();
+				Element actressThumbnailElement = actressPage.select("span.p-section-profile__image img").first();
 				String actressThumbnailPath = actressThumbnailElement.attr("abs:src");
 				//Sometimes the translation service from google gives us weird engrish instead of a name, so let's compare it to the thumbnail file name for the image as a sanity check
 				//if the names aren't close enough, we'll use the thumbnail name
@@ -554,7 +568,8 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 				// hiragana form of it.
 				// The hiragana form of it is between a '（' and a '）' (These are
 				// not parens but some japanese version of parens)
-				String actressNameHiragana = actressNameElement.text().substring(actressNameElement.text().indexOf('（') + 1, actressNameElement.text().indexOf('）'));
+				//String actressNameHiragana = actressNameElement.text().substring(actressNameElement.text().indexOf('（') + 1, actressNameElement.text().indexOf('）'));
+				String actressNameHiragana = actressNameElement.text();
 				// maybe we know in advance the translation system will be junk,
 				// so we check our manual override of people we know it will get
 				// the name wrong on
@@ -620,7 +635,8 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 	@Override
 	public ArrayList<Director> scrapeDirectors() {
 		ArrayList<Director> directors = new ArrayList<>();
-		Element directorElement = document.select("table.mg-b20 tr td a[href*=article=director/id=]").first();
+		//Element directorElement = document.select("table.mg-b20 tr td a[href*=article=director/id=]").first();
+		Element directorElement = document.select("table.mg-b20 tr td a[href*=list/?director=]").first();
 		if (directorElement != null && directorElement.hasText()) {
 			if (doGoogleTranslation)
 				directors.add(new Director(TranslateString.translateStringJapaneseToEnglish(directorElement.text()), null));
@@ -647,6 +663,11 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 		scrapedMovieFile = file;
 		String fileNameNoExtension = findIDTagFromFile(file, isFirstWordOfFileIsID());
 		//System.out.println("fileNameNoExtension in DMM: " + fileNameNoExtension);
+		Pattern patternID = Pattern.compile("(h?_?[0-9]*[a-z]+[0-9]+)");
+		Matcher matcher = patternID.matcher(fileNameNoExtension);
+		while (matcher.find()) {
+			fileNameNoExtension = matcher.group(1);
+		}
 		URLCodec codec = new URLCodec();
 		try {
 			String fileNameURLEncoded = codec.encode(fileNameNoExtension);

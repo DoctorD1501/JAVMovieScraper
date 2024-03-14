@@ -1,9 +1,9 @@
 plugins {
 	id 'application'
-	id 'org.openjfx.javafxplugin' version '0.0.9'
-	id 'com.github.johnrengelman.shadow' version '5.2.0'
-	id "com.diffplug.spotless" version "5.1.2"
-	id "org.sonarqube" version "3.0"
+	id 'org.openjfx.javafxplugin' version '0.0.10'
+	id 'com.github.johnrengelman.shadow' version '6.1.0'
+	id "com.diffplug.spotless" version "5.13.0"
+	id "org.sonarqube" version "3.3"
 }
 
 apply plugin: 'java'
@@ -43,7 +43,7 @@ sourceSets {
 	}
 }
 dependencies {
-	compile (
+	implementation (
                 'commons-io:commons-io:2.7',
 		'org.apache.commons:commons-lang3:3.11',
 		'commons-cli:commons-cli:1.4',
@@ -66,7 +66,7 @@ dependencies {
 	runtimeOnly "org.openjfx:javafx-graphics:$javafx.version:win"
 	runtimeOnly "org.openjfx:javafx-graphics:$javafx.version:linux"
 	runtimeOnly "org.openjfx:javafx-graphics:$javafx.version:mac"
-	testCompile('junit:junit:4.+')
+	testImplementation('junit:junit:4.+')
 }
 
 jar {

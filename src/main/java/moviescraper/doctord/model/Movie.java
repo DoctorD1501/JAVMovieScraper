@@ -777,7 +777,7 @@ public class Movie {
 			//loop through search results and see if URL happens to contain ID number in the URL. This will improve accuracy!
 			for (int i = 0; i < searchResults.length; i++) {
 				String urltoMatch = searchResults[i].getUrlPath().toLowerCase();
-				String idFromMovieFileToMatch = idFromMovieFile.toLowerCase().replaceAll("-", "");
+				String idFromMovieFileToMatch = idFromMovieFile.toLowerCase().replaceAll("-", "").replaceAll("hhb","").replaceAll("mhb","").replaceAll("hmb","").replaceAll("mmb","").replaceAll("dm","").replaceAll("sm","");
 				//System.out.println("Comparing " + searchResults[i].toLowerCase() + " to " + idFromMovieFile.toLowerCase().replaceAll("-", ""));
 				if (urltoMatch.contains(idFromMovieFileToMatch)) {
 					//let's do some fuzzy logic searching to try to get the "best" match in case we got some that are pretty close
